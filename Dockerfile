@@ -18,9 +18,8 @@ RUN mkdir /app/app/static/assets; \
     cp -r /app/node_modules/@nationalarchives/frontend/nationalarchives/assets/* /app/app/static/assets
 
 # Delete source files and tests
-RUN rm -fR /app/src /app/test
-
-RUN poetry run python /app/manage.py collectstatic --no-input --clear
+RUN rm -fR /app/src /app/test; \
+    RUN poetry run python /app/manage.py collectstatic --no-input --clear
 
 # Run the application
 CMD ["tna-run", "config.wsgi:application"]
