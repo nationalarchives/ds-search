@@ -19,7 +19,7 @@ RUN mkdir /app/app/static/assets; \
 
 # Delete source files and tests
 RUN rm -fR /app/src /app/test; \
-    RUN poetry run python /app/manage.py collectstatic --no-input --clear
+    poetry run python /app/manage.py collectstatic --no-input --clear
 
 # Run the application
 CMD ["tna-run", "config.wsgi:application"]
