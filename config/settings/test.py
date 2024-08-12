@@ -4,6 +4,8 @@ from .base import *
 from .base import BASE_DIR, INSTALLED_APPS
 from .features import *
 
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
+
 INSTALLED_APPS = INSTALLED_APPS + ["test"]
 
 ENVIRONMENT = "test"
