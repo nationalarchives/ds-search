@@ -19,6 +19,7 @@ runs:
       run: |
         mkdir app/static
         poetry run python manage.py collectstatic
+      shell: bash
     - name: Run Python tests
       run: poetry run python manage.py test
       shell: bash
