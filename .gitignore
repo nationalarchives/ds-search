@@ -2,6 +2,7 @@
 __pycache__
 .pytest_cache
 db.sqlite3
+/static
 /node_modules
 /app/static/assets
 /app/static/*.css
