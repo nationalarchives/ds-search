@@ -3,7 +3,7 @@ services:
     build:
       context: .
       args:
-        IMAGE: ghcr.io/nationalarchives/tna-python-django-root
+        IMAGE: ghcr.io/nationalarchives/tna-python-django
         IMAGE_TAG: preview
     environment:
       - ENVIRONMENT=develop
