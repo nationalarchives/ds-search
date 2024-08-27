@@ -15,7 +15,7 @@ class MainTestCase(TestCase):
         rv = self.client.get("/")
         self.assertContains(
             rv,
-            '<h1 class="tna-heading-xl">TNA Django application</h1>',
+            '<h1 class="tna-heading-xl">DS Search</h1>',
             status_code=200,
         )
 
