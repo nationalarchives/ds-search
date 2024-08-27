@@ -12,3 +12,9 @@ def catalogue_index(request):
     template = loader.get_template("search/catalogue/index.html")
     context = {"foo": "bar"}
     return HttpResponse(template.render(context, request))
+
+
+def catalogue_item(request, id):
+    template = loader.get_template("search/catalogue/item.html")
+    context = {"id": id}
+    return HttpResponse(template.render(context, request))
