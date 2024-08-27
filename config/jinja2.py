@@ -47,6 +47,7 @@ def environment(**options):
                 "BUILD_VERSION": settings.BUILD_VERSION,
                 "COOKIE_DOMAIN": settings.COOKIE_DOMAIN,
             },
+            "feature": {"PHASE_BANNER": settings.FEATURE_PHASE_BANNER},
             "url": reverse,
             "now_iso_8601": now_iso_8601,
         }

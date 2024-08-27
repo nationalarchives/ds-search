@@ -59,6 +59,13 @@
 {% endblock %}
 
 {% block header %}
+{% if feature.PHASE_BANNER %}
+{{ tnaPhaseBanner({
+  'phase': 'Beta',
+  'message': 'This search is currently in beta.',
+  'classes': 'tna-background-contrast'
+}) | indent(6) }}
+{% endif %}
 {{ tnaGlobalHeader({
   'logo': {
     'href': '/',
