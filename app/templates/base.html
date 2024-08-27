@@ -5,7 +5,6 @@
 {%- from 'components/cookie-banner/macro.html' import tnaCookieBanner -%}
 {%- from 'components/footer/macro.html' import tnaFooter -%}
 {%- from 'components/global-header/macro.html' import tnaGlobalHeader -%}
-{%- from 'components/header/macro.html' import tnaHeader -%}
 {%- from 'components/phase-banner/macro.html' import tnaPhaseBanner -%}
 
 {%- set theme = request.COOKIES['theme'] or 'system' -%}
@@ -60,11 +59,49 @@
 {% endblock %}
 
 {% block header %}
-{{ tnaHeader({
+{{ tnaGlobalHeader({
   'logo': {
-    'href': url('main:index'),
-    'title': 'Service home page'
-  }
+    'href': '/',
+    'title': 'The National Archives home page'
+  },
+  'topNavigation': [
+    {
+      'text': 'Search',
+      'href': url('search:index'),
+      'icon': 'search'
+    },
+    {
+      'text': 'Shop',
+      'href': 'https://shop.nationalarchives.gov.uk/',
+      'icon': 'shop'
+    },
+  ],
+  'navigation': [
+    {
+      'text': 'Visit',
+      'href': 'https://www.nationalarchives.gov.uk/about/visit-us'
+    },
+    {
+      'text': 'What’s on',
+      'href': 'https://www.nationalarchives.gov.uk/about/visit-us/whats-on/'
+    },
+    {
+      'text': 'Explore the collection',
+      'href': '/explore-the-collection/'
+    },
+    {
+      'text': 'Help using the archive',
+      'href': 'https://www.nationalarchives.gov.uk/help-with-your-research/'
+    },
+    {
+      'text': 'Education',
+      'href': 'https://www.nationalarchives.gov.uk/education/'
+    },
+    {
+      'text': 'Professional guidance and services',
+      'href': 'https://www.nationalarchives.gov.uk/professional-guidance-and-services/'
+    },
+  ]
 }) | indent(6) }}
 {% endblock %}
 
