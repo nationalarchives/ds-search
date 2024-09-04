@@ -35,3 +35,10 @@ services:
     image: ghcr.io/nationalarchives/tna-python-dev:preview
     volumes:
       - ./:/app
+
+  docs:
+    image: squidfunk/mkdocs-material
+    volumes:
+      - .:/docs
+    ports:
+      - 65532:8000
