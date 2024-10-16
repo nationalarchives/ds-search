@@ -7,14 +7,24 @@ from .features import *
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
-INSTALLED_APPS = INSTALLED_APPS + [  # noqa: F405
-    "debug_toolbar",
-]
-
-MIDDLEWARE = [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-] + MIDDLEWARE  # noqa: F405
-
 DEBUG = strtobool(os.getenv("DEBUG", "True"))
 
 FORCE_HTTPS = strtobool(os.getenv("FORCE_HTTPS", "False"))
+
+if DEBUG:
+
+    INSTALLED_APPS += [
+        "debug_toolbar",
+    ]
+
+    MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    ] + MIDDLEWARE
+
+    def show_toolbar(request) -> bool:
+        return True
+
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+        "SHOW_COLLAPSED": True,
+    }
