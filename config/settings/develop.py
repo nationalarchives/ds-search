@@ -13,13 +13,13 @@ FORCE_HTTPS = strtobool(os.getenv("FORCE_HTTPS", "False"))
 
 if DEBUG:
 
-    INSTALLED_APPS += [
+    INSTALLED_APPS += [  # noqa: F405
         "debug_toolbar",
     ]
 
     MIDDLEWARE = [
         "debug_toolbar.middleware.DebugToolbarMiddleware",
-    ] + MIDDLEWARE
+    ] + MIDDLEWARE  # noqa: F405
 
     def show_toolbar(request) -> bool:
         return True
