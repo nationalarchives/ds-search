@@ -20,6 +20,8 @@ docker compose exec dev format
 
 `flake8` will just flag things in the terminal, it will not update any code for you like `isort` or `Black`.
 
+This will be checked by CI on every commit, so it's a good idea to run this locally before pushing your changes.
+
 ## Git/Github conventions
 
 ### Branching
