@@ -6,11 +6,11 @@ At TNA we follow a set of conventions for our projects to ensure consistency and
 
 This project uses a few tools to improve the consistency and quality of Python code:
 
-- [``Black``](https://black.readthedocs.io/en/stable/): An opinionated Python formatter that takes care of code formatting (so we don't have to think about it).
-- [``isort``](https://pycqa.github.io/isort/): Ensures that import statements are ordered in a consistant way accross the project.
-- [``flake8``](https://flake8.pycqa.org/en/stable/): Catches things like unused parameters, unused imports and other non-formatting related things.
+- [`Black`](https://black.readthedocs.io/en/stable/): An opinionated Python formatter that takes care of code formatting (so we don't have to think about it).
+- [`isort`](https://pycqa.github.io/isort/): Ensures that import statements are ordered in a consistant way accross the project.
+- [`flake8`](https://flake8.pycqa.org/en/stable/): Catches things like unused parameters, unused imports and other non-formatting related things.
 
-The easiest way to ensure the code you're contributing adheres to these standards is to find and install plugins for your code editor of choice, that will check and transparently reformat your code whenever you save changes. Standard configuration files are included in the root of the repository, which *should* be picked up and respected by such plugins.
+The easiest way to ensure the code you're contributing adheres to these standards is to find and install plugins for your code editor of choice, that will check and transparently reformat your code whenever you save changes. Standard configuration files are included in the root of the repository, which _should_ be picked up and respected by such plugins.
 
 Another option is to run the `format` command from your console to apply `isort` and `Black` formatting to Python code:
 
@@ -35,7 +35,7 @@ docker compose exec dev format
 - Branch names for ticketed bug fixes should follow: `fix/JIRA-TICKET-NUMBER-with-short-description`
 - Branch names for housekeeping tasks or other unticketed work should follow: `chore/short-description`
 
-For example:  
+For example:
 
 - `feature/UN-123-extra-squiggles`
 - `fix/DF-999-image-view-error`
