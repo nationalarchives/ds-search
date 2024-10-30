@@ -2,19 +2,37 @@
 
 ## Quickstart
 
+### Build and start the container
+
 ```sh
-# Build and start the container
 docker compose up -d
+```
 
-# Install Node modules
+### Install Node modules
+
+```sh
 npm install
+```
 
-# Create a static assets directory
+### Create a static assets directory
+
+```sh
 mkdir app/static/assets
+```
 
-# Copy in the TNA Frontend static assets
+### Copy in the TNA Frontend static assets
+
+```sh
 cp -r node_modules/@nationalarchives/frontend/nationalarchives/assets/* app/static/assets
 ```
+
+### Preview application
+
+<http://localhost:65533/>
+
+### Preview docs
+
+<http://localhost:65532/>
 
 ### Run tests
 
