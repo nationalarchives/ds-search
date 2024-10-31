@@ -22,7 +22,7 @@ docker compose exec dev format
 
 This will be checked by CI on every commit, so it's a good idea to run this locally before pushing your changes.
 
-Usefull links
+Useful links
 
 - <https://nationalarchives.github.io/engineering-handbook/technology/backend/python/>
 
