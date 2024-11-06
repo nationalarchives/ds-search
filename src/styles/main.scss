@@ -1,2 +1,36 @@
 @use "@nationalarchives/frontend/nationalarchives/all";
 
+// custom styles 
+
+// sub navigation
+.sub-nav {
+    
+    font-size:0.9em;
+    
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333333;
+        
+      }
+      
+      li {
+        float: left;
+        list-style-type: none;
+      }
+      
+      li a {
+        display: block;
+        color: white;
+        text-align: left;
+        padding-right: 1em;
+        text-decoration: none;
+      }
+      
+      li a:hover {
+        background-color: #111111;
+      }
+
+}
