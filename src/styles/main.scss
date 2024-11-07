@@ -57,9 +57,19 @@
 .tna-form__intro {
     p {
         text-align:left;
-        padding-right:40%;
+        padding-right:30%;
        
     }
+}
+
+// sort results icons
+.sort-icons {
+    
+    li {
+        float: left;
+        list-style-type: none;
+        margin-left:0.4em;
+      }
 }
 
 
