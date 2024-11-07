@@ -49,3 +49,18 @@
     height: 1rem;
     padding: 1rem;
 }
+
+// results panels (right hand side)
+
+.search-results__list{
+
+    li {
+        list-style-type: none;
+        border-bottom: 1px solid black;
+        padding-top:1em;
+        padding-bottom:1em;
+
+    }
+
+
+}
