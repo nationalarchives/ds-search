@@ -21,7 +21,6 @@ Use the following to automatically use the latest version (e.g. [pendulum](https
 
 ```sh
 docker compose exec dev poetry add DateTime
-docker compose exec dev poetry update
 ```
 
 Or, specify a version:
@@ -29,14 +28,12 @@ Or, specify a version:
 ```sh
 docker compose exec dev poetry add DateTime@4.1.1
 docker compose exec dev poetry add "DateTime@>=4.0"
-docker compose exec dev poetry update
 ```
 
 Or, to a group
 
 ```sh
 docker compose exec dev poetry add --group <group-name> <package-name>
-docker compose exec dev poetry update
 ```
 
 See the [Poetry docs](https://python-poetry.org/docs/cli/#add) for more options.
@@ -45,5 +42,4 @@ See the [Poetry docs](https://python-poetry.org/docs/cli/#add) for more options.
 
 ```sh
 docker compose exec dev poetry remove DateTime
-docker compose exec dev poetry update
 ```
