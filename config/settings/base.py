@@ -12,6 +12,7 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
 # Application definition
 INSTALLED_APPS = [
+    "app.records",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -223,3 +224,7 @@ CONTENT_SECURITY_POLICY = (
 )
 
 GA4_ID = os.environ.get("GA4_ID", "")
+
+# Should always be False in production. Can be set to True in local environments
+# to serve static files even when DEBUG is False
+DJANGO_SERVE_STATIC = False
