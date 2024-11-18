@@ -8,9 +8,11 @@
 .sub-nav {
     
     font-size:0.9em;
-    background:grey;
-    padding:1em;
+    // background:grey;
+    padding-top:0.5em;
     margin-top:1em;
+    position: relative;
+    top: 3em;
 
     
     ul {
@@ -25,18 +27,23 @@
       li {
         float: left;
         list-style-type: none;
+        padding-right: 1em;
       }
       
       li a {
         display: block;
         color: white;
         text-align: left;
-        padding-right: 1em;
         text-decoration: none;
+        padding-right: 1em;
+        margin-left: 0px;
       }
       
       li a:hover {
         background-color: #111111;
+        border-bottom:10px solid white;
+        padding-bottom: 0;
+        margin-bottom: 0;
       }
 
 }
