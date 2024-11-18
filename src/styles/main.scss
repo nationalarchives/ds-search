@@ -1,96 +1,97 @@
 @use "@nationalarchives/frontend/nationalarchives/all";
 
-// custom styles 
+// custom styles
 
 // Results page
 
 // sub navigation
 .sub-nav {
-    
-    font-size:0.9em;
-    // background:grey;
-    padding-top:0.5em;
-    margin-top:1em;
-    position: relative;
-    top: 3em;
+  margin-top: 1em;
+  // background:grey;
+  padding-top: 0.5em;
 
-    
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #333333;
-        
-      }
-      
-      li {
-        float: left;
-        list-style-type: none;
-        padding-right: 1em;
-      }
-      
-      li a {
-        display: block;
-        color: white;
-        text-align: left;
-        text-decoration: none;
-        padding-right: 1em;
-        margin-left: 0px;
-      }
-      
-      li a:hover {
-        background-color: #111111;
-        border-bottom:10px solid white;
-        padding-bottom: 0;
-        margin-bottom: 0;
-      }
+  position: relative;
+  top: 3em;
 
+  font-size: 0.9em;
+
+  ul {
+    list-style-type: none;
+
+    margin: 0;
+    padding: 0;
+
+    overflow: hidden;
+
+    background-color: #333;
+  }
+
+  li {
+    padding-right: 1em;
+
+    float: left;
+    list-style-type: none;
+  }
+
+  li a {
+    margin-left: 0;
+    padding-right: 1em;
+
+    display: block;
+
+    color: white;
+    text-align: left;
+    text-decoration: none;
+  }
+
+  li a:hover {
+    margin-bottom: 0;
+    padding-bottom: 0;
+
+    background-color: #111;
+    border-bottom: 10px solid white;
+  }
 }
 
 // accordion element
 
 // search within results
 .search-filters__search {
-    margin-bottom: 1rem;
-    border: 1px solid #8c9694;
-    border-radius: 0.5rem;
-    width: 100%;
-    height: 1rem;
-    padding: 1rem;
+  width: 100%;
+  height: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+
+  border: 1px solid #8c9694;
+  border-radius: 0.5rem;
 }
 
 // results panels (right hand side)
 
 .tna-form__intro {
-    p {
-        text-align:left;
-        padding-right:30%;
-       
-    }
+  p {
+    padding-right: 30%;
+
+    text-align: left;
+  }
 }
 
 // sort results icons
 .sort-icons {
-    
-    li {
-        float: left;
-        list-style-type: none;
-        margin-left:0.4em;
-      }
+  li {
+    margin-left: 0.4em;
+
+    float: left;
+    list-style-type: none;
+  }
 }
 
+.search-results__list {
+  li {
+    list-style-type: none;
+    border-bottom: 1px solid black;
 
-
-.search-results__list{
-
-    li {
-        list-style-type: none;
-        border-bottom: 1px solid black;
-        padding-top:1em;
-        padding-bottom:1em;
-
-    }
-
-
+    padding-top: 1em;
+    padding-bottom: 1em;
+  }
 }
