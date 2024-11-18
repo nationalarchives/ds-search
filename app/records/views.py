@@ -1,3 +1,5 @@
+from app.ciim.exceptions import DoesNotExist
+from app.records.api import records_client
 from django.shortcuts import Http404
 from django.template.response import TemplateResponse
 
@@ -10,7 +12,13 @@ def record_detail_view(request, id):
     context = {}
     page_type = "Record details page"
 
-    page_title = f"Catalogue ID: {id}"
+    try:
+        # for any record
+        record = records_client.get(id=id)
+
+        page_title = f"Catalogue ID: {record.iaid}"
+    except DoesNotExist:
+        raise Http404
 
     context.update(
         page_type=page_type,
