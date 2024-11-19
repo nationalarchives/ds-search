@@ -1,20 +1,32 @@
-# TNA Python Flask Application
+# TNA Python Django Search Application
 
 ## Quickstart
 
+### Build and start the container
+
 ```sh
-# Build and start the container
 docker compose up -d
-
-# Install Node modules
-npm install
-
-# Create a static assets directory
-mkdir app/static/assets
-
-# Copy in the TNA Frontend static assets
-cp -r node_modules/@nationalarchives/frontend/nationalarchives/assets/* app/static/assets
 ```
+
+### Add the static assets
+
+During the first time install, your `app/static/assets` directory will be empty.
+
+As you mount the project directory to the `/app` volume, the static assets from TNA Frontend installed inside the container will be "overwritten" by your empty directory.
+
+To add back in the static assets, run:
+
+```sh
+docker compose exec app cp -r /app/node_modules/@nationalarchives/frontend/nationalarchives/assets /app/app/static
+```
+
+### Preview application
+
+<http://localhost:65533/>
+
+### Preview docs
+
+<http://localhost:65532/>
 
 ### Run tests
 

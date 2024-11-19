@@ -5,6 +5,7 @@ description = ""
 authors = ["Andrew Hosgood <andrew.hosgood@nationalarchives.gov.uk>"]
 readme = "README.md"
 packages = [{include = "app"}]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -21,6 +22,12 @@ optional = true
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"
 requests-mock = "^1.12.1"
+
+[tool.poetry.group.root]
+optional = true
+
+[tool.poetry.group.root.dependencies]
+django-debug-toolbar = "^4.4.6"
 
 [build-system]
 requires = ["poetry-core"]

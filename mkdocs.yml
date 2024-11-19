@@ -1,3 +1,18 @@
 site_name: DS Search Docs
 repo_url: https://github.com/nationalarchives/ds-search
 dev_addr: 0.0.0.0:65532
+theme:
+  name: material
+  font: false
+markdown_extensions:
+  - sane_lists
+  - toc:
+      permalink: true
+nav:
+  - "Home": "index.md"
+  - "Project conventions": "project-conventions.md"
+  - "Contributing code": "contributing.md"
+  - "Dependency management": "dependency-management.md"
+  - "Local development gotchas": "local-development-gotchas.md"
+  - "Backend development": "backend.md"
+  - "Frontend development": "frontend.md"

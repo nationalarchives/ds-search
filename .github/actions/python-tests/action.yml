@@ -13,7 +13,7 @@ runs:
         virtualenvs-in-project: true
         virtualenvs-path: .venv
     - name: Install Poetry dependencies
-      run: poetry install --no-interaction --no-root --with dev
+      run: poetry install --no-interaction --no-root --with dev --with root
       shell: bash
     - name: Run Python tests
       run: poetry run python manage.py test
