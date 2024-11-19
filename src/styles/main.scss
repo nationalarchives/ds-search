@@ -4,14 +4,37 @@
 
 // Results page
 
+.search-box {
+    margin-top:-2.7em;
+    
+}
+
+.search-panel {
+    background:#1e1e1e;
+    h1 {
+        color:white !important;
+    }
+    .tna-search-field__input {
+        margin-right:1em;
+    }
+    .tna-search-field__button:hover,
+    .tna-search-field__button:hover {
+        background: white;
+        
+    }
+    .new-search {
+        color:white;
+    }
+}
+
 // sub navigation
 .sub-nav {
-  margin-top: 1em;
+  // margin-top: 1em;
   // background:grey;
-  padding-top: 0.5em;
+  // padding-top: 0.5em;
 
   position: relative;
-  top: 3em;
+  top: 2.5em;
 
   font-size: 0.9em;
 
@@ -47,9 +70,9 @@
   li a:hover {
     margin-bottom: 0;
     padding-bottom: 0;
-
-    background-color: #111;
-    border-bottom: 10px solid white;
+    border-bottom: 5px solid #f4f4f4;
+    padding-bottom:0px;
+    
   }
 }
 
@@ -95,3 +118,5 @@
     padding-bottom: 1em;
   }
 }
+
+
