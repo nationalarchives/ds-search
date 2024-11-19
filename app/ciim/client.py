@@ -55,7 +55,7 @@ class ResultList:
         return bool(self._hits)
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name} {self.hits}>"
+        return f"<{self.__class__.__name__} {self.hits}>"
 
 
 class ClientAPI:
