@@ -14,6 +14,21 @@ class TestRecordView(TestCase):
         self.assertEqual(response.status_code, 404)
 
     @responses.activate
+    def test_empty_results_responds_with_404(self):
+        responses.add(
+            responses.GET,
+            f"{settings.CLIENT_BASE_URL}/get",
+            json=create_response(records=[]),
+        )
+
+        response = self.client.get("/catalogue/id/C123456/")
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.resolver_match.view_name, "details-page-machine-readable"
+        )
+
+    @responses.activate
     def test_record_rendered_for_single_result(self):
 
         responses.add(
