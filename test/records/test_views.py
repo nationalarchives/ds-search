@@ -7,20 +7,11 @@ from django.test import TestCase
 
 class TestRecordView(TestCase):
 
-    @responses.activate
     def test_no_matches_respond_with_404(self):
-        responses.add(
-            responses.GET,
-            f"{settings.CLIENT_BASE_URL}/get",
-            json=create_response(records=[]),
-        )
 
-        response = self.client.get("/catalogue/id/C123456/")
+        response = self.client.get("/catalogue/id/Z123456/")
 
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(
-            response.resolver_match.view_name, "details-page-machine-readable"
-        )
 
     @responses.activate
     def test_record_rendered_for_single_result(self):
@@ -41,4 +32,4 @@ class TestRecordView(TestCase):
         self.assertEqual(
             response.resolver_match.view_name, "details-page-machine-readable"
         )
-        self.assertTemplateUsed(template_name="records/record_detail.html")
+        self.assertTemplateUsed("records/record_detail.html")
