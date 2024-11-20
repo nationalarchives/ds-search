@@ -15,18 +15,35 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from app.errors import views as errors_view
+from app.records import converters
+from app.records import views as records_views
 from django.apps import apps
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, register_converter
+
+register_converter(converters.IDConverter, "id")
+
+handler404 = "app.errors.views.custom_404_error_view"
 
 urlpatterns = [
     path("", include(("app.main.urls", "main"), namespace="main")),
     path("healthcheck/", include("app.healthcheck.urls")),
     path(
+        r"catalogue/id/<id:id>/",
+        records_views.record_detail_view,
+        name="details-page-machine-readable",
+    ),
+    path(
         "search/",
         include(("app.search.urls", "search"), namespace="search"),
+    ),
+    path(
+        r"404/",
+        errors_view.custom_404_error_view,
+        kwargs={"exception": Exception("Bad Request!")},
     ),
     path("admin/", admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
