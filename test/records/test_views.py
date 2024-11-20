@@ -48,3 +48,11 @@ class TestRecordView(TestCase):
             response.resolver_match.view_name, "details-page-machine-readable"
         )
         self.assertTemplateUsed("records/record_detail.html")
+
+        # context attributes
+        self.assertEqual(
+            response.context_data.get("page_type"), "Record details page"
+        )
+        self.assertEqual(
+            response.context_data.get("page_title"), "Catalogue ID: C123456"
+        )
