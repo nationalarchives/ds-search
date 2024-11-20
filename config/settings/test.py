@@ -21,4 +21,8 @@ DATABASES = {
     }
 }
 
+# Allow integration tests to run without needing to collectstatic
+# See https://docs.djangoproject.com/en/5.0/ref/contrib/staticfiles/#staticfilesstorage
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+
+CLIENT_BASE_URL = "https://rosetta.test/data"
