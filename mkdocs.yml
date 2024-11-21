@@ -14,5 +14,7 @@ nav:
   - "Contributing code": "contributing.md"
   - "Dependency management": "dependency-management.md"
   - "Local development gotchas": "local-development-gotchas.md"
-  - "Backend development": "backend.md"
+  - "Backend development":
+      - 'Index': 'backend.md'
+      - 'Template variables': 'backend/template_variables.md'
   - "Frontend development": "frontend.md"
