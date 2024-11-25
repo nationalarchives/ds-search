@@ -11,12 +11,15 @@ DEBUG = strtobool(os.getenv("DEBUG", "True"))
 
 FORCE_HTTPS = strtobool(os.getenv("FORCE_HTTPS", "False"))
 
-DJANGO_SERVE_STATIC = True
+DJANGO_SERVE_STATIC = strtobool(os.getenv("DJANGO_SERVE_STATIC", "True"))
 
 if not DEBUG and DJANGO_SERVE_STATIC:
-    STATICFILES_STORAGE = (
-        "django.contrib.staticfiles.storage.StaticFilesStorage"
-    )
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        }
+    }
+
 
 if DEBUG:
 
