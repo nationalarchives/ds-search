@@ -9,9 +9,9 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
 DEBUG = strtobool(os.getenv("DEBUG", "True"))
 
-# for develop only set default False
+# for develop only configrable
 CLIENT_VERIFY_CERTIFICATES = strtobool(
-    os.getenv("CLIENT_VERIFY_CERTIFICATES", "False")
+    os.getenv("CLIENT_VERIFY_CERTIFICATES", "True")
 )
 
 FORCE_HTTPS = strtobool(os.getenv("FORCE_HTTPS", "False"))
