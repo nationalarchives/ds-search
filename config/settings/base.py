@@ -230,6 +230,6 @@ GA4_ID = os.environ.get("GA4_ID", "")
 # to serve static files even when DEBUG is False
 DJANGO_SERVE_STATIC = False
 
-CLIENT_BASE_URL = os.getenv("CLIENT_BASE_URL")
-CLIENT_KEY = os.getenv("CLIENT_KEY")
+CLIENT_BASE_URL = os.getenv("ROSETTA_CLIENT_BASE_URL")
+CLIENT_KEY = os.getenv("ROSETTA_CLIENT_KEY")
 CLIENT_VERIFY_CERTIFICATES = True

@@ -78,6 +78,7 @@ In addition to the [base Docker image variables](https://github.com/nationalarch
 
 `.env` variables:
 
-| Variable          | Purpose                    |
-| ----------------- | -------------------------- |
-| `CLIENT_BASE_URL` | Api used to query the data |
+| Variable                  | Purpose                    |
+| ------------------------- | -------------------------- |
+| `ROSETTA_CLIENT_BASE_URL` | Api used to query the data |
+| `ROSETTA_CLIENT_KEY`      | Api key to query the data  |
