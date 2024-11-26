@@ -9,11 +9,6 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
 DEBUG = strtobool(os.getenv("DEBUG", "True"))
 
-# for develop only configurable
-CLIENT_VERIFY_CERTIFICATES = strtobool(
-    os.getenv("CLIENT_VERIFY_CERTIFICATES", "True")
-)
-
 FORCE_HTTPS = strtobool(os.getenv("FORCE_HTTPS", "False"))
 
 DJANGO_SERVE_STATIC = strtobool(os.getenv("DJANGO_SERVE_STATIC", "True"))
