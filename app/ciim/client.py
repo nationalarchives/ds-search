@@ -59,7 +59,7 @@ class ResultList:
 
 
 class ClientAPI:
-    """Client used to Fetch and validate data from Client API."""
+    """Client used to Fetch and validate data from configured external API."""
 
     http_error_classes = {
         400: ClientAPIBadRequestError,
