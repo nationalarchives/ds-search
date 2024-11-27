@@ -1,0 +1,152 @@
+// Results page
+
+.hide-heading {
+  display: none;
+}
+
+.search-box {
+  margin-top: -2.7em;
+
+  h1 {
+    display: none;
+  }
+}
+
+.search-panel {
+  background: #1e1e1e;
+
+  h1 {
+    color: white !important;
+  }
+
+  .tna-search-field__input {
+    margin-right: 1em;
+  }
+
+  .tna-search-field__button:hover {
+    background: white;
+  }
+
+  .new-search {
+    color: white;
+  }
+}
+
+// sub navigation
+
+.sub-nav {
+  margin-bottom: -8px;
+
+  position: relative;
+  top: 2.5em;
+
+  font-size: 0.9em;
+
+  ul {
+    list-style-type: none;
+
+    margin: 0;
+    padding: 0;
+
+    overflow: hidden;
+
+    background-color: #333;
+  }
+
+  li {
+    padding-right: 1.2em;
+
+    float: left;
+    list-style-type: none;
+
+    font-weight: 500;
+  }
+
+  li a {
+    margin-left: 0;
+    padding-right: 1em;
+
+    display: block;
+
+    color: white;
+    text-align: left;
+    text-decoration: none;
+    border-bottom: 5px solid transparent;
+  }
+
+  li a:hover,
+  li a:active {
+    margin-bottom: 0;
+    border-bottom: 5px solid #f4f4f4;
+
+    padding-bottom: 0;
+  }
+}
+
+// accordion element
+
+.tna-accordion {
+  border: 1px solid #d9d9d6;
+}
+
+.tna-accordion__summary {
+  background-color: rgb(217 217 214);
+}
+
+// search within results
+.search-filters__search {
+  width: 90%;
+  height: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+
+  border: 1px solid #8c9694;
+  border-radius: 0.5rem;
+}
+
+.update-filters {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+// results panels (right hand side)
+
+.icon-adjust {
+  margin-left: 0.1em;
+  padding: 4px;
+
+  color: white;
+  font-size: 1.8em !important;
+
+  background: black;
+}
+
+.tna-form__intro {
+  p {
+    padding-right: 30%;
+
+    text-align: left;
+  }
+}
+
+// sort results icons
+.sort-icons {
+  margin-left: 0.5em;
+
+  li {
+    margin-left: 0.4em;
+
+    float: left;
+    list-style-type: none;
+  }
+}
+
+.search-results__list {
+  li {
+    list-style-type: none;
+    border-bottom: 1px solid black;
+
+    padding-top: 1em;
+    padding-bottom: 1em;
+  }
+}

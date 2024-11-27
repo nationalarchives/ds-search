@@ -3,10 +3,525 @@
 {%- set pageTitle = 'Catalogue' -%}
 
 {% block content %}
-<div class="tna-section">
+
+
+<div class="tna-section search-box">
   <div class="tna-container">
-    <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
+    <div class="tna-column--full tna-column--full-small tna-column--full-tiny tna-column--full">
       <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
+      <div class="">
+        <div class="">
+          <div class="tna-container">
+          </div>
+        </div>
+        <main class="tna-main" id="main-content">
+          <div class="tna-background-accent">
+            <div class="tna-container tna-section search-panel">
+              <div class="tna-column  tna-column--full-small tna-column--full-tiny tna-column--full">
+                <hgroup class="tna-hgroup-l">
+                  <h1 class="tna-hgroup__title">Catalogue search results</h1>
+                </hgroup>
+                <div class="tna-search-field">
+                  <div class="tna-form__group">
+                    <div class="tna-form__group-contents">
+                    </div>
+                    <div class="tna-search-field__fields">
+                      <input type="search" id="search" class="tna-search-field__input " name="q" value="" spellcheck="false">
+                      <button type="submit" class="tna-button tna-search-field__button">
+                        Search
+                      </button>
+                    </div>
+
+                    <a href="" class="new-search">Start new search</a>
+
+                    <!--sub navigation-->
+                    
+                      <ul class="sub-nav">
+                        <li><a href="">Records at The National Archives (24,521,292)</a></li>
+                        <li><a href="">Online records at The National Archives (9,041,961)</a></li>
+                        <li><a href="">Records at other UK archives (10,758,426 )</a></li>
+                      </ul>
+
+                    
+                    <!--end sub navigation-->
+
+
+                  </div>
+                </div>
+                
+              </div>
+
+              
+
+            </div>
+          </div>
+          
+        </main>
+      </div>
+
+      <!---accordian element-->
+
+      <div class="tna-container tna-!--margin-top-l">
+        <div class="tna-column tna-column--width-1-3">
+          <div class="tna-accordion" data-multiselectable="true" data-module="tna-accordion">
+            <div class="tna-accordion__item" data-isopen="true">
+              <h3 class="tna-accordion__heading tna-heading-s">
+                Search within results
+              </h3>
+              <div class="tna-accordion__body" id="-content-1">
+                <div class="search-filters__form-block">
+                  <input type="text" name="filter_keyword" class="search-filters__search" id="id_filter_keyword">
+                  <input type="submit" value="Search" class="search-filters__submitleft tna-button">
+                </div>
+              </div>
+            </div>
+            <div class="tna-accordion__item" data-isopen="true">
+              <h3 class="tna-accordion__heading tna-heading-s">
+                Dates
+              </h3>
+              <div class="tna-accordion__body" id="-content-1">
+                <div class="tna-form__group">
+                  <fieldset class="tna-form__fieldset">
+                    <legend class="tna-form__legend">
+                      For example, 27 3 2007 or 2007<br>
+                      From:
+                    </legend>
+                    <div class="tna-date-input" id="date">
+                      <div class="tna-date-input__item">
+                        <label for="date-day" class="tna-date-input__item-label">
+                          Day
+                        </label>
+                        <input type="text" id="date-day" value="" name="date-day" class="tna-date-input__item-input" inputmode="numeric">
+                      </div>
+                      <div class="tna-date-input__item">
+                        <label for="date-month" class="tna-date-input__item-label">
+                          Month
+                        </label>
+                        <input type="text" id="date-month" value="" name="date-month" class="tna-date-input__item-input" inputmode="numeric">
+                      </div>
+                      <div class="tna-date-input__item">
+                        <label for="date-year" class="tna-date-input__item-label">
+                          Year
+                        </label>
+                        <input type="text" id="date-year" value="" name="date-year" class="tna-date-input__item-input tna-date-input__item-input--wider" inputmode="numeric">
+                      </div>
+                    </div>
+                    <legend class="tna-form__legend">
+                      To:
+                    </legend>
+                    <div class="tna-date-input" id="date">
+                      <div class="tna-date-input__item">
+                        <label for="date-day" class="tna-date-input__item-label">
+                          Day
+                        </label>
+                        <input type="text" id="date-day" value="" name="date-day" class="tna-date-input__item-input" inputmode="numeric">
+                      </div>
+                      <div class="tna-date-input__item">
+                        <label for="date-month" class="tna-date-input__item-label">
+                          Month
+                        </label>
+                        <input type="text" id="date-month" value="" name="date-month" class="tna-date-input__item-input" inputmode="numeric">
+                      </div>
+                      <div class="tna-date-input__item">
+                        <label for="date-year" class="tna-date-input__item-label">
+                          Year
+                        </label>
+                        <input type="text" id="date-year" value="" name="date-year" class="tna-date-input__item-input tna-date-input__item-input--wider" inputmode="numeric">
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+              </div>
+            </div>
+            <!--collections-->
+            <div class="tna-accordion__item" data-isopen="true">
+              <h3 class="tna-accordion__heading tna-heading-s">
+                Collections
+              </h3>
+              <div class="tna-accordion__body" id="-content-1">
+                <div class="tna-form__group">
+                  <fieldset class="tna-form__fieldset">
+                    
+                    <div class="tna-checkboxes" id="categories">
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
+                        <label for="categories-alpha" class="tna-checkboxes__item-label">
+                          ADM - Admiralty, Navy, Royal Marines, and Coastguard (2,391,494)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-beta" value="beta" name="categories">
+                        <label for="categories-beta" class="tna-checkboxes__item-label">
+                          AIR - Air Ministry and Royal Air Force records (713,881)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
+                        <label for="categories-gamma" class="tna-checkboxes__item-label">
+                          BT - Board of Trade and successors (2,539,478)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
+                        <label for="categories-alpha" class="tna-checkboxes__item-label">
+                          C - Chancery, the Wardrobe, Royal Household, Exchequer and various commissions (1,440,321)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
+                        <label for="categories-alpha" class="tna-checkboxes__item-label">
+                          E - Exchequer, Office of First Fruits and Tenths, and the Court of Augmentations (391,201)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
+                        <label for="categories-alpha" class="tna-checkboxes__item-label">
+                          FO - Foreign Office (685,022)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
+                        <label for="categories-alpha" class="tna-checkboxes__item-label">
+                          HO - Home Office (1,665,502)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
+                        <label for="categories-alpha" class="tna-checkboxes__item-label">
+                          IR - Boards of Stamps, Taxes, Excise, Stamps and Taxes, and Inland Revenue (371,749)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
+                        <label for="categories-alpha" class="tna-checkboxes__item-label">
+                          PROB - Prerogative Court of Canterbury (1,265,613)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
+                        <label for="categories-alpha" class="tna-checkboxes__item-label">
+                          WO - War Office, Armed Forces, Judge Advocate General, and related bodies (6,248,745)
+                        </label>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+              
+              </div>
+            </div>
+            <!--Levels--->
+            <div class="tna-accordion__item" data-isopen="false">
+              <h3 class="tna-accordion__heading tna-heading-s">
+                Levels
+              </h3>
+              <div class="tna-accordion__body" id="-content-1">
+                <div class="tna-form__group">
+                  <fieldset class="tna-form__fieldset">
+                    <div class="tna-checkboxes" id="categories">
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
+                        <label for="categories-alpha" class="tna-checkboxes__item-label">
+                          Division (1,212)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-beta" value="beta" name="categories">
+                        <label for="categories-beta" class="tna-checkboxes__item-label">
+                          Item (16,804,232)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
+                        <label for="categories-gamma" class="tna-checkboxes__item-label">
+                          Lettercode (433)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
+                        <label for="categories-gamma" class="tna-checkboxes__item-label">
+                          Piece (7,531,835)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
+                        <label for="categories-gamma" class="tna-checkboxes__item-label">
+                          Series (20,421)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
+                        <label for="categories-gamma" class="tna-checkboxes__item-label">
+                          Sub-series (68,616)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
+                        <label for="categories-gamma" class="tna-checkboxes__item-label">
+                          Sub-sub-series (58,540)
+                        </label>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+              
+              </div>
+            </div>
+            <div class="tna-accordion__item" data-isopen="false">
+              <h3 class="tna-accordion__heading tna-heading-s">
+                Closure status
+              </h3>
+              <div class="tna-accordion__body" id="-content-1">
+                <div class="tna-form__group">
+                  <fieldset class="tna-form__fieldset">
+                    <div class="tna-checkboxes" id="categories">
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
+                        <label for="categories-alpha" class="tna-checkboxes__item-label">
+                          Closed Or Retained Document, Closed Description (25,386)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-beta" value="beta" name="categories">
+                        <label for="categories-beta" class="tna-checkboxes__item-label">
+                          Closed Or Retained Document, Open Description (376,449)
+                        </label>
+                      </div>
+                      <div class="tna-checkboxes__item">
+                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
+                        <label for="categories-gamma" class="tna-checkboxes__item-label">
+                          Open Document, Open Description (23,919,391)
+                        </label>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+              
+              </div>
+            </div>
+            <!--opening dates-->
+            <div class="tna-accordion__item" data-isopen="false">
+              <h3 class="tna-accordion__heading tna-heading-s">
+                Record opening dates
+              </h3>
+              <div class="tna-accordion__body" id="-content-1">
+                <div class="tna-form__group">
+                  <fieldset class="tna-form__fieldset">
+                    <legend class="tna-form__legend">
+                      For example, 27 3 2007 or 2007<br>
+                      From:
+                    </legend>
+                    <div class="tna-date-input" id="date">
+                      <div class="tna-date-input__item">
+                        <label for="date-day" class="tna-date-input__item-label">
+                          Day
+                        </label>
+                        <input type="text" id="date-day" value="" name="date-day" class="tna-date-input__item-input" inputmode="numeric">
+                      </div>
+                      <div class="tna-date-input__item">
+                        <label for="date-month" class="tna-date-input__item-label">
+                          Month
+                        </label>
+                        <input type="text" id="date-month" value="" name="date-month" class="tna-date-input__item-input" inputmode="numeric">
+                      </div>
+                      <div class="tna-date-input__item">
+                        <label for="date-year" class="tna-date-input__item-label">
+                          Year
+                        </label>
+                        <input type="text" id="date-year" value="" name="date-year" class="tna-date-input__item-input tna-date-input__item-input--wider" inputmode="numeric">
+                      </div>
+                    </div>
+                    <legend class="tna-form__legend">
+                      To:
+                    </legend>
+                    <div class="tna-date-input" id="date">
+                      <div class="tna-date-input__item">
+                        <label for="date-day" class="tna-date-input__item-label">
+                          Day
+                        </label>
+                        <input type="text" id="date-day" value="" name="date-day" class="tna-date-input__item-input" inputmode="numeric">
+                      </div>
+                      <div class="tna-date-input__item">
+                        <label for="date-month" class="tna-date-input__item-label">
+                          Month
+                        </label>
+                        <input type="text" id="date-month" value="" name="date-month" class="tna-date-input__item-input" inputmode="numeric">
+                      </div>
+                      <div class="tna-date-input__item">
+                        <label for="date-year" class="tna-date-input__item-label">
+                          Year
+                        </label>
+                        <input type="text" id="date-year" value="" name="date-year" class="tna-date-input__item-input tna-date-input__item-input--wider" inputmode="numeric">
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+              
+              </div>
+
+              <div class="tna-container tna-container--align-right">
+                  <div class="tna-column tna-column--width-1-3">
+                    <input type="submit" value="Update" class="tna-button update-filters">
+                  </div>
+                </div>
+            </div> 
+          </div>
+        </div>
+        
+        <!--results section (right hand side)-->
+        <div class="tna-column tna-column--width-2-3">
+          
+          <div class="tna-form__group tna-form__intro">
+            <div class="tna-container">
+              <p>Showing 1 - 20 (of 10,000) results</p>
+              <select class="tna-select tna-column" name="sort" id="sort">
+                <option value="relevance">Relevance</option>
+                <option value="date">Date</option>
+                <option value="title">Title</option>
+              </select>
+              <ul class="sort-icons">
+                <li><a href=""><i class="fa-solid fa-list icon-adjust" aria-hidden="true"></i></a></li>
+                <li><a href=""><i class="fa fa-th-large icon-adjust" aria-hidden="true"></i></a></li>
+              </ul>
+            </div>
+          </div>
+
+          <ul class="search-results__list" id="analytics-results-list">
+            <li class="search-results__list-card" data-iaid="C8077549" data-score="1.0">
+                <div class="search-results__list-card-details">
+                    <h3 class="tna-heading-m">
+                        <a
+                            href="/catalogue/id/C8077549/"
+                            class="search-results__list-card-heading-link"
+                            data-link="J 77/3417/4284 - Divorce Court File: 4284. Appellant: Florence Emily Fenn. Respondent: Ernest William..."
+                            data-link-type="Search results list"
+                            search-bucket="Records at The National Archives"
+                            data-position="0"
+                        >
+                            <span class="sr-only">Reference number J 77/3417/4284: </span>
+        
+                            Divorce Court File: 4284. Appellant: Florence Emily Fenn. Respondent: Ernest William...
+                        </a>
+                    </h3>
+        
+                    <p class="search-results__list-card-description">
+                        Divorce Court File: 4284. Appellant: Florence Emily Fenn. Respondent: Ernest William Fenn. Type: Wife's petition for divorce [wd].
+                    </p>
+        
+                    <dl class="tna-dl tna-dl--plain">
+                        <dt>
+                            Held by:
+                        </dt>
+                        <dd>The National Archives, Kew</dd>
+        
+                        <dt>
+                            Date:
+                        </dt>
+                        <dd>1935</dd>
+        
+                        <dt>
+                            Reference:
+                        </dt>
+                        <dd>J 77/3417/4284</dd>
+                    </dl>
+                </div>
+            </li>
+        
+            <li class="search-results__list-card" data-iaid="C10389010" data-score="1.0">
+                <div class="search-results__list-card-details">
+                    <h3 class="tna-heading-m">
+                        <a
+                            href="/catalogue/id/C10389010/"
+                            class="search-results__list-card-heading-link"
+                            data-link="RAIL 529/131/553 - Folio 171. Name: Thomas Henry Witney. Occupation: Signalman Gresham Road Box, Police..."
+                            data-link-type="Search results list"
+                            search-bucket="Records at The National Archives"
+                            data-position="1"
+                        >
+                            <span class="sr-only">Reference number RAIL 529/131/553: </span>
+        
+                            Folio 171. Name: Thomas Henry Witney. Occupation: Signalman Gresham Road Box, Police...
+                        </a>
+                    </h3>
+        
+                    <p class="search-results__list-card-description">
+                        Folio 171. Name: Thomas Henry Witney. Occupation: Signalman Gresham Road Box, Police Department, Hackney Station. Date of Birth: 14 November 1866. Date of Appointment: 20 September 1893.
+                    </p>
+        
+                    <dl class="tna-dl tna-dl--plain">
+                        <dt>
+                            Held by:
+                        </dt>
+                        <dd>The National Archives, Kew</dd>
+        
+                        <dt>
+                            Date:
+                        </dt>
+                        <dd>1893 Sept 20</dd>
+        
+                        <dt>
+                            Reference:
+                        </dt>
+                        <dd>RAIL 529/131/553</dd>
+        
+                    </dl>
+                </div>
+            </li>
+        
+            
+        </ul>
+        
+        </div>
+      </div>
+
+      <!--pagination-->
+      <nav class="tna-pagination" aria-label="Pagination">
+        <div class="tna-pagination__prev">
+          <a href="#" class="tna-button tna-button--plain" rel="prev">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+            </svg>
+            Previous
+          </a>
+        </div>
+        <ul class="tna-pagination__list">
+          <li class="tna-pagination__item">
+            <a href="#" class="tna-button tna-pagination__link tna-button--plain" aria-label="Page 1" title="Page 1">
+              1
+            </a>
+          </li>
+          <li class="tna-pagination__item tna-pagination__item--ellipses">&ctdot;</li>
+          <li class="tna-pagination__item">
+            <a href="#" class="tna-button tna-pagination__link tna-button--plain" aria-label="Page 6" title="Page 6">
+              6
+            </a>
+          </li>
+          <li class="tna-pagination__item tna-pagination__item--current">
+            <a href="#" class="tna-button tna-pagination__link" aria-label="Page 7" title="Page 7">
+              7
+            </a>
+          </li>
+          <li class="tna-pagination__item">
+            <a href="#" class="tna-button tna-pagination__link tna-button--plain" aria-label="Page 8" title="Page 8">
+              8
+            </a>
+          </li>
+          <li class="tna-pagination__item tna-pagination__item--ellipses">&ctdot;</li>
+          <li class="tna-pagination__item">
+            <a href="#" class="tna-button tna-pagination__link tna-button--plain" aria-label="Page 42" title="Page 42">
+              42
+            </a>
+          </li>
+        </ul>
+        <div class="tna-pagination__next">
+          <a href="#" class="tna-button tna-button--icon-right tna-button--plain" rel="next">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" />
+            </svg>
+            Next
+          </a>
+        </div>
+      </nav>
+
     </div>
   </div>
 </div>
