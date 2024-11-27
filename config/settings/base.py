@@ -12,6 +12,7 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
 # Application definition
 INSTALLED_APPS = [
+    "app.ciim",
     "app.records",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -228,3 +229,11 @@ GA4_ID = os.environ.get("GA4_ID", "")
 # Should always be False in production. Can be set to True in local environments
 # to serve static files even when DEBUG is False
 DJANGO_SERVE_STATIC = False
+
+CLIENT_BASE_URL = os.getenv("ROSETTA_CLIENT_BASE_URL")
+CLIENT_KEY = os.getenv("ROSETTA_CLIENT_KEY")
+
+# Should always be True in production
+CLIENT_VERIFY_CERTIFICATES = strtobool(
+    os.getenv("ROSETTA_CLIENT_VERIFY_CERTIFICATES", "True")
+)

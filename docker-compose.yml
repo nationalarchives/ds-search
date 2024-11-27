@@ -5,6 +5,8 @@ services:
       args:
         IMAGE: ghcr.io/nationalarchives/tna-python-django-root
         IMAGE_TAG: preview
+    env_file:
+      - .env
     environment:
       - ENVIRONMENT=develop
       - DJANGO_SETTINGS_MODULE=config.settings.develop
