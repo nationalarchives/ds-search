@@ -1,9 +1,11 @@
-name: Deploy Docs
+name: Deploy docs
 
 on:
   push:
     branches:
       - main
+    paths:
+      - 'docs/**'
 
 permissions:
   contents: read
@@ -30,11 +32,9 @@ jobs:
         with:
           python-version: 3.12
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install mkdocs-material mkdocs-inline-select-svg-plugin linkcheckmd
       - name: Check links
-        run: |
-          pip install linkcheckmd
-          python -m linkcheckmd docs -v
+        run: python -m linkcheckmd docs -v
       - name: Build
         run: mkdocs build
       - name: Setup Pages
