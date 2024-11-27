@@ -16,7 +16,7 @@
         'headingSize': 'l',
         'id': 'search',
         'name': 'q',
-        'value': ''
+        'value': request.GET.get('q')
       }) }}
       <div class="tna-button-group tna-!--margin-top-xs">
         {{ tnaButton({
@@ -46,9 +46,9 @@
       'label': 'Search within results',
       'headingLevel': 2,
       'headingSize': 's',
-      'id': 'search_within',
+      'id': 'search-within',
       'name': 'search_within',
-      'value': '',
+      'value': request.GET.get('search_within'),
       'attributes': {
         'form': 'search-form'
       }
