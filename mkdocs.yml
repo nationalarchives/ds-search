@@ -1,6 +1,5 @@
 site_name: DS Search Docs
 repo_url: https://github.com/nationalarchives/ds-search
-dev_addr: 0.0.0.0:65532
 theme:
   name: material
   font: false
