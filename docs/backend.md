@@ -1,6 +1,8 @@
 # Backend development
 
-Specific guidance for working on backend tasks.
+## Template Variables
+
+Template variables availale from the views are listed [here](backend/template_variables.md).
 
 ## Backend resources
 

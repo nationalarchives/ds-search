@@ -1,6 +1,16 @@
 # TNA Python Django Search Application
 
-## Quickstart
+## Setting up a local build
+
+Local development is done in Docker.
+
+### Before starting a build for the first time
+
+```sh
+cp .env.example .env
+```
+
+`.env` hold sensitive values. Please ask on the `ds-etna-dev` slack channel to get those values.
 
 ### Build and start the container
 
@@ -44,24 +54,32 @@ docker compose exec dev format
 
 In addition to the [base Docker image variables](https://github.com/nationalarchives/docker/blob/main/docker/tna-python-django/README.md#environment-variables), this application has support for:
 
-| Variable                 | Purpose                                                   | Default                      |
-| ------------------------ | --------------------------------------------------------- | ---------------------------- |
-| `DJANGO_SETTINGS_MODULE` | The configuration to use                                  | `config.settings.production` |
-| `DEBUG`                  | If true, allow debugging                                  | `False`                      |
-| `COOKIE_DOMAIN`          | The domain to save cookie preferences against             | _none_                       |
-| `DATABASE_NAME`          | The name of the Postgres database                         | _none_                       |
-| `DATABASE_USER`          | The username needed to access the Postgres database       | _none_                       |
-| `DATABASE_PASSWORD`      | The password needed to access the Postgres database       | _none_                       |
-| `DATABASE_HOST`          | The Postgres database host                                | _none_                       |
-| `DATABASE_PORT`          | The Postgres database port                                | `5432`                       |
-| `CSP_IMG_SRC`            | A comma separated list of CSP rules for `img-src`         | `'self'`                     |
-| `CSP_SCRIPT_SRC`         | A comma separated list of CSP rules for `script-src`      | `'self'`                     |
-| `CSP_SCRIPT_SRC_ELEM`    | A comma separated list of CSP rules for `script-src-elem` | `'self'`                     |
-| `CSP_STYLE_SRC`          | A comma separated list of CSP rules for `style-src`       | `'self'`                     |
-| `CSP_STYLE_SRC_ELEM`     | A comma separated list of CSP rules for `style-src-elem`  | `'self'`                     |
-| `CSP_FONT_SRC`           | A comma separated list of CSP rules for `font-src`        | `'self'`                     |
-| `CSP_CONNECT_SRC`        | A comma separated list of CSP rules for `connect-src`     | `'self'`                     |
-| `CSP_MEDIA_SRC`          | A comma separated list of CSP rules for `media-src`       | `'self'`                     |
-| `CSP_WORKER_SRC`         | A comma separated list of CSP rules for `worker-src`      | `'self'`                     |
-| `CSP_FRAME_SRC`          | A comma separated list of CSP rules for `frame-src`       | `'self'`                     |
-| `GA4_ID`                 | The Google Analytics 4 ID                                 | _none_                       |
+| Variable                          | Purpose                                                   | Default                      |
+| --------------------------------- | --------------------------------------------------------- | ---------------------------- |
+| `DJANGO_SETTINGS_MODULE`          | The configuration to use                                  | `config.settings.production` |
+| `DEBUG`                           | If true, allow debugging                                  | `False`                      |
+| `COOKIE_DOMAIN`                   | The domain to save cookie preferences against             | _none_                       |
+| `DATABASE_NAME`                   | The name of the Postgres database                         | _none_                       |
+| `DATABASE_USER`                   | The username needed to access the Postgres database       | _none_                       |
+| `DATABASE_PASSWORD`               | The password needed to access the Postgres database       | _none_                       |
+| `DATABASE_HOST`                   | The Postgres database host                                | _none_                       |
+| `DATABASE_PORT`                   | The Postgres database port                                | `5432`                       |
+| `CSP_IMG_SRC`                     | A comma separated list of CSP rules for `img-src`         | `'self'`                     |
+| `CSP_SCRIPT_SRC`                  | A comma separated list of CSP rules for `script-src`      | `'self'`                     |
+| `CSP_SCRIPT_SRC_ELEM`             | A comma separated list of CSP rules for `script-src-elem` | `'self'`                     |
+| `CSP_STYLE_SRC`                   | A comma separated list of CSP rules for `style-src`       | `'self'`                     |
+| `CSP_STYLE_SRC_ELEM`              | A comma separated list of CSP rules for `style-src-elem`  | `'self'`                     |
+| `CSP_FONT_SRC`                    | A comma separated list of CSP rules for `font-src`        | `'self'`                     |
+| `CSP_CONNECT_SRC`                 | A comma separated list of CSP rules for `connect-src`     | `'self'`                     |
+| `CSP_MEDIA_SRC`                   | A comma separated list of CSP rules for `media-src`       | `'self'`                     |
+| `CSP_WORKER_SRC`                  | A comma separated list of CSP rules for `worker-src`      | `'self'`                     |
+| `CSP_FRAME_SRC`                   | A comma separated list of CSP rules for `frame-src`       | `'self'`                     |
+| `GA4_ID`                          | The Google Analytics 4 ID                                 | _none_                       |
+| `ROSETTA_API_VERIFY_CERTIFICATES` | Verify certificate for API                                | `True`                       |
+
+`.env` variables:
+
+| Variable                  | Purpose                    |
+| ------------------------- | -------------------------- |
+| `ROSETTA_CLIENT_BASE_URL` | Api used to query the data |
+| `ROSETTA_CLIENT_KEY`      | Api key to query the data  |
