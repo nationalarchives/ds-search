@@ -1,0 +1,47 @@
+@use "@nationalarchives/frontend/nationalarchives/variables/a11y" as
+  a11yVariables;
+@use "@nationalarchives/frontend/nationalarchives/tools/a11y";
+@use "@nationalarchives/frontend/nationalarchives/tools/colour";
+
+.search-result-list-item {
+  position: relative;
+
+  border-radius: 0.1px;
+
+  &:hover {
+    @include colour.colour-outline("keyline", 1px, solid);
+    outline-offset: a11yVariables.$focus-outline-width - 1px;
+  }
+
+  &:focus,
+  &:active {
+    outline: none;
+  }
+
+  .tna-heading-m a {
+    &::before {
+      content: "";
+
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+
+      border-radius: 0.1px;
+    }
+
+    &:focus-visible,
+    &:active {
+      outline: none;
+
+      &::before {
+        @include a11y.focus-outline;
+      }
+    }
+
+    &:active {
+      &::before {
+        @include a11y.active-outline;
+      }
+    }
+  }
+}
