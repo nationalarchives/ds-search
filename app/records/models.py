@@ -27,7 +27,7 @@ class Record(APIModel):
     def __str__(self):
         return f"{self.iaid}"
 
-    def get(self, key: str, default: Optional[Any] = NOT_PROVIDED):
+    def get(self, key: str, default: Optional[Any] = NOT_PROVIDED) -> Any:
         """
         Attempts to extract `key` from `self._raw` and return the value.
 
@@ -44,14 +44,12 @@ class Record(APIModel):
 
     @cached_property
     def template(self) -> Dict[str, Any]:
+        """Returns the api value of the attr if found, empty str otherwise."""
         return self.get("@template.details", default={})
 
     @cached_property
     def iaid(self) -> str:
-        """
-        Return the "iaid" value for this record. If the data is unavailable,
-        or is not a valid iaid, a blank string is returned.
-        """
+        """Returns the api value of the attr if found, empty str otherwise."""
         iaid = self.template.get("iaid", "")
 
         if re.match(IDConverter.regex, iaid):
