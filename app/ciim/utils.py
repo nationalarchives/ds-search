@@ -1,5 +1,8 @@
 from typing import Any, Dict, Optional
 
+from django.urls import NoReverseMatch, reverse
+from pyquery import PyQuery as pq
+
 
 class ValueExtractionError(Exception):
     pass
@@ -55,3 +58,17 @@ def extract(
         return default
 
     return current
+
+
+def format_link(link_html: str) -> Dict[str, str]:
+    """
+    Extracts iaid and text from a link HTML string, e.g. "<a href="C5789">DEFE 31</a>"
+    and returns as dict in the format: `{"id":"C5789", "href": "/catalogue/id/C5789/", "text":"DEFE 31"}
+    """
+    document = pq(link_html)
+    id = document.attr("href")
+    try:
+        href = reverse("details-page-machine-readable", kwargs={"id": id})
+    except NoReverseMatch:
+        href = ""
+    return {"id": id, "href": href, "text": document.text()}
