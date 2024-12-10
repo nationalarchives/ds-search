@@ -14,12 +14,12 @@ from .converters import IDConverter
 class Record(APIModel):
     """A 'lazy' data-interaction layer for record data retrieved from the Client API"""
 
-    def __init__(self, raw_data: Dict[str, Any]):
+    def __init__(self, raw_data: dict[str, Any]):
         """
         This method recieves the raw JSON data dict recieved from
         Client API and makes it available to the instance as `self._raw`.
         """
-        self._raw = raw_data.get("detail") or raw_data
+        self._raw = raw_data
 
     @classmethod
     def from_api_response(cls, response: dict) -> Record:
@@ -44,7 +44,7 @@ class Record(APIModel):
             return default
 
     @cached_property
-    def template(self) -> Dict[str, Any]:
+    def template(self) -> dict[str, Any]:
         """Returns the api value of the attr if found, empty str otherwise."""
         return self.get("@template.details", default={})
 
