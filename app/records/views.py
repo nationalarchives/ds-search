@@ -1,6 +1,6 @@
 from app.ciim.exceptions import DoesNotExist
 from app.records.api import records_client
-from django.shortcuts import Http404
+from django.http import Http404
 from django.template.response import TemplateResponse
 
 
