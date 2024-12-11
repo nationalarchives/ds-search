@@ -444,12 +444,16 @@ class RecordModelTests(SimpleTestCase):
     def test_copies_information(self):
         self.record = Record(self.source)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "copiesInformation"
-        ] = "Microform copies are available on open access in Microfilm Reading Room (MRR) as FO 605. They must be ordered by this reference"
+        self.record._raw["@template"]["details"]["copiesInformation"] = (
+            "Microform copies are available on open access in Microfilm "
+            "Reading Room (MRR) as FO 605. They must be ordered by this reference"
+        )
         self.assertEqual(
             self.record.copies_information,
-            "Microform copies are available on open access in Microfilm Reading Room (MRR) as FO 605. They must be ordered by this reference",
+            (
+                "Microform copies are available on open access in Microfilm "
+                "Reading Room (MRR) as FO 605. They must be ordered by this reference"
+            ),
         )
 
     def test_custodial_history(self):
@@ -510,12 +514,20 @@ class RecordModelTests(SimpleTestCase):
     def test_administrative_background(self):
         self.record = Record(self.source)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "administrativeBackground"
-        ] = "The Industrial Relations Department was set up as soon as the British Transport Commission began functioning and continued in existence until the end of the British Railway Board. In 1983 it was renamed Employee Relations Department."
+        self.record._raw["@template"]["details"]["administrativeBackground"] = (
+            "The Industrial Relations Department was set up as soon as the "
+            "British Transport Commission began functioning and continued in "
+            "existence until the end of the British Railway Board. In 1983 it "
+            "was renamed Employee Relations Department."
+        )
         self.assertEqual(
             self.record.administrative_background,
-            "The Industrial Relations Department was set up as soon as the British Transport Commission began functioning and continued in existence until the end of the British Railway Board. In 1983 it was renamed Employee Relations Department.",
+            (
+                "The Industrial Relations Department was set up as soon as the "
+                "British Transport Commission began functioning and continued in "
+                "existence until the end of the British Railway Board. In 1983 it "
+                "was renamed Employee Relations Department."
+            ),
         )
 
     def test_arrangement(self):
@@ -572,18 +584,28 @@ class RecordModelTests(SimpleTestCase):
         self.record = Record(self.source)
         # patch raw data
         self.record._raw["@template"]["details"]["description"] = (
-            """C16248: Online descriptions of individual records can be viewed on Discovery, see <a class=\"extref\" href=\"f41eb-1496-446c-8bf8-21dc681223da\">RM 2</a>."""
-            """"C16248: Also see the Royal Botanic Gardens, Kew <a class=\"extref\" href=\"https://www2.calmview.co.uk/kew/calmview/Record.aspx?src=CalmView.Catalog&amp;id=MN&amp;pos=1\">online catalogue</a>"""
+            """C16248: Online descriptions of individual records can be viewed """
+            """on Discovery, see <a class=\"extref\" """
+            """href=\"f41eb-1496-446c-8bf8-21dc681223da\">RM 2</a>."""
+            """"C16248: Also see the Royal Botanic Gardens, Kew """
+            """<a class=\"extref\" href=\"https://www2.calmview.co.uk/kew/calmview"""
+            """/Record.aspx?src=CalmView.Catalog&amp;id=MN&amp;pos=1\">online catalogue</a>"""
             """C244: <span class=\"emph-italic\">Censuses of Population</span>"""
-            """C244: <span class=\"list\"><span class=\"item\">Correspondence and papers</span></span>"""
+            """C244: <span class=\"list\"><span class=\"item\">Correspondence and """
+            """papers</span></span>"""
         )
         self.assertEqual(
             self.record.description,
             (
-                """C16248: Online descriptions of individual records can be viewed on Discovery, see <a class=\"extref\" href=\"f41eb-1496-446c-8bf8-21dc681223da\">RM 2</a>."""
-                """"C16248: Also see the Royal Botanic Gardens, Kew <a class=\"extref\" href=\"https://www2.calmview.co.uk/kew/calmview/Record.aspx?src=CalmView.Catalog&amp;id=MN&amp;pos=1\">online catalogue</a>"""
+                """C16248: Online descriptions of individual records can be viewed """
+                """on Discovery, see <a class=\"extref\" """
+                """href=\"f41eb-1496-446c-8bf8-21dc681223da\">RM 2</a>."""
+                """"C16248: Also see the Royal Botanic Gardens, Kew """
+                """<a class=\"extref\" href=\"https://www2.calmview.co.uk/kew/calmview"""
+                """/Record.aspx?src=CalmView.Catalog&amp;id=MN&amp;pos=1\">online catalogue</a>"""
                 """C244: <span class=\"emph-italic\">Censuses of Population</span>"""
-                """C244: <span class=\"list\"><span class=\"item\">Correspondence and papers</span></span>"""
+                """C244: <span class=\"list\"><span class=\"item\">Correspondence and """
+                """papers</span></span>"""
             ),
         )
 
