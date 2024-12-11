@@ -1,6 +1,7 @@
 from test.ciim.factories import create_record, create_response
 
 import responses
+from app.records.models import Record
 from django.conf import settings
 from django.test import TestCase
 
@@ -36,7 +37,9 @@ class TestRecordView(TestCase):
             f"{settings.CLIENT_BASE_URL}/get",
             json=create_response(
                 records=[
-                    create_record(iaid="C123456"),
+                    create_record(
+                        template_details={"iaid": "C123456", "source": "CAT"}
+                    ),
                 ]
             ),
         )
@@ -56,3 +59,7 @@ class TestRecordView(TestCase):
         self.assertEqual(
             response.context_data.get("page_title"), "Catalogue ID: C123456"
         )
+        self.assertIsInstance(response.context_data.get("record"), Record)
+
+        # record attribute
+        self.assertEqual(response.context_data.get("record").source, "CAT")
