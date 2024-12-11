@@ -16,7 +16,7 @@ def record_detail_view(request, id):
         # for any record
         record = records_client.get(id=id)
 
-        if record.custom_record_type != "CAT":
+        if record.custom_record_type and record.custom_record_type != "CAT":
             # raise error for any other types ex ARCHON, CREATORS
             # TODO: other types ex ARCHON, CREATORS, will have their own details page templates
             raise DoesNotExist
