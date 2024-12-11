@@ -1,7 +1,6 @@
 def create_record(
     template_details=None,
     iaid="C0000000",
-    source="CAT",
 ):
     """
     Return a sample response for a record.
@@ -9,7 +8,7 @@ def create_record(
     otherwise creates a record with iaid
     """
     if not template_details:
-        template_details = {"iaid": iaid, "source": source}
+        template_details = {"iaid": iaid}
 
     # a typical record
     record = {"@template": {"details": template_details}}
