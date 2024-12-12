@@ -12,6 +12,4 @@ class SearchTestCase(TestCase):
 
     def test_catalogue(self):
         rv = self.client.get("/search/catalogue/")
-        self.assertContains(
-            rv, '<h1 class="tna-heading-xl">Catalogue</h1>', status_code=200
-        )
+        self.assertContains(rv, "Catalogue search results", status_code=200)
