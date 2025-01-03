@@ -177,13 +177,13 @@ files = [
 
 [[package]]
 name = "django"
-version = "5.1.3"
+version = "5.1.4"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "Django-5.1.3-py3-none-any.whl", hash = "sha256:8b38a9a12da3ae00cb0ba72da985ec4b14de6345046b1e174b1fd7254398f818"},
-    {file = "Django-5.1.3.tar.gz", hash = "sha256:c0fa0e619c39325a169208caef234f90baa925227032ad3f44842ba14d75234a"},
+    {file = "Django-5.1.4-py3-none-any.whl", hash = "sha256:236e023f021f5ce7dee5779de7b286565fdea5f4ab86bae5338e3f7b69896cf0"},
+    {file = "Django-5.1.4.tar.gz", hash = "sha256:de450c09e91879fa5a307f696e57c851955c910a438a35e6b4c895e86bedc82a"},
 ]
 
 [package.dependencies]
@@ -477,13 +477,13 @@ files = [
 
 [[package]]
 name = "pytest"
-version = "8.3.3"
+version = "8.3.4"
 description = "pytest: simple powerful testing with Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pytest-8.3.3-py3-none-any.whl", hash = "sha256:a6853c7375b2663155079443d2e45de913a911a11d669df02a50814944db57b2"},
-    {file = "pytest-8.3.3.tar.gz", hash = "sha256:70b98107bd648308a7952b06e6ca9a50bc660be218d53c257cc1fc94fda10181"},
+    {file = "pytest-8.3.4-py3-none-any.whl", hash = "sha256:50e16d954148559c9a74109af1eaf0c945ba2d8f30f0a3d3335edde19788b6f6"},
+    {file = "pytest-8.3.4.tar.gz", hash = "sha256:965370d062bce11e73868e0335abac31b4d3de0e82f4007408d242b4f8610761"},
 ]
 
 [package.dependencies]
@@ -631,13 +631,13 @@ doc = ["sphinx"]
 
 [[package]]
 name = "tna-frontend-jinja"
-version = "0.2.14"
+version = "0.3.0"
 description = "TNA Frontend Jinja templates"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "tna_frontend_jinja-0.2.14-py3-none-any.whl", hash = "sha256:789916005e5dd2c40adbb78f6cc174555c236d637938b13e7dcca04e2ac05ce4"},
-    {file = "tna_frontend_jinja-0.2.14.tar.gz", hash = "sha256:e4e9007f231a7ecbe752b51f1d8e5256489db066f18fffc03c66279544a26cc0"},
+    {file = "tna_frontend_jinja-0.3.0-py3-none-any.whl", hash = "sha256:f2d3accff4c2afcc3a03c5702157ea631c519cd968ace9750184c1ecbc387785"},
+    {file = "tna_frontend_jinja-0.3.0.tar.gz", hash = "sha256:5ab42dffa8ef2462aac8024422993c914d37e417b4506ccd6cff10a07f8965cd"},
 ]
 
 [package.dependencies]
@@ -705,4 +705,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "5db3da77ce452dae85dba5f493108e6179d9ff33d357b8b1b0a0b484f4226b9b"
+content-hash = "2dff929c456f4cc2f97e4f90398a1f518305f35aef3ff2ba6b5743196930567b"
