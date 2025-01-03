@@ -300,8 +300,8 @@ class Record(APIModel):
         return self.template.get("publicationNote", [])
 
     @cached_property
-    def related_materials(self) -> Sequence[dict[str, Any]]:
-        """Returns transformed data which is a sequence of dict if found, empty sequence otherwise."""
+    def related_materials(self) -> tuple[dict[str, Any], ...]:
+        """Returns transformed data which is a tuple of dict if found, empty tuple otherwise."""
         return tuple(
             dict(
                 description=item.get("description", ""),
@@ -316,8 +316,8 @@ class Record(APIModel):
         return self.template.get("description", "")
 
     @cached_property
-    def separated_materials(self) -> Sequence[dict[str, Any]]:
-        """Returns transformed data which is a sequence of dict if found, empty sequence otherwise."""
+    def separated_materials(self) -> tuple[dict[str, Any], ...]:
+        """Returns transformed data which is a tuple of dict if found, empty tuple otherwise."""
         return tuple(
             dict(
                 description=item.get("description", ""),
