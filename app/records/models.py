@@ -332,8 +332,8 @@ class Record(APIModel):
         return self.template.get("unpublishedFindingAids", [])
 
     @cached_property
-    def hierarchy(self) -> Sequence[Record]:
-        """Returns sequence of records transformed from the values of the attr if found, empty sequence otherwise."""
+    def hierarchy(self) -> tuple[Record, ...]:
+        """Returns tuple of records transformed from the values of the attr if found, empty tuple otherwise."""
         return tuple(
             Record(item)
             for item in self.template.get("@hierarchy", ())
