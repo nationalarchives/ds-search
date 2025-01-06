@@ -1,1 +1,22 @@
 @use "@nationalarchives/frontend/nationalarchives/all";
+
+
+// secondary navigation
+
+.second-nav {
+    padding-bottom: 1em;
+    padding-left:0;
+
+    li{
+        display:inline;
+        margin-right:0.7em;
+        a {
+            text-decoration: none;
+            padding-bottom: 0.9em;
+        }
+        a:hover {
+            border-bottom:6px solid white;
+        }
+        
+    }
+}
