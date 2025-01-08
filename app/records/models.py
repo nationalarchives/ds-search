@@ -135,7 +135,7 @@ class Record(APIModel):
 
     @cached_property
     def creator(self) -> list[str]:
-        """Returns the api value of the attr if found, empty str otherwise."""
+        """Returns the api value of the attr if found, empty list otherwise."""
         return self.template.get("creator", [])
 
     @cached_property
