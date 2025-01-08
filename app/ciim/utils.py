@@ -71,4 +71,4 @@ def format_link(link_html: str) -> Dict[str, str]:
         href = reverse("details-page-machine-readable", kwargs={"id": id})
     except NoReverseMatch:
         href = ""
-    return {"id": id, "href": href, "text": document.text()}
+    return {"id": id or "", "href": href, "text": document.text()}
