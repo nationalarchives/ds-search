@@ -237,3 +237,25 @@ CLIENT_KEY = os.getenv("ROSETTA_CLIENT_KEY")
 CLIENT_VERIFY_CERTIFICATES = strtobool(
     os.getenv("ROSETTA_CLIENT_VERIFY_CERTIFICATES", "True")
 )
+
+# Delivery Options API Client
+DELIVERY_OPTIONS_CLIENT_BASE_URL = os.getenv(
+    "DELIVERY_OPTIONS_CLIENT_BASE_URL",
+    "http://discovery-services.live.local/DiscoveryDeliveryOptionsapi/api/DeliveryOptions",
+)
+
+# Delivery Options specific constants
+BASE_DISCOVERY_URL = os.getenv(
+    "BASE_DISCOVERY_URL", "https://discovery.nationalarchives.gov.uk"
+)
+BASE_TNA_URL = os.getenv("BASE_TNA_URL", "https://www.nationalarchives.gov.uk")
+MAX_BASKET_ITEMS = os.getenv("MAX_BASKET_ITEMS", "10")
+DELIVERY_OPTIONS_CONFIG = os.getenv(
+    "DELIVERY_OPTIONS_CONFIG", "/app/app/deliveryoptions/delivery_options.json"
+)
+ADVANCED_DOCUMENT_ORDER_EMAIL = os.getenv(
+    "ADVANCED_DOCUMENT_ORDER_EMAIL", "advanceddocumentorder@nationalarchives.gov.uk"
+)
+
+# List of distressing content warning prefixes
+DELIVERY_OPTIONS_DCS_LIST = os.getenv("DELIVERY_OPTIONS_DCS_LIST", "LEV")
