@@ -13,8 +13,14 @@ def catalogue_index(request):
     context = {"foo": "bar"}
     return HttpResponse(template.render(context, request))
 
-
+''' record details with id passed through
 def catalogue_item(request, id):
     template = loader.get_template("search/catalogue/item.html")
     context = {"id": id}
+    return HttpResponse(template.render(context, request))
+'''
+
+def catalogue_item(request):
+    template = loader.get_template("search/catalogue/item.html")
+    context = {"foo": "bar"}
     return HttpResponse(template.render(context, request))

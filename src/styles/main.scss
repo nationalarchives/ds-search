@@ -31,3 +31,13 @@
   margin-top: 1em;
   margin-bottom: 1em;
 }
+
+.tna-backlinks i {
+  margin-right: 10px;
+
+}
+
+.tna-backlinks li a::before {
+  display: none;
+
+}
