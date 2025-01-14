@@ -26,3 +26,9 @@ def catalogue_item(request):
     template = loader.get_template("search/catalogue/item.html")
     context = {"foo": "bar"}
     return HttpResponse(template.render(context, request))
+
+
+def catalogue_item_digitised(request):
+    template = loader.get_template("search/catalogue/item-digitised.html")
+    context = {"foo": "bar"}
+    return HttpResponse(template.render(context, request))
