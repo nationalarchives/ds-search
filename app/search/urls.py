@@ -8,6 +8,7 @@ urlpatterns = [
     path("catalogue/item.html", views.catalogue_item, name="item"),
     path("catalogue/item-no.html", views.catalogue_no, name="no"),
     path("catalogue/item-long.html", views.catalogue_long, name="no"),
+    path("catalogue/item-other.html", views.catalogue_other, name="no"),
     path(
         "catalogue/item-digitised.html",
         views.catalogue_item_digitised,
