@@ -33,6 +33,11 @@ def catalogue_no(request):
     context = {"foo": "bar"}
     return HttpResponse(template.render(context, request))
 
+def catalogue_long(request):
+    template = loader.get_template("search/catalogue/item-long.html")
+    context = {"foo": "bar"}
+    return HttpResponse(template.render(context, request))
+
 
 def catalogue_item_digitised(request):
     template = loader.get_template("search/catalogue/item-digitised.html")
