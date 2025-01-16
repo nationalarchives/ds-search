@@ -76,10 +76,19 @@ In addition to the [base Docker image variables](https://github.com/nationalarch
 | `CSP_FRAME_SRC`                   | A comma separated list of CSP rules for `frame-src`       | `'self'`                     |
 | `GA4_ID`                          | The Google Analytics 4 ID                                 | _none_                       |
 | `ROSETTA_API_VERIFY_CERTIFICATES` | Verify certificate for API                                | `True`                       |
+| `SENTRY_DEBUG_URL_ENABLED`        | For debugging sentry /sentry-debug/                       | `False`                      |
+| `SENTRY_ENVIRONMENT`              | Sets the environment                                      | _none_                       |
+| `SENTRY_SAMPLE_RATE`              | Configures the sample rate for error events,              | `0.5`                        |
+|                                   | in the range of 0.0 to 1.0                                |                              |
+| `SENTRY_SEND_USER_DATA`           | When set certain personally identifiable information      | `False`                      |
+|                                   | (PII) is added by active integrations                     |                              |
+
+See [Sentry's official guide](https://docs.sentry.io/platforms/python/guides/django/) for further information on configuring Sentry for Django projects.
 
 `.env` variables:
 
-| Variable                  | Purpose                    |
-| ------------------------- | -------------------------- |
-| `ROSETTA_CLIENT_BASE_URL` | Api used to query the data |
-| `ROSETTA_CLIENT_KEY`      | Api key to query the data  |
+| Variable                  | Purpose                                            |
+| ------------------------- | -------------------------------------------------- |
+| `ROSETTA_CLIENT_BASE_URL` | Api used to query the data                         |
+| `ROSETTA_CLIENT_KEY`      | Api key to query the data                          |
+| `SENTRY_DSN`              | The project-specific identifier provided by Sentry |
