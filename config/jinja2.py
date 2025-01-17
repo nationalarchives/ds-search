@@ -2,7 +2,7 @@ import json
 import re
 from datetime import datetime
 
-from app.records.template_tags.records_tags import as_label
+from app.records.template_tags.records_tags import record_field_label
 from django.conf import settings
 from django.templatetags.static import static
 from django.urls import reverse
@@ -54,5 +54,5 @@ def environment(**options):
         }
     )
     env.filters.update({"slugify": slugify})
-    env.filters.update({"as_label": as_label})
+    env.filters.update({"record_field_label": record_field_label})
     return env
