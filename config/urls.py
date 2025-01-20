@@ -26,7 +26,6 @@ from django.urls import include, path, register_converter
 
 register_converter(converters.IDConverter, "id")
 
-
 handler404 = "app.errors.views.custom_404_error_view"
 
 urlpatterns = [
@@ -48,7 +47,6 @@ urlpatterns = [
     ),
     path("admin/", admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
 
 if apps.is_installed("debug_toolbar"):
     urlpatterns = [
