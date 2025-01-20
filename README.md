@@ -76,8 +76,8 @@ In addition to the [base Docker image variables](https://github.com/nationalarch
 | `CSP_FRAME_SRC`                   | A comma separated list of CSP rules for `frame-src`       | `'self'`                                                    |
 | `GA4_ID`                          | The Google Analytics 4 ID                                 | _none_                                                      |
 | `ROSETTA_API_VERIFY_CERTIFICATES` | Verify certificate for API                                | `True`                                                      |
+| `ENVIRONMENT_NAME`                | The name of the environment (for reporting purposes)      | `production`                                                |
 | `SENTRY_DSN`                      | The ID of the Sentry client project to catch issues       | _none_                                                      |
-| `SENTRY_ENVIRONMENT`              | Sets the environment                                      | _none_                                                      |
 | `SENTRY_SAMPLE_RATE`              | How often to sample traces and profiles (0-1.0)           | production: `0.1`, staging: `0.25`, develop: `1`, test: `0` |
 | `SENTRY_SEND_USER_DATA`           | When set certain personally identifiable information      | `False`                                                     |
 |                                   | (PII) is added by active integrations                     |                                                             |

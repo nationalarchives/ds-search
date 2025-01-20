@@ -9,7 +9,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 if SENTRY_DSN := os.getenv("SENTRY_DSN", ""):
     sentry_sdk.init(
         dsn=SENTRY_DSN,
-        environment=os.getenv("SENTRY_ENVIRONMENT", ""),
+        environment=os.getenv("ENVIRONMENT_NAME", "production"),
         release=get_git_sha(),
         integrations=[DjangoIntegration()],
         # Set traces_sample_rate to 1.0 to capture 100%
