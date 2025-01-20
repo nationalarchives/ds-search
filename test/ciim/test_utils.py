@@ -1,6 +1,6 @@
 from datetime import date
 
-from app.ciim.utils import ValueExtractionError, extract
+from app.ciim.utils import ValueExtractionError, extract, format_link
 from django.test import SimpleTestCase
 
 TODAY = date.today()
@@ -93,3 +93,35 @@ class TestExtract(SimpleTestCase):
                     extract(self.test_data, key, default=default_value),
                     default_value,
                 )
+
+
+class TestFormatLink(SimpleTestCase):
+
+    def test_format_link(self):
+
+        test_data = (
+            (
+                "valid link",
+                '<a href="C5789">DEFE 31</a>',
+                {
+                    "id": "C5789",
+                    "href": "/catalogue/id/C5789/",
+                    "text": "DEFE 31",
+                },
+            ),
+            (
+                "invalid href",
+                '<a href="INVALID">some value</a>',
+                {"id": "INVALID", "href": "", "text": "some value"},
+            ),
+            (
+                "invalid link",
+                "some value",
+                {"id": "", "href": "", "text": "some value"},
+            ),
+        )
+
+        for label, value, expected in test_data:
+            with self.subTest(label):
+                result = format_link(value)
+                self.assertEqual(result, expected)
