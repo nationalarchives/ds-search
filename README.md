@@ -76,6 +76,7 @@ In addition to the [base Docker image variables](https://github.com/nationalarch
 | `CSP_FRAME_SRC`                   | A comma separated list of CSP rules for `frame-src`       | `'self'`                     |
 | `GA4_ID`                          | The Google Analytics 4 ID                                 | _none_                       |
 | `ROSETTA_API_VERIFY_CERTIFICATES` | Verify certificate for API                                | `True`                       |
+| `SENTRY_DSN`                      | The ID of the Sentry client project to catch issues       | _none_                       |
 | `SENTRY_ENVIRONMENT`              | Sets the environment                                      | _none_                       |
 | `SENTRY_SAMPLE_RATE`              | Configures the sample rate for error events,              | `0.5`                        |
 |                                   | in the range of 0.0 to 1.0                                |                              |
@@ -90,4 +91,3 @@ See [Sentry's official guide](https://docs.sentry.io/platforms/python/guides/dja
 | ------------------------- | -------------------------------------------------- |
 | `ROSETTA_CLIENT_BASE_URL` | Api used to query the data                         |
 | `ROSETTA_CLIENT_KEY`      | Api key to query the data                          |
-| `SENTRY_DSN`              | The project-specific identifier provided by Sentry |
