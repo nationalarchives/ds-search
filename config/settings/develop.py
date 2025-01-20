@@ -11,6 +11,13 @@ DEBUG = strtobool(os.getenv("DEBUG", "True"))
 
 FORCE_HTTPS = strtobool(os.getenv("FORCE_HTTPS", "False"))
 
+# sentry settings
+try:
+    SENTRY_SAMPLE_RATE = float(os.getenv("SENTRY_SAMPLE_RATE", "1.0"))
+    from .sentry import *
+except ImportError:
+    pass
+
 DJANGO_SERVE_STATIC = strtobool(os.getenv("DJANGO_SERVE_STATIC", "True"))
 
 if not DEBUG and DJANGO_SERVE_STATIC:

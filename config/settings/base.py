@@ -3,10 +3,7 @@ import os
 from pathlib import Path
 from sysconfig import get_path
 
-import sentry_sdk
 from config.util import strtobool
-from config.versioning import get_git_sha
-from sentry_sdk.integrations.django import DjangoIntegration
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -240,19 +237,3 @@ CLIENT_KEY = os.getenv("ROSETTA_CLIENT_KEY")
 CLIENT_VERIFY_CERTIFICATES = strtobool(
     os.getenv("ROSETTA_CLIENT_VERIFY_CERTIFICATES", "True")
 )
-
-
-if SENTRY_DSN := os.getenv("SENTRY_DSN", ""):
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        environment=os.getenv("SENTRY_ENVIRONMENT", ""),
-        release=get_git_sha(),
-        integrations=[DjangoIntegration()],
-        # Set traces_sample_rate to 1.0 to capture 100%
-        # of transactions for performance monitoring.
-        # We recommend adjusting this value in production.
-        traces_sample_rate=float(os.getenv("SENTRY_SAMPLE_RATE", "0.5")),
-        # If you wish to associate users to errors (assuming you are using
-        # django.contrib.auth) you may enable sending PII data.
-        send_default_pii=strtobool(os.getenv("SENTRY_SEND_USER_DATA", "False")),
-    )
