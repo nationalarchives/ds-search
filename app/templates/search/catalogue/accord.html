@@ -7,8 +7,28 @@
               </h3>
               <div class="tna-accordion__body" id="-content-1">
                 <div class="search-filters__form-block">
-                  <input type="text" name="filter_keyword" class="search-filters__search" id="id_filter_keyword">
-                  <input type="submit" value="Search" class="search-filters__submitleft tna-button">
+                  {{ tnaTextInput({
+                    'label': '',
+                    'headingLevel': 3,
+                    'headingSize': 's',
+                    'id': 'search-within',
+                    'name': 'search_within',
+                    'value': request.GET.get('search_within') or '',
+                    'attributes': {
+                      'form': 'search-form'
+                    }
+                  }) }}
+                  <div class="tna-button-group tna-!--margin-top-xs">
+                    {{ tnaButton({
+                      'text': 'Submit',
+                      'buttonElement': True,
+                      'buttonType': 'submit',
+                      'small': True,
+                      'attributes': {
+                        'form': 'search-form'
+                      }
+                    }) }}
+                  </div>
                 </div>
               </div>
             </div>
