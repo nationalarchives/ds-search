@@ -1,0 +1,133 @@
+{
+  "data": [
+    {
+      "@template": {
+        "details": {
+          "accessCondition": "Open on Transfer",
+          "arrangement": "<span class=\"wrapper\">This born digital record was arranged under the following file structure: <span class=\"ref\" target=\"1ec57aac-e02e-497e-bba8-150d6f392edb\">LITV 2</span>&gt;&gt; <span class=\"ref\" href=\"1ec57aac-e02e-497e-bba8-150d6f392edb\" target=\"986a6839-6ffd-463a-9c91-876c6037d41d\">Evidence_Records</span></span>",
+          "catalogueContext": [
+            "Records of the Inquiry into the death of Alexander Litvinenko on 23 November 2006:...",
+            "Records of the Inquest and Inquiry into the death of Alexander Litvinenko on 23 November..."
+          ],
+          "closureStatus": "Open Document, Open Description",
+          "dateCovering": "2015-07-31",
+          "deliveryOption": "No availability condition provisioned for this record",
+          "description": "Witness statement of Clive Timmons dated 11 February 2015",
+          "digitised": true,
+          "groupArray": [
+            {
+              "value": "record"
+            },
+            {
+              "value": "tna"
+            },
+            {
+              "value": "digitised"
+            }
+          ],
+          "heldBy": "The National Archives, Kew",
+          "heldById": "A13530124",
+          "@hierarchy": [
+            {
+              "@admin": {
+                "id": "C16676497",
+                "uid": "mongo-c16676497",
+                "uuid": "67ceef47-89a0-30ee-8143-d09b469748b4"
+              },
+              "@entity": "reference",
+              "identifier": [
+                {
+                  "__reference_number": "LITV",
+                  "primary": true,
+                  "type": "reference number",
+                  "value": "LITV"
+                }
+              ],
+              "level": {
+                "code": 1
+              },
+              "source": {
+                "value": "CAT"
+              },
+              "summary": {
+                "title": "Records of the Inquest and Inquiry into the death of Alexander Litvinenko on 23 November..."
+              }
+            },
+            {
+              "@admin": {
+                "id": "C16685569",
+                "uid": "mongo-c16685569",
+                "uuid": "1b9a5675-37d2-3374-9099-3b8796676505"
+              },
+              "@entity": "reference",
+              "identifier": [
+                {
+                  "__reference_number": "LITV 2",
+                  "primary": true,
+                  "type": "reference number",
+                  "value": "LITV 2"
+                }
+              ],
+              "level": {
+                "code": 3
+              },
+              "source": {
+                "value": "CAT"
+              },
+              "summary": {
+                "title": "Records of the Inquiry into the death of Alexander Litvinenko on 23 November 2006:..."
+              }
+            },
+            {
+              "@admin": {
+                "id": "00149557ca64456a8a41e44f14621801_1",
+                "uid": "mongo-00149557ca64456a8a41e44f14621801_1",
+                "uuid": "414a6581-f875-37cf-8064-348b2a35a18e"
+              },
+              "@entity": "reference",
+              "identifier": [
+                {
+                  "__reference_number": "LITV 2/D63/Z/1",
+                  "primary": true,
+                  "type": "reference number",
+                  "value": "LITV 2/D63/Z/1"
+                }
+              ],
+              "level": {
+                "code": 6
+              },
+              "source": {
+                "value": "CAT"
+              },
+              "summary": {
+                "title": "INQ019885.pdf"
+              }
+            }
+          ],
+          "iaid": "00149557ca64456a8a41e44f14621801_1",
+          "legalStatus": "Public Record",
+          "level": {
+            "code": 6,
+            "value": "Piece"
+          },
+          "physicalDescription": "1 digital record",
+          "primaryIdentifier": "00149557ca64456a8a41e44f14621801_1",
+          "recordOpening": "17 July 2018",
+          "referenceNumber": "LITV 2/D63/Z/1",
+          "relatedMaterials": [
+            {
+              "description": "This is a redacted record. To make a Freedom of Information request for the full record go to",
+              "links": [
+                "<a href=\"00149557ca64456a8a41e44f14621801\">LITV 2/D63/Z</a>"
+              ]
+            }
+          ],
+          "source": "CAT",
+          "summaryTitle": "INQ019885.pdf",
+          "title": "INQ019885.pdf",
+          "type": "record"
+        }
+      }
+    }
+  ]
+}
