@@ -17,4 +17,3 @@ nav:
       - "Index": "backend.md"
       - "Template variables": "backend/template_variables.md"
   - "Frontend development": "frontend.md"
-  - "Testing an environment": "testing-an-environment.md"

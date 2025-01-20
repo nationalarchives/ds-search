@@ -27,12 +27,6 @@ from django.urls import include, path, register_converter
 register_converter(converters.IDConverter, "id")
 
 
-# Used by /sentry-debug/
-def trigger_error(request):
-    # Raise a ZeroDivisionError
-    return 1 / 0
-
-
 handler404 = "app.errors.views.custom_404_error_view"
 
 urlpatterns = [
@@ -55,11 +49,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-if settings.SENTRY_DEBUG_URL_ENABLED:
-    # url is toggled via the SENTRY_DEBUG_URL_ENABLED .env var
-    urlpatterns = [
-        path("sentry-debug/", trigger_error),
-    ] + urlpatterns
 
 if apps.is_installed("debug_toolbar"):
     urlpatterns = [
