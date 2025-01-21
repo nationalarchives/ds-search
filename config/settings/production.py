@@ -9,5 +9,3 @@ CACHE_HEADER_DURATION = int(
 
 # TODO: This invalidates the CSP nonces
 CACHE_DEFAULT_TIMEOUT = int(os.environ.get("CACHE_DEFAULT_TIMEOUT", "300"))
-
-SENTRY_SAMPLE_RATE = float(os.getenv("SENTRY_SAMPLE_RATE", "0.1"))
