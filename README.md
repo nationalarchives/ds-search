@@ -79,7 +79,6 @@ In addition to the [base Docker image variables](https://github.com/nationalarch
 | `ENVIRONMENT_NAME`                | The name of the environment (for reporting purposes)      | `production`                                                |
 | `SENTRY_DSN`                      | The ID of the Sentry client project to catch issues       | _none_                                                      |
 | `SENTRY_SAMPLE_RATE`              | How often to sample traces and profiles (0-1.0)           | production: `0.1`, staging: `0.25`, develop: `1`, test: `0` |
-| `BUILD_VERSION`                   | Generated in the CI/CD process                            | _none_                                                      |
 
 See [Sentry's official guide](https://docs.sentry.io/platforms/python/guides/django/) for further information on configuring Sentry for Django projects.
 
