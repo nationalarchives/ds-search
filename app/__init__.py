@@ -6,11 +6,7 @@ if settings.SENTRY_DSN:
     sentry_sdk.init(
         dsn=settings.SENTRY_DSN,
         environment=settings.ENVIRONMENT_NAME,
-        release=(
-            f"ds-search@{settings.BUILD_VERSION}"
-            if settings.BUILD_VERSION
-            else ""
-        ),
+        release=settings.BUILD_VERSION,
         integrations=[DjangoIntegration()],
         sample_rate=settings.SENTRY_SAMPLE_RATE,
         traces_sample_rate=settings.SENTRY_SAMPLE_RATE,
