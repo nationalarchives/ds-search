@@ -252,3 +252,10 @@ LOGGING = {
         "level": "WARNING",
     },
 }
+
+SENTRY_DSN = os.getenv("SENTRY_DSN", "")
+ENVIRONMENT_NAME = os.getenv("ENVIRONMENT_NAME", "production")
+SENTRY_SAMPLE_RATE = float(os.getenv("SENTRY_SAMPLE_RATE", "0.1"))
+
+# Generated in the CI/CD process
+BUILD_VERSION = os.getenv("BUILD_VERSION", "")
