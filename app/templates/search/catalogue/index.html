@@ -8,6 +8,7 @@
 {% from 'components/text-input/macro.html' import tnaTextInput %}
 {% from "components/date-input/macro.html" import tnaDateInput %}
 {% from "components/checkboxes/macro.html" import tnaCheckboxes %}
+{% from "components/secondary-navigation/macro.html" import tnaSecondaryNavigation %}
 
 
 
@@ -45,17 +46,30 @@
           'small': True
         }) }}
       </div>
-      <ul class="tna-ul second-nav">
-        <li>
-          <a href="#">Records at The National Archives (24,521,292)</a>
-        </li>
-        <li>
-          <a href="#">Online records at The National Archives (9,041,961)</a>
-        </li>
-        <li>
-          <a href="#">Records at other UK archives (10,758,426)</a>
-        </li>
-      </ul>
+
+      <!--secondary navigation-->
+      {{ tnaSecondaryNavigation({
+        'title': "",
+        'headingLevel': 2,
+        'items': [
+          {
+            "name": "Records at The National Archives (24,521,292)",
+            "href": "#",
+            "current":"true"
+          },
+          {
+            "name": "Online records at The National Archives (9,041,961)",
+            "href": "#"
+            
+          },
+          {
+            "name": "Records at other UK archives (10,758,426)",
+            "href": "#"
+          },
+        ],
+        "noUnindentation": "true"
+      }) }}
+      <!--end secondary navigation-->
     </form>
   </div>
 </div>

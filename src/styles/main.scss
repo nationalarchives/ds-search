@@ -1,24 +1,7 @@
 @use "@nationalarchives/frontend/nationalarchives/all";
 
-.second-nav {
-  padding-bottom: 1em;
-  padding-left: 0;
-
-  li {
-    margin-right: 0.7em;
-
-    display: inline;
-
-    a {
-      padding-bottom: 0.9em;
-
-      text-decoration: none;
-    }
-
-    a:hover {
-      border-bottom: 10px solid white;
-    }
-  }
+.tna-secondary-navigation__items {
+  gap: 20px;
 }
 
 .search-filters__search {
