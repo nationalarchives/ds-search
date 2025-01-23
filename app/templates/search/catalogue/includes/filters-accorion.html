@@ -62,170 +62,149 @@
             </div>
             <!--collections-->
             
+            
             <div class="tna-accordion__item" data-isopen="true">
               <h3 class="tna-accordion__heading tna-heading-s">
                 Collections
               </h3>
               <div class="tna-accordion__body" id="-content-1">
-                <div class="tna-form__group">
-                  <fieldset class="tna-form__fieldset">
-                    
-                    <div class="tna-checkboxes" id="categories">
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
-                        <label for="categories-alpha" class="tna-checkboxes__item-label">
-                          ADM - Admiralty, Navy, Royal Marines, and Coastguard (2,391,494)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-beta" value="beta" name="categories">
-                        <label for="categories-beta" class="tna-checkboxes__item-label">
-                          AIR - Air Ministry and Royal Air Force records (713,881)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
-                        <label for="categories-gamma" class="tna-checkboxes__item-label">
-                          BT - Board of Trade and successors (2,539,478)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
-                        <label for="categories-alpha" class="tna-checkboxes__item-label">
-                          C - Chancery, the Wardrobe, Royal Household, Exchequer and various commissions (1,440,321)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
-                        <label for="categories-alpha" class="tna-checkboxes__item-label">
-                          E - Exchequer, Office of First Fruits and Tenths, and the Court of Augmentations (391,201)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
-                        <label for="categories-alpha" class="tna-checkboxes__item-label">
-                          FO - Foreign Office (685,022)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
-                        <label for="categories-alpha" class="tna-checkboxes__item-label">
-                          HO - Home Office (1,665,502)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
-                        <label for="categories-alpha" class="tna-checkboxes__item-label">
-                          IR - Boards of Stamps, Taxes, Excise, Stamps and Taxes, and Inland Revenue (371,749)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
-                        <label for="categories-alpha" class="tna-checkboxes__item-label">
-                          PROB - Prerogative Court of Canterbury (1,265,613)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
-                        <label for="categories-alpha" class="tna-checkboxes__item-label">
-                          WO - War Office, Armed Forces, Judge Advocate General, and related bodies (6,248,745)
-                        </label>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-              
+                <div class="search-filters__form-block">
+              {{ tnaCheckboxes({
+                'label': '',
+                'headingLevel': 4,
+                'headingSize': "m",
+                'id': "categories",
+                'name': "categories",
+                'items': [
+                  {
+                    'text': 'Admiralty, Navy, Royal Marines, and Coastguard',
+                    'value': 'ADM'
+                  },
+                  {
+                    'text': 'Air Ministry and Royal Air Force records',
+                    'value': 'AIR'
+                  },
+                  {
+                    'text': 'Board of Trade and successors',
+                    'value': 'BT'
+                  },
+                  {
+                    'text': 'Chancery, the Wardrobe, Royal Household, Exchequer and various commissions',
+                    'value': 'C'
+                  },
+                  {
+                    'text': 'Colonial Office, Commonwealth and Foreign and Commonwealth Offices',
+                    'value': 'CO'
+                  },
+                  {
+                    'text': 'Exchequer, Office of First Fruits and Tenths, and the Court of Augmentations',
+                    'value':'E'
+                  },
+                  {
+                    'text': 'Foreign Office',
+                    'value': 'FO'
+                  },
+                  {
+                    'text': 'Home Office',
+                    'value': 'HO'
+                  },
+                  {
+                    'text': 'Prerogative Court of Canterbury',
+                    'value': 'PROB'
+                  },
+                  {
+                    'text': 'War Office, Armed Forces, Judge Advocate General, and related bodies',
+                    'value': 'WO'
+                  }
+                ],
+                'small': 'true'
+              }) }}
+              </div>
               </div>
             </div>
-            <!--Levels--->
+
+
             <div class="tna-accordion__item" data-isopen="false">
               <h3 class="tna-accordion__heading tna-heading-s">
                 Levels
               </h3>
               <div class="tna-accordion__body" id="-content-1">
-                <div class="tna-form__group">
-                  <fieldset class="tna-form__fieldset">
-                    <div class="tna-checkboxes" id="categories">
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
-                        <label for="categories-alpha" class="tna-checkboxes__item-label">
-                          Division (1,212)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-beta" value="beta" name="categories">
-                        <label for="categories-beta" class="tna-checkboxes__item-label">
-                          Item (16,804,232)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
-                        <label for="categories-gamma" class="tna-checkboxes__item-label">
-                          Lettercode (433)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
-                        <label for="categories-gamma" class="tna-checkboxes__item-label">
-                          Piece (7,531,835)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
-                        <label for="categories-gamma" class="tna-checkboxes__item-label">
-                          Series (20,421)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
-                        <label for="categories-gamma" class="tna-checkboxes__item-label">
-                          Sub-series (68,616)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
-                        <label for="categories-gamma" class="tna-checkboxes__item-label">
-                          Sub-sub-series (58,540)
-                        </label>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-              
+                <div class="search-filters__form-block">
+              {{ tnaCheckboxes({
+                'label': '',
+                'headingLevel': 4,
+                'headingSize': "m",
+                'id': "categories",
+                'name': "categories",
+                'items': [
+                  {
+                    'text': ' Division (1,212)',
+                    'value': 'Division'
+                  },
+                  {
+                    'text': ' Item (16,804,232)',
+                    'value': 'Item'
+                  },
+                  {
+                    'text': ' Lettercode (433)',
+                    'value': 'Lettercode'
+                  },
+                  {
+                    'text': 'Piece (7,531,835)',
+                    'value': 'Piece'
+                  },
+                  {
+                    'text': 'Series (20,421)',
+                    'value': 'Series'
+                  },
+                  {
+                    'text': 'Sub-series (68,616)',
+                    'value':'Sub-series'
+                  },
+                  {
+                    'text': 'Sub-sub-series (58,540)',
+                    'value': 'ub-sub-series (58,540)'
+                  },
+                ],
+                'small': 'true'
+              }) }}
+              </div>
               </div>
             </div>
+
             <div class="tna-accordion__item" data-isopen="false">
               <h3 class="tna-accordion__heading tna-heading-s">
-                Closure status
+                Closure statusx
               </h3>
               <div class="tna-accordion__body" id="-content-1">
-                <div class="tna-form__group">
-                  <fieldset class="tna-form__fieldset">
-                    <div class="tna-checkboxes" id="categories">
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-alpha" value="alpha" name="categories">
-                        <label for="categories-alpha" class="tna-checkboxes__item-label">
-                          Closed Or Retained Document, Closed Description (25,386)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-beta" value="beta" name="categories">
-                        <label for="categories-beta" class="tna-checkboxes__item-label">
-                          Closed Or Retained Document, Open Description (376,449)
-                        </label>
-                      </div>
-                      <div class="tna-checkboxes__item">
-                        <input type="checkbox" id="categories-gamma" value="gamma" name="categories">
-                        <label for="categories-gamma" class="tna-checkboxes__item-label">
-                          Open Document, Open Description (23,919,391)
-                        </label>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-              
+                <div class="search-filters__form-block">
+              {{ tnaCheckboxes({
+                'label': '',
+                'headingLevel': 4,
+                'headingSize': "m",
+                'id': "categories",
+                'name': "categories",
+                'items': [
+                  {
+                    'text': ' Closed Or Retained Document, Closed Description (25,386)',
+                    'value': 'Closed'
+                  },
+                  {
+                    'text': ' Closed Or Retained Document, Open Description (376,449)',
+                    'value': 'Open description'
+                  },
+                  {
+                    'text': 'Open Document, Open Description (23,919,391)',
+                    'value': 'Open'
+                  },
+                ],
+                'small': 'true'
+              }) }}
+              </div>
               </div>
             </div>
+            
+            
             <!--opening dates-->
             <div class="tna-accordion__item" data-isopen="false">
               <h3 class="tna-accordion__heading tna-heading-s">
