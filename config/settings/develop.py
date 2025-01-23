@@ -22,9 +22,12 @@ if not DEBUG and DJANGO_SERVE_STATIC:
         }
     }
 
-
 if DEBUG:
 
+    # logging
+    LOGGING["root"]["level"] = "DEBUG"  # noqa: F405
+
+    # debug toolbar
     INSTALLED_APPS += [  # noqa: F405
         "debug_toolbar",
     ]
