@@ -237,3 +237,25 @@ CLIENT_KEY = os.getenv("ROSETTA_CLIENT_KEY")
 CLIENT_VERIFY_CERTIFICATES = strtobool(
     os.getenv("ROSETTA_CLIENT_VERIFY_CERTIFICATES", "True")
 )
+
+# logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
+}
+
+SENTRY_DSN = os.getenv("SENTRY_DSN", "")
+ENVIRONMENT_NAME = os.getenv("ENVIRONMENT_NAME", "production")
+SENTRY_SAMPLE_RATE = float(os.getenv("SENTRY_SAMPLE_RATE", "0.1"))
+
+# Generated in the CI/CD process
+BUILD_VERSION = os.getenv("BUILD_VERSION", "")

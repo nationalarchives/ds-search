@@ -1,3 +1,5 @@
+import logging
+
 from app.records.models import Record
 from django.test import SimpleTestCase
 
@@ -378,11 +380,26 @@ class RecordModelTests(SimpleTestCase):
         self.record._raw["@template"]["details"]["heldById"] = "A13530841"
         self.assertEqual(self.record.held_by_id, "A13530841")
 
-    def test_held_by_url(self):
+    def test_valid_held_by_url(self):
         self.record = Record(self.source)
         # patch raw data
         self.record._raw["@template"]["details"]["heldById"] = "A13530841"
         self.assertEqual(self.record.held_by_url, "/catalogue/id/A13530841/")
+
+    def test_invalid_data_for_held_by_url(self):
+
+        self.record = Record(self.source)
+        # patch raw data
+        self.record._raw["@template"]["details"]["iaid"] = "C12345"
+        self.record._raw["@template"]["details"]["heldById"] = "INVALID"
+
+        with self.assertLogs("app.records.models", level="WARNING") as lc:
+            result = self.record.held_by_url
+        self.assertEqual(self.record.held_by_url, result)
+        self.assertIn(
+            "WARNING:app.records.models:held_by_url:Record(C12345):No reverse match for details-page-machine-readable with held_by_id=INVALID",
+            lc.output,
+        )
 
     def test_access_condition(self):
         self.record = Record(self.source)
