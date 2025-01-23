@@ -1,14 +1,23 @@
 import json
+import os
 import re
-
 from enum import IntEnum
 from functools import cache
+from ipaddress import IPv4Address, IPv6Address, ip_address
 from typing import Any, Dict, List, Tuple, Union
 
+from app.deliveryoptions.reader_type import (
+    IP_ONSITE_RANGES,
+    IP_STAFFIN_RANGES,
+    get_client_ip,
+    is_ip_in_cidr,
+)
 from django.conf import settings
+from django.http import HttpRequest
 
 
 class Reader(IntEnum):
+    UNDEFINED = -1
     STAFFIN = 0
     ONSITEPUBLIC = 1
     SUBSCRIPTION = 2
@@ -148,7 +157,7 @@ def get_added_to_basket_text(record: dict, surrogate: List) -> str:
 
 
 def get_advanced_orders_email_address(record: dict, surrogate: List) -> str:
-    return "mailto:advanceddocumentorder@nationalarchives.gov.uk"
+    return settings.ADVANCED_DOCUMENT_ORDER_EMAIL
 
 
 def get_advance_order_information(record: dict, surrogate: List) -> str:
@@ -164,15 +173,18 @@ def get_archive_name(record: dict, surrogate: List) -> str:
 
 
 def get_basket_type(record: dict, surrogate: List) -> str:  # Unknown derivation
-    return "(EDEV-113)"
+    # Covered originally in ticket EDEV-113. Assumed to be 'Digital Downloads'
+    return "Digital Downloads"
 
 
 def get_basket_url(record: dict, surrogate: List) -> str:
-    return f"{settings.BASE_DISCOVERY_URL}/basket/"
+    return f"{settings.BASE_TNA_URL}/basket/"
 
 
-def get_browse_url(record: dict, surrogate: List) -> str:  # Unknown derivation
-    return "(EDEV-112)"
+def get_browse_url(record: dict, surrogate: List) -> str:
+    # This will be the browse URL for the hierarchy we are currently in.
+    # On Discovery, an example would be https://discovery.nationalarchives.gov.uk/browse/r/h/C325982
+    return f"{settings.BASE_TNA_URL}/browse/tbd/{record.iaid}/"
 
 
 def get_contact_form_url_mould(record: dict, surrogate: List) -> str:
@@ -188,7 +200,7 @@ def get_contact_form_url(record: dict, surrogate: List) -> str:
 
 
 def get_data_protection_act_url(record: dict, surrogate: List) -> str:
-    return f"{settings.BASE_DISCOVERY_URL}/Content/documents/county-durham-home-guard-service-record-subject-access-request-form.pdf"
+    return f"{settings.BASE_TNA_URL}/content/documents/county-durham-home-guard-service-record-subject-access-request-form.pdf"
 
 
 def get_dept_name(record: dict, surrogate: List) -> str:
@@ -206,7 +218,8 @@ def get_dept_url(record: dict, surrogate: List) -> str:
 
 
 def get_download_format(record: dict, surrogate: List) -> str:
-    return "(EDEV-108)"
+    # PDF or ZIP file - in Discovery, defined in discovery/RDWeb/Services/Mapper/DeliveryOptionsMapper.cs
+    return "(Unknown download format)"
 
 
 def get_download_text(record: dict, surrogate: List) -> str:
@@ -217,22 +230,25 @@ def get_download_url(record: dict, surrogate: List) -> str:
     return "details/download"
 
 
-def get_file_authority_type(record: dict, surrogate: List) -> str:  # Unknown derivation
-    return "(EDEV-111)"
+def get_file_authority_type(
+    record: dict, surrogate: List
+) -> (
+    str
+):  # Unknown derivation - EDEV-111. We don't think it is needed, so setting to blank
+    return " "
 
 
 def get_foi_url(record: dict, surrogate: List) -> str:
-    return (
-        f"{settings.BASE_DISCOVERY_URL}/foirequest?reference={record.reference_number}"
-    )
+    return f"{settings.BASE_TNA_URL}/foirequest?reference={record.reference_number}"
 
 
 def get_image_library_url(record: dict, surrogate: List) -> str:
-    return "https://images.nationalarchives.gov.uk/"
+    return settings.IMAGE_LIBRARY_URL
 
 
 def get_item_num_of_files_and_size_in_MB(record: dict, surrogate: List) -> str:
-    return "(EDEV-107)"
+    # On Discovery this is held in Mongo - no equivalent is yet available on Rosetta
+    return "(Unknown number of files and file size)"
 
 
 def get_keepers_gallery_url(record: dict, surrogate: List) -> str:
@@ -258,15 +274,17 @@ def get_opening_times_url(record: dict, surrogate: List) -> str:
 
 
 def get_order_url(record: dict, surrogate: List) -> str:
-    return "(EDEV-113)"
+    # On Discovery, this is related to cookie settings for a DORIS cookie.
+    return "Order URL not yet available"
 
 
 def get_paid_search_url(record: dict, surrogate: List) -> str:
-    return f"{settings.BASE_DISCOVERY_URL}/paidsearch/foirequest/{record.iaid}?type=foirequest"
+    return f"{settings.BASE_TNA_URL}/paidsearch/foirequest/{record.iaid}?type=foirequest"
 
 
 def get_price(record: dict, surrogate: List) -> str:
-    return "(EDEV-109)"
+    # EDEV-109
+    return "(Unknown price)"
 
 
 def get_readers_ticket_url(record: dict, surrogate: List) -> str:
@@ -274,11 +292,12 @@ def get_readers_ticket_url(record: dict, surrogate: List) -> str:
 
 
 def get_record_copying_url(record: dict, surrogate: List) -> str:
-    return f"{settings.BASE_DISCOVERY_URL}/pagecheck/start/{record.iaid}/"
+    return f"{settings.BASE_TNA_URL}/pagecheck/start/{record.iaid}/"
 
 
 def get_record_information_type(record: dict, surrogate: List) -> str:
-    return "(EDEV-110)"
+    # EDEV-110
+    return "(Unknown record information type)"
 
 
 def get_record_opening_date(record: dict, surrogate: List) -> str:
@@ -288,7 +307,8 @@ def get_record_opening_date(record: dict, surrogate: List) -> str:
 
 
 def get_record_url(record: dict, surrogate: List) -> str:
-    return f"{settings.BASE_DISCOVERY_URL}/details/r/{record.parent.iaid}/"
+    # Subject to change once ds-detail is fleshed out
+    return f"{settings.BASE_TNA_URL}/details/r/{record.iaid}/"
 
 
 def get_first_website_url(record: dict, surrogate: List) -> str:
@@ -349,7 +369,7 @@ def get_website_url_text(record: dict, surrogate: List) -> str:
 
 
 def get_your_order_link(record: dict, surrogate: List) -> str:
-    return "(EDEV-113)"
+    return "(Unknown order link)"
 
 
 # This dict links the embedded tags with a helper function that returns the
@@ -469,7 +489,9 @@ def html_builder(
             if not dcs and item["name"] == "descriptionDCS":
                 pass
             else:
-                html += html_replacer(item["value"], record_data, surrogate_data)
+                html += html_replacer(
+                    item["value"], record_data, surrogate_data
+                )
     else:
         html = html_replacer(delivery_option_data, record_data, surrogate_data)
 
@@ -506,11 +528,16 @@ def expandlink_builder(
 
 # Specific pre-processing for the description data
 def description_builder(
-    delivery_option_data: Union[List, str], record_data: Dict, surrogate_data: List
+    delivery_option_data: Union[List, str],
+    record_data: Dict,
+    surrogate_data: List,
 ) -> str:
     if distressing_content_match(record_data.reference_number):
         return html_builder(
-            delivery_option_data, record_data, surrogate_data=surrogate_data, dcs=True
+            delivery_option_data,
+            record_data,
+            surrogate_data=surrogate_data,
+            dcs=True,
         )
 
     return html_builder(
@@ -520,7 +547,9 @@ def description_builder(
 
 # Specific pre-processing for the supplemental data
 def supplemental_builder(
-    delivery_option_data: Union[List, str], record_data: Dict, surrogate_data: List
+    delivery_option_data: Union[List, str],
+    record_data: Dict,
+    surrogate_data: List,
 ) -> str:
     return html_builder(
         delivery_option_data, record_data, surrogate_data=surrogate_data
@@ -541,54 +570,92 @@ def surrogate_link_builder(surrogates: List) -> Tuple[List[Any], List[Any]]:
     av_media_list = []
 
     for s in surrogates:
-        surrogate_list.append(s["xReferenceURL"])
+        if s["xReferenceURL"]:
+            surrogate_list.append(s["xReferenceURL"])
 
         if s["xReferenceType"] == "AV_MEDIA":
-            av_media_list.append(s["xReferenceURL"])
+            if s["xReferenceURL"]:
+                av_media_list.append(s["xReferenceURL"])
 
     return surrogate_list, av_media_list
 
 
-""" The following four functions are used to determine the reader type. These are
-to be written under ticket EDEV-115 when enough is known about the mechanism """
-
-
-def is_onsite() -> bool:
+def is_dev(visitor_ip_address):
+    local_ips = ["127.0.0.1", "::1"]  # IPv4 and IPv6 loopback addresses
+    if visitor_ip_address in local_ips:
+        return True
     return False
+
+
+def is_onsite(visitor_ip_address) -> bool:
+    return is_ip_in_cidr(visitor_ip_address, IP_ONSITE_RANGES)
 
 
 def is_subscribed() -> bool:
+    # TODO once user management is in place
     return False
 
 
-def is_staff() -> bool:
-    return False
+def is_staff(visitor_ip_address) -> bool:
+    return is_ip_in_cidr(visitor_ip_address, IP_STAFFIN_RANGES)
 
 
-def get_reader_type() -> Reader:
-    # EDEV-115
-    # Code to determine status of reader (see enum Reader above).
-    reader = Reader.OFFSITE
+def get_dev_reader_type() -> Reader:
+    override_reader_type = os.getenv("OVERRIDE_READER_TYPE")
 
-    if is_subscribed():
-        reader = Reader.SUBSCRIPTION
-    elif is_onsite():
-        reader = Reader.ONSITEPUBLIC
-    elif is_staff():
-        reader = Reader.STAFFIN
+    # If environment variable is set, validate it
+    if override_reader_type is not None:
+        try:
+            # Convert the environment variable to an integer
+            reader_value = int(override_reader_type)
+
+            # Check if it's a valid Reader enum value
+            if reader_value in Reader._value2member_map_:
+                return Reader(
+                    reader_value
+                )  # Return the corresponding Reader enum value
+
+        except Exception as e:
+            pass
+
+    return Reader.UNDEFINED  # Default to UNDEFINED
+
+
+def get_reader_type(request: HttpRequest) -> Reader:
+    reader = Reader.UNDEFINED
+
+    try:
+        visitor_ip_address = get_client_ip(request)
+    except Exception as e:
+        return Reader.OFFSITE
+
+    if is_dev(
+        visitor_ip_address
+    ):  # purely to override for testing and demonstration purposes.
+        reader = get_dev_reader_type()
+
+    if reader == Reader.UNDEFINED:
+        if is_subscribed():
+            reader = Reader.SUBSCRIPTION
+        elif is_onsite(visitor_ip_address):
+            reader = Reader.ONSITEPUBLIC
+        elif is_staff(visitor_ip_address):
+            reader = Reader.STAFFIN
+        else:
+            reader = Reader.OFFSITE
 
     return reader
 
 
-""" End of EDEV-115 """
-
-
 # Main routine called from records.py
-def construct_delivery_options(doptions: list, record: dict) -> dict:
+def construct_delivery_options(
+    doptions: list, record: dict, request: HttpRequest
+) -> dict:
     do = {}
 
-    # EDEV-115
-    reader_type = get_reader_type()
+    reader_type = get_reader_type(request)
+
+    do["reader_type"] = reader_type
 
     do_dict = read_delivery_options(settings.DELIVERY_OPTIONS_CONFIG)
 
@@ -617,7 +684,9 @@ def construct_delivery_options(doptions: list, record: dict) -> dict:
         # any entry in the dept_details dictionary above. This shouldn't happen but it does. Therefore, reset the type
         # with that for AvailabilityCondition.ClosedRetainedDeptUnKnown
         if not get_dept(record.reference_number, "deptname"):
-            doptions[0]["options"] = AvailabilityCondition.ClosedRetainedDeptUnKnown
+            doptions[0][
+                "options"
+            ] = AvailabilityCondition.ClosedRetainedDeptUnKnown
 
     # Get the specific delivery option for this artefact
     delivery_option = get_record(do_dict, doptions[0]["options"])
@@ -636,13 +705,19 @@ def construct_delivery_options(doptions: list, record: dict) -> dict:
         do["do_heading"] = heading_builder(title, record, do["do_surrogate"])
 
     if text := reader_option.get("description"):
-        do["do_description"] = description_builder(text, record, do["do_surrogate"])
+        do["do_description"] = description_builder(
+            text, record, do["do_surrogate"]
+        )
 
     if supp := reader_option.get("supplementalcontent"):
-        do["do_supplemental"] = supplemental_builder(supp, record, do["do_surrogate"])
+        do["do_supplemental"] = supplemental_builder(
+            supp, record, do["do_surrogate"]
+        )
 
     if obutton := reader_option.get("orderbuttons"):
-        do["do_orderbuttons"] = orderbuttons_builder(obutton, record, do["do_surrogate"])
+        do["do_orderbuttons"] = orderbuttons_builder(
+            obutton, record, do["do_surrogate"]
+        )
 
     if expand := reader_option.get("expandlink"):
         do["do_expandlink"] = expandlink_builder(expand, record)

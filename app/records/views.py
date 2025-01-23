@@ -1,12 +1,13 @@
 from app.ciim.exceptions import DoesNotExist
-from app.records.api import records_client
-from django.http import Http404
-from django.template.response import TemplateResponse
 from app.deliveryoptions.delivery_options_api import get_delivery_option
 from app.deliveryoptions.utils import (
     AvailabilityCondition,
     construct_delivery_options,
+    get_reader_type,
 )
+from app.records.api import records_client
+from django.http import Http404
+from django.template.response import TemplateResponse
 
 
 def record_detail_view(request, id):
@@ -29,7 +30,7 @@ def record_detail_view(request, id):
         page_title = f"Catalogue ID: {record.iaid}"
     except DoesNotExist:
         raise Http404
-    
+
     context.update(
         page_type=page_type,
         page_title=page_title,
@@ -41,9 +42,9 @@ def record_detail_view(request, id):
 
     try:
         delivery_options = get_delivery_option(iaid=record.iaid)
-        
 
-        do_ctx = construct_delivery_options(delivery_options, record)
+        do_ctx = construct_delivery_options(delivery_options, record, request)
+
     except Exception as e:
         # Built in order exception option
         do_ctx = construct_delivery_options(
@@ -55,8 +56,8 @@ def record_detail_view(request, id):
                 }
             ],
             record,
+            request,
         )
-        do_ctx['do_exception'] = f"Unexpected {e=}, {type(e)=}"
 
     context.update(do_ctx)
 

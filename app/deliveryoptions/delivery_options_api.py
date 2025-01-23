@@ -1,11 +1,10 @@
-import json
+from typing import Optional
 from app.lib.api import BaseAPI
 from django.conf import settings
-from typing import Optional
-
 class DeliveryOptionsAPI(BaseAPI):
     def __init__(self):
         super().__init__(settings.DELIVERY_OPTIONS_CLIENT_BASE_URL)
+
 
 def get_delivery_option(iaid: Optional[str] = None):
     do_api = DeliveryOptionsAPI()
