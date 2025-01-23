@@ -26,3 +26,6 @@ DATABASES = {
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 CLIENT_BASE_URL = "https://rosetta.test/data"
+
+ENVIRONMENT_NAME = "test"
+SENTRY_SAMPLE_RATE = 0

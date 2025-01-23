@@ -11,6 +11,8 @@ DEBUG = strtobool(os.getenv("DEBUG", "True"))
 
 FORCE_HTTPS = strtobool(os.getenv("FORCE_HTTPS", "False"))
 
+SENTRY_SAMPLE_RATE = float(os.getenv("SENTRY_SAMPLE_RATE", "1.0"))
+
 DJANGO_SERVE_STATIC = strtobool(os.getenv("DJANGO_SERVE_STATIC", "True"))
 
 if not DEBUG and DJANGO_SERVE_STATIC:
@@ -20,9 +22,12 @@ if not DEBUG and DJANGO_SERVE_STATIC:
         }
     }
 
-
 if DEBUG:
 
+    # logging
+    LOGGING["root"]["level"] = "DEBUG"  # noqa: F405
+
+    # debug toolbar
     INSTALLED_APPS += [  # noqa: F405
         "debug_toolbar",
     ]
