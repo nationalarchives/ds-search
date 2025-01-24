@@ -1,1 +1,25 @@
 @use "@nationalarchives/frontend/nationalarchives/all";
+
+.tna-secondary-navigation__items {
+  gap: 20px;
+}
+
+.tna-form__legend {
+  margin-bottom: 0;
+}
+
+.tna-form__heading--m {
+  font-size: 1rem;
+  font-weight: 100;
+}
+
+.search-filters__search {
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+}
+
+.search-filters__search,
+.update-filters {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
