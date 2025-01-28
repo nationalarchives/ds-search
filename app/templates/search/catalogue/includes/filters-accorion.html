@@ -1,0 +1,253 @@
+<div class="tna-container">
+  <div class="tna-column tna-column--width-1-4 tna-column--width-1-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
+          <div class="tna-accordion" data-multiselectable="true" data-module="tna-accordion">
+            <div class="tna-accordion__item" data-isopen="true">
+              <h3 class="tna-accordion__heading tna-heading-s">
+                Search within results
+              </h3>
+              <div class="tna-accordion__body" id="-content-1">
+                <div class="search-filters__form-block">
+                  {{ tnaTextInput({
+                    'label': '',
+                    'headingLevel': 3,
+                    'headingSize': 's',
+                    'id': 'search-within',
+                    'name': 'search_within',
+                    'value': request.GET.get('search_within') or '',
+                    'attributes': {
+                      'form': 'search-form'
+                    }
+                  }) }}
+                  <div class="tna-button-group tna-!--margin-top-xs">
+                    {{ tnaButton({
+                      'text': 'Submit',
+                      'buttonElement': True,
+                      'buttonType': 'submit',
+                      'small': True,
+                      'attributes': {
+                        'form': 'search-form'
+                      }
+                    }) }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tna-accordion__item" data-isopen="true">
+              <h3 class="tna-accordion__heading tna-heading-s">
+                Dates
+              </h3>
+              <div class="tna-accordion__body" id="-content-1">
+                <div class="tna-form__group">
+                  <fieldset class="tna-form__fieldset">
+                    <legend class="tna-form__legend">
+                      For example, 27 3 2007 or 2007
+                    </legend>
+                      {{ tnaDateInput({
+                        "label": "From:",
+                        "headingLevel": 4,
+                        "headingSize": "m",
+                        "id": "date",
+                        "name": "date"
+                      }) }}
+                    {{ tnaDateInput({
+                      "label": "To:",
+                      "headingLevel": 4,
+                      "headingSize": "m",
+                      "id": "date",
+                      "name": "date"
+                    }) }}
+                  </fieldset>
+                </div>
+              </div>
+            </div>
+            <!--collections-->
+            <div class="tna-accordion__item" data-isopen="true">
+              <h3 class="tna-accordion__heading tna-heading-s">
+                Collections
+              </h3>
+              <div class="tna-accordion__body" id="-content-1">
+                <div class="search-filters__form-block">
+              {{ tnaCheckboxes({
+                'label': '',
+                'headingLevel': 4,
+                'headingSize': "m",
+                'id': "categories",
+                'name': "categories",
+                'items': [
+                  {
+                    'text': 'Admiralty, Navy, Royal Marines, and Coastguard',
+                    'value': 'ADM'
+                  },
+                  {
+                    'text': 'Air Ministry and Royal Air Force records',
+                    'value': 'AIR'
+                  },
+                  {
+                    'text': 'Board of Trade and successors',
+                    'value': 'BT'
+                  },
+                  {
+                    'text': 'Chancery, the Wardrobe, Royal Household, Exchequer and various commissions',
+                    'value': 'C'
+                  },
+                  {
+                    'text': 'Colonial Office, Commonwealth and Foreign and Commonwealth Offices',
+                    'value': 'CO'
+                  },
+                  {
+                    'text': 'Exchequer, Office of First Fruits and Tenths, and the Court of Augmentations',
+                    'value':'E'
+                  },
+                  {
+                    'text': 'Foreign Office',
+                    'value': 'FO'
+                  },
+                  {
+                    'text': 'Home Office',
+                    'value': 'HO'
+                  },
+                  {
+                    'text': 'Prerogative Court of Canterbury',
+                    'value': 'PROB'
+                  },
+                  {
+                    'text': 'War Office, Armed Forces, Judge Advocate General, and related bodies',
+                    'value': 'WO'
+                  }
+                ],
+                'small': 'true'
+              }) }}
+              </div>
+              </div>
+            </div>
+
+
+            <div class="tna-accordion__item" data-isopen="false">
+              <h3 class="tna-accordion__heading tna-heading-s">
+                Levels
+              </h3>
+              <div class="tna-accordion__body" id="-content-1">
+                <div class="search-filters__form-block">
+              {{ tnaCheckboxes({
+                'label': '',
+                'headingLevel': 4,
+                'headingSize': "m",
+                'id': "categories",
+                'name': "categories",
+                'items': [
+                  {
+                    'text': ' Division (1,212)',
+                    'value': 'Division'
+                  },
+                  {
+                    'text': ' Item (16,804,232)',
+                    'value': 'Item'
+                  },
+                  {
+                    'text': ' Lettercode (433)',
+                    'value': 'Lettercode'
+                  },
+                  {
+                    'text': 'Piece (7,531,835)',
+                    'value': 'Piece'
+                  },
+                  {
+                    'text': 'Series (20,421)',
+                    'value': 'Series'
+                  },
+                  {
+                    'text': 'Sub-series (68,616)',
+                    'value':'Sub-series'
+                  },
+                  {
+                    'text': 'Sub-sub-series (58,540)',
+                    'value': 'ub-sub-series (58,540)'
+                  },
+                ],
+                'small': 'true'
+              }) }}
+              </div>
+              </div>
+            </div>
+
+            <div class="tna-accordion__item" data-isopen="false">
+              <h3 class="tna-accordion__heading tna-heading-s">
+                Closure status
+              </h3>
+              <div class="tna-accordion__body" id="-content-1">
+                <div class="search-filters__form-block">
+              {{ tnaCheckboxes({
+                'label': '',
+                'headingLevel': 4,
+                'headingSize': "m",
+                'id': "categories",
+                'name': "categories",
+                'items': [
+                  {
+                    'text': ' Closed Or Retained Document, Closed Description (25,386)',
+                    'value': 'Closed'
+                  },
+                  {
+                    'text': ' Closed Or Retained Document, Open Description (376,449)',
+                    'value': 'Open description'
+                  },
+                  {
+                    'text': 'Open Document, Open Description (23,919,391)',
+                    'value': 'Open'
+                  },
+                ],
+                'small': 'true'
+              }) }}
+              </div>
+              </div>
+            </div>
+            
+            
+            <!--opening dates-->
+            <div class="tna-accordion__item" data-isopen="false">
+              <h3 class="tna-accordion__heading tna-heading-s">
+                Record opening dates
+              </h3>
+              <div class="tna-accordion__body" id="-content-1">
+                <div class="tna-form__group">
+                  <fieldset class="tna-form__fieldset">
+                    <legend class="tna-form__legend">
+                      For example, 27 3 2007 or 2007
+                    </legend>
+                      {{ tnaDateInput({
+                        "label": "From:",
+                        "headingLevel": 4,
+                        "headingSize": "m",
+                        "id": "date",
+                        "name": "date"
+                      }) }}
+                    {{ tnaDateInput({
+                      "label": "To:",
+                      "headingLevel": 4,
+                      "headingSize": "m",
+                      "id": "date",
+                      "name": "date"
+                    }) }}
+                  </fieldset>
+                </div>
+              
+              </div>
+                  <div class="tna-column tna-column--width-1-3">
+                    <div class="tna-button-group tna-!--margin-top-xs tna-!--margin-bottom-m">
+                      {{ tnaButton({
+                        'text': 'Update',
+                        'buttonElement': True,
+                        'buttonType': 'submit',
+                        'small': True,
+                        'attributes': {
+                          'form': 'search-form'
+                        }
+                      }) }}
+                    </div>
+                  </div>
+            </div> 
+          </div>
+        </div>
+
+
+        
