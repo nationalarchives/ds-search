@@ -24,6 +24,7 @@ services:
       - CSP_STYLE_SRC_ELEM='self',fonts.googleapis.com,p.typekit.net,use.typekit.net
       - CSP_FONT_SRC='self',fonts.gstatic.com,use.typekit.net
       - FEATURE_PHASE_BANNER=False
+      - OVERRIDE_READER_TYPE=1
     ports:
       - 65533:8080
     depends_on:

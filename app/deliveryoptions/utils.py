@@ -583,13 +583,6 @@ def surrogate_link_builder(surrogates: List) -> Tuple[List[Any], List[Any]]:
     return surrogate_list, av_media_list
 
 
-def is_dev(visitor_ip_address):
-    local_ips = ["127.0.0.1", "::1"]  # IPv4 and IPv6 loopback addresses
-    if visitor_ip_address in local_ips:
-        return True
-    return False
-
-
 def is_onsite(visitor_ip_address) -> bool:
     return is_ip_in_cidr(visitor_ip_address, IP_ONSITE_RANGES)
 
@@ -604,10 +597,10 @@ def is_staff(visitor_ip_address) -> bool:
 
 
 def get_dev_reader_type() -> Reader:
-    override_reader_type = os.getenv("OVERRIDE_READER_TYPE")
+    override_reader_type = os.getenv("OVERRIDE_READER_TYPE", Reader.UNDEFINED)
 
     # If environment variable is set, validate it
-    if override_reader_type is not None:
+    if override_reader_type != Reader.UNDEFINED:
         try:
             # Convert the environment variable to an integer
             reader_value = int(override_reader_type)
@@ -637,10 +630,8 @@ def get_reader_type(request: HttpRequest) -> Reader:
         )
         return Reader.OFFSITE
 
-    if is_dev(
-        visitor_ip_address
-    ):  # purely to override for testing and demonstration purposes.
-        reader = get_dev_reader_type()
+    # Check if there is an override of reader type - used for testing and demonstrations.
+    reader = get_dev_reader_type()
 
     if reader == Reader.UNDEFINED:
         if is_subscribed():
