@@ -1,3 +1,4 @@
+import logging
 import os
 import unittest
 from unittest.mock import Mock, patch
@@ -118,6 +119,16 @@ class TestIsDev(unittest.TestCase):
 
 
 class TestGetDevReaderType(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        logging.disable(logging.CRITICAL)
+
+    @classmethod
+    def tearDownClass(cls):
+        logging.disable(logging.NOTSET)
+        super().tearDownClass()
+
     @patch.dict(
         os.environ, {"OVERRIDE_READER_TYPE": "0"}
     )  # Mock environment variable to the minimum valid value

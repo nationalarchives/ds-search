@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import re
 from enum import IntEnum
@@ -14,6 +15,8 @@ from app.deliveryoptions.reader_type import (
 )
 from django.conf import settings
 from django.http import HttpRequest
+
+logger = logging.getLogger(__name__)
 
 
 class Reader(IntEnum):
@@ -616,7 +619,9 @@ def get_dev_reader_type() -> Reader:
                 )  # Return the corresponding Reader enum value
 
         except Exception as e:
-            pass
+            logger.warning(
+                f"Override reader type '{override_reader_type}' cannot be determined - returning UNDEFINED ({type(e)}: {e.args})"
+            )
 
     return Reader.UNDEFINED  # Default to UNDEFINED
 
@@ -627,6 +632,9 @@ def get_reader_type(request: HttpRequest) -> Reader:
     try:
         visitor_ip_address = get_client_ip(request)
     except Exception as e:
+        logger.warning(
+            f"Cannot determine the users ip address - returning OFFSITE ({type(e)}: {e.args})"
+        )
         return Reader.OFFSITE
 
     if is_dev(

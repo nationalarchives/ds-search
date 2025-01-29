@@ -109,19 +109,37 @@ class TestFormatLink(SimpleTestCase):
                     "text": "DEFE 31",
                 },
             ),
-            (
-                "invalid href",
-                '<a href="INVALID">some value</a>',
-                {"id": "INVALID", "href": "", "text": "some value"},
-            ),
-            (
-                "invalid link",
-                "some value",
-                {"id": "", "href": "", "text": "some value"},
-            ),
         )
 
         for label, value, expected in test_data:
             with self.subTest(label):
                 result = format_link(value)
                 self.assertEqual(result, expected)
+
+    def test_format_link_with_invalid_data(self):
+
+        test_data = (
+            (
+                "invalid id",
+                '<a href="INVALID">some value</a>',
+                (
+                    {"id": "INVALID", "href": "", "text": "some value"},
+                    "WARNING:app.ciim.utils:format_link:No reverse match for details-page-machine-readable with id=INVALID",
+                ),
+            ),
+            (
+                "missing id",
+                "some value",
+                (
+                    {"id": "", "href": "", "text": "some value"},
+                    "WARNING:app.ciim.utils:format_link:No reverse match for details-page-machine-readable with id=None",
+                ),
+            ),
+        )
+
+        for label, value, expected in test_data:
+            with self.subTest(label):
+                with self.assertLogs("app.ciim.utils", level="WARNING") as lc:
+                    result = format_link(value)
+                self.assertIn(expected[1], lc.output)
+                self.assertEqual(result, expected[0])

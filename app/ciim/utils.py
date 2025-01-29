@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict, Optional
 
 from django.urls import NoReverseMatch, reverse
@@ -7,6 +8,8 @@ from pyquery import PyQuery as pq
 class ValueExtractionError(Exception):
     pass
 
+
+logger = logging.getLogger(__name__)
 
 NOT_PROVIDED = "__np__"
 
@@ -60,10 +63,13 @@ def extract(
     return current
 
 
-def format_link(link_html: str) -> Dict[str, str]:
+def format_link(link_html: str, inc_msg: str = "") -> Dict[str, str]:
     """
     Extracts iaid and text from a link HTML string, e.g. "<a href="C5789">DEFE 31</a>"
     and returns as dict in the format: `{"id":"C5789", "href": "/catalogue/id/C5789/", "text":"DEFE 31"}
+
+    inc_msg includes message with logger if sepcified
+    Ex:inc_msg <method_name>:Record(<id):"
     """
     document = pq(link_html)
     id = document.attr("href")
@@ -71,4 +77,8 @@ def format_link(link_html: str) -> Dict[str, str]:
         href = reverse("details-page-machine-readable", kwargs={"id": id})
     except NoReverseMatch:
         href = ""
+        # warning for partially valid data
+        logger.warning(
+            f"{inc_msg}format_link:No reverse match for details-page-machine-readable with id={id}"
+        )
     return {"id": id or "", "href": href, "text": document.text()}

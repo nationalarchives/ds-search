@@ -13,22 +13,22 @@ class TestDeliveryOptionsJSON(unittest.TestCase):
             cls.data = json.load(f)
 
     def test_delivery_options_exist(self):
-        """Check if 'deliveryOptions' key exists in the JSON."""
+        # Check if 'deliveryOptions' key exists in the JSON.
         self.assertIn("deliveryOptions", self.data)
 
     def test_option_list_exists(self):
-        """Check if 'option' is a list inside 'deliveryOptions'."""
+        # Check if 'option' is a list inside 'deliveryOptions'.
         self.assertIn("option", self.data["deliveryOptions"])
         self.assertIsInstance(self.data["deliveryOptions"]["option"], list)
 
     def test_required_fields_in_option(self):
-        """Ensure each delivery option has required fields."""
+        # Ensure each delivery option has required fields.
         required_fields = {"deliveryoption", "offset", "readertype"}
         for option in self.data["deliveryOptions"]["option"]:
             self.assertTrue(required_fields.issubset(option.keys()))
 
     def test_readertype_structure(self):
-        """Check if 'readertype' is properly structured."""
+        # Check if 'readertype' is properly structured.
         for option in self.data["deliveryOptions"]["option"]:
             self.assertIn("readertype", option)
             self.assertIsInstance(option["readertype"], list)
@@ -47,7 +47,7 @@ class TestDeliveryOptionsJSON(unittest.TestCase):
                         self.assertIn("value", desc)
 
     def test_orderbuttons_format(self):
-        """Ensure that 'orderbuttons', if present, contain required fields."""
+        # Ensure that 'orderbuttons', if present, contain required fields.
         for option in self.data["deliveryOptions"]["option"]:
             offset = option["offset"]
 
@@ -64,7 +64,7 @@ class TestDeliveryOptionsJSON(unittest.TestCase):
                         self.assertIn("text", button)
 
     def test_readertype_list_length_and_values(self):
-        """Test that each 'readertype' list has exactly 4 items with expected reader values."""
+        # Test that each 'readertype' list has exactly 4 items with expected reader values.
         expected_readers = {
             "staffin",
             "onsitepublic",

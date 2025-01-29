@@ -1,13 +1,16 @@
+import logging
+
 from app.ciim.exceptions import DoesNotExist
 from app.deliveryoptions.delivery_options_api import get_delivery_option
 from app.deliveryoptions.utils import (
     AvailabilityCondition,
     construct_delivery_options,
-    get_reader_type,
 )
 from app.records.api import records_client
 from django.http import Http404
 from django.template.response import TemplateResponse
+
+logger = logging.getLogger(__name__)
 
 
 def record_detail_view(request, id):
@@ -47,6 +50,10 @@ def record_detail_view(request, id):
 
     except Exception as e:
         # Built in order exception option
+        logger.warning(
+            f"DORIS Connection error - returning OrderException from Availability Conditions {e.args}"
+        )
+
         do_ctx = construct_delivery_options(
             [
                 {

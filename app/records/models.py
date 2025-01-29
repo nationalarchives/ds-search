@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+import logging
 import re
-from collections.abc import Sequence
 from typing import Any, Optional
 
 from app.ciim.models import APIModel
@@ -15,6 +15,8 @@ from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
 
 from .converters import IDConverter
+
+logger = logging.getLogger(__name__)
 
 
 class Record(APIModel):
@@ -226,7 +228,10 @@ class Record(APIModel):
                     kwargs={"id": self.held_by_id},
                 )
             except NoReverseMatch:
-                pass
+                # warning for partially valid record
+                logger.warning(
+                    f"held_by_url:Record({self.iaid}):No reverse match for details-page-machine-readable with held_by_id={self.held_by_id}"
+                )
         return ""
 
     @cached_property
@@ -302,10 +307,13 @@ class Record(APIModel):
     @cached_property
     def related_materials(self) -> tuple[dict[str, Any], ...]:
         """Returns transformed data which is a tuple of dict if found, empty tuple otherwise."""
+        inc_msg = f"related_materials:Record({self.iaid}):"
         return tuple(
             dict(
                 description=item.get("description", ""),
-                links=list(format_link(val) for val in item.get("links", ())),
+                links=list(
+                    format_link(val, inc_msg) for val in item.get("links", ())
+                ),
             )
             for item in self.template.get("relatedMaterials", ())
         )
@@ -318,10 +326,13 @@ class Record(APIModel):
     @cached_property
     def separated_materials(self) -> tuple[dict[str, Any], ...]:
         """Returns transformed data which is a tuple of dict if found, empty tuple otherwise."""
+        inc_msg = f"separated_materials:Record({self.iaid}):"
         return tuple(
             dict(
                 description=item.get("description", ""),
-                links=list(format_link(val) for val in item.get("links", ())),
+                links=list(
+                    format_link(val, inc_msg) for val in item.get("links", ())
+                ),
             )
             for item in self.template.get("separatedMaterials", ())
         )
