@@ -84,7 +84,8 @@ See [Sentry's official guide](https://docs.sentry.io/platforms/python/guides/dja
 
 `.env` variables:
 
-| Variable                  | Purpose                    |
-| ------------------------- | -------------------------- |
-| `ROSETTA_CLIENT_BASE_URL` | Api used to query the data |
-| `ROSETTA_CLIENT_KEY`      | Api key to query the data  |
+| Variable                           | Purpose                    | Default in base.py |
+| ---------------------------------- | -------------------------- | ------------------ |
+| `ROSETTA_CLIENT_BASE_URL`          | Api used to query the data | No                 |
+| `ROSETTA_CLIENT_KEY`               | Api key to query the data  | No                 |
+| `DELIVERY_OPTIONS_CLIENT_BASE_URL` | Api for Delivery options   | Yes                |

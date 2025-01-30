@@ -12,7 +12,6 @@ from app.deliveryoptions.reader_type import (
 from app.deliveryoptions.utils import (
     Reader,
     get_dev_reader_type,
-    is_dev,
     is_onsite,
     is_staff,
 )
@@ -96,26 +95,6 @@ class TestVisitorTypeDetection(unittest.TestCase):
         ip_address = mock_get_client_ip.return_value = "2001:db8:4::1"
         self.assertFalse(is_onsite(ip_address))
         self.assertFalse(is_staff(ip_address))
-
-
-class TestIsDev(unittest.TestCase):
-    def test_local_ip_v4(self):
-        # Test with IPv4 loopback address
-        ip_address = "127.0.0.1"
-        result = is_dev(ip_address)
-        self.assertTrue(result)  # Should return True for local machine
-
-    def test_local_ip_v6(self):
-        # Test with IPv6 loopback address
-        ip_address = "::1"
-        result = is_dev(ip_address)
-        self.assertTrue(result)  # Should return True for local machine
-
-    def test_non_local_ip(self):
-        # Test with a non-local IP address
-        ip_address = "192.168.1.1"
-        result = is_dev(ip_address)
-        self.assertFalse(result)  # Should return False for non-local machine
 
 
 class TestGetDevReaderType(unittest.TestCase):
