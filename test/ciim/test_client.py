@@ -145,3 +145,26 @@ class ClientGetTest(SimpleTestCase):
             result.iaid,
             record_data["@template"]["details"]["iaid"],
         )
+
+    @responses.activate
+    def test_decode_json_response(self):
+
+        responses.add(
+            responses.GET,
+            f"{settings.CLIENT_BASE_URL}/get",
+            status=204,  # no content
+            body="",
+            content_type="application/json",
+        )
+
+        with self.assertLogs("app.ciim.client", level="WARNING") as lc:
+            with self.assertRaisesMessage(
+                Exception, "Expecting value: line 1 column 1 (char 0)"
+            ):
+                self.records_client.get()
+        self.assertIn(
+            "WARNING:app.ciim.client:"
+            "Expecting value: line 1 column 1 (char 0):"
+            "Response body:",
+            lc.output,
+        )

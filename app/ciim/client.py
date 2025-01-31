@@ -1,4 +1,5 @@
 import json
+import logging
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, Dict, Iterable, Optional, Tuple, Type
 
@@ -14,6 +15,8 @@ from .exceptions import (
     DoesNotExist,
     MultipleObjectsReturned,
 )
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from app.ciim.models import APIModel
@@ -118,7 +121,7 @@ class ClientAPI:
         response = self.make_request(f"{self.base_url}/get", params=params)
 
         # Convert the HTTP response to a Python dict
-        response_data = response.json()
+        response_data = self.decode_json_response(response)
 
         # Convert the Python dict to a ResultList
         result_list = self.resultlist_from_response(response_data)
@@ -151,6 +154,16 @@ class ClientAPI:
         response = self.session.get(url, params=params, timeout=self.timeout)
         self._raise_for_status(response)
         return response
+
+    def decode_json_response(self, response):
+        """Returns decoded JSON data using the built-in json decoder"""
+        try:
+            return response.json()
+        except ValueError as e:
+            # log exception value with response body
+            logger.warning(f"{str(e)}:Response body:{response.text}")
+            # suppress double exception raising, keeping original exception available
+            raise Exception(e) from None
 
     def _raise_for_status(self, response: requests.Response) -> None:
         """Raise custom error for any requests.HTTPError raised for a request.
