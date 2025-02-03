@@ -1,3 +1,4 @@
+import logging
 from test.ciim.factories import create_record, create_response
 from test.utils import prevent_request_warnings
 
@@ -34,6 +35,8 @@ class TestRecordView(TestCase):
 
     @responses.activate
     def test_record_rendered_for_single_result(self):
+        logging.getLogger().handlers.clear()
+        logging.disable(logging.CRITICAL)
 
         responses.add(
             responses.GET,
@@ -66,3 +69,5 @@ class TestRecordView(TestCase):
 
         # record attribute
         self.assertEqual(response.context_data.get("record").source, "CAT")
+
+        logging.disable(logging.NOTSET)
