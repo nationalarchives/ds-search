@@ -40,16 +40,16 @@ def format_link(link_html: str, inc_msg: str = "") -> Dict[str, str]:
     Ex:inc_msg <method_name>:Record(<id):"
     """
     document = pq(link_html)
-    id = document.attr("href")
+    iaid = document.attr("href")
     try:
-        href = reverse("details-page-machine-readable", kwargs={"id": id})
+        href = reverse("details-page-machine-readable", kwargs={"iaid": iaid})
     except NoReverseMatch:
         href = ""
         # warning for partially valid data
         logger.warning(
-            f"{inc_msg}format_link:No reverse match for details-page-machine-readable with id={id}"
+            f"{inc_msg}format_link:No reverse match for details-page-machine-readable with iaid={iaid}"
         )
-    return {"id": id or "", "href": href, "text": document.text()}
+    return {"id": iaid or "", "href": href, "text": document.text()}
 
 
 class Record(APIModel):
@@ -73,7 +73,7 @@ class Record(APIModel):
         """
         Attempts to extract `key` from `self._raw` and return the value.
         """
-        return objects.get(self._raw, key)
+        return objects.get(self._raw, key, default)
 
     @cached_property
     def template(self) -> dict[str, Any]:
@@ -86,18 +86,19 @@ class Record(APIModel):
         Return the "iaid" value for this record. If the data is unavailable,
         or is not a valid iaid, a blank string is returned.
         """
-        try:
-            candidate = self.template["iaid"]
-        except KeyError:
-            candidate = ""
+        candidate = self.get("@template.details.iaid", "")
 
-        # value from other places
-        identifiers = self.get("identifier")
-        for item in identifiers:
-            try:
-                candidate = item["iaid"]
-            except KeyError:
-                candidate = ""
+        if not candidate:
+            candidate = self.get("@template.details.primaryIdentifier", "")
+
+        if not candidate:
+            # value from other places
+            if identifiers := self.get("identifier", []):
+                for item in identifiers:
+                    try:
+                        candidate = item["iaid"]
+                    except KeyError:
+                        candidate = ""
 
         if candidate and re.match(IDConverter.regex, candidate):
             # value is not guaranteed to be a valid 'iaid', so we must
@@ -237,7 +238,7 @@ class Record(APIModel):
             try:
                 return reverse(
                     "details-page-machine-readable",
-                    kwargs={"id": self.held_by_id},
+                    kwargs={"iaid": self.held_by_id},
                 )
             except NoReverseMatch:
                 # warning for partially valid record

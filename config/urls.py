@@ -37,6 +37,10 @@ urlpatterns = [
         name="details-page-machine-readable",
     ),
     path(
+        r"catalogue/ref/<path:reference>/",
+        records_views.record_detail_by_reference,
+    ),
+    path(
         "search/",
         include(("app.search.urls", "search"), namespace="search"),
     ),

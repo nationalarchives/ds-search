@@ -7,6 +7,9 @@
   <div class="tna-container">
     <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
       <h1 class="tna-heading-xl">{{ record.title }}</h1>
+      {% if canonical %}
+      <p>Canonical: {{ canonical }}</p>
+      {% endif %}
       <dl class="tna-dl">
         <dt>{{ field_labels.closure_status }}</dt>
         <dd>{{ record.closure_status }}</dd>

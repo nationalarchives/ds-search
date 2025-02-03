@@ -14,7 +14,7 @@ def rosetta_request_handler(uri, params={}):
     return data
 
 
-def record_details(iaid, params={}):
+def record_details_by_iaid(iaid, params={}):
     uri = "get"
     params = params | {
         "id": iaid,
@@ -26,3 +26,8 @@ def record_details(iaid, params={}):
     if not record_data:
         raise ResourceNotFound(f"IAID {iaid} does not exist")
     return Record(record_data)
+
+
+def record_details_by_ref(reference, params={}):
+    # TODO
+    pass
