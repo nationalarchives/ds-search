@@ -2,21 +2,54 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Any, Optional
+from abc import ABC, abstractmethod
+from typing import Any, Dict, Optional
 
-from app.ciim.models import APIModel
-from app.ciim.utils import (
-    NOT_PROVIDED,
-    ValueExtractionError,
-    extract,
-    format_link,
-)
 from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
+from pydash import objects
+from pyquery import PyQuery as pq
 
 from .converters import IDConverter
 
 logger = logging.getLogger(__name__)
+
+
+NOT_PROVIDED = "__np__"
+
+
+class APIModel(ABC):
+    """Model representation of API data.."""
+
+    @classmethod
+    @abstractmethod
+    def from_api_response(cls, response: dict) -> APIModel:
+        """Transform a response From Client API into an APIModel instance.
+
+        To be implemented the concrete class.
+        """
+        raise NotImplementedError
+
+
+def format_link(link_html: str, inc_msg: str = "") -> Dict[str, str]:
+    """
+    Extracts iaid and text from a link HTML string, e.g. "<a href="C5789">DEFE 31</a>"
+    and returns as dict in the format: `{"id":"C5789", "href": "/catalogue/id/C5789/", "text":"DEFE 31"}
+
+    inc_msg includes message with logger if sepcified
+    Ex:inc_msg <method_name>:Record(<id):"
+    """
+    document = pq(link_html)
+    id = document.attr("href")
+    try:
+        href = reverse("details-page-machine-readable", kwargs={"id": id})
+    except NoReverseMatch:
+        href = ""
+        # warning for partially valid data
+        logger.warning(
+            f"{inc_msg}format_link:No reverse match for details-page-machine-readable with id={id}"
+        )
+    return {"id": id or "", "href": href, "text": document.text()}
 
 
 class Record(APIModel):
@@ -39,17 +72,8 @@ class Record(APIModel):
     def get(self, key: str, default: Optional[Any] = NOT_PROVIDED) -> Any:
         """
         Attempts to extract `key` from `self._raw` and return the value.
-
-        Raises `ciim.utils.ValueExtractionError` if the value cannot be extracted.
         """
-        if "." in key:
-            return extract(self._raw, key, default)
-        try:
-            return self._raw[key]
-        except KeyError as e:
-            if default is NOT_PROVIDED:
-                raise ValueExtractionError(str(e))
-            return default
+        return objects.get(self._raw, key)
 
     @cached_property
     def template(self) -> dict[str, Any]:
@@ -68,7 +92,7 @@ class Record(APIModel):
             candidate = ""
 
         # value from other places
-        identifiers = self.get("identifier", ())
+        identifiers = self.get("identifier")
         for item in identifiers:
             try:
                 candidate = item["iaid"]
@@ -103,7 +127,7 @@ class Record(APIModel):
             pass
 
         # value from other places
-        identifiers = self.get("identifier", ())
+        identifiers = self.get("identifier", "")
         for item in identifiers:
             try:
                 return item["reference_number"]
@@ -120,15 +144,9 @@ class Record(APIModel):
     @cached_property
     def summary_title(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        try:
-            return self.get("@template.details.summaryTitle")
-        except ValueExtractionError:
-            # value from other places
-            try:
-                return self.get("summary.title")
-            except ValueExtractionError:
-                pass
-        return ""
+        if details_summary_title := self.get("@template.details.summaryTitle"):
+            return details_summary_title
+        return self.get("summary.title", "")
 
     @cached_property
     def date_covering(self) -> str:
@@ -173,15 +191,9 @@ class Record(APIModel):
     @cached_property
     def level_code(self) -> int | None:
         """Returns the api value of the attr if found, None otherwise."""
-        try:
-            return self.get("@template.details.level.code")
-        except ValueExtractionError:
-            # check other places
-            try:
-                return self.get("level.code")
-            except ValueExtractionError:
-                pass
-        return None
+        if details_level_code := self.get("@template.details.level.code"):
+            return details_level_code
+        return self.get("level.code", "")
 
     @cached_property
     def map_designation(self) -> str:

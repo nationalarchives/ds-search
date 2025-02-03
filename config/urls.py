@@ -32,7 +32,7 @@ urlpatterns = [
     path("", include(("app.main.urls", "main"), namespace="main")),
     path("healthcheck/", include("app.healthcheck.urls")),
     path(
-        r"catalogue/id/<id:id>/",
+        r"catalogue/id/<id:iaid>/",
         records_views.record_detail_view,
         name="details-page-machine-readable",
     ),

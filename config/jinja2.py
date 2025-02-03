@@ -2,7 +2,6 @@ import json
 import re
 from datetime import datetime
 
-from app.records.template_tags.records_tags import record_field_label
 from django.conf import settings
 from django.templatetags.static import static
 from django.urls import reverse
@@ -21,6 +20,10 @@ def now_iso_8601():
     now = datetime.now()
     now_date = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     return now_date
+
+
+def dump_json(obj):
+    return json.dumps(obj, indent=2)
 
 
 def environment(**options):
@@ -54,5 +57,5 @@ def environment(**options):
         }
     )
     env.filters.update({"slugify": slugify})
-    env.filters.update({"record_field_label": record_field_label})
+    env.filters.update({"dump_json": dump_json})
     return env

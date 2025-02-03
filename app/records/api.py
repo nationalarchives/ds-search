@@ -1,13 +1,28 @@
-from app.ciim.client import ClientAPI
+from app.lib.api import JSONAPIClient, ResourceNotFound
+from app.records.models import Record
 from django.conf import settings
+from pydash import objects
 
 
-def get_records_client():
-    return ClientAPI(
-        base_url=settings.CLIENT_BASE_URL,
-        api_key=settings.CLIENT_KEY,
-        verify_certificates=settings.CLIENT_VERIFY_CERTIFICATES,
-    )
+def rosetta_request_handler(uri, params={}):
+    api_url = settings.ROSETTA_API_URL
+    if not api_url:
+        raise Exception("ROSETTA_API_URL not set")
+    client = JSONAPIClient(api_url)
+    client.add_parameters(params)
+    data = client.get(uri)
+    return data
 
 
-records_client = get_records_client()
+def record_details(iaid, params={}):
+    uri = "get"
+    params = params | {
+        "id": iaid,
+    }
+    results = rosetta_request_handler(uri, params)
+    if len(objects.get(results, "data", [])) > 1:
+        raise Exception(f"Multiple records returned for IAID {iaid}")
+    record_data = objects.get(results, "data[0]", [])
+    if not record_data:
+        raise ResourceNotFound(f"IAID {iaid} does not exist")
+    return Record(record_data)

@@ -1,12 +1,17 @@
 {% extends 'base.html' %}
 
-{%- set pageTitle = page_title -%}
+{%- set pageTitle = record.title -%}
 
 {% block content %}
 <div class="tna-section">
   <div class="tna-container">
     <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
-      <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
+      <h1 class="tna-heading-xl">{{ record.title }}</h1>
+      <dl class="tna-dl">
+        <dt>{{ field_labels.closure_status }}</dt>
+        <dd>{{ record.closure_status }}</dd>
+      </dl>
+      <pre class="tna-!--margin-top-xl">{{ record.template | dump_json }}</pre>
     </div>
   </div>
 </div>

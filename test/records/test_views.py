@@ -21,7 +21,7 @@ class TestRecordView(TestCase):
     def test_empty_results_responds_with_404(self):
         responses.add(
             responses.GET,
-            f"{settings.CLIENT_BASE_URL}/get",
+            f"{settings.ROSETTA_API_URL}/get",
             json=create_response(records=[]),
         )
 
@@ -37,7 +37,7 @@ class TestRecordView(TestCase):
 
         responses.add(
             responses.GET,
-            f"{settings.CLIENT_BASE_URL}/get",
+            f"{settings.ROSETTA_API_URL}/get",
             json=create_response(
                 records=[
                     create_record(
