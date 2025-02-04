@@ -20,9 +20,13 @@
       {% endif %}
 
       <ol class="tna-ol">
+        <li>
+          Held at:
+          <a href="{{ url('details-page-machine-readable', kwargs={'iaid': record.held_by_id}) }}">{{ record.held_by | safe }}</a>
+        </li>
         {% for item in record.hierarchy %}
         <li>
-          {{ level_labels[item._raw.level.code | string] or '???' }}<br>
+          {{ level_labels[item._raw.level.code | string] or '???' }}:
           <a href="{{ url('details-page-machine-readable', kwargs={'iaid': item._raw['@admin'].id}) }}">{{ item._raw.summary.title }}</a>
         </li>
         {% endfor %}
