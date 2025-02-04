@@ -6,15 +6,29 @@
 <div class="tna-section">
   <div class="tna-container">
     <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
-      <h1 class="tna-heading-xl">{{ record.title }}</h1>
+      <h1 class="tna-heading-xl">{{ record.title or '[No title]' }}</h1>
       {% if canonical %}
       <p>Canonical: {{ canonical }}</p>
       {% endif %}
+      {% set fields = [
+        'reference_number',
+        'closure_status',
+        'date_covering',
+        'description',
+        'held_by',
+        'legal_status',
+        'closure_status',
+        'dimensions',
+        'creator'
+      ] %}
       <dl class="tna-dl">
-        <dt>{{ field_labels.closure_status }}</dt>
-        <dd>{{ record.closure_status }}</dd>
+        {% for field in fields %}
+        {% if record[field] %}
+        <dt>{{ field_labels[field] }}</dt>
+        <dd>{{ record[field] | safe }}</dd>
+        {% endif %}
+        {% endfor %}
       </dl>
-      <pre class="tna-!--margin-top-xl">{{ record.template | dump_json }}</pre>
     </div>
   </div>
 </div>
