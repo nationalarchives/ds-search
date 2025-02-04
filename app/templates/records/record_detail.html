@@ -2,6 +2,11 @@
 
 {%- set pageTitle = (record.title or record.summary_title or '[No title]') | striptags -%}
 
+{% block stylesheets %}
+{{ super() }}
+    <link rel="stylesheet" href="{{ static('record-details.css') }}?v={{ app_config.BUILD_VERSION }}" media="screen,print">
+{% endblock %}
+
 {% block content %}
 <div class="tna-section">
   <div class="tna-container">
@@ -38,7 +43,9 @@
       <dl class="tna-dl">
         {% for field in fields %}
         {% if record[field] %}
-        <dt>{{ field_labels[field] }}</dt>
+        <dt>
+          <span class="record-details__label">{{ field_labels[field] }}</span>
+        </dt>
         <dd>
           {% if field == 'held_by' %}
           <a href="{{ url('details-page-machine-readable', kwargs={'iaid': record.held_by_id}) }}">{{ record[field] | safe }}</a>
