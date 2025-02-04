@@ -1,6 +1,6 @@
 from app.lib.api import ResourceNotFound
 from app.records.api import record_details_by_iaid, record_details_by_ref
-from app.records.field_labels import FIELD_LABELS
+from app.records.labels import FIELD_LABELS, LEVEL_LABELS
 from django.http import Http404, HttpResponseServerError
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -11,7 +11,7 @@ def record_detail_by_reference(request, reference):
     View for rendering a record's details page.
     """
     template_name = "records/record_detail.html"
-    context = {"field_labels": FIELD_LABELS}
+    context = {"field_labels": FIELD_LABELS, "level_labels": LEVEL_LABELS}
 
     try:
         # record = record_details_by_ref(iaid=reference)
@@ -43,7 +43,7 @@ def record_detail_view(request, iaid):
     View for rendering a record's details page.
     """
     template_name = "records/record_detail.html"
-    context = {"field_labels": FIELD_LABELS}
+    context = {"field_labels": FIELD_LABELS, "level_labels": LEVEL_LABELS}
 
     try:
         record = record_details_by_iaid(iaid=iaid)

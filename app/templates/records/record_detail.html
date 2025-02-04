@@ -6,10 +6,21 @@
 <div class="tna-section">
   <div class="tna-container">
     <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
-      <h1 class="tna-heading-xl">{{ record.title or '[No title]' }}</h1>
+      <h1 class="tna-heading-xl">{{ record.title or record.summary_title or '[No title]' }}</h1>
       {% if canonical %}
       <p>Canonical: {{ canonical }}</p>
       {% endif %}
+
+      <ol class="tna-ol">
+        {% for item in record.hierarchy %}
+        <li>
+          {{ level_labels[item._raw.level.code | string] or '???' }}<br>
+          <a href="{{ url('details-page-machine-readable', kwargs={'iaid': item._raw['@admin'].id}) }}">{{ item._raw.summary.title }}</a>
+        </li>
+        {% endfor %}
+      </ol>
+
+      <h2 class="tna-heading-l">Record details</h2>
       {% set fields = [
         'reference_number',
         'closure_status',

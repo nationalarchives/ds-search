@@ -41,3 +41,15 @@ FIELD_LABELS = {
     "related_records": "Related records",
     "related_articles": "Related content",
 }
+
+LEVEL_LABELS = {
+    "1": "",
+    "2": "Department",
+    "3": "Series",
+    "4": "Sub-series",
+    "5": "Sub-sub-series",
+    "6": "Piece",
+    "7": "",
+    "8": "",
+    "9": "",
+}
