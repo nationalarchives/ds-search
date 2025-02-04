@@ -30,26 +30,28 @@ class APIModel(ABC):
         """
         raise NotImplementedError
 
+    @classmethod
+    def format_link(self, link_html: str, inc_msg: str = "") -> Dict[str, str]:
+        """
+        Extracts iaid and text from a link HTML string, e.g. "<a href="C5789">DEFE 31</a>"
+        and returns as dict in the format: `{"id":"C5789", "href": "/catalogue/id/C5789/", "text":"DEFE 31"}
 
-def format_link(link_html: str, inc_msg: str = "") -> Dict[str, str]:
-    """
-    Extracts iaid and text from a link HTML string, e.g. "<a href="C5789">DEFE 31</a>"
-    and returns as dict in the format: `{"id":"C5789", "href": "/catalogue/id/C5789/", "text":"DEFE 31"}
-
-    inc_msg includes message with logger if sepcified
-    Ex:inc_msg <method_name>:Record(<id):"
-    """
-    document = pq(link_html)
-    iaid = document.attr("href")
-    try:
-        href = reverse("details-page-machine-readable", kwargs={"iaid": iaid})
-    except NoReverseMatch:
-        href = ""
-        # warning for partially valid data
-        logger.warning(
-            f"{inc_msg}format_link:No reverse match for details-page-machine-readable with iaid={iaid}"
-        )
-    return {"id": iaid or "", "href": href, "text": document.text()}
+        inc_msg includes message with logger if sepcified
+        Ex:inc_msg <method_name>:Record(<id):"
+        """
+        document = pq(link_html)
+        iaid = document.attr("href")
+        try:
+            href = reverse(
+                "details-page-machine-readable", kwargs={"iaid": iaid}
+            )
+        except NoReverseMatch:
+            href = ""
+            # warning for partially valid data
+            logger.warning(
+                f"{inc_msg}format_link:No reverse match for details-page-machine-readable with iaid={iaid}"
+            )
+        return {"id": iaid or "", "href": href, "text": document.text()}
 
 
 class Record(APIModel):
@@ -325,7 +327,8 @@ class Record(APIModel):
             dict(
                 description=item.get("description", ""),
                 links=list(
-                    format_link(val, inc_msg) for val in item.get("links", ())
+                    self.format_link(val, inc_msg)
+                    for val in item.get("links", ())
                 ),
             )
             for item in self.template.get("relatedMaterials", ())
@@ -344,7 +347,8 @@ class Record(APIModel):
             dict(
                 description=item.get("description", ""),
                 links=list(
-                    format_link(val, inc_msg) for val in item.get("links", ())
+                    self.format_link(val, inc_msg)
+                    for val in item.get("links", ())
                 ),
             )
             for item in self.template.get("separatedMaterials", ())

@@ -42,6 +42,13 @@
         <dd>
           {% if field == 'held_by' %}
           <a href="{{ url('details-page-machine-readable', kwargs={'iaid': record.held_by_id}) }}">{{ record[field] | safe }}</a>
+          {% elif field in ['creator'] %}
+          {# Show a list of items #}
+          <ul class="tna-ul">
+            {% for item in record[field] %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
           {% else %}
           {{ record[field] | safe }}
           {% endif %}
