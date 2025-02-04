@@ -7,6 +7,9 @@
   <div class="tna-container">
     <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
       <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
+
+      <p>{{ record.custom_record_type }}</p>
+
       {% if canonical %}
       <p>Canonical: {{ canonical }}</p>
       {% endif %}
@@ -36,7 +39,13 @@
         {% for field in fields %}
         {% if record[field] %}
         <dt>{{ field_labels[field] }}</dt>
-        <dd>{{ record[field] | safe }}</dd>
+        <dd>
+          {% if field == 'held_by' %}
+          <a href="{{ url('details-page-machine-readable', kwargs={'iaid': record.held_by_id}) }}">{{ record[field] | safe }}</a>
+          {% else %}
+          {{ record[field] | safe }}
+          {% endif %}
+        </dd>
         {% endif %}
         {% endfor %}
       </dl>

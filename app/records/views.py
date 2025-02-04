@@ -28,10 +28,11 @@ def record_detail_by_reference(request, reference):
         ),
     )
 
-    if record.custom_record_type and record.custom_record_type != "CAT":
-        # raise error for any other types ex ARCHON, CREATORS
-        # TODO: other types ex ARCHON, CREATORS, will have their own details page templates
-        raise Http404
+    if record.custom_record_type:
+        if record.custom_record_type == "ARCHON":
+            template_name = "records/archon_detail.html"
+        if record.custom_record_type == "CREATORS":
+            template_name = "records/creator_detail.html"
 
     return TemplateResponse(
         request=request, template=template_name, context=context
@@ -56,10 +57,11 @@ def record_detail_view(request, iaid):
         record=record,
     )
 
-    if record.custom_record_type and record.custom_record_type != "CAT":
-        # raise error for any other types ex ARCHON, CREATORS
-        # TODO: other types ex ARCHON, CREATORS, will have their own details page templates
-        raise Http404
+    if record.custom_record_type:
+        if record.custom_record_type == "ARCHON":
+            template_name = "records/archon_detail.html"
+        if record.custom_record_type == "CREATORS":
+            template_name = "records/creator_detail.html"
 
     return TemplateResponse(
         request=request, template=template_name, context=context
