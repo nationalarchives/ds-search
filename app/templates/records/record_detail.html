@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{%- set pageTitle = (record.title or record.summary_title or '[No title]') | striptags -%}
+{%- set pageTitle = (record.summary_title or '[No title]') | striptags -%}
 
 {% block stylesheets %}
 {{ super() }}
@@ -34,6 +34,7 @@
 
       <h2 class="tna-heading-l">Record details</h2>
       {% set fields = [
+        'title',
         'reference_number',
         'closure_status',
         'date_covering',
