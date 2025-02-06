@@ -7,15 +7,12 @@ from typing import Any, Dict, Optional
 
 from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
-from pydash import objects
 from pyquery import PyQuery as pq
 
 from .converters import IDConverter
 
 logger = logging.getLogger(__name__)
 
-
-NOT_PROVIDED = "__np__"
 
 
 class APIModel(ABC):
@@ -54,6 +51,55 @@ class APIModel(ABC):
         return {"id": iaid or "", "href": href, "text": document.text()}
 
 
+class ValueExtractionError(Exception):
+    pass
+
+
+def extract(
+    source: Dict[str, Any], key: str, default: Optional[Any] = None
+) -> Any:
+    """
+    Attempts to extract `key` (a string with multiple '.' to indicate
+    traversal) from `source` (a complex multi-level dict where values may
+    by lists or other complex types) and return the value.
+
+    If `default` is provided, that value will be returned if any issues
+    arise during the process. When no `default` is provied, a
+    `ValueExtractionError` is raised instead.
+    """
+    current = source
+    lookups = tuple(key.split("."))
+
+    try:
+        for bit in lookups:
+            # NOTE: we could use a series of nested try/excepts here instead,
+            # but using conditionals allows us to raise more relevant exceptions
+
+            # Only attempt key lookups for dicts
+            if isinstance(current, dict):
+                current = current[bit]
+                continue
+
+            # Only attempt index lookups for sequences, and only
+            # when the value looks like an index
+            if hasattr(current, "__getitem__"):
+                try:
+                    bit_index = int(bit)
+                except ValueError:
+                    pass
+                else:
+                    current = current[bit_index]  # do index lookup
+                    continue
+
+            # Always fall back to attribute lookup
+            current = getattr(current, bit)
+
+    except Exception:
+        return default
+
+    return current
+
+
 class Record(APIModel):
     """A 'lazy' data-interaction layer for record data retrieved from the Client API"""
 
@@ -71,16 +117,19 @@ class Record(APIModel):
     def __str__(self):
         return f"{self.summary_title} ({self.iaid})"
 
-    def get(self, key: str, default: Optional[Any] = NOT_PROVIDED) -> Any:
+    def get(self, key: str, default: Optional[Any] = "") -> Any:
         """
         Attempts to extract `key` from `self._raw` and return the value.
         """
-        return objects.get(self._raw, key, default)
-
-    @cached_property
-    def template(self) -> dict[str, Any]:
-        """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details", default={})
+        if "." in key:
+            try:
+                return extract(self._raw, key, default)
+            except ValueExtractionError:
+                return default or ""
+        try:
+            return self._raw[key]
+        except KeyError:
+            return default or ""
 
     @cached_property
     def iaid(self) -> str:
@@ -88,19 +137,18 @@ class Record(APIModel):
         Return the "iaid" value for this record. If the data is unavailable,
         or is not a valid iaid, a blank string is returned.
         """
-        candidate = self.get("@template.details.iaid", "")
+        try:
+            candidate = self.get("@template.details.iaid")
+        except KeyError:
+            candidate = ""
 
-        if not candidate:
-            candidate = self.get("@template.details.primaryIdentifier", "")
-
-        if not candidate:
-            # value from other places
-            if identifiers := self.get("identifier", []):
-                for item in identifiers:
-                    try:
-                        candidate = item["iaid"]
-                    except KeyError:
-                        candidate = ""
+        # value from other places
+        identifiers = self.get("@template.details.identifier", ())
+        for item in identifiers:
+            try:
+                candidate = item["iaid"]
+            except KeyError:
+                candidate = ""
 
         if candidate and re.match(IDConverter.regex, candidate):
             # value is not guaranteed to be a valid 'iaid', so we must
@@ -111,7 +159,7 @@ class Record(APIModel):
     @cached_property
     def source(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("source", "")
+        return self.get("@template.details.source", "")
 
     @cached_property
     def custom_record_type(self) -> str:
@@ -124,13 +172,11 @@ class Record(APIModel):
     @cached_property
     def reference_number(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        try:
-            return self.template["referenceNumber"]
-        except KeyError:
-            pass
+        if candidate := self.get("@template.details.referenceNumber", ""):
+            return candidate
 
         # value from other places
-        identifiers = self.get("identifier", "")
+        identifiers = self.get("@template.details.identifier", [])
         for item in identifiers:
             try:
                 return item["reference_number"]
@@ -142,49 +188,49 @@ class Record(APIModel):
     @cached_property
     def title(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("title", "")
+        return self.get("@template.details.title", "")
 
     @cached_property
     def summary_title(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
         if details_summary_title := self.get("@template.details.summaryTitle"):
             return details_summary_title
-        return self.get("summary.title", "")
+        return self.get("@template.details.summary.title", "")
 
     @cached_property
     def date_covering(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("dateCovering", "")
+        return self.get("@template.details.dateCovering", "")
 
     @cached_property
     def creator(self) -> list[str]:
         """Returns the api value of the attr if found, empty list otherwise."""
-        return self.template.get("creator", [])
+        return self.get("@template.details.creator", [])
 
     @cached_property
     def dimensions(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("dimensions", "")
+        return self.get("@template.details.dimensions", "")
 
     @cached_property
     def former_department_reference(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("formerDepartmentReference", "")
+        return self.get("@template.details.formerDepartmentReference", "")
 
     @cached_property
     def former_pro_reference(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("formerProReference", "")
+        return self.get("@template.details.formerProReference", "")
 
     @cached_property
     def language(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("language", "")
+        return self.get("@template.details.language", "")
 
     @cached_property
     def legal_status(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("legalStatus", "")
+        return self.get("@template.details.legalStatus", "")
 
     @cached_property
     def level(self) -> str:
@@ -196,42 +242,42 @@ class Record(APIModel):
         """Returns the api value of the attr if found, None otherwise."""
         if details_level_code := self.get("@template.details.level.code"):
             return details_level_code
-        return self.get("level.code", "")
+        return self.get("@template.details.level.code", "")
 
     @cached_property
     def map_designation(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("mapDesignation", "")
+        return self.get("@template.details.mapDesignation", "")
 
     @cached_property
     def map_scale(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("mapScale", "")
+        return self.get("@template.details.mapScale", "")
 
     @cached_property
     def note(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("note", "")
+        return self.get("@template.details.note", "")
 
     @cached_property
     def physical_condition(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("physicalCondition", "")
+        return self.get("@template.details.physicalCondition", "")
 
     @cached_property
     def physical_description(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("physicalDescription", "")
+        return self.get("@template.details.physicalDescription", "")
 
     @cached_property
     def held_by(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("heldBy", "")
+        return self.get("@template.details.heldBy", "")
 
     @cached_property
     def held_by_id(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("heldById", "")
+        return self.get("@template.details.heldById", "")
 
     @cached_property
     def held_by_url(self) -> str:
@@ -252,72 +298,72 @@ class Record(APIModel):
     @cached_property
     def access_condition(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("accessCondition", "")
+        return self.get("@template.details.accessCondition", "")
 
     @cached_property
     def closure_status(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("closureStatus", "")
+        return self.get("@template.details.closureStatus", "")
 
     @cached_property
     def record_opening(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("recordOpening", "")
+        return self.get("@template.details.recordOpening", "")
 
     @cached_property
     def accruals(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("accruals", "")
+        return self.get("@template.details.accruals", "")
 
     @cached_property
     def accumulation_dates(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("accumulationDates", "")
+        return self.get("@template.details.accumulationDates", "")
 
     @cached_property
     def appraisal_information(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("appraisalInformation", "")
+        return self.get("@template.details.appraisalInformation", "")
 
     @cached_property
     def copies_information(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("copiesInformation", "")
+        return self.get("@template.details.copiesInformation", "")
 
     @cached_property
     def custodial_history(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("custodialHistory", "")
+        return self.get("@template.details.custodialHistory", "")
 
     @cached_property
     def immediate_source_of_acquisition(self) -> list[str]:
         """Returns the api value of the attr if found, empty list otherwise."""
-        return self.template.get("immediateSourceOfAcquisition", [])
+        return self.get("@template.details.immediateSourceOfAcquisition", [])
 
     @cached_property
     def location_of_originals(self) -> list[str]:
         """Returns the api value of the attr if found, empty list otherwise."""
-        return self.template.get("locationOfOriginals", [])
+        return self.get("@template.details.locationOfOriginals", [])
 
     @cached_property
     def restrictions_on_use(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("restrictionsOnUse", "")
+        return self.get("@template.details.restrictionsOnUse", "")
 
     @cached_property
     def administrative_background(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("administrativeBackground", "")
+        return self.get("@template.details.administrativeBackground", "")
 
     @cached_property
     def arrangement(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("arrangement", "")
+        return self.get("@template.details.arrangement", "")
 
     @cached_property
     def publication_note(self) -> list[str]:
         """Returns the api value of the attr if found, empty list otherwise."""
-        return self.template.get("publicationNote", [])
+        return self.get("@template.details.publicationNote", [])
 
     @cached_property
     def related_materials(self) -> tuple[dict[str, Any], ...]:
@@ -331,13 +377,13 @@ class Record(APIModel):
                     for val in item.get("links", ())
                 ),
             )
-            for item in self.template.get("relatedMaterials", ())
+            for item in self.get("@template.details.relatedMaterials", ())
         )
 
     @cached_property
     def description(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.template.get("description", "")
+        return self.get("@template.details.description", "")
 
     @cached_property
     def separated_materials(self) -> tuple[dict[str, Any], ...]:
@@ -351,45 +397,45 @@ class Record(APIModel):
                     for val in item.get("links", ())
                 ),
             )
-            for item in self.template.get("separatedMaterials", ())
+            for item in self.get("@template.details.separatedMaterials", ())
         )
 
     @cached_property
     def unpublished_finding_aids(self) -> list[str]:
         """Returns the api value of the attr if found, empty list otherwise."""
-        return self.template.get("unpublishedFindingAids", [])
+        return self.get("@template.details.unpublishedFindingAids", [])
 
     @cached_property
     def hierarchy(self) -> tuple[Record, ...]:
         """Returns tuple of records transformed from the values of the attr if found, empty tuple otherwise."""
         return tuple(
-            Record(item)
-            for item in self.template.get("@hierarchy", ())
+            Record({"@template": {"details": item}})
+            for item in self.get("@template.details.@hierarchy", ())
             if item.get("identifier")
         )
 
     @cached_property
     def next(self) -> Record | None:
         """Returns a record transformed from the values of the attr if found, None otherwise."""
-        if next := self.template.get("@next", None):
-            return Record(next)
+        if next := self.get("@template.details.@next", None):
+            return Record({"@template": {"details": next}})
 
     @cached_property
     def previous(self) -> Record | None:
         """Returns a record transformed from the values of the attr if found, None otherwise."""
-        if previous := self.template.get("@previous", None):
-            return Record(previous)
+        if previous := self.get("@template.details.@previous", None):
+            return Record({"@template": {"details": previous}})
 
     @cached_property
     def parent(self) -> Record | None:
         """Returns a record transformed from the values of the attr if found, None otherwise."""
-        if parent := self.template.get("parent", None):
-            return Record(parent)
+        if parent := self.get("@template.details.parent", None):
+            return Record({"@template": {"details": parent}})
 
     @cached_property
     def is_tna(self) -> bool:
         """Returns True if record belongs to TNA, False otherwise."""
-        for item in self.template.get("groupArray", []):
+        for item in self.get("@template.details.groupArray", []):
             if item.get("value", "") == "tna":
                 return True
         return False
@@ -397,4 +443,4 @@ class Record(APIModel):
     @cached_property
     def is_digitised(self) -> bool:
         """Returns True if digitised, False otherwise."""
-        return self.template.get("digitised", False)
+        return self.get("@template.details.digitised", False)

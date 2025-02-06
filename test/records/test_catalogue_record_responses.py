@@ -1,7 +1,6 @@
 import json
 from copy import deepcopy
 
-from app.records.api import get_records_client
 from app.records.models import Record
 from django.conf import settings
 from django.test import SimpleTestCase
@@ -17,7 +16,6 @@ class CatalogueRecordResponseTests(SimpleTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.records_client = get_records_client()
 
     def test_response_C15836(self):
         fixture_path = (
