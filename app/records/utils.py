@@ -28,7 +28,7 @@ def format_link(link_html: str, inc_msg: str = "") -> Dict[str, str]:
     return {"id": iaid or "", "href": href, "text": document.text()}
 
 
-def extract(source: Dict[str, Any], key: str, default: Any) -> Any:
+def extract(source: Dict[str, Any], key: str, default: Any = None) -> Any:
     """
     Attempts to extract `key` (a string with multiple '.' to indicate
     traversal) from `source` (a complex multi-level dict where values may
