@@ -1,6 +1,6 @@
 import logging
 
-from app.records.models import Record
+from app.records.models import APIResponse, Record
 from django.test import SimpleTestCase
 
 
@@ -169,11 +169,7 @@ class RecordModelTests(SimpleTestCase):
         }
 
     def test_empty_for_optional_attributes(self):
-        self.record = Record(
-            {
-                "@template": {"details": {}},
-            }
-        )
+        self.record = Record({})
 
         self.assertEqual(self.record.iaid, "")
         self.assertEqual(self.record.source, "")
@@ -224,7 +220,8 @@ class RecordModelTests(SimpleTestCase):
         self.assertEqual(self.record.is_digitised, False)
 
     def test_properties(self):
-        self.record = Record(self.source)
+        response = APIResponse(self.source)
+        self.record = response.record
         self.assertEqual(self.record.iaid, "C123456")
         self.assertEqual(self.record.previous.iaid, "C10298")
         self.assertEqual(self.record.next.iaid, "C10296")
@@ -462,10 +459,11 @@ class RecordModelTests(SimpleTestCase):
         self.assertEqual(self.record.is_digitised, True)
 
     def test_invalid_data_for_held_by_url(self):
-        self.record = Record(self.source)
+        response = APIResponse(self.source)
+        self.record = response.record
         # patch raw data
-        self.record._raw["@template"]["details"]["iaid"] = "C12345"
-        self.record._raw["@template"]["details"]["heldById"] = "INVALID"
+        self.record._raw["iaid"] = "C12345"
+        self.record._raw["heldById"] = "INVALID"
 
         with self.assertLogs("app.records.models", level="WARNING") as lc:
             result = self.record.held_by_url

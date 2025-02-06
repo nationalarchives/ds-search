@@ -1,7 +1,7 @@
 import json
 from copy import deepcopy
 
-from app.records.models import Record
+from app.records.models import APIResponse
 from django.conf import settings
 from django.test import SimpleTestCase
 
@@ -24,7 +24,8 @@ class CatalogueRecordResponseTests(SimpleTestCase):
         with open(fixture_path, "r") as f:
             fixture_contents = json.loads(f.read())
 
-        self.record = Record(deepcopy(fixture_contents["data"][0]))
+        self.response = APIResponse(deepcopy(fixture_contents["data"][0]))
+        self.record = self.response.record
 
         self.assertEqual(self.record.iaid, "C15836")
         self.assertEqual(self.record.source, "CAT")
@@ -147,7 +148,8 @@ class CatalogueRecordResponseTests(SimpleTestCase):
         )
         with open(fixture_path, "r") as f:
             fixture_contents = json.loads(f.read())
-        self.record = Record(deepcopy(fixture_contents["data"][0]))
+        self.response = APIResponse(deepcopy(fixture_contents["data"][0]))
+        self.record = self.response.record
         self.assertEqual(self.record.iaid, "00149557ca64456a8a41e44f14621801_1")
         self.assertEqual(self.record.source, "CAT")
         self.assertEqual(self.record.custom_record_type, "CAT")

@@ -14,44 +14,25 @@ from .converters import IDConverter
 logger = logging.getLogger(__name__)
 
 
-class APIModel(ABC):
-    """Model representation of API data.."""
+def format_link(link_html: str, inc_msg: str = "") -> Dict[str, str]:
+    """
+    Extracts iaid and text from a link HTML string, e.g. "<a href="C5789">DEFE 31</a>"
+    and returns as dict in the format: `{"id":"C5789", "href": "/catalogue/id/C5789/", "text":"DEFE 31"}
 
-    @classmethod
-    @abstractmethod
-    def from_api_response(cls, response: dict) -> APIModel:
-        """Transform a response From Client API into an APIModel instance.
-
-        To be implemented the concrete class.
-        """
-        raise NotImplementedError
-
-    @classmethod
-    def format_link(self, link_html: str, inc_msg: str = "") -> Dict[str, str]:
-        """
-        Extracts iaid and text from a link HTML string, e.g. "<a href="C5789">DEFE 31</a>"
-        and returns as dict in the format: `{"id":"C5789", "href": "/catalogue/id/C5789/", "text":"DEFE 31"}
-
-        inc_msg includes message with logger if sepcified
-        Ex:inc_msg <method_name>:Record(<id):"
-        """
-        document = pq(link_html)
-        iaid = document.attr("href")
-        try:
-            href = reverse(
-                "details-page-machine-readable", kwargs={"iaid": iaid}
-            )
-        except NoReverseMatch:
-            href = ""
-            # warning for partially valid data
-            logger.warning(
-                f"{inc_msg}format_link:No reverse match for details-page-machine-readable with iaid={iaid}"
-            )
-        return {"id": iaid or "", "href": href, "text": document.text()}
-
-
-class ValueExtractionError(Exception):
-    pass
+    inc_msg includes message with logger if sepcified
+    Ex:inc_msg <method_name>:Record(<id):"
+    """
+    document = pq(link_html)
+    iaid = document.attr("href")
+    try:
+        href = reverse("details-page-machine-readable", kwargs={"iaid": iaid})
+    except NoReverseMatch:
+        href = ""
+        # warning for partially valid data
+        logger.warning(
+            f"{inc_msg}format_link:No reverse match for details-page-machine-readable with iaid={iaid}"
+        )
+    return {"id": iaid or "", "href": href, "text": document.text()}
 
 
 def extract(
@@ -99,24 +80,15 @@ def extract(
     return current
 
 
-class Record(APIModel):
-    """A 'lazy' data-interaction layer for record data retrieved from the Client API"""
+class ValueExtractionError(Exception):
+    pass
 
+
+class APIResponse:
     def __init__(self, raw_data: dict[str, Any]):
-        """
-        This method recieves the raw JSON data dict recieved from
-        Client API and makes it available to the instance as `self._raw`.
-        """
         self._raw = raw_data
 
-    @classmethod
-    def from_api_response(cls, response: dict) -> Record:
-        return cls(response)
-
-    def __str__(self):
-        return f"{self.summary_title} ({self.iaid})"
-
-    def get(self, key: str, default: Optional[Any] = "") -> Any:
+    def get(self, key: str, default: Optional[Any] = None) -> Any:
         """
         Attempts to extract `key` from `self._raw` and return the value.
         """
@@ -124,11 +96,37 @@ class Record(APIModel):
             try:
                 return extract(self._raw, key, default)
             except ValueExtractionError:
-                return default or ""
+                return default
         try:
             return self._raw[key]
         except KeyError:
-            return default or ""
+            return default
+
+    @cached_property
+    def record(self):
+        return Record(self.get("@template.details"))
+
+
+class Record:
+    def __init__(self, raw_data: dict[str, Any]):
+        self._raw = raw_data
+
+    def __str__(self):
+        return f"{self.summary_title} ({self.iaid})"
+
+    def get(self, key: str, default: Optional[Any] = None) -> Any:
+        """
+        Attempts to extract `key` from `self._raw` and return the value.
+        """
+        if "." in key:
+            try:
+                return extract(self._raw, key, default)
+            except ValueExtractionError:
+                return default
+        try:
+            return self._raw[key]
+        except KeyError:
+            return default
 
     @cached_property
     def iaid(self) -> str:
@@ -137,12 +135,12 @@ class Record(APIModel):
         or is not a valid iaid, a blank string is returned.
         """
         try:
-            candidate = self.get("@template.details.iaid")
+            candidate = self._raw["iaid"]
         except KeyError:
             candidate = ""
 
         # value from other places
-        identifiers = self.get("@template.details.identifier", ())
+        identifiers = self.get("identifier", ())
         for item in identifiers:
             try:
                 candidate = item["iaid"]
@@ -158,7 +156,7 @@ class Record(APIModel):
     @cached_property
     def source(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.source", "")
+        return self.get("source", "")
 
     @cached_property
     def custom_record_type(self) -> str:
@@ -171,11 +169,11 @@ class Record(APIModel):
     @cached_property
     def reference_number(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        if candidate := self.get("@template.details.referenceNumber", ""):
+        if candidate := self.get("referenceNumber", ""):
             return candidate
 
         # value from other places
-        identifiers = self.get("@template.details.identifier", [])
+        identifiers = self.get("identifier", [])
         for item in identifiers:
             try:
                 return item["reference_number"]
@@ -187,96 +185,96 @@ class Record(APIModel):
     @cached_property
     def title(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.title", "")
+        return self.get("title", "")
 
     @cached_property
     def summary_title(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        if details_summary_title := self.get("@template.details.summaryTitle"):
+        if details_summary_title := self.get("summaryTitle"):
             return details_summary_title
-        return self.get("@template.details.summary.title", "")
+        return self.get("summary.title", "")
 
     @cached_property
     def date_covering(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.dateCovering", "")
+        return self.get("dateCovering", "")
 
     @cached_property
     def creator(self) -> list[str]:
         """Returns the api value of the attr if found, empty list otherwise."""
-        return self.get("@template.details.creator", [])
+        return self.get("creator", [])
 
     @cached_property
     def dimensions(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.dimensions", "")
+        return self.get("dimensions", "")
 
     @cached_property
     def former_department_reference(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.formerDepartmentReference", "")
+        return self.get("formerDepartmentReference", "")
 
     @cached_property
     def former_pro_reference(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.formerProReference", "")
+        return self.get("formerProReference", "")
 
     @cached_property
     def language(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.language", "")
+        return self.get("language", "")
 
     @cached_property
     def legal_status(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.legalStatus", "")
+        return self.get("legalStatus", "")
 
     @cached_property
     def level(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.level.value", "")
+        return self.get("level.value", "")
 
     @cached_property
     def level_code(self) -> int | None:
         """Returns the api value of the attr if found, None otherwise."""
-        if details_level_code := self.get("@template.details.level.code"):
+        if details_level_code := self.get("level.code"):
             return details_level_code
-        return self.get("@template.details.level.code", "")
+        return self.get("level.code", "")
 
     @cached_property
     def map_designation(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.mapDesignation", "")
+        return self.get("mapDesignation", "")
 
     @cached_property
     def map_scale(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.mapScale", "")
+        return self.get("mapScale", "")
 
     @cached_property
     def note(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.note", "")
+        return self.get("note", "")
 
     @cached_property
     def physical_condition(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.physicalCondition", "")
+        return self.get("physicalCondition", "")
 
     @cached_property
     def physical_description(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.physicalDescription", "")
+        return self.get("physicalDescription", "")
 
     @cached_property
     def held_by(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.heldBy", "")
+        return self.get("heldBy", "")
 
     @cached_property
     def held_by_id(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.heldById", "")
+        return self.get("heldById", "")
 
     @cached_property
     def held_by_url(self) -> str:
@@ -297,72 +295,72 @@ class Record(APIModel):
     @cached_property
     def access_condition(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.accessCondition", "")
+        return self.get("accessCondition", "")
 
     @cached_property
     def closure_status(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.closureStatus", "")
+        return self.get("closureStatus", "")
 
     @cached_property
     def record_opening(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.recordOpening", "")
+        return self.get("recordOpening", "")
 
     @cached_property
     def accruals(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.accruals", "")
+        return self.get("accruals", "")
 
     @cached_property
     def accumulation_dates(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.accumulationDates", "")
+        return self.get("accumulationDates", "")
 
     @cached_property
     def appraisal_information(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.appraisalInformation", "")
+        return self.get("appraisalInformation", "")
 
     @cached_property
     def copies_information(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.copiesInformation", "")
+        return self.get("copiesInformation", "")
 
     @cached_property
     def custodial_history(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.custodialHistory", "")
+        return self.get("custodialHistory", "")
 
     @cached_property
     def immediate_source_of_acquisition(self) -> list[str]:
         """Returns the api value of the attr if found, empty list otherwise."""
-        return self.get("@template.details.immediateSourceOfAcquisition", [])
+        return self.get("immediateSourceOfAcquisition", [])
 
     @cached_property
     def location_of_originals(self) -> list[str]:
         """Returns the api value of the attr if found, empty list otherwise."""
-        return self.get("@template.details.locationOfOriginals", [])
+        return self.get("locationOfOriginals", [])
 
     @cached_property
     def restrictions_on_use(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.restrictionsOnUse", "")
+        return self.get("restrictionsOnUse", "")
 
     @cached_property
     def administrative_background(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.administrativeBackground", "")
+        return self.get("administrativeBackground", "")
 
     @cached_property
     def arrangement(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.arrangement", "")
+        return self.get("arrangement", "")
 
     @cached_property
     def publication_note(self) -> list[str]:
         """Returns the api value of the attr if found, empty list otherwise."""
-        return self.get("@template.details.publicationNote", [])
+        return self.get("publicationNote", [])
 
     @cached_property
     def related_materials(self) -> tuple[dict[str, Any], ...]:
@@ -372,17 +370,16 @@ class Record(APIModel):
             dict(
                 description=item.get("description", ""),
                 links=list(
-                    self.format_link(val, inc_msg)
-                    for val in item.get("links", ())
+                    format_link(val, inc_msg) for val in item.get("links", ())
                 ),
             )
-            for item in self.get("@template.details.relatedMaterials", ())
+            for item in self.get("relatedMaterials", ())
         )
 
     @cached_property
     def description(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("@template.details.description", "")
+        return self.get("description", "")
 
     @cached_property
     def separated_materials(self) -> tuple[dict[str, Any], ...]:
@@ -392,49 +389,48 @@ class Record(APIModel):
             dict(
                 description=item.get("description", ""),
                 links=list(
-                    self.format_link(val, inc_msg)
-                    for val in item.get("links", ())
+                    format_link(val, inc_msg) for val in item.get("links", ())
                 ),
             )
-            for item in self.get("@template.details.separatedMaterials", ())
+            for item in self.get("separatedMaterials", ())
         )
 
     @cached_property
     def unpublished_finding_aids(self) -> list[str]:
         """Returns the api value of the attr if found, empty list otherwise."""
-        return self.get("@template.details.unpublishedFindingAids", [])
+        return self.get("unpublishedFindingAids", [])
 
     @cached_property
     def hierarchy(self) -> tuple[Record, ...]:
         """Returns tuple of records transformed from the values of the attr if found, empty tuple otherwise."""
         return tuple(
-            Record({"@template": {"details": item}})
-            for item in self.get("@template.details.@hierarchy", ())
+            Record(item)
+            for item in self.get("@hierarchy", ())
             if item.get("identifier")
         )
 
     @cached_property
     def next(self) -> Record | None:
         """Returns a record transformed from the values of the attr if found, None otherwise."""
-        if next := self.get("@template.details.@next", None):
-            return Record({"@template": {"details": next}})
+        if next := self.get("@next", None):
+            return Record(next)
 
     @cached_property
     def previous(self) -> Record | None:
         """Returns a record transformed from the values of the attr if found, None otherwise."""
-        if previous := self.get("@template.details.@previous", None):
-            return Record({"@template": {"details": previous}})
+        if previous := self.get("@previous", None):
+            return Record(previous)
 
     @cached_property
     def parent(self) -> Record | None:
         """Returns a record transformed from the values of the attr if found, None otherwise."""
-        if parent := self.get("@template.details.parent", None):
-            return Record({"@template": {"details": parent}})
+        if parent := self.get("parent", None):
+            return Record(parent)
 
     @cached_property
     def is_tna(self) -> bool:
         """Returns True if record belongs to TNA, False otherwise."""
-        for item in self.get("@template.details.groupArray", []):
+        for item in self.get("groupArray", []):
             if item.get("value", "") == "tna":
                 return True
         return False
@@ -442,4 +438,4 @@ class Record(APIModel):
     @cached_property
     def is_digitised(self) -> bool:
         """Returns True if digitised, False otherwise."""
-        return self.get("@template.details.digitised", False)
+        return self.get("digitised", False)

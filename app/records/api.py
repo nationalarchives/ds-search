@@ -1,5 +1,5 @@
 from app.lib.api import JSONAPIClient, ResourceNotFound
-from app.records.models import Record
+from app.records.models import APIResponse
 from django.conf import settings
 
 
@@ -24,7 +24,8 @@ def record_details_by_iaid(iaid, params={}):
     if len(results["data"]) > 1:
         raise Exception(f"Multiple records returned for IAID {iaid}")
     if record_data := results["data"][0]:
-        return Record(record_data)
+        response = APIResponse(record_data)
+        return response.record
     raise ResourceNotFound(f"IAID {iaid} does not exist")
 
 
