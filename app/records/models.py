@@ -14,7 +14,6 @@ from .converters import IDConverter
 logger = logging.getLogger(__name__)
 
 
-
 class APIModel(ABC):
     """Model representation of API data.."""
 

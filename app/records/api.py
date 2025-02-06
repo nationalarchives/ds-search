@@ -1,7 +1,6 @@
 from app.lib.api import JSONAPIClient, ResourceNotFound
 from app.records.models import Record
 from django.conf import settings
-from pydash import objects
 
 
 def rosetta_request_handler(uri, params={}):
@@ -20,12 +19,13 @@ def record_details_by_iaid(iaid, params={}):
         "id": iaid,
     }
     results = rosetta_request_handler(uri, params)
-    if len(objects.get(results, "data", [])) > 1:
+    if "data" not in results:
+        raise Exception(f"No records returned for IAID {iaid}")
+    if len(results["data"]) > 1:
         raise Exception(f"Multiple records returned for IAID {iaid}")
-    record_data = objects.get(results, "data[0]", [])
-    if not record_data:
-        raise ResourceNotFound(f"IAID {iaid} does not exist")
-    return Record(record_data)
+    if record_data := results["data"][0]:
+        return Record(record_data)
+    raise ResourceNotFound(f"IAID {iaid} does not exist")
 
 
 def record_details_by_ref(reference, params={}):
