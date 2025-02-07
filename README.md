@@ -84,7 +84,6 @@ See [Sentry's official guide](https://docs.sentry.io/platforms/python/guides/dja
 
 `.env` variables:
 
-| Variable                  | Purpose                    |
-| ------------------------- | -------------------------- |
-| `ROSETTA_CLIENT_BASE_URL` | Api used to query the data |
-| `ROSETTA_CLIENT_KEY`      | Api key to query the data  |
+| Variable          | Purpose                                                          |
+| ----------------- | ---------------------------------------------------------------- |
+| `ROSETTA_API_URL` | The base API URL for Rosetta, including the `/rosetta/data` path |

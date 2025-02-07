@@ -25,7 +25,7 @@ DATABASES = {
 # See https://docs.djangoproject.com/en/5.0/ref/contrib/staticfiles/#staticfilesstorage
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
-CLIENT_BASE_URL = "https://rosetta.test/data"
+ROSETTA_API_URL = "https://rosetta.test/data"
 
 ENVIRONMENT_NAME = "test"
 SENTRY_SAMPLE_RATE = 0

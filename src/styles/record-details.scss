@@ -1,0 +1,8 @@
+@use "@nationalarchives/frontend/nationalarchives/tools/spacing";
+
+.record-details {
+  &__label {
+    position: sticky;
+    top: spacing.space(0.5);
+  }
+}

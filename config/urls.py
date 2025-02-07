@@ -32,10 +32,14 @@ urlpatterns = [
     path("", include(("app.main.urls", "main"), namespace="main")),
     path("healthcheck/", include("app.healthcheck.urls")),
     path(
-        r"catalogue/id/<id:id>/",
+        r"catalogue/id/<id:iaid>/",
         records_views.record_detail_view,
         name="details-page-machine-readable",
     ),
+    # path(
+    #     r"catalogue/ref/<path:reference>/",
+    #     records_views.record_detail_by_reference,
+    # ),
     path(
         "search/",
         include(("app.search.urls", "search"), namespace="search"),
