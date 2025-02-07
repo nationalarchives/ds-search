@@ -151,47 +151,49 @@
     <h2 class="tna-visually-hidden">Results</h2>
     {% if request.GET.get('display') == 'grid' %}
       <ul class="tna-container tna-container--nested">
-        {% for result in range(0, 12) %}
+        {% for record in results %}
           <li class="tna-column tna-column--width-1-2 tna-column--full-tiny tna-!--margin-top-l">
             {{ tnaCard({
-              'title': 'Result title',
+              'title': record.summary_title,
               'headingLevel': 3,
               'headingSize': 's',
               'href': '#',
               'meta': [
                 {
                   'title': 'Held by',
-                  'text': 'The National Archives, Kew'
+                  'text': record.held_by
                 },
                 {
                   'title': 'Date',
-                  'text': '24 September 1986'
+                  'text': record.date_covering
                 },
                 {
                   'title': 'Reference',
-                  'text': 'RAIL 529/131/553'
+                  'text': record.reference_number
                 }
               ],
-              'body': 'Stuff',
+              'body': record.description | safe,
               'fullAreaClick': True
             }) }}
           </li>
         {% endfor %}
       </ul>
     {% else %}
-      {% for result in range(0, 12) %}
+      {% for record in results %}
       <article class="search-result-list-item tna-!--margin-top-s">
         <h3 class="tna-heading-m">
-          <a href="#">Result title</a>
+          <a href="#">{{ record.summary_title }}</a>
         </h3>
-        <p>Stuff</p>
+        <div class="tna-!--margin-top-m">
+          {{ record.description | safe }}
+        </div>
         <dl class="tna-dl tna-dl--plain tna-!--margin-top-s">
-          <dt>Alpha</dt>
-          <dd>Lorem ipsum</dd>
-          <dt>Beta</dt>
-          <dd>Lorem ipsum</dd>
-          <dt>Gamma</dt>
-          <dd>Lorem ipsum</dd>
+          <dt>Held by</dt>
+          <dd>{{ record.held_by }}</dd>
+          <dt>Date</dt>
+          <dd>{{ record.date_covering }}</dd>
+          <dt>Reference</dt>
+          <dd>{{ record.reference_number }}</dd>
         </dl>
       </article>
       <hr class="tna-!--margin-top-s">
