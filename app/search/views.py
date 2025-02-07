@@ -12,7 +12,13 @@ def index(request):
 def catalogue_index(request):
     template = loader.get_template("search/catalogue/index.html")
     results = search_records(request.GET.get("q", ""))
-    context = {"results": results}
+    context = {
+        "results": results.records,
+        "stats": {
+            "total": results.stats_total,
+            "results": results.stats_results,
+        },
+    }
     return HttpResponse(template.render(context, request))
 
 

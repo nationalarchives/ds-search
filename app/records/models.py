@@ -13,23 +13,9 @@ from .converters import IDConverter
 logger = logging.getLogger(__name__)
 
 
-class APIResponse:
+class APIModel:
     def __init__(self, raw_data: dict[str, Any]):
         self._raw = raw_data
-
-    @cached_property
-    def record(self) -> Record | None:
-        if "@template" in self._raw and "details" in self._raw["@template"]:
-            return Record(self._raw["@template"]["details"])
-        return None
-
-
-class Record:
-    def __init__(self, raw_data: dict[str, Any]):
-        self._raw = raw_data
-
-    def __str__(self):
-        return f"{self.summary_title} ({self.iaid})"
 
     def get(self, key: str, default: Any) -> Any:
         """
@@ -44,6 +30,46 @@ class Record:
             return self._raw[key]
         except KeyError:
             return default
+
+
+class APIResponse(APIModel):
+    def __init__(self, raw_data: dict[str, Any]):
+        self._raw = raw_data
+
+    @cached_property
+    def record(self) -> Record | None:
+        if "@template" in self._raw and "details" in self._raw["@template"]:
+            return Record(self._raw["@template"]["details"])
+        return None
+
+
+class APISearchResponse(APIResponse):
+    @cached_property
+    def records(self) -> list[Record]:
+        records = []
+        if "data" in self._raw:
+            records = [
+                Record(record["@template"]["details"])
+                for record in self._raw["data"]
+                if "@template" in record and "details" in record["@template"]
+            ]
+        return records
+
+    @cached_property
+    def stats_total(self) -> int:
+        return int(self.get("stats.total", "0"))
+
+    @cached_property
+    def stats_results(self) -> int:
+        return int(self.get("stats.results", "0"))
+
+
+class Record(APIModel):
+    def __init__(self, raw_data: dict[str, Any]):
+        self._raw = raw_data
+
+    def __str__(self):
+        return f"{self.summary_title} ({self.iaid})"
 
     @cached_property
     def iaid(self) -> str:

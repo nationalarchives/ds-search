@@ -1,5 +1,5 @@
 from app.lib.api import JSONAPIClient, ResourceNotFound
-from app.records.models import APIResponse
+from app.records.models import APIResponse, APISearchResponse
 from django.conf import settings
 
 
@@ -44,4 +44,4 @@ def search_records(query, params={}):
         raise Exception("No data returned")
     if not len(results["data"]):
         raise ResourceNotFound("No results found")
-    return [APIResponse(record_data).record for record_data in results["data"]]
+    return APISearchResponse(results)

@@ -26,6 +26,10 @@ def dump_json(obj):
     return json.dumps(obj, indent=2)
 
 
+def format_number(num):
+    return format(num, ",")
+
+
 def environment(**options):
     env = Environment(**options)
 
@@ -56,6 +60,11 @@ def environment(**options):
             "now_iso_8601": now_iso_8601,
         }
     )
-    env.filters.update({"slugify": slugify})
-    env.filters.update({"dump_json": dump_json})
+    env.filters.update(
+        {
+            "slugify": slugify,
+            "dump_json": dump_json,
+            "format_number": format_number,
+        }
+    )
     return env
