@@ -157,7 +157,7 @@
               'title': record.summary_title,
               'headingLevel': 3,
               'headingSize': 's',
-              'href': '#',
+              'href': url('details-page-machine-readable', kwargs={'iaid': record.iaid}),
               'meta': [
                 {
                   'title': 'Held by',
@@ -182,7 +182,7 @@
       {% for record in results %}
       <article class="search-result-list-item tna-!--margin-top-s">
         <h3 class="tna-heading-m">
-          <a href="#">{{ record.summary_title }}</a>
+          <a href="{{ url('details-page-machine-readable', kwargs={'iaid': record.iaid}) }}">{{ record.summary_title }}</a>
         </h3>
         <div class="tna-!--margin-top-m">
           {{ record.description | safe }}
