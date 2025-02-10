@@ -230,7 +230,6 @@ GA4_ID = os.environ.get("GA4_ID", "")
 DJANGO_SERVE_STATIC = False
 
 ROSETTA_API_URL = os.getenv("ROSETTA_API_URL")
-CLIENT_KEY = os.getenv("ROSETTA_CLIENT_KEY")
 
 # Should always be True in production
 CLIENT_VERIFY_CERTIFICATES = strtobool(
