@@ -30,7 +30,7 @@ def record_details_by_id(id, params={}):
 
 
 def record_details_by_ref(reference, params={}):
-    # TODO
+    # TODO: Implement record_details_by_ref once Rosetta has support
     pass
 
 

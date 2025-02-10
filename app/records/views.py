@@ -6,6 +6,7 @@ from django.template.loader import get_template
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
+# TODO: Implement record_detail_by_reference once Rosetta has support
 # def record_detail_by_reference(request, reference):
 #     """
 #     View for rendering a record's details page.
