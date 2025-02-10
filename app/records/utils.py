@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import Any, Dict
 
 from django.urls import NoReverseMatch, reverse
@@ -26,6 +27,15 @@ def format_link(link_html: str, inc_msg: str = "") -> Dict[str, str]:
             f"{inc_msg}format_link:No reverse match for details-page-machine-readable with iaid={iaid}"
         )
     return {"id": iaid or "", "href": href, "text": document.text()}
+
+
+def format_extref_links(html: str) -> str:
+    html = re.sub(
+        r'<a class="extref" href="([0-9a-zA-Z]+)"',
+        lambda m: f'<a href="{reverse("details-page-machine-readable", kwargs={"id": m.group(1)})}"',
+        html,
+    )
+    return html
 
 
 def extract(source: Dict[str, Any], key: str, default: Any = None) -> Any:

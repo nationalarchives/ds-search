@@ -4,7 +4,7 @@ import logging
 import re
 from typing import Any
 
-from app.records.utils import extract, format_link
+from app.records.utils import extract, format_link, format_extref_links
 from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
 
@@ -320,7 +320,7 @@ class Record(APIModel):
     @cached_property
     def description(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("description", "")
+        return format_extref_links(self.get("description", ""))
 
     @cached_property
     def separated_materials(self) -> tuple[dict[str, Any], ...]:
