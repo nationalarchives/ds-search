@@ -18,7 +18,7 @@ def format_link(link_html: str, inc_msg: str = "") -> Dict[str, str]:
     document = pq(link_html)
     iaid = document.attr("href")
     try:
-        href = reverse("details-page-machine-readable", kwargs={"iaid": iaid})
+        href = reverse("details-page-machine-readable", kwargs={"id": iaid})
     except NoReverseMatch:
         href = ""
         # warning for partially valid data

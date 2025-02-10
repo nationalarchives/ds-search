@@ -26,13 +26,13 @@ from django.urls import include, path, register_converter
 
 register_converter(converters.IDConverter, "id")
 
-handler404 = "app.errors.views.custom_404_error_view"
+handler404 = "app.errors.views.page_not_found_error_view"
 
 urlpatterns = [
     path("", include(("app.main.urls", "main"), namespace="main")),
     path("healthcheck/", include("app.healthcheck.urls")),
     path(
-        r"catalogue/id/<id:iaid>/",
+        r"catalogue/id/<id:id>/",
         records_views.record_detail_view,
         name="details-page-machine-readable",
     ),
@@ -46,8 +46,7 @@ urlpatterns = [
     ),
     path(
         r"404/",
-        errors_view.custom_404_error_view,
-        kwargs={"exception": Exception("Bad Request!")},
+        errors_view.page_not_found_error_view,
     ),
     path("admin/", admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

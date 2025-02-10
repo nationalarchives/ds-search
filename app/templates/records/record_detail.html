@@ -22,12 +22,12 @@
       <ol class="tna-ol">
         <li>
           Held at:
-          <a href="{{ url('details-page-machine-readable', kwargs={'iaid': record.held_by_id}) }}">{{ record.held_by | safe }}</a>
+          <a href="{{ url('details-page-machine-readable', kwargs={'id': record.held_by_id}) }}">{{ record.held_by | safe }}</a>
         </li>
         {% for item in record.hierarchy %}
         <li>
           {{ level_labels[item._raw.level.code | string] or '???' }}:
-          <a href="{{ url('details-page-machine-readable', kwargs={'iaid': item._raw['@admin'].id}) }}">{{ item._raw.summary.title }}</a>
+          <a href="{{ url('details-page-machine-readable', kwargs={'id': item._raw['@admin'].id}) }}">{{ item._raw.summary.title }}</a>
         </li>
         {% endfor %}
       </ol>
@@ -53,7 +53,7 @@
         </dt>
         <dd>
           {% if field == 'held_by' %}
-          <a href="{{ url('details-page-machine-readable', kwargs={'iaid': record.held_by_id}) }}">{{ record[field] | safe }}</a>
+          <a href="{{ url('details-page-machine-readable', kwargs={'id': record.held_by_id}) }}">{{ record[field] | safe }}</a>
           {% elif field in ['creator'] %}
           {# Show a list of items #}
           <ul class="tna-ul">

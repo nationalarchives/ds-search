@@ -224,7 +224,7 @@ class Record(APIModel):
             try:
                 return reverse(
                     "details-page-machine-readable",
-                    kwargs={"iaid": self.held_by_id},
+                    kwargs={"id": self.held_by_id},
                 )
             except NoReverseMatch:
                 # warning for partially valid record

@@ -13,20 +13,20 @@ def rosetta_request_handler(uri, params={}):
     return data
 
 
-def record_details_by_iaid(iaid, params={}):
+def record_details_by_id(id, params={}):
     uri = "get"
     params = params | {
-        "id": iaid,
+        "id": id,
     }
     results = rosetta_request_handler(uri, params)
     if "data" not in results:
-        raise Exception(f"No data returned for IAID {iaid}")
+        raise Exception(f"No data returned for id {id}")
     if len(results["data"]) > 1:
-        raise Exception(f"Multiple records returned for IAID {iaid}")
+        raise Exception(f"Multiple records returned for id {id}")
     if record_data := results["data"][0]:
         response = APIResponse(record_data)
         return response.record
-    raise ResourceNotFound(f"IAID {iaid} does not exist")
+    raise ResourceNotFound(f"id {id} does not exist")
 
 
 def record_details_by_ref(reference, params={}):

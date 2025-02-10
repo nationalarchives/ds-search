@@ -1,7 +1,8 @@
 from app.lib.api import ResourceNotFound
-from app.records.api import record_details_by_iaid, record_details_by_ref
+from app.records.api import record_details_by_id, record_details_by_ref
 from app.records.labels import FIELD_LABELS, LEVEL_LABELS
-from django.http import Http404, HttpResponseServerError
+from django.http import Http404
+from django.template.loader import get_template
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
@@ -13,8 +14,8 @@ from django.urls import reverse
 #     context = {"field_labels": FIELD_LABELS, "level_labels": LEVEL_LABELS}
 
 #     try:
-#         # record = record_details_by_ref(iaid=reference)
-#         record = record_details_by_iaid(iaid="D4664016")
+#         # record = record_details_by_ref(id=reference)
+#         record = record_details_by_id(id="D4664016")
 #     except ResourceNotFound:
 #         raise Http404
 #     except Exception:
@@ -23,7 +24,7 @@ from django.urls import reverse
 #     context.update(
 #         record=record,
 #         canonical=reverse(
-#             "details-page-machine-readable", kwargs={"iaid": record.iaid}
+#             "details-page-machine-readable", kwargs={"id": record.id}
 #         ),
 #     )
 
@@ -38,7 +39,7 @@ from django.urls import reverse
 #     )
 
 
-def record_detail_view(request, iaid):
+def record_detail_view(request, id):
     """
     View for rendering a record's details page.
     """
@@ -46,11 +47,13 @@ def record_detail_view(request, iaid):
     context = {"field_labels": FIELD_LABELS, "level_labels": LEVEL_LABELS}
 
     try:
-        record = record_details_by_iaid(iaid=iaid)
+        record = record_details_by_id(id=id)
     except ResourceNotFound:
         raise Http404
     except Exception:
-        raise HttpResponseServerError
+        return TemplateResponse(
+            request=request, template="errors/server_error.html", status=502
+        )
 
     context.update(
         record=record,
