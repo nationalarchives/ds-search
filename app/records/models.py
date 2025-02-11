@@ -4,7 +4,7 @@ import logging
 import re
 from typing import Any
 
-from app.records.utils import extract, format_link, format_extref_links
+from app.records.utils import extract, format_extref_links, format_link
 from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
 

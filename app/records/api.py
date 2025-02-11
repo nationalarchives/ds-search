@@ -23,7 +23,8 @@ def record_details_by_id(id, params={}):
         raise Exception(f"No data returned for id {id}")
     if len(results["data"]) > 1:
         raise Exception(f"Multiple records returned for id {id}")
-    if record_data := results["data"][0]:
+    if len(results["data"]) == 1:
+        record_data = results["data"][0]
         response = APIResponse(record_data)
         return response.record
     raise ResourceNotFound(f"id {id} does not exist")
