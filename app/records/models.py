@@ -37,10 +37,10 @@ class APIResponse(APIModel):
         self._raw = raw_data
 
     @cached_property
-    def record(self) -> Record | None:
+    def record(self) -> Record:
         if "@template" in self._raw and "details" in self._raw["@template"]:
             return Record(self._raw["@template"]["details"])
-        return None
+        raise Exception("Record template not found in response")
 
 
 class APISearchResponse(APIResponse):

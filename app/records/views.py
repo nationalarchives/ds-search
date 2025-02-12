@@ -55,9 +55,13 @@ def record_detail_view(request, id):
         record = record_details_by_id(id=id)
     except ResourceNotFound:
         raise Http404
-    except Exception:
+    except Exception as e:
+        context = {"exception_message": e}
         return TemplateResponse(
-            request=request, template="errors/server_error.html", status=502
+            request=request,
+            template="errors/server_error.html",
+            context=context,
+            status=502,
         )
 
     context.update(
