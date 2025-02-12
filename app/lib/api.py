@@ -24,7 +24,7 @@ class JSONAPIClient:
         self.params = self.params | params
 
     def get(self, path="/") -> dict:
-        """Makes a request to the config API. Returns decoded json, 
+        """Makes a request to the config API. Returns decoded json,
         otherwise raises error"""
         url = f"{self.api_url}/{path.lstrip('/')}"
         headers = {
