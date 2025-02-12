@@ -1,5 +1,5 @@
 from app.lib.api import JSONAPIClient, ResourceNotFound
-from app.records.models import APIResponse, APISearchResponse
+from app.records.models import APIResponse, APISearchResponse, Record
 from django.conf import settings
 
 
@@ -14,7 +14,7 @@ def rosetta_request_handler(uri, params={}) -> dict:
     return data
 
 
-def record_details_by_id(id, params={}):
+def record_details_by_id(id, params={}) -> Record | None:
     uri = "get"
     params = params | {
         "id": id,
@@ -36,7 +36,7 @@ def record_details_by_ref(reference, params={}):
     pass
 
 
-def search_records(query, params={}):
+def search_records(query, params={}) -> APISearchResponse:
     uri = "search"
     params = params | {
         "q": query,
