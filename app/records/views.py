@@ -45,7 +45,7 @@ def record_detail_view(request, id):
     View for rendering a record's details page.
     """
     template_name = "records/record_detail.html"
-    context = {
+    context: dict = {
         "field_labels": FIELD_LABELS,
         "level_labels": LEVEL_LABELS,
         "non_tna_level_labels": NON_TNA_LEVEL_LABELS,
