@@ -14,7 +14,7 @@ def rosetta_request_handler(uri, params={}) -> dict:
     return data
 
 
-def record_details_by_id(id, params={}) -> Record | None:
+def record_details_by_id(id, params={}) -> Record:
     uri = "get"
     params = params | {
         "id": id,
