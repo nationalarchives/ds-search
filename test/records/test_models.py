@@ -219,42 +219,42 @@ class RecordModelTests(SimpleTestCase):
         self.assertEqual(self.record.is_tna, False)
         self.assertEqual(self.record.is_digitised, False)
 
-    def test_property_iaid(self):
+    def test_iaid(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.iaid, "C123456")
 
-    def test_property_previous(self):
+    def test_previous(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.previous.iaid, "C10298")
 
-    def test_property_next(self):
+    def test_next(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.next.iaid, "C10296")
 
-    def test_property_parent(self):
+    def test_parent(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.parent.iaid, "C199")
 
-    def test_property_source(self):
+    def test_source(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.source, "CAT")
 
-    def test_property_custom_record_type(self):
+    def test_custom_record_type(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.custom_record_type, "CAT")
 
-    def test_property_reference_number(self):
+    def test_reference_number(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.reference_number, "LO 2")
 
-    def test_property_title(self):
+    def test_title(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -265,17 +265,17 @@ class RecordModelTests(SimpleTestCase):
             ),
         )
 
-    def test_property_summary_title(self):
+    def test_summary_title(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.summary_title, "This record has no title")
 
-    def test_property_date_covering(self):
+    def test_date_covering(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.date_covering, "2015-07-31")
 
-    def test_property_creator(self):
+    def test_creator(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -287,56 +287,56 @@ class RecordModelTests(SimpleTestCase):
             ],
         )
 
-    def test_property_dimensions(self):
+    def test_dimensions(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.dimensions, "63.5 cm x 68.5 cm")
 
-    def test_property_former_department_reference(self):
+    def test_former_department_reference(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
             self.record.former_department_reference, "African No. 355"
         )
 
-    def test_property_language(self):
+    def test_language(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
             self.record.language, "Chinese, English, Malay and Tamil"
         )
 
-    def test_property_former_pro_reference(self):
+    def test_former_pro_reference(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.former_pro_reference, "ASSI 35")
 
-    def test_property_legal_status(self):
+    def test_legal_status(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.legal_status, "Public Record(s)")
 
-    def test_property_level(self):
+    def test_level(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.level, "Item")
 
-    def test_property_level_code(self):
+    def test_level_code(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.level_code, 7)
 
-    def test_property_map_designation(self):
+    def test_map_designation(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.map_designation, "OS 1:2500 County Series")
 
-    def test_property_map_scale(self):
+    def test_map_scale(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.map_scale, "1:2500")
 
-    def test_property_note(self):
+    def test_note(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -344,65 +344,65 @@ class RecordModelTests(SimpleTestCase):
             "Details have been added from C 32/18, which also gives information about further process.",
         )
 
-    def test_property_physical_condition(self):
+    def test_physical_condition(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
             self.record.physical_condition, "In ink, on tracing linen"
         )
 
-    def test_property_physical_description(self):
+    def test_physical_description(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.physical_description, "file(s)")
 
-    def test_property_held_by(self):
+    def test_held_by(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.held_by, "National Maritime Museum")
 
-    def test_property_held_by_id(self):
+    def test_held_by_id(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.held_by_id, "A13530841")
 
-    def test_property_held_by_url(self):
+    def test_held_by_url(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.held_by_url, "/catalogue/id/A13530841/")
 
-    def test_property_access_condition(self):
+    def test_access_condition(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
             self.record.access_condition, "Subject to 30 year closure"
         )
 
-    def test_property_closure_status(self):
+    def test_closure_status(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
             self.record.closure_status, "Open Document, Open Description"
         )
 
-    def test_property_record_opening(self):
+    def test_record_opening(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.record_opening, "01 September 2007")
 
-    def test_property_accruals(self):
+    def test_accruals(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.accruals, "Series is accruing")
 
-    def test_property_accumulation_dates(self):
+    def test_accumulation_dates(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
             self.record.accumulation_dates, "File series began in 1971"
         )
 
-    def test_property_appraisal_information(self):
+    def test_appraisal_information(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -410,7 +410,7 @@ class RecordModelTests(SimpleTestCase):
             "Policy and contractual records have been preserved.",
         )
 
-    def test_property_copies_information(self):
+    def test_copies_information(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -421,7 +421,7 @@ class RecordModelTests(SimpleTestCase):
             ),
         )
 
-    def test_property_custodial_history(self):
+    def test_custodial_history(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -429,7 +429,7 @@ class RecordModelTests(SimpleTestCase):
             "Transferred to the Employment Department in 1988 and the Department for Education and Employment in 1995.",
         )
 
-    def test_property_immediate_source_of_acquisition(self):
+    def test_immediate_source_of_acquisition(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -441,7 +441,7 @@ class RecordModelTests(SimpleTestCase):
             ],
         )
 
-    def test_property_location_of_originals(self):
+    def test_location_of_originals(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -452,14 +452,14 @@ class RecordModelTests(SimpleTestCase):
             ],
         )
 
-    def test_property_restrictions_on_use(self):
+    def test_restrictions_on_use(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
             self.record.restrictions_on_use, "3 working days notice to produce"
         )
 
-    def test_property_administrative_background(self):
+    def test_administrative_background(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -472,7 +472,7 @@ class RecordModelTests(SimpleTestCase):
             ),
         )
 
-    def test_property_arrangement(self):
+    def test_arrangement(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -480,7 +480,7 @@ class RecordModelTests(SimpleTestCase):
             "Former reference order within two accessions (AN 171/1-648 and AN 171/649-970).",
         )
 
-    def test_property_publication_note(self):
+    def test_publication_note(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -490,7 +490,7 @@ class RecordModelTests(SimpleTestCase):
             ],
         )
 
-    def test_property_related_materials(self):
+    def test_related_materials(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -509,7 +509,7 @@ class RecordModelTests(SimpleTestCase):
             ),
         )
 
-    def test_property_description(self):
+    def test_description(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -517,7 +517,7 @@ class RecordModelTests(SimpleTestCase):
             """C16248: Online descriptions of individual records can be viewed on Discovery, see <a class=\"extref\" href=\"f41eb-1496-446c-8bf8-21dc681223da\">RM 2</a>.""",
         )
 
-    def test_property_separated_materials(self):
+    def test_separated_materials(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -551,7 +551,7 @@ class RecordModelTests(SimpleTestCase):
             ),
         )
 
-    def test_property_unpublished_finding_aids(self):
+    def test_unpublished_finding_aids(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -561,7 +561,7 @@ class RecordModelTests(SimpleTestCase):
             ],
         )
 
-    def test_property_hierarchy(self):
+    def test_hierarchy(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(len(self.record.hierarchy), 4)
@@ -596,7 +596,7 @@ class RecordModelTests(SimpleTestCase):
                 ],
             )
 
-    def test_property_next_record(self):
+    def test_next_record(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -612,7 +612,7 @@ class RecordModelTests(SimpleTestCase):
             ),
         )
 
-    def test_property_previous_record(self):
+    def test_previous_record(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -628,7 +628,7 @@ class RecordModelTests(SimpleTestCase):
             ),
         )
 
-    def test_property_parent_record(self):
+    def test_parent_record(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(
@@ -644,12 +644,12 @@ class RecordModelTests(SimpleTestCase):
             ),
         )
 
-    def test_property_is_tna(self):
+    def test_is_tna(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.is_tna, True)
 
-    def test_property_is_digitised(self):
+    def test_is_digitised(self):
         response = APIResponse(self.source)
         self.record = response.record
         self.assertEqual(self.record.is_digitised, True)
