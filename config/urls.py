@@ -36,6 +36,7 @@ urlpatterns = [
         records_views.record_detail_view,
         name="details-page-machine-readable",
     ),
+    # TODO: Implement record_details_by_ref once Rosetta has support
     # path(
     #     r"catalogue/ref/<path:reference>/",
     #     records_views.record_detail_by_reference,
