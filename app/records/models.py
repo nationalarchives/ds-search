@@ -180,7 +180,7 @@ class Record(APIModel):
     @cached_property
     def level_code(self) -> int | None:
         """Returns the api value of the attr if found, None otherwise."""
-        return self.get("level.code", "")
+        return self.get("level.code", None)
 
     @cached_property
     def map_designation(self) -> str:
