@@ -183,7 +183,7 @@ class RecordModelTests(SimpleTestCase):
         self.assertEqual(self.record.language, "")
         self.assertEqual(self.record.legal_status, "")
         self.assertEqual(self.record.level, "")
-        self.assertEqual(self.record.level_code, "")
+        self.assertEqual(self.record.level_code, None)
         self.assertEqual(self.record.map_designation, "")
         self.assertEqual(self.record.map_scale, "")
         self.assertEqual(self.record.note, "")
