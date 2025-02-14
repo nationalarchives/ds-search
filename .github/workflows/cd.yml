@@ -85,7 +85,8 @@ jobs:
       - name: Push new version
         run: |
           git add config/develop.json
-          git commit -m "Update search to v${{ needs.version.outputs.version }}"
+          COMMIT_MESSAGE_HEADER=$(git log -1 --pretty=%B | head -n 1)
+          git commit -m "Update search to v${{ needs.version.outputs.version }}" -m "${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
           git push origin main
 
   update-dblclk:
@@ -112,5 +113,6 @@ jobs:
       - name: Push new version
         run: |
           git add docker-compose.yml
-          git commit -m "Update search to v${{ needs.version.outputs.version }}"
+          COMMIT_MESSAGE_HEADER=$(git log -1 --pretty=%B | head -n 1)
+          git commit -m "Update search to v${{ needs.version.outputs.version }}" -m "${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
           git push origin proof-of-concept
