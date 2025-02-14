@@ -2,6 +2,7 @@ import logging
 import re
 from typing import Any, Dict
 
+from app.records.converters import IDConverter
 from django.urls import NoReverseMatch, reverse
 from pyquery import PyQuery as pq
 
@@ -30,9 +31,10 @@ def format_link(link_html: str, inc_msg: str = "") -> Dict[str, str]:
 
 
 def format_extref_links(html: str) -> str:
+    regex = re.compile(f'<a class="extref" href="{IDConverter.regex}"')
     html = re.sub(
-        r'<a class="extref" href="([0-9a-zA-Z]+)"',
-        lambda m: f'<a href="{reverse("details-page-machine-readable", kwargs={"id": m.group(1)})}"',
+        regex,
+        lambda m: f'<a class="extref" href="{reverse("details-page-machine-readable", kwargs={"id": m.group(1)})}"',
         html,
     )
     return html

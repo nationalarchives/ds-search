@@ -1,5 +1,3 @@
-import logging
-
 from app.records.models import APIResponse, Record
 from django.test import SimpleTestCase
 
@@ -514,7 +512,7 @@ class RecordModelTests(SimpleTestCase):
         self.record = response.record
         self.assertEqual(
             self.record.description,
-            """C16248: Online descriptions of individual records can be viewed on Discovery, see <a class=\"extref\" href=\"f41eb-1496-446c-8bf8-21dc681223da\">RM 2</a>.""",
+            """C16248: Online descriptions of individual records can be viewed on Discovery, see <a class=\"extref\" href=\"/catalogue/id/f41eb-1496-446c-8bf8-21dc681223da/\">RM 2</a>.""",
         )
 
     def test_separated_materials(self):
