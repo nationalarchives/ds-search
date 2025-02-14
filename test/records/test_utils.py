@@ -1,6 +1,6 @@
 from datetime import date
 
-from app.ciim.utils import ValueExtractionError, extract, format_link
+from app.records.utils import extract, format_link
 from django.test import SimpleTestCase
 
 TODAY = date.today()
@@ -48,31 +48,6 @@ class TestExtract(SimpleTestCase):
                     extract(self.test_data, key),
                     expected_value,
                 )
-
-    def test_without_defaults(self):
-        """
-        Shows that wherever in the process the failure happens, it is
-        reported as a ValueExtractionError with a useful description.
-        """
-        for key, problematic_bit, error_class in (
-            ("item_2", "item_2", KeyError),
-            ("item.invalid_key", "invalid_key", KeyError),
-            ("item.date_created.invalid_attr", "invalid_attr", AttributeError),
-            ("item.children.invalid_index", "invalid_index", AttributeError),
-            ("item.children.999", "999", IndexError),
-            ("item.children.1.invalid_key", "invalid_key", KeyError),
-            (
-                "item.children.1.date_created.invalid_attr",
-                "invalid_attr",
-                AttributeError,
-            ),
-        ):
-            with self.subTest(key):
-                msg_part = (
-                    f"{error_class} raised when extracting '{problematic_bit}'"
-                )
-                with self.assertRaisesRegex(ValueExtractionError, msg_part):
-                    extract(self.test_data, key)
 
     def test_with_defaults(self):
         """
@@ -124,7 +99,7 @@ class TestFormatLink(SimpleTestCase):
                 '<a href="INVALID">some value</a>',
                 (
                     {"id": "INVALID", "href": "", "text": "some value"},
-                    "WARNING:app.ciim.utils:format_link:No reverse match for details-page-machine-readable with id=INVALID",
+                    "WARNING:app.records.utils:format_link:No reverse match for details-page-machine-readable with iaid=INVALID",
                 ),
             ),
             (
@@ -132,14 +107,16 @@ class TestFormatLink(SimpleTestCase):
                 "some value",
                 (
                     {"id": "", "href": "", "text": "some value"},
-                    "WARNING:app.ciim.utils:format_link:No reverse match for details-page-machine-readable with id=None",
+                    "WARNING:app.records.utils:format_link:No reverse match for details-page-machine-readable with iaid=None",
                 ),
             ),
         )
 
         for label, value, expected in test_data:
             with self.subTest(label):
-                with self.assertLogs("app.ciim.utils", level="WARNING") as lc:
+                with self.assertLogs(
+                    "app.records.utils", level="WARNING"
+                ) as lc:
                     result = format_link(value)
                 self.assertIn(expected[1], lc.output)
                 self.assertEqual(result, expected[0])

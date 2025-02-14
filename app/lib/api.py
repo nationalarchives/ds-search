@@ -1,48 +1,69 @@
-import requests
+import logging
 
-# from flask import current_app
+from requests import JSONDecodeError, Timeout, TooManyRedirects, codes, get
+
+logger = logging.getLogger(__name__)
 
 
-class ApiResourceNotFound(Exception):
+class ResourceNotFound(Exception):
     pass
 
 
-class BaseAPI:
+class JSONAPIClient:
     api_url = ""
-    api_path = "/"
     params = {}
 
-    def __init__(self, api_url):
+    def __init__(self, api_url, params={}):
         self.api_url = api_url
+        self.params = params
 
     def add_parameter(self, key, value):
         self.params[key] = value
 
-    def get_results(self, page=None):
-        if page:
-            self.add_parameter("page", page)
-        url = f"{self.api_url}{self.api_path}"
-        # current_app.logger.debug(
-        #     f"API endpoint requested: {url} (params {self.params})"
-        # )
-        try:
-            response = requests.get(url, params=self.params)
-        except ConnectionError:
-            # current_app.logger.error(f"API connection error for: {url}")
-            raise Exception("A connection error occured with the API")
-        if response.status_code == 404:
-            # current_app.logger.warning(f"Resource not found: {url}")
-            raise ApiResourceNotFound("Resource not found")
-        if response.status_code == requests.codes.ok:
-            return self.parse_response(response)
-        # current_app.logger.error(
-        #     f"API responded with {response.status_code} status for {url}"
-        # )
-        raise ConnectionError("Request to API failed")
+    def add_parameters(self, params):
+        self.params = self.params | params
 
-    def parse_response(self, response):
+    def get(self, path="/") -> dict:
+        """Makes a request to the config API. Returns decoded json,
+        otherwise raises error"""
+        url = f"{self.api_url}/{path.lstrip('/')}"
+        headers = {
+            "Cache-Control": "no-cache",
+            # "Accept": "application/json",  # TODO: This breaks the API
+        }
         try:
-            return response.json()
-        except requests.exceptions.JSONDecodeError:
-            # current_app.logger.error("API provided non-JSON response")
-            raise ConnectionError("API provided non-JSON response")
+            response = get(
+                url,
+                params=self.params,
+                headers=headers,
+            )
+        except ConnectionError:
+            logger.error("JSON API connection error")
+            raise Exception("A connection error occured")
+        except Timeout:
+            logger.error("JSON API timeout")
+            raise Exception("The request timed out")
+        except TooManyRedirects:
+            logger.error("JSON API had too many redirects")
+            raise Exception("Too many redirects")
+        except Exception as e:
+            logger.error(f"Unknown JSON API exception: {e}")
+            raise Exception(e)
+        logger.debug(response.url)
+        if response.status_code == codes.ok:
+            try:
+                return response.json()
+            except JSONDecodeError:
+                logger.error("JSON API provided non-JSON response")
+                raise Exception("Non-JSON response provided")
+        if response.status_code == 400:
+            logger.error(f"Bad request: {response.url}")
+            raise Exception("Bad request")
+        if response.status_code == 403:
+            logger.warning("Forbidden")
+            raise Exception("Forbidden")
+        if response.status_code == 404:
+            logger.warning("Resource not found")
+            raise ResourceNotFound("Resource not found")
+        logger.error(f"JSON API responded with {response.status_code}")
+        raise Exception("Request failed")

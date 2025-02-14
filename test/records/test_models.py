@@ -1,5 +1,3 @@
-import logging
-
 from app.records.models import Record
 from django.test import SimpleTestCase
 
@@ -9,13 +7,10 @@ class RecordModelTests(SimpleTestCase):
 
     def setUp(self):
 
-        # record structure
-        self.source = {
-            "@template": {"details": {}},
-        }
+        self.template_details = {"some value": "some value"}
 
     def test_empty_for_optional_attributes(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
 
         self.assertEqual(self.record.iaid, "")
         self.assertEqual(self.record.source, "")
@@ -67,31 +62,31 @@ class RecordModelTests(SimpleTestCase):
 
     def test_iaid(self):
 
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
 
         # patch raw data
-        self.record._raw["@template"]["details"]["iaid"] = "C123456"
+        self.record._raw["iaid"] = "C123456"
 
         self.assertEqual(self.record.iaid, "C123456")
 
     def test_iaid_other_places(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw
-        self.record._raw["@template"]["details"]["@previous"] = {
+        self.record._raw["@previous"] = {
             "identifier": [
                 {
                     "iaid": "C10298",
                 },
             ],
         }
-        self.record._raw["@template"]["details"]["@next"] = {
+        self.record._raw["@next"] = {
             "identifier": [
                 {
                     "iaid": "C10296",
                 },
             ],
         }
-        self.record._raw["@template"]["details"]["parent"] = {
+        self.record._raw["parent"] = {
             "identifier": [
                 {
                     "iaid": "C199",
@@ -104,41 +99,41 @@ class RecordModelTests(SimpleTestCase):
         self.assertEqual(self.record.parent.iaid, "C199")
 
     def test_source(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["source"] = "CAT"
+        self.record._raw["source"] = "CAT"
         self.assertEqual(self.record.source, "CAT")
 
     def test_custom_record_type(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["source"] = "CAT"
+        self.record._raw["source"] = "CAT"
         self.assertEqual(self.record.custom_record_type, "CAT")
 
     def test_reference_number(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["referenceNumber"] = "LO 2"
+        self.record._raw["referenceNumber"] = "LO 2"
         self.assertEqual(self.record.reference_number, "LO 2")
 
     def test_reference_number_other_places(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw
-        self.record._raw["@template"]["details"]["@previous"] = {
+        self.record._raw["@previous"] = {
             "identifier": [
                 {
                     "reference_number": "LO 3",
                 },
             ],
         }
-        self.record._raw["@template"]["details"]["@next"] = {
+        self.record._raw["@next"] = {
             "identifier": [
                 {
                     "reference_number": "LO 1",
                 },
             ],
         }
-        self.record._raw["@template"]["details"]["parent"] = {
+        self.record._raw["parent"] = {
             "identifier": [
                 {
                     "reference_number": "LO",
@@ -151,9 +146,9 @@ class RecordModelTests(SimpleTestCase):
         self.assertEqual(self.record.parent.reference_number, "LO")
 
     def test_title(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["title"] = (
+        self.record._raw["title"] = (
             "Ministry of Defence: Joint Intelligence Bureau and Defence Intelligence Staff: "
             "Intelligence Conferences, Committees and Working Parties: Reports and Papers."
         )
@@ -166,32 +161,30 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_summary_title(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "summaryTitle"
-        ] = "This record has no title"
+        self.record._raw["summaryTitle"] = "This record has no title"
         self.assertEqual(self.record.summary_title, "This record has no title")
 
     def test_summary_title_other_places(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["@previous"] = {
+        self.record._raw["@previous"] = {
             "summary": {
                 "title": "Law Officers' Department: Patents for Inventions"
             },
         }
-        self.record._raw["@template"]["details"]["@next"] = {
+        self.record._raw["@next"] = {
             "summary": {
                 "title": "Law Officers' Department: Law Officers' Opinions"
             },
         }
-        self.record._raw["@template"]["details"]["parent"] = {
+        self.record._raw["parent"] = {
             "summary": {
                 "title": "Records created or inherited by the Law Officers' Department"
             },
         }
-        self.record._raw["@template"]["details"]["@hierarchy"] = [
+        self.record._raw["@hierarchy"] = [
             {
                 "identifier": [
                     {
@@ -222,15 +215,15 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_date_covering(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["dateCovering"] = "2015-07-31"
+        self.record._raw["dateCovering"] = "2015-07-31"
         self.assertEqual(self.record.date_covering, "2015-07-31")
 
     def test_creator(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["creator"] = [
+        self.record._raw["creator"] = [
             "Donop, Stanley Brenton, 1860-1941",
             "Lambart, Frederick Rudolph, 1865-1946",
             "Thomson, William Montgomerie, 1877-1963",
@@ -245,71 +238,61 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_dimensions(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "dimensions"
-        ] = "63.5 cm x 68.5 cm"
+        self.record._raw["dimensions"] = "63.5 cm x 68.5 cm"
         self.assertEqual(self.record.dimensions, "63.5 cm x 68.5 cm")
 
     def test_former_department_reference(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "formerDepartmentReference"
-        ] = "African No. 355"
+        self.record._raw["formerDepartmentReference"] = "African No. 355"
         self.assertEqual(
             self.record.former_department_reference, "African No. 355"
         )
 
     def test_former_pro_reference(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "formerProReference"
-        ] = "ASSI 35"
+        self.record._raw["formerProReference"] = "ASSI 35"
         self.assertEqual(self.record.former_pro_reference, "ASSI 35")
 
     def test_language(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "language"
-        ] = "Chinese, English, Malay and Tamil"
+        self.record._raw["language"] = "Chinese, English, Malay and Tamil"
         self.assertEqual(
             self.record.language, "Chinese, English, Malay and Tamil"
         )
 
     def test_legal_status(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "legalStatus"
-        ] = "Public Record(s)"
+        self.record._raw["legalStatus"] = "Public Record(s)"
         self.assertEqual(self.record.legal_status, "Public Record(s)")
 
     def test_level(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["level"] = {
+        self.record._raw["level"] = {
             "code": 7,
             "value": "Item",
         }
         self.assertEqual(self.record.level, "Item")
 
     def test_level_code(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["level"] = {
+        self.record._raw["level"] = {
             "code": 7,
             "value": "Item",
         }
         self.assertEqual(self.record.level_code, 7)
 
     def test_level_code_other_places(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw
-        self.record._raw["@template"]["details"]["@hierarchy"] = [
+        self.record._raw["@hierarchy"] = [
             {
                 "identifier": [
                     {
@@ -322,23 +305,21 @@ class RecordModelTests(SimpleTestCase):
         self.assertEqual(self.record.hierarchy[0].level_code, 1)
 
     def test_map_designation(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "mapDesignation"
-        ] = "OS 1:2500 County Series"
+        self.record._raw["mapDesignation"] = "OS 1:2500 County Series"
         self.assertEqual(self.record.map_designation, "OS 1:2500 County Series")
 
     def test_map_scale(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["mapScale"] = "1:2500"
+        self.record._raw["mapScale"] = "1:2500"
         self.assertEqual(self.record.map_scale, "1:2500")
 
     def test_note(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["note"] = (
+        self.record._raw["note"] = (
             "Details have been added from C 32/18, which also gives "
             "information about further process."
         )
@@ -349,49 +330,43 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_physical_condition(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "physicalCondition"
-        ] = "In ink, on tracing linen"
+        self.record._raw["physicalCondition"] = "In ink, on tracing linen"
         self.assertEqual(
             self.record.physical_condition, "In ink, on tracing linen"
         )
 
     def test_physical_description(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "physicalDescription"
-        ] = "file(s)"
+        self.record._raw["physicalDescription"] = "file(s)"
         self.assertEqual(self.record.physical_description, "file(s)")
 
     def test_held_by(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "heldBy"
-        ] = "National Maritime Museum"
+        self.record._raw["heldBy"] = "National Maritime Museum"
         self.assertEqual(self.record.held_by, "National Maritime Museum")
 
     def test_held_by_id(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["heldById"] = "A13530841"
+        self.record._raw["heldById"] = "A13530841"
         self.assertEqual(self.record.held_by_id, "A13530841")
 
     def test_valid_held_by_url(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["heldById"] = "A13530841"
+        self.record._raw["heldById"] = "A13530841"
         self.assertEqual(self.record.held_by_url, "/catalogue/id/A13530841/")
 
     def test_invalid_data_for_held_by_url(self):
 
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["iaid"] = "C12345"
-        self.record._raw["@template"]["details"]["heldById"] = "INVALID"
+        self.record._raw["iaid"] = "C12345"
+        self.record._raw["heldById"] = "INVALID"
 
         with self.assertLogs("app.records.models", level="WARNING") as lc:
             result = self.record.held_by_url
@@ -402,66 +377,56 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_access_condition(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "accessCondition"
-        ] = "Subject to 30 year closure"
+        self.record._raw["accessCondition"] = "Subject to 30 year closure"
         self.assertEqual(
             self.record.access_condition, "Subject to 30 year closure"
         )
 
     def test_closure_status(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "closureStatus"
-        ] = "Open Document, Open Description"
+        self.record._raw["closureStatus"] = "Open Document, Open Description"
         self.assertEqual(
             self.record.closure_status, "Open Document, Open Description"
         )
 
     def test_record_opening(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "recordOpening"
-        ] = "01 September 2007"
+        self.record._raw["recordOpening"] = "01 September 2007"
         self.assertEqual(self.record.record_opening, "01 September 2007")
 
     def test_accruals(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "accruals"
-        ] = "Series is accruing"
+        self.record._raw["accruals"] = "Series is accruing"
         self.assertEqual(self.record.accruals, "Series is accruing")
 
     def test_accumulation_dates(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "accumulationDates"
-        ] = "File series began in 1971"
+        self.record._raw["accumulationDates"] = "File series began in 1971"
         self.assertEqual(
             self.record.accumulation_dates, "File series began in 1971"
         )
 
     def test_appraisal_information(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "appraisalInformation"
-        ] = "Policy and contractual records have been preserved."
+        self.record._raw["appraisalInformation"] = (
+            "Policy and contractual records have been preserved."
+        )
         self.assertEqual(
             self.record.appraisal_information,
             "Policy and contractual records have been preserved.",
         )
 
     def test_copies_information(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["copiesInformation"] = (
+        self.record._raw["copiesInformation"] = (
             "Microform copies are available on open access in Microfilm "
             "Reading Room (MRR) as FO 605. They must be ordered by this reference"
         )
@@ -474,22 +439,20 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_custodial_history(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "custodialHistory"
-        ] = "Transferred to the Employment Department in 1988 and the Department for Education and Employment in 1995."
+        self.record._raw["custodialHistory"] = (
+            "Transferred to the Employment Department in 1988 and the Department for Education and Employment in 1995."
+        )
         self.assertEqual(
             self.record.custodial_history,
             "Transferred to the Employment Department in 1988 and the Department for Education and Employment in 1995.",
         )
 
     def test_immediate_source_of_acquisition(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "immediateSourceOfAcquisition"
-        ] = [
+        self.record._raw["immediateSourceOfAcquisition"] = [
             "since 1947 Essex Record Office",
             "Charles Cornwallis, 5th Baron Braybrooke, 1823-1902",
             "Henry Seymour Neville, 9th Baron Braybrooke, 1897-1990",
@@ -504,9 +467,9 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_location_of_originals(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["locationOfOriginals"] = [
+        self.record._raw["locationOfOriginals"] = [
             "Museum of London Library",
             "Victoria & Albert Museum, Archive of Art and Design",
         ]
@@ -519,19 +482,19 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_restrictions_on_use(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "restrictionsOnUse"
-        ] = "3 working days notice to produce"
+        self.record._raw["restrictionsOnUse"] = (
+            "3 working days notice to produce"
+        )
         self.assertEqual(
             self.record.restrictions_on_use, "3 working days notice to produce"
         )
 
     def test_administrative_background(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["administrativeBackground"] = (
+        self.record._raw["administrativeBackground"] = (
             "The Industrial Relations Department was set up as soon as the "
             "British Transport Commission began functioning and continued in "
             "existence until the end of the British Railway Board. In 1983 it "
@@ -548,20 +511,20 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_arrangement(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"][
-            "arrangement"
-        ] = "Former reference order within two accessions (AN 171/1-648 and AN 171/649-970)."
+        self.record._raw["arrangement"] = (
+            "Former reference order within two accessions (AN 171/1-648 and AN 171/649-970)."
+        )
         self.assertEqual(
             self.record.arrangement,
             "Former reference order within two accessions (AN 171/1-648 and AN 171/649-970).",
         )
 
     def test_publication_note(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["publicationNote"] = [
+        self.record._raw["publicationNote"] = [
             "Printed in Rymer's Foedera (1709 edition), viii 90-91.",
         ]
         self.assertEqual(
@@ -572,9 +535,9 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_related_materials(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["relatedMaterials"] = [
+        self.record._raw["relatedMaterials"] = [
             {
                 "description": "Post December 1946 minutes in",
                 "links": ['<a href="C5762">DEFE 4</a>'],
@@ -598,9 +561,9 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_description(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["description"] = (
+        self.record._raw["description"] = (
             """C16248: Online descriptions of individual records can be viewed """
             """on Discovery, see <a class=\"extref\" """
             """href=\"f41eb-1496-446c-8bf8-21dc681223da\">RM 2</a>."""
@@ -627,9 +590,9 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_separated_materials(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["separatedMaterials"] = [
+        self.record._raw["separatedMaterials"] = [
             {
                 "description": "for 4 maps extracted from this item see",
                 "links": [
@@ -673,9 +636,9 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_unpublished_finding_aids(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["unpublishedFindingAids"] = [
+        self.record._raw["unpublishedFindingAids"] = [
             "There is a general index in BT 4 . There is a subject index in BT 19.",
         ]
         self.assertEqual(
@@ -686,9 +649,9 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_hierarchy(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["@hierarchy"] = [
+        self.record._raw["@hierarchy"] = [
             {
                 "identifier": [
                     {
@@ -773,9 +736,9 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_next(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data - C10297, LO 2
-        self.record._raw["@template"]["details"]["@next"] = {
+        self.record._raw["@next"] = {
             "identifier": [
                 {
                     "reference_number": "LO 1",
@@ -804,9 +767,9 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_previous(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data - C10297, LO 2
-        self.record._raw["@template"]["details"]["@previous"] = {
+        self.record._raw["@previous"] = {
             "identifier": [
                 {
                     "reference_number": "LO 3",
@@ -835,9 +798,9 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_parent(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data - C10297, LO 2
-        self.record._raw["@template"]["details"]["parent"] = {
+        self.record._raw["parent"] = {
             "identifier": [
                 {
                     "reference_number": "LO",
@@ -866,31 +829,31 @@ class RecordModelTests(SimpleTestCase):
         )
 
     def test_is_tna_true(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["groupArray"] = [
+        self.record._raw["groupArray"] = [
             {"value": "record"},
             {"value": "tna"},
         ]
         self.assertEqual(self.record.is_tna, True)
 
     def test_is_tna_false(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["groupArray"] = [
+        self.record._raw["groupArray"] = [
             {"value": "record"},
             {"value": "nonTna"},
         ]
         self.assertEqual(self.record.is_tna, False)
 
     def test_is_digitised_true(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["digitised"] = True
+        self.record._raw["digitised"] = True
         self.assertEqual(self.record.is_digitised, True)
 
     def test_is_digitised_false(self):
-        self.record = Record(self.source)
+        self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["@template"]["details"]["digitised"] = False
+        self.record._raw["digitised"] = False
         self.assertEqual(self.record.is_digitised, False)
