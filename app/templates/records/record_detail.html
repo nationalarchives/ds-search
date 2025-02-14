@@ -1,12 +1,73 @@
 {% extends 'base.html' %}
 
-{%- set pageTitle = page_title -%}
+{%- set pageTitle = (record.summary_title or '[No title]') | striptags -%}
+
+{% block stylesheets %}
+{{ super() }}
+    <link rel="stylesheet" href="{{ static('record-details.css') }}?v={{ app_config.BUILD_VERSION }}" media="screen,print">
+{% endblock %}
 
 {% block content %}
 <div class="tna-section">
   <div class="tna-container">
     <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
       <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
+
+      <p>{{ record.custom_record_type }}</p>
+
+      {% if canonical %}
+      <p>Canonical: {{ canonical }}</p>
+      {% endif %}
+
+      <ol class="tna-ol">
+        <li>
+          Held at:
+          <a href="{{ url('details-page-machine-readable', kwargs={'id': record.held_by_id}) }}">{{ record.held_by | safe }}</a>
+        </li>
+        {% for item in record.hierarchy %}
+        <li>
+          {{ level_labels[item._raw.level.code | string] or '???' }}:
+          <a href="{{ url('details-page-machine-readable', kwargs={'id': item._raw['@admin'].id}) }}">{{ item._raw.summary.title }}</a>
+        </li>
+        {% endfor %}
+      </ol>
+
+      <h2 class="tna-heading-l">Record details</h2>
+      {% set fields = [
+        'title',
+        'reference_number',
+        'closure_status',
+        'date_covering',
+        'description',
+        'held_by',
+        'legal_status',
+        'closure_status',
+        'dimensions',
+        'creator'
+      ] %}
+      <dl class="tna-dl">
+        {% for field in fields %}
+        {% if record[field] %}
+        <dt>
+          <span class="record-details__label">{{ field_labels[field] }}</span>
+        </dt>
+        <dd>
+          {% if field == 'held_by' %}
+          <a href="{{ url('details-page-machine-readable', kwargs={'id': record.held_by_id}) }}">{{ record[field] | safe }}</a>
+          {% elif field in ['creator'] %}
+          {# Show a list of items #}
+          <ul class="tna-ul">
+            {% for item in record[field] %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          {{ record[field] | safe }}
+          {% endif %}
+        </dd>
+        {% endif %}
+        {% endfor %}
+      </dl>
     </div>
 
     {% include "records/record-crosslink-panel.html" %}

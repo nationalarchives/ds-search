@@ -6,6 +6,7 @@ from django.test import SimpleTestCase
 
 class TestIDFormats(SimpleTestCase):
     def test_valid_formats(self):
+        id_regex = re.compile(IDConverter.regex)
         for label, value in (
             ("longformat", "3717ee38900740728076a61a398fcb84"),
             ("guid", "4d8dae2c-b417-4614-8ed8-924b9b4beeac"),
@@ -16,6 +17,5 @@ class TestIDFormats(SimpleTestCase):
             ("iaid_F", "F257629"),
             ("iaid_N", "N14562581"),
         ):
-            id_regex = re.compile(IDConverter.regex)
             with self.subTest(label):
                 self.assertTrue(id_regex.match(value))
