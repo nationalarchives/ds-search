@@ -376,7 +376,8 @@ class Record(APIModel):
     def parent(self) -> Record | None:
         """Returns a record transformed from the values of the attr if found, None otherwise."""
         if parent := self.get("parent", None):
-            return Record(parent)
+            # page_record_is_tna: carry status to parent record
+            return Record(parent | {"page_record_is_tna": self.is_tna})
 
     @cached_property
     def is_tna(self) -> bool | None:
