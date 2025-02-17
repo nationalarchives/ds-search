@@ -22,15 +22,28 @@
       <ol class="tna-ol">
         <li>
           Held at:
-          <a href="{{ url('details-page-machine-readable', kwargs={'id': record.held_by_id}) }}">{{ record.held_by | safe }}</a>
+          <a href="{{ record.held_by_url }}">{{ record.held_by | safe }}</a>
         </li>
-        {% for item in record.hierarchy %}
+        {% for hierarchy_record in record.hierarchy %}
         <li>
-          {{ level_labels[item._raw.level.code | string] or '???' }}:
-          <a href="{{ url('details-page-machine-readable', kwargs={'id': item._raw['@admin'].id}) }}">{{ item._raw.summary.title }}</a>
+          {{ hierarchy_record.level_name }}:
+          <a href="{{ hierarchy_record.url }}">{{ hierarchy_record.summary_title }}</a>
         </li>
         {% endfor %}
       </ol>
+
+      <Ul class="tna-ul">
+      {% if record.previous %}
+        <li>
+          Previous {{ record.previous.level_name }}: <a href="{{ record.previous.url }}">{{ record.previous.reference_number }}</a>
+        </li>
+      {% endif %}
+      {% if record.next %}
+        <li>
+          Next {{ record.next.level_name }} : <a href="{{ record.next.url }}">{{ record.next.reference_number }}</a>
+        </li>
+      {% endif %}
+      </Ul>
 
       <h2 class="tna-heading-l">Record details</h2>
       {% set fields = [
@@ -53,7 +66,7 @@
         </dt>
         <dd>
           {% if field == 'held_by' %}
-          <a href="{{ url('details-page-machine-readable', kwargs={'id': record.held_by_id}) }}">{{ record[field] | safe }}</a>
+          <a href="{{ record.held_by_url }}">{{ record[field] | safe }}</a>
           {% elif field in ['creator'] %}
           {# Show a list of items #}
           <ul class="tna-ul">
