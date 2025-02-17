@@ -4,6 +4,7 @@ import logging
 import re
 from typing import Any
 
+from app.records.constants import LEVEL, NON_TNA_LEVEL
 from app.records.utils import extract, format_extref_links, format_link
 from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
@@ -80,15 +81,17 @@ class Record(APIModel):
         try:
             candidate = self._raw["iaid"]
         except KeyError:
-            candidate = ""
+            # value from other places
+            candidate = self.get("@admin.id", default="")
 
-        # value from other places
-        identifiers = self.get("identifier", ())
-        for item in identifiers:
-            try:
-                candidate = item["iaid"]
-            except KeyError:
-                candidate = ""
+        if not candidate:
+            # value from other places
+            identifiers = self.get("identifier", ())
+            for item in identifiers:
+                try:
+                    candidate = item["iaid"]
+                except KeyError:
+                    candidate = ""
 
         if candidate and re.match(IDConverter.regex, candidate):
             # value is not guaranteed to be a valid 'iaid', so we must
@@ -344,23 +347,30 @@ class Record(APIModel):
     @cached_property
     def hierarchy(self) -> tuple[Record, ...]:
         """Returns tuple of records transformed from the values of the attr if found, empty tuple otherwise."""
-        return tuple(
-            Record(item)
-            for item in self.get("@hierarchy", ())
-            if item.get("identifier")
-        )
+        hierarchy_records = ()
+        for hierarchy_item in self.get("@hierarchy", ()):
+            if hierarchy_item.get("identifier"):
+                # page_record_is_tna: carry status to hierarchy record
+                hierarchy_records += (
+                    Record(
+                        hierarchy_item | {"page_record_is_tna": self.is_tna}
+                    ),
+                )
+        return hierarchy_records
 
     @cached_property
     def next(self) -> Record | None:
         """Returns a record transformed from the values of the attr if found, None otherwise."""
         if next := self.get("@next", None):
-            return Record(next)
+            # page_record_is_tna: carry status to next record
+            return Record(next | {"page_record_is_tna": self.is_tna})
 
     @cached_property
     def previous(self) -> Record | None:
         """Returns a record transformed from the values of the attr if found, None otherwise."""
         if previous := self.get("@previous", None):
-            return Record(previous)
+            # page_record_is_tna: carry status to previous record
+            return Record(previous | {"page_record_is_tna": self.is_tna})
 
     @cached_property
     def parent(self) -> Record | None:
@@ -369,8 +379,13 @@ class Record(APIModel):
             return Record(parent)
 
     @cached_property
-    def is_tna(self) -> bool:
+    def is_tna(self) -> bool | None:
         """Returns True if record belongs to TNA, False otherwise."""
+        # checks if page attribute if present, so that same is_tna
+        # is used for the created record
+        if is_tna := self.get("page_record_is_tna", ""):
+            return is_tna
+
         for item in self.get("groupArray", []):
             if item.get("value", "") == "tna":
                 return True
@@ -380,3 +395,22 @@ class Record(APIModel):
     def is_digitised(self) -> bool:
         """Returns True if digitised, False otherwise."""
         return self.get("digitised", False)
+
+    @cached_property
+    def level_name(self) -> str:
+        """Returns level name for tna, non tna level codes"""
+        if self.is_tna:
+            return LEVEL.get(str(self.level_code), "")
+        return NON_TNA_LEVEL.get(str(self.level_code), "")
+
+    @cached_property
+    def url(self) -> str:
+        """Returns record detail url for iaid, empty str otherwise."""
+        if self.iaid:
+            try:
+                return reverse(
+                    "details-page-machine-readable", kwargs={"id": self.iaid}
+                )
+            except NoReverseMatch:
+                pass
+        return ""
