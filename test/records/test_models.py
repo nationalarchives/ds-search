@@ -263,21 +263,31 @@ class RecordModelTests(SimpleTestCase):
         self.record._raw["legalStatus"] = "Public Record(s)"
         self.assertEqual(self.record.legal_status, "Public Record(s)")
 
-    def test_level(self):
+    def test_level_tna(self):
         self.record = Record(self.template_details)
-        # patch raw data
+        # patch raw data        
+        self.record._raw["groupArray"] = [
+            {"value": "record"},
+            {"value": "tna"},
+        ]
         self.record._raw["level"] = {
             "code": 7,
-            "value": "Item",
         }
         self.assertEqual(self.record.level, "Item")
+
+    def test_level_non_tna(self):
+        self.record = Record(self.template_details)
+        # patch raw data        
+        self.record._raw["level"] = {
+            "code": 7,
+        }
+        self.assertEqual(self.record.level, "Sub-sub-series")
 
     def test_level_code(self):
         self.record = Record(self.template_details)
         # patch raw data
         self.record._raw["level"] = {
             "code": 7,
-            "value": "Item",
         }
         self.assertEqual(self.record.level_code, 7)
 
@@ -753,7 +763,7 @@ class RecordModelTests(SimpleTestCase):
                         hierarchy_record.iaid,
                         hierarchy_record.url,
                         hierarchy_record.level_code,
-                        hierarchy_record.level_name,
+                        hierarchy_record.level,
                         hierarchy_record.reference_number,
                         hierarchy_record.summary_title,
                     ),
@@ -781,7 +791,7 @@ class RecordModelTests(SimpleTestCase):
                 self.record.next.iaid,
                 self.record.next.url,
                 self.record.next.level_code,
-                self.record.next.level_name,
+                self.record.next.level,
                 self.record.next.reference_number,
                 self.record.next.summary_title,
             ),
@@ -817,7 +827,7 @@ class RecordModelTests(SimpleTestCase):
                 self.record.previous.iaid,
                 self.record.previous.url,
                 self.record.previous.level_code,
-                self.record.previous.level_name,
+                self.record.previous.level,
                 self.record.previous.reference_number,
                 self.record.previous.summary_title,
             ),

@@ -26,7 +26,7 @@
         </li>
         {% for hierarchy_record in record.hierarchy %}
         <li>
-          {{ hierarchy_record.level_name }}:
+          {{ hierarchy_record.level }}:
           <a href="{{ hierarchy_record.url }}">{{ hierarchy_record.summary_title }}</a>
         </li>
         {% endfor %}
@@ -35,12 +35,12 @@
       <Ul class="tna-ul">
       {% if record.previous %}
         <li>
-          Previous {{ record.previous.level_name }}: <a href="{{ record.previous.url }}">{{ record.previous.reference_number }}</a>
+          Previous {{ record.previous.level }}: <a href="{{ record.previous.url }}">{{ record.previous.reference_number }}</a>
         </li>
       {% endif %}
       {% if record.next %}
         <li>
-          Next {{ record.next.level_name }} : <a href="{{ record.next.url }}">{{ record.next.reference_number }}</a>
+          Next {{ record.next.level }} : <a href="{{ record.next.url }}">{{ record.next.reference_number }}</a>
         </li>
       {% endif %}
       </Ul>

@@ -177,8 +177,10 @@ class Record(APIModel):
 
     @cached_property
     def level(self) -> str:
-        """Returns the api value of the attr if found, empty str otherwise."""
-        return self.get("level.value", "")
+        """Returns level name for tna, non tna level codes"""        
+        if self.is_tna:
+            return LEVEL.get(str(self.level_code), "")
+        return NON_TNA_LEVEL.get(str(self.level_code), "")
 
     @cached_property
     def level_code(self) -> int | None:
@@ -396,13 +398,6 @@ class Record(APIModel):
     def is_digitised(self) -> bool:
         """Returns True if digitised, False otherwise."""
         return self.get("digitised", False)
-
-    @cached_property
-    def level_name(self) -> str:
-        """Returns level name for tna, non tna level codes"""
-        if self.is_tna:
-            return LEVEL.get(str(self.level_code), "")
-        return NON_TNA_LEVEL.get(str(self.level_code), "")
 
     @cached_property
     def url(self) -> str:
