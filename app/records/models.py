@@ -380,7 +380,7 @@ class Record(APIModel):
             return Record(parent | {"page_record_is_tna": self.is_tna})
 
     @cached_property
-    def is_tna(self) -> bool | None:
+    def is_tna(self) -> bool:
         """Returns True if record belongs to TNA, False otherwise."""
         # checks if page attribute if present, so that same is_tna
         # is used for the created record
