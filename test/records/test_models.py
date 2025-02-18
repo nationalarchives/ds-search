@@ -78,9 +78,7 @@ class RecordModelTests(SimpleTestCase):
         self.record._raw["@next"] = {
             "@admin": {"id": "C11827826"},
         }
-        self.record._raw["parent"] = [
-            {"@admin": {"id": "C199"}},
-        ]
+        self.record._raw["parent"] = {"@admin": {"id": "C199"}}
 
         self.assertEqual(self.record.previous.iaid, "C11827824")
         self.assertEqual(self.record.next.iaid, "C11827826")
@@ -121,15 +119,13 @@ class RecordModelTests(SimpleTestCase):
                 },
             ],
         }
-        self.record._raw["parent"] = [
-            {
-                "identifier": [
-                    {
-                        "reference_number": "LO",
-                    },
-                ],
-            },
-        ]
+        self.record._raw["parent"] = {
+            "identifier": [
+                {
+                    "reference_number": "LO",
+                },
+            ],
+        }
 
         self.assertEqual(self.record.previous.reference_number, "LO 3")
         self.assertEqual(self.record.next.reference_number, "LO 1")
@@ -169,13 +165,12 @@ class RecordModelTests(SimpleTestCase):
                 "title": "Law Officers' Department: Law Officers' Opinions"
             },
         }
-        self.record._raw["parent"] = [
-            {
-                "summary": {
-                    "title": "Records created or inherited by the Law Officers' Department"
-                },
+        self.record._raw["parent"] = {
+            "summary": {
+                "title": "Records created or inherited by the Law Officers' Department"
             },
-        ]
+        }
+
         self.record._raw["@hierarchy"] = [
             {
                 "identifier": [
@@ -849,19 +844,17 @@ class RecordModelTests(SimpleTestCase):
     def test_parent(self):
         self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["parent"] = [
-            {
-                "@admin": {"id": "C199"},
-                "identifier": [
-                    {
-                        "reference_number": "LO",
-                    },
-                ],
-                "summary": {
-                    "title": "Records created or inherited by the Law Officers' Department"
+        self.record._raw["parent"] = {
+            "@admin": {"id": "C199"},
+            "identifier": [
+                {
+                    "reference_number": "LO",
                 },
+            ],
+            "summary": {
+                "title": "Records created or inherited by the Law Officers' Department"
             },
-        ]
+        }
 
         self.assertIsInstance(self.record.parent, Record)
         self.assertEqual(

@@ -92,27 +92,25 @@
             "code": 6,
             "value": "Piece"
           },
-          "parent": [
-            {
-              "@admin": {
-                "id": "C16685569"
-              },
-              "identifier": [
-                {
-                  "reference_number": "LITV 2"
-                }
-              ],
-              "level": {
-                "code": 3
-              },
-              "source": {
-                "value": "CAT"
-              },
-              "summary": {
-                "title": "Records of the Inquiry into the death of Alexander Litvinenko on 23 November 2006:..."
+          "parent": {
+            "@admin": {
+              "id": "C16685569"
+            },
+            "identifier": [
+              {
+                "reference_number": "LITV 2"
               }
+            ],
+            "level": {
+              "code": 3
+            },
+            "source": {
+              "value": "CAT"
+            },
+            "summary": {
+              "title": "Records of the Inquiry into the death of Alexander Litvinenko on 23 November 2006:..."
             }
-          ],
+          },
           "physicalDescription": "1 digital record",
           "primaryIdentifier": "00149557ca64456a8a41e44f14621801_1",
           "recordOpening": "17 July 2018",

@@ -87,22 +87,20 @@
             "code": 3,
             "value": "Series"
           },
-          "parent": [
-            {
-              "@admin": {
-                "id": "C1015"
-              },
-              "level": {
-                "code": 2
-              },
-              "source": {
-                "value": "CAT"
-              },
-              "summary": {
-                "title": "Communications and Intelligence Records"
-              }
+          "parent": {
+            "@admin": {
+              "id": "C1015"
+            },
+            "level": {
+              "code": 2
+            },
+            "source": {
+              "value": "CAT"
+            },
+            "summary": {
+              "title": "Communications and Intelligence Records"
             }
-          ],
+          },
           "physicalDescription": "7 file(s)",
           "primaryIdentifier": "C15836",
           "referenceNumber": "DEFE 65",
