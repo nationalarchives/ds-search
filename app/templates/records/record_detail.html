@@ -32,7 +32,7 @@
         {% endfor %}
       </ol>
 
-      <Ul class="tna-ul">
+      <ul class="tna-ul">
       {% if record.previous %}
         <li>
           Previous {{ record.previous.level }}: <a href="{{ record.previous.url }}">{{ record.previous.reference_number }}</a>
@@ -43,9 +43,9 @@
           Next {{ record.next.level }} : <a href="{{ record.next.url }}">{{ record.next.reference_number }}</a>
         </li>
       {% endif %}
-      </Ul>
+      </ul>
 
-      <Ul class="tna-ul">
+      <ul class="tna-ul">
       Legacy Breadcrumb Items for short hierarchy items:
       {%- set bci = record.breadcrumb_items -%}  
       {% for bc_item in bci %}
