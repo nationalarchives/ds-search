@@ -413,3 +413,27 @@ class Record(APIModel):
             except NoReverseMatch:
                 pass
         return ""
+
+    @cached_property
+    def breadcrumb_items(self) -> list:
+        """Returns breadcrumb items depending on position in hierarchy
+        Update tna_breadcrumb_levels or oa_breadcrumb_levels to change the levels displayed
+        """
+        items = []
+        tna_breadcrumb_levels = [1, 2, 3]
+        oa_breadcrumb_levels = [1, 2, 5]
+
+        for hierarchy_record in self.hierarchy:
+            if hierarchy_record.level_code != self.level_code:
+                if self.is_tna:
+                    if hierarchy_record.level_code in tna_breadcrumb_levels:
+                        items.append(hierarchy_record)
+                else:
+                    if hierarchy_record.level_code in oa_breadcrumb_levels:
+                        items.append(hierarchy_record)
+        items.append(self)
+
+        if len(items) > 3:
+            items = items[-3:]
+
+        return items

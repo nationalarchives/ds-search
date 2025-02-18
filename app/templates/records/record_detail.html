@@ -45,6 +45,24 @@
       {% endif %}
       </Ul>
 
+      <Ul class="tna-ul">
+      Legacy Breadcrumb Items for short hierarchy items:
+      {%- set bci = record.breadcrumb_items -%}  
+      {% for bc_item in bci %}
+        {% if bc_item.url %}
+          {% if bc_item.iaid == record.iaid %}
+              {%- set is_current_item = True -%}
+          {% else %}
+              {%- set is_current_item = False -%}
+          {% endif %}
+          {# is_current_item = {{ is_current_item }} #}
+          <li>
+          <a href="{{ bc_item.url }}">{{ bc_item.level }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      </ul>
+
       <h2 class="tna-heading-l">Record details</h2>
       {% set fields = [
         'title',
