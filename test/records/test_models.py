@@ -71,7 +71,7 @@ class RecordModelTests(SimpleTestCase):
 
     def test_iaid_other_places(self):
         self.record = Record(self.template_details)
-        # patch raw
+        # patch raw data
         self.record._raw["@previous"] = {
             "@admin": {"id": "C11827824"},
         }
@@ -293,7 +293,7 @@ class RecordModelTests(SimpleTestCase):
 
     def test_level_code_other_places(self):
         self.record = Record(self.template_details)
-        # patch raw
+        # patch raw data
         self.record._raw["@hierarchy"] = [
             {
                 "identifier": [
@@ -721,6 +721,7 @@ class RecordModelTests(SimpleTestCase):
                 self.record.hierarchy,
                 [
                     (
+                        True,
                         "C8",
                         "/catalogue/id/C8/",
                         1,
@@ -729,6 +730,7 @@ class RecordModelTests(SimpleTestCase):
                         "Records created or inherited by the Air Ministry, the Royal Air Force, and related...",
                     ),
                     (
+                        True,
                         "C2133",
                         "/catalogue/id/C2133/",
                         3,
@@ -737,6 +739,7 @@ class RecordModelTests(SimpleTestCase):
                         "Air Ministry: Air Member for Personnel and predecessors: Airmen's Records",
                     ),
                     (
+                        True,
                         "C3872067",
                         "/catalogue/id/C3872067/",
                         6,
@@ -745,6 +748,7 @@ class RecordModelTests(SimpleTestCase):
                         "107079 - 107200 (Described at item level).",
                     ),
                     (
+                        True,
                         "C11827825",
                         "/catalogue/id/C11827825/",
                         7,
@@ -760,6 +764,7 @@ class RecordModelTests(SimpleTestCase):
                 self.assertIsInstance(hierarchy_record, Record)
                 self.assertEqual(
                     (
+                        hierarchy_record.is_tna,
                         hierarchy_record.iaid,
                         hierarchy_record.url,
                         hierarchy_record.level_code,
@@ -901,3 +906,14 @@ class RecordModelTests(SimpleTestCase):
         # patch raw data
         self.record._raw["digitised"] = False
         self.assertEqual(self.record.is_digitised, False)
+
+    def test_url(self):
+        self.record = Record(self.template_details)
+
+        # patch raw data
+        self.record._raw["iaid"] = "C11827825"
+
+        self.assertEqual(
+            self.record.url,
+            "/catalogue/id/C11827825/",
+        )
