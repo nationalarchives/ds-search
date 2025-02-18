@@ -22,15 +22,46 @@
       <ol class="tna-ol">
         <li>
           Held at:
-          <a href="{{ url('details-page-machine-readable', kwargs={'id': record.held_by_id}) }}">{{ record.held_by | safe }}</a>
+          <a href="{{ record.held_by_url }}">{{ record.held_by | safe }}</a>
         </li>
-        {% for item in record.hierarchy %}
+        {% for hierarchy_record in record.hierarchy %}
         <li>
-          {{ level_labels[item._raw.level.code | string] or '???' }}:
-          <a href="{{ url('details-page-machine-readable', kwargs={'id': item._raw['@admin'].id}) }}">{{ item._raw.summary.title }}</a>
+          {{ hierarchy_record.level }}:
+          <a href="{{ hierarchy_record.url }}">{{ hierarchy_record.summary_title }}</a>
         </li>
         {% endfor %}
       </ol>
+
+      <ul class="tna-ul">
+      {% if record.previous %}
+        <li>
+          Previous {{ record.previous.level }}: <a href="{{ record.previous.url }}">{{ record.previous.reference_number }}</a>
+        </li>
+      {% endif %}
+      {% if record.next %}
+        <li>
+          Next {{ record.next.level }} : <a href="{{ record.next.url }}">{{ record.next.reference_number }}</a>
+        </li>
+      {% endif %}
+      </ul>
+
+      <ul class="tna-ul">
+      Legacy Breadcrumb Items for short hierarchy items:
+      {%- set bci = record.breadcrumb_items -%}  
+      {% for bc_item in bci %}
+        {% if bc_item.url %}
+          {% if bc_item.iaid == record.iaid %}
+              {%- set is_current_item = True -%}
+          {% else %}
+              {%- set is_current_item = False -%}
+          {% endif %}
+          {# is_current_item = {{ is_current_item }} #}
+          <li>
+          <a href="{{ bc_item.url }}">{{ bc_item.level }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      </ul>
 
       <h2 class="tna-heading-l">Record details</h2>
       {% set fields = [
@@ -53,7 +84,7 @@
         </dt>
         <dd>
           {% if field == 'held_by' %}
-          <a href="{{ url('details-page-machine-readable', kwargs={'id': record.held_by_id}) }}">{{ record[field] | safe }}</a>
+          <a href="{{ record.held_by_url }}">{{ record[field] | safe }}</a>
           {% elif field in ['creator'] %}
           {# Show a list of items #}
           <ul class="tna-ul">

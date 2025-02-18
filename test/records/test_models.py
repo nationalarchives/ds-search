@@ -43,7 +43,7 @@ class RecordModelTests(SimpleTestCase):
         self.assertEqual(self.record.appraisal_information, "")
         self.assertEqual(self.record.copies_information, "")
         self.assertEqual(self.record.custodial_history, "")
-        self.assertEqual(self.record.immediate_source_of_acquisition, [])
+        self.assertEqual(self.record.immediate_source_of_acquisition, "")
         self.assertEqual(self.record.location_of_originals, [])
         self.assertEqual(self.record.restrictions_on_use, "")
         self.assertEqual(self.record.administrative_background, "")
@@ -71,31 +71,17 @@ class RecordModelTests(SimpleTestCase):
 
     def test_iaid_other_places(self):
         self.record = Record(self.template_details)
-        # patch raw
+        # patch raw data
         self.record._raw["@previous"] = {
-            "identifier": [
-                {
-                    "iaid": "C10298",
-                },
-            ],
+            "@admin": {"id": "C11827824"},
         }
         self.record._raw["@next"] = {
-            "identifier": [
-                {
-                    "iaid": "C10296",
-                },
-            ],
+            "@admin": {"id": "C11827826"},
         }
-        self.record._raw["parent"] = {
-            "identifier": [
-                {
-                    "iaid": "C199",
-                },
-            ],
-        }
+        self.record._raw["parent"] = {"@admin": {"id": "C199"}}
 
-        self.assertEqual(self.record.previous.iaid, "C10298")
-        self.assertEqual(self.record.next.iaid, "C10296")
+        self.assertEqual(self.record.previous.iaid, "C11827824")
+        self.assertEqual(self.record.next.iaid, "C11827826")
         self.assertEqual(self.record.parent.iaid, "C199")
 
     def test_source(self):
@@ -184,6 +170,7 @@ class RecordModelTests(SimpleTestCase):
                 "title": "Records created or inherited by the Law Officers' Department"
             },
         }
+
         self.record._raw["@hierarchy"] = [
             {
                 "identifier": [
@@ -271,27 +258,37 @@ class RecordModelTests(SimpleTestCase):
         self.record._raw["legalStatus"] = "Public Record(s)"
         self.assertEqual(self.record.legal_status, "Public Record(s)")
 
-    def test_level(self):
+    def test_level_tna(self):
+        self.record = Record(self.template_details)
+        # patch raw data
+        self.record._raw["groupArray"] = [
+            {"value": "record"},
+            {"value": "tna"},
+        ]
+        self.record._raw["level"] = {
+            "code": 7,
+        }
+        self.assertEqual(self.record.level, "Item")
+
+    def test_level_non_tna(self):
         self.record = Record(self.template_details)
         # patch raw data
         self.record._raw["level"] = {
             "code": 7,
-            "value": "Item",
         }
-        self.assertEqual(self.record.level, "Item")
+        self.assertEqual(self.record.level, "Sub-sub-series")
 
     def test_level_code(self):
         self.record = Record(self.template_details)
         # patch raw data
         self.record._raw["level"] = {
             "code": 7,
-            "value": "Item",
         }
         self.assertEqual(self.record.level_code, 7)
 
     def test_level_code_other_places(self):
         self.record = Record(self.template_details)
-        # patch raw
+        # patch raw data
         self.record._raw["@hierarchy"] = [
             {
                 "identifier": [
@@ -452,18 +449,18 @@ class RecordModelTests(SimpleTestCase):
     def test_immediate_source_of_acquisition(self):
         self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["immediateSourceOfAcquisition"] = [
-            "since 1947 Essex Record Office",
-            "Charles Cornwallis, 5th Baron Braybrooke, 1823-1902",
-            "Henry Seymour Neville, 9th Baron Braybrooke, 1897-1990",
-        ]
+        self.record._raw["immediateSourceOfAcquisition"] = (
+            "<p>since 1947 Essex Record Office</p>"
+            "<p>Charles Cornwallis, 5th Baron Braybrooke, 1823-1902</p>"
+            "<p>Henry Seymour Neville, 9th Baron Braybrooke, 1897-1990</p>"
+        )
         self.assertEqual(
             self.record.immediate_source_of_acquisition,
-            [
-                "since 1947 Essex Record Office",
-                "Charles Cornwallis, 5th Baron Braybrooke, 1823-1902",
-                "Henry Seymour Neville, 9th Baron Braybrooke, 1897-1990",
-            ],
+            (
+                "<p>since 1947 Essex Record Office</p>"
+                "<p>Charles Cornwallis, 5th Baron Braybrooke, 1823-1902</p>"
+                "<p>Henry Seymour Neville, 9th Baron Braybrooke, 1897-1990</p>"
+            ),
         )
 
     def test_location_of_originals(self):
@@ -651,8 +648,14 @@ class RecordModelTests(SimpleTestCase):
     def test_hierarchy(self):
         self.record = Record(self.template_details)
         # patch raw data
+        self.record._raw["iaid"] = "C11827825"
+        self.record._raw["groupArray"] = [
+            {"value": "record"},
+            {"value": "tna"},
+        ]
         self.record._raw["@hierarchy"] = [
             {
+                "@admin": {"id": "C8"},
                 "identifier": [
                     {
                         "reference_number": "AIR",
@@ -664,12 +667,14 @@ class RecordModelTests(SimpleTestCase):
                 },
             },
             {
+                "@admin": {"id": "C955"},
                 "level": {"code": 2},
                 "summary": {
                     "title": "Records of the Department of the Master General of Personnel and the Air Member for..."
                 },
             },
             {
+                "@admin": {"id": "C2133"},
                 "identifier": [
                     {
                         "reference_number": "AIR 79",
@@ -681,6 +686,7 @@ class RecordModelTests(SimpleTestCase):
                 },
             },
             {
+                "@admin": {"id": "C3872067"},
                 "identifier": [
                     {
                         "reference_number": "AIR 79/962",
@@ -692,6 +698,7 @@ class RecordModelTests(SimpleTestCase):
                 },
             },
             {
+                "@admin": {"id": "C11827825"},
                 "identifier": [
                     {
                         "reference_number": "AIR 79/962/107133",
@@ -703,110 +710,145 @@ class RecordModelTests(SimpleTestCase):
         ]
 
         self.assertEqual(len(self.record.hierarchy), 4)
-        for r in self.record.hierarchy:
-            self.assertIsInstance(r, Record)
 
-        self.assertEqual(
-            [
-                (r.level_code, r.reference_number, r.summary_title)
-                for r in self.record.hierarchy
-            ],
-            [
-                (
-                    1,
-                    "AIR",
-                    "Records created or inherited by the Air Ministry, the Royal Air Force, and related...",
-                ),
-                (
-                    3,
-                    "AIR 79",
-                    "Air Ministry: Air Member for Personnel and predecessors: Airmen's Records",
-                ),
-                (
-                    6,
-                    "AIR 79/962",
-                    "107079 - 107200 (Described at item level).",
-                ),
-                (
-                    7,
-                    "AIR 79/962/107133",
-                    "Name: Percy Augustus Cecil Gadd.",
-                ),
-            ],
-        )
+        for i, r in enumerate(
+            zip(
+                self.record.hierarchy,
+                [
+                    (
+                        True,
+                        "C8",
+                        "/catalogue/id/C8/",
+                        1,
+                        "Department",
+                        "AIR",
+                        "Records created or inherited by the Air Ministry, the Royal Air Force, and related...",
+                    ),
+                    (
+                        True,
+                        "C2133",
+                        "/catalogue/id/C2133/",
+                        3,
+                        "Series",
+                        "AIR 79",
+                        "Air Ministry: Air Member for Personnel and predecessors: Airmen's Records",
+                    ),
+                    (
+                        True,
+                        "C3872067",
+                        "/catalogue/id/C3872067/",
+                        6,
+                        "Piece",
+                        "AIR 79/962",
+                        "107079 - 107200 (Described at item level).",
+                    ),
+                    (
+                        True,
+                        "C11827825",
+                        "/catalogue/id/C11827825/",
+                        7,
+                        "Item",
+                        "AIR 79/962/107133",
+                        "Name: Percy Augustus Cecil Gadd.",
+                    ),
+                ],
+            )
+        ):
+            with self.subTest(i):
+                hierarchy_record, expected = r[0], r[1]
+                self.assertIsInstance(hierarchy_record, Record)
+                self.assertEqual(
+                    (
+                        hierarchy_record.is_tna,
+                        hierarchy_record.iaid,
+                        hierarchy_record.url,
+                        hierarchy_record.level_code,
+                        hierarchy_record.level,
+                        hierarchy_record.reference_number,
+                        hierarchy_record.summary_title,
+                    ),
+                    expected,
+                )
 
     def test_next(self):
         self.record = Record(self.template_details)
-        # patch raw data - C10297, LO 2
+        # patch raw data
+        self.record._raw["iaid"] = "C11827825"
+        self.record._raw["groupArray"] = [
+            {"value": "record"},
+            {"value": "tna"},
+        ]
         self.record._raw["@next"] = {
-            "identifier": [
-                {
-                    "reference_number": "LO 1",
-                },
-                {
-                    "iaid": "C10296",
-                },
-            ],
-            "summary": {
-                "title": "Law Officers' Department: Law Officers' Opinions"
-            },
+            "@admin": {"id": "C11827826"},
+            "summary": {"title": "Name: William Wilson."},
+            "level": {"code": 7},
+            "identifier": [{"reference_number": "AIR 79/962/107134"}],
         }
 
         self.assertIsInstance(self.record.next, Record)
         self.assertEqual(
             (
                 self.record.next.iaid,
+                self.record.next.url,
+                self.record.next.level_code,
+                self.record.next.level,
                 self.record.next.reference_number,
                 self.record.next.summary_title,
             ),
             (
-                "C10296",
-                "LO 1",
-                "Law Officers' Department: Law Officers' Opinions",
+                "C11827826",
+                "/catalogue/id/C11827826/",
+                7,
+                "Item",
+                "AIR 79/962/107134",
+                "Name: William Wilson.",
             ),
         )
 
     def test_previous(self):
         self.record = Record(self.template_details)
-        # patch raw data - C10297, LO 2
+        # patch raw data
+        self.record._raw["iaid"] = "C11827825"
+        self.record._raw["groupArray"] = [
+            {"value": "record"},
+            {"value": "tna"},
+        ]
         self.record._raw["@previous"] = {
-            "identifier": [
-                {
-                    "reference_number": "LO 3",
-                },
-                {
-                    "iaid": "C10298",
-                },
-            ],
-            "summary": {
-                "title": "Law Officers' Department: Patents for Inventions"
-            },
+            "@admin": {"id": "C11827824"},
+            "summary": {"title": "Name: George Forster."},
+            "level": {"code": 7},
+            "identifier": [{"reference_number": "AIR 79/962/107132"}],
         }
 
         self.assertIsInstance(self.record.previous, Record)
+
         self.assertEqual(
             (
                 self.record.previous.iaid,
+                self.record.previous.url,
+                self.record.previous.level_code,
+                self.record.previous.level,
                 self.record.previous.reference_number,
                 self.record.previous.summary_title,
             ),
             (
-                "C10298",
-                "LO 3",
-                "Law Officers' Department: Patents for Inventions",
+                "C11827824",
+                "/catalogue/id/C11827824/",
+                7,
+                "Item",
+                "AIR 79/962/107132",
+                "Name: George Forster.",
             ),
         )
 
     def test_parent(self):
         self.record = Record(self.template_details)
-        # patch raw data - C10297, LO 2
+        # patch raw data
         self.record._raw["parent"] = {
+            "@admin": {"id": "C199"},
             "identifier": [
                 {
                     "reference_number": "LO",
-                },
-                {
-                    "iaid": "C199",
                 },
             ],
             "summary": {
@@ -857,3 +899,14 @@ class RecordModelTests(SimpleTestCase):
         # patch raw data
         self.record._raw["digitised"] = False
         self.assertEqual(self.record.is_digitised, False)
+
+    def test_url(self):
+        self.record = Record(self.template_details)
+
+        # patch raw data
+        self.record._raw["iaid"] = "C11827825"
+
+        self.assertEqual(
+            self.record.url,
+            "/catalogue/id/C11827825/",
+        )

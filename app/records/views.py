@@ -1,6 +1,6 @@
 from app.lib.api import ResourceNotFound
 from app.records.api import record_details_by_id, record_details_by_ref
-from app.records.labels import FIELD_LABELS, LEVEL_LABELS, NON_TNA_LEVEL_LABELS
+from app.records.labels import FIELD_LABELS
 from django.http import Http404
 from django.template.loader import get_template
 from django.template.response import TemplateResponse
@@ -47,8 +47,6 @@ def record_detail_view(request, id):
     template_name = "records/record_detail.html"
     context: dict = {
         "field_labels": FIELD_LABELS,
-        "level_labels": LEVEL_LABELS,
-        "non_tna_level_labels": NON_TNA_LEVEL_LABELS,
     }
 
     try:
