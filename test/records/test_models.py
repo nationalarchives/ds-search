@@ -43,7 +43,7 @@ class RecordModelTests(SimpleTestCase):
         self.assertEqual(self.record.appraisal_information, "")
         self.assertEqual(self.record.copies_information, "")
         self.assertEqual(self.record.custodial_history, "")
-        self.assertEqual(self.record.immediate_source_of_acquisition, [])
+        self.assertEqual(self.record.immediate_source_of_acquisition, "")
         self.assertEqual(self.record.location_of_originals, [])
         self.assertEqual(self.record.restrictions_on_use, "")
         self.assertEqual(self.record.administrative_background, "")
@@ -78,13 +78,9 @@ class RecordModelTests(SimpleTestCase):
         self.record._raw["@next"] = {
             "@admin": {"id": "C11827826"},
         }
-        self.record._raw["parent"] = {
-            "identifier": [
-                {
-                    "iaid": "C199",
-                },
-            ],
-        }
+        self.record._raw["parent"] = [
+            {"@admin": {"id": "C199"}},
+        ]
 
         self.assertEqual(self.record.previous.iaid, "C11827824")
         self.assertEqual(self.record.next.iaid, "C11827826")
@@ -125,13 +121,15 @@ class RecordModelTests(SimpleTestCase):
                 },
             ],
         }
-        self.record._raw["parent"] = {
-            "identifier": [
-                {
-                    "reference_number": "LO",
-                },
-            ],
-        }
+        self.record._raw["parent"] = [
+            {
+                "identifier": [
+                    {
+                        "reference_number": "LO",
+                    },
+                ],
+            },
+        ]
 
         self.assertEqual(self.record.previous.reference_number, "LO 3")
         self.assertEqual(self.record.next.reference_number, "LO 1")
@@ -171,11 +169,13 @@ class RecordModelTests(SimpleTestCase):
                 "title": "Law Officers' Department: Law Officers' Opinions"
             },
         }
-        self.record._raw["parent"] = {
-            "summary": {
-                "title": "Records created or inherited by the Law Officers' Department"
+        self.record._raw["parent"] = [
+            {
+                "summary": {
+                    "title": "Records created or inherited by the Law Officers' Department"
+                },
             },
-        }
+        ]
         self.record._raw["@hierarchy"] = [
             {
                 "identifier": [
@@ -265,7 +265,7 @@ class RecordModelTests(SimpleTestCase):
 
     def test_level_tna(self):
         self.record = Record(self.template_details)
-        # patch raw data        
+        # patch raw data
         self.record._raw["groupArray"] = [
             {"value": "record"},
             {"value": "tna"},
@@ -277,7 +277,7 @@ class RecordModelTests(SimpleTestCase):
 
     def test_level_non_tna(self):
         self.record = Record(self.template_details)
-        # patch raw data        
+        # patch raw data
         self.record._raw["level"] = {
             "code": 7,
         }
@@ -454,18 +454,18 @@ class RecordModelTests(SimpleTestCase):
     def test_immediate_source_of_acquisition(self):
         self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["immediateSourceOfAcquisition"] = [
-            "since 1947 Essex Record Office",
-            "Charles Cornwallis, 5th Baron Braybrooke, 1823-1902",
-            "Henry Seymour Neville, 9th Baron Braybrooke, 1897-1990",
-        ]
+        self.record._raw["immediateSourceOfAcquisition"] = (
+            "<p>since 1947 Essex Record Office</p>"
+            "<p>Charles Cornwallis, 5th Baron Braybrooke, 1823-1902</p>"
+            "<p>Henry Seymour Neville, 9th Baron Braybrooke, 1897-1990</p>"
+        )
         self.assertEqual(
             self.record.immediate_source_of_acquisition,
-            [
-                "since 1947 Essex Record Office",
-                "Charles Cornwallis, 5th Baron Braybrooke, 1823-1902",
-                "Henry Seymour Neville, 9th Baron Braybrooke, 1897-1990",
-            ],
+            (
+                "<p>since 1947 Essex Record Office</p>"
+                "<p>Charles Cornwallis, 5th Baron Braybrooke, 1823-1902</p>"
+                "<p>Henry Seymour Neville, 9th Baron Braybrooke, 1897-1990</p>"
+            ),
         )
 
     def test_location_of_originals(self):
@@ -843,20 +843,20 @@ class RecordModelTests(SimpleTestCase):
 
     def test_parent(self):
         self.record = Record(self.template_details)
-        # patch raw data - C10297, LO 2
-        self.record._raw["parent"] = {
-            "identifier": [
-                {
-                    "reference_number": "LO",
+        # patch raw data
+        self.record._raw["parent"] = [
+            {
+                "@admin": {"id": "C199"},
+                "identifier": [
+                    {
+                        "reference_number": "LO",
+                    },
+                ],
+                "summary": {
+                    "title": "Records created or inherited by the Law Officers' Department"
                 },
-                {
-                    "iaid": "C199",
-                },
-            ],
-            "summary": {
-                "title": "Records created or inherited by the Law Officers' Department"
             },
-        }
+        ]
 
         self.assertIsInstance(self.record.parent, Record)
         self.assertEqual(

@@ -28,17 +28,11 @@
           "@hierarchy": [
             {
               "@admin": {
-                "id": "C76",
-                "uid": "mongo-c76",
-                "uuid": "b5fa99b2-3f97-30a1-b630-e5afdd3e4603"
+                "id": "C76"
               },
-              "@entity": "reference",
               "identifier": [
                 {
-                  "__reference_number": "DEFE",
-                  "primary": true,
-                  "type": "reference number",
-                  "value": "DEFE"
+                  "reference_number": "DEFE"
                 }
               ],
               "level": {
@@ -53,11 +47,8 @@
             },
             {
               "@admin": {
-                "id": "C1015",
-                "uid": "mongo-c1015",
-                "uuid": "56cd7e4d-6de6-3d40-9e5b-c8edefe0be15"
+                "id": "C1015"
               },
-              "@entity": "reference",
               "level": {
                 "code": 2
               },
@@ -70,17 +61,11 @@
             },
             {
               "@admin": {
-                "id": "C15836",
-                "uid": "mongo-c15836",
-                "uuid": "c8e6178f-b40f-32cb-aea6-f4ab5cac2cbf"
+                "id": "C15836"
               },
-              "@entity": "reference",
               "identifier": [
                 {
-                  "__reference_number": "DEFE 65",
-                  "primary": true,
-                  "type": "reference number",
-                  "value": "DEFE 65"
+                  "reference_number": "DEFE 65"
                 }
               ],
               "level": {
@@ -95,13 +80,29 @@
             }
           ],
           "iaid": "C15836",
-          "immediateSourceOfAcquisition": ["From 2003  Ministry of Defence"],
+          "immediateSourceOfAcquisition": "<p>From 2003  Ministry of Defence</p>",
           "language": "English",
           "legalStatus": "Public Record(s)",
           "level": {
             "code": 3,
             "value": "Series"
           },
+          "parent": [
+            {
+              "@admin": {
+                "id": "C1015"
+              },
+              "level": {
+                "code": 2
+              },
+              "source": {
+                "value": "CAT"
+              },
+              "summary": {
+                "title": "Communications and Intelligence Records"
+              }
+            }
+          ],
           "physicalDescription": "7 file(s)",
           "primaryIdentifier": "C15836",
           "referenceNumber": "DEFE 65",
@@ -119,7 +120,39 @@
           "source": "CAT",
           "summaryTitle": "Ministry of Defence: Joint Intelligence Bureau and Defence Intelligence Staff: Intelligence...",
           "title": "<span class=\"unittitle\">Ministry of Defence: Joint Intelligence Bureau and Defence Intelligence Staff: Intelligence Conferences, Committees and Working Parties: Reports and Papers.</span>",
-          "type": "aggregation"
+          "type": "aggregation",
+          "@previous": {
+            "@admin": {
+              "id": "C15835"
+            },
+            "summary": {
+              "title": "Ministry of Defence - Defence Intelligence Staff: Directorate of Economic Intelligence:..."
+            },
+            "level": {
+              "code": 3
+            },
+            "identifier": [
+              {
+                "reference_number": "DEFE 64"
+              }
+            ]
+          },
+          "@next": {
+            "@admin": {
+              "id": "C15837"
+            },
+            "summary": {
+              "title": "Ministry of Defence: Joint Intelligence Bureau and Defence Intelligence Staff: Miscellaneous..."
+            },
+            "level": {
+              "code": 3
+            },
+            "identifier": [
+              {
+                "reference_number": "DEFE 66"
+              }
+            ]
+          }
         }
       }
     }

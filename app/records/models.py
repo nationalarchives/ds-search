@@ -177,7 +177,7 @@ class Record(APIModel):
 
     @cached_property
     def level(self) -> str:
-        """Returns level name for tna, non tna level codes"""        
+        """Returns level name for tna, non tna level codes"""
         if self.is_tna:
             return LEVEL.get(str(self.level_code), "")
         return NON_TNA_LEVEL.get(str(self.level_code), "")
@@ -279,9 +279,9 @@ class Record(APIModel):
         return self.get("custodialHistory", "")
 
     @cached_property
-    def immediate_source_of_acquisition(self) -> list[str]:
-        """Returns the api value of the attr if found, empty list otherwise."""
-        return self.get("immediateSourceOfAcquisition", [])
+    def immediate_source_of_acquisition(self) -> str:
+        """Returns the api value of the attr if found, empty str otherwise."""
+        return self.get("immediateSourceOfAcquisition", "")
 
     @cached_property
     def location_of_originals(self) -> list[str]:
@@ -366,6 +366,7 @@ class Record(APIModel):
         if next := self.get("@next", None):
             # page_record_is_tna: carry status to next record
             return Record(next | {"page_record_is_tna": self.is_tna})
+        return None
 
     @cached_property
     def previous(self) -> Record | None:
@@ -373,13 +374,15 @@ class Record(APIModel):
         if previous := self.get("@previous", None):
             # page_record_is_tna: carry status to previous record
             return Record(previous | {"page_record_is_tna": self.is_tna})
+        return None
 
     @cached_property
     def parent(self) -> Record | None:
         """Returns a record transformed from the values of the attr if found, None otherwise."""
         if parent := self.get("parent", None):
             # page_record_is_tna: carry status to parent record
-            return Record(parent | {"page_record_is_tna": self.is_tna})
+            return Record(parent[0] | {"page_record_is_tna": self.is_tna})
+        return None
 
     @cached_property
     def is_tna(self) -> bool:

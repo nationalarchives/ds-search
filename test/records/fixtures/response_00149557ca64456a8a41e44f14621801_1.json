@@ -30,17 +30,11 @@
           "@hierarchy": [
             {
               "@admin": {
-                "id": "C16676497",
-                "uid": "mongo-c16676497",
-                "uuid": "67ceef47-89a0-30ee-8143-d09b469748b4"
+                "id": "C16676497"
               },
-              "@entity": "reference",
               "identifier": [
                 {
-                  "__reference_number": "LITV",
-                  "primary": true,
-                  "type": "reference number",
-                  "value": "LITV"
+                  "reference_number": "LITV"
                 }
               ],
               "level": {
@@ -55,17 +49,11 @@
             },
             {
               "@admin": {
-                "id": "C16685569",
-                "uid": "mongo-c16685569",
-                "uuid": "1b9a5675-37d2-3374-9099-3b8796676505"
+                "id": "C16685569"
               },
-              "@entity": "reference",
               "identifier": [
                 {
-                  "__reference_number": "LITV 2",
-                  "primary": true,
-                  "type": "reference number",
-                  "value": "LITV 2"
+                  "reference_number": "LITV 2"
                 }
               ],
               "level": {
@@ -80,17 +68,11 @@
             },
             {
               "@admin": {
-                "id": "00149557ca64456a8a41e44f14621801_1",
-                "uid": "mongo-00149557ca64456a8a41e44f14621801_1",
-                "uuid": "414a6581-f875-37cf-8064-348b2a35a18e"
+                "id": "00149557ca64456a8a41e44f14621801_1"
               },
-              "@entity": "reference",
               "identifier": [
                 {
-                  "__reference_number": "LITV 2/D63/Z/1",
-                  "primary": true,
-                  "type": "reference number",
-                  "value": "LITV 2/D63/Z/1"
+                  "reference_number": "LITV 2/D63/Z/1"
                 }
               ],
               "level": {
@@ -110,6 +92,27 @@
             "code": 6,
             "value": "Piece"
           },
+          "parent": [
+            {
+              "@admin": {
+                "id": "C16685569"
+              },
+              "identifier": [
+                {
+                  "reference_number": "LITV 2"
+                }
+              ],
+              "level": {
+                "code": 3
+              },
+              "source": {
+                "value": "CAT"
+              },
+              "summary": {
+                "title": "Records of the Inquiry into the death of Alexander Litvinenko on 23 November 2006:..."
+              }
+            }
+          ],
           "physicalDescription": "1 digital record",
           "primaryIdentifier": "00149557ca64456a8a41e44f14621801_1",
           "recordOpening": "17 July 2018",
@@ -125,7 +128,39 @@
           "source": "CAT",
           "summaryTitle": "INQ019885.pdf",
           "title": "INQ019885.pdf",
-          "type": "record"
+          "type": "record",
+          "@previous": {
+            "@admin": {
+              "id": "00149557ca64456a8a41e44f14621801"
+            },
+            "summary": {
+              "title": "INQ019885.pdf"
+            },
+            "level": {
+              "code": 6
+            },
+            "identifier": [
+              {
+                "reference_number": "LITV 2/D63/Z"
+              }
+            ]
+          },
+          "@next": {
+            "@admin": {
+              "id": "2403b5f38460413c87e9f8c20bb9c393"
+            },
+            "summary": {
+              "title": "INQ019892.pdf"
+            },
+            "level": {
+              "code": 6
+            },
+            "identifier": [
+              {
+                "reference_number": "LITV 2/D64/Z"
+              }
+            ]
+          }
         }
       }
     }
