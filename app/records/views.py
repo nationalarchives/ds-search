@@ -1,3 +1,10 @@
+import logging
+
+from app.deliveryoptions.delivery_options_api import get_delivery_option
+from app.deliveryoptions.utils import (
+    AvailabilityCondition,
+    construct_delivery_options,
+)
 from app.lib.api import ResourceNotFound
 from app.records.api import record_details_by_id, record_details_by_ref
 from app.records.labels import FIELD_LABELS
@@ -39,6 +46,8 @@ from django.urls import reverse
 #         request=request, template=template_name, context=context
 #     )
 
+logger = logging.getLogger(__name__)
+
 
 def record_detail_view(request, id):
     """
@@ -66,6 +75,33 @@ def record_detail_view(request, id):
         record=record,
     )
 
+    # Get the delivery options for the iaid
+    do_ctx = {}
+
+    try:
+        delivery_options = get_delivery_option(iaid=record.iaid)
+
+        do_ctx = construct_delivery_options(delivery_options, record, request)
+
+    except Exception as e:
+        # Built in order exception option
+        logger.warning(
+            f"DORIS Connection error - returning OrderException from Availability Conditions {e.args}"
+        )
+
+        do_ctx = construct_delivery_options(
+            [
+                {
+                    "options": AvailabilityCondition.OrderException,
+                    "surrogateLinks": [],
+                    "advancedOrderUrlParameters": "",
+                }
+            ],
+            record,
+            request,
+        )
+
+    context.update(do_ctx)
     if record.custom_record_type:
         if record.custom_record_type == "ARCHON":
             template_name = "records/archon_detail.html"

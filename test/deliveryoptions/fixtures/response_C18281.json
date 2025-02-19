@@ -1,0 +1,128 @@
+{
+  "data": [
+    {
+      "@template": {
+        "details": {
+          "accessCondition": "Subject to 30 year closure",
+          "accruals": "Series is accruing",
+          "administrativeBackground": "The series consists of a collection of reports and papers produced by some ofthe many intelligence conferences or working parties in which the JointIntelligence Bureau and Defence Intelligence Staff participated, often incollaboration with the United Kingdom's intelligence allies and partners, andby a wide range of intelligence committees, sub-committees or other workinggroups established over the years as necessary to address numerousinter-departmental, cross-directorate or multi-disciplinary intelligenceproblems and issues.",
+          "catalogueContext": [
+            "Communications and Intelligence Records",
+            "Records of the Ministry of Defence"
+          ],
+          "creator": ["Ministry of Defence, 1947"],
+          "dateCovering": "1959 - 1975",
+          "description": "<span class=\"scopecontent\"><p>The series consists of a collection of reports and papers produced by some of the many intelligence conferences or working parties in which the Joint Intelligence Bureau and Defence Intelligence Staff participated, often in collaboration with the United Kingdom's intelligence allies and partners, and by a wide range of intelligence committees, sub-committees or other working groups established over the years as necessary to address numerous inter-departmental, cross-directorate or multi-disciplinary intelligence problems and issues.</p></span>",
+          "digitised": false,
+          "formerDepartmentReference": "EWP, DI",
+          "groupArray": [
+            {
+              "value": "aggregation"
+            },
+            {
+              "value": "tna"
+            }
+          ],
+          "heldBy": "The National Archives, Kew",
+          "heldById": "A13530124",
+          "@hierarchy": [
+            {
+              "@admin": {
+                "id": "C76",
+                "uid": "mongo-c76",
+                "uuid": "b5fa99b2-3f97-30a1-b630-e5afdd3e4603"
+              },
+              "@entity": "reference",
+              "identifier": [
+                {
+                  "__reference_number": "FCO",
+                  "primary": true,
+                  "type": "reference number",
+                  "value": "FCO"
+                }
+              ],
+              "level": {
+                "code": 1
+              },
+              "source": {
+                "value": "CAT"
+              },
+              "summary": {
+                "title": "Records of the Ministry of Defence"
+              }
+            },
+            {
+              "@admin": {
+                "id": "C1015",
+                "uid": "mongo-c1015",
+                "uuid": "56cd7e4d-6de6-3d40-9e5b-c8edefe0be15"
+              },
+              "@entity": "reference",
+              "level": {
+                "code": 2
+              },
+              "source": {
+                "value": "CAT"
+              },
+              "summary": {
+                "title": "Communications and Intelligence Records"
+              }
+            },
+            {
+              "@admin": {
+                "id": "C18281",
+                "uid": "mongo-C18281",
+                "uuid": "c8e6178f-b40f-32cb-aea6-f4ab5cac2cbf"
+              },
+              "@entity": "reference",
+              "identifier": [
+                {
+                  "__reference_number": "FCO 65",
+                  "primary": true,
+                  "type": "reference number",
+                  "value": "FCO 65"
+                }
+              ],
+              "level": {
+                "code": 3
+              },
+              "source": {
+                "value": "CAT"
+              },
+              "summary": {
+                "title": "Ministry of Defence: Joint Intelligence Bureau and Defence Intelligence Staff: Intelligence..."
+              }
+            }
+          ],
+          "iaid": "C18281",
+          "immediateSourceOfAcquisition": ["From 2003  Ministry of Defence"],
+          "language": "English",
+          "legalStatus": "Public Record(s)",
+          "level": {
+            "code": 3,
+            "value": "Series"
+          },
+          "physicalDescription": "7 file(s)",
+          "primaryIdentifier": "C18281",
+          "recordOpening": "26 February 1977",
+          "referenceNumber": "FCO 65",
+          "relatedMaterials": [
+            {
+              "description": "Papers and reports of the pre-1964 single-service intelligence directorates can be found in:",
+              "links": [
+                "<a href=\"C1931\">ADM 223</a>",
+                "<a href=\"C2095\">AIR 40</a>",
+                "<a href=\"C14314\">WO 106</a>",
+                "<a href=\"C14414\">WO 208</a>"
+              ]
+            }
+          ],
+          "source": "CAT",
+          "summaryTitle": "Ministry of Defence: Joint Intelligence Bureau and Defence Intelligence Staff: Intelligence...",
+          "title": "<span class=\"unittitle\">Ministry of Defence: Joint Intelligence Bureau and Defence Intelligence Staff: Intelligence Conferences, Committees and Working Parties: Reports and Papers.</span>",
+          "type": "aggregation"
+        }
+      }
+    }
+  ]
+}

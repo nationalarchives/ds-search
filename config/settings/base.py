@@ -101,7 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en-gb"
 
 TIME_ZONE = "UTC"
 
@@ -254,6 +254,30 @@ LOGGING = {
 SENTRY_DSN = os.getenv("SENTRY_DSN", "")
 ENVIRONMENT_NAME = os.getenv("ENVIRONMENT_NAME", "production")
 SENTRY_SAMPLE_RATE = float(os.getenv("SENTRY_SAMPLE_RATE", "0.1"))
+
+# Delivery Options API Client
+DELIVERY_OPTIONS_CLIENT_BASE_URL = os.getenv(
+    "DELIVERY_OPTIONS_CLIENT_BASE_URL",
+    "http://discovery-services.live.local/DiscoveryDeliveryOptionsapi/api/DeliveryOptions",
+)
+
+# Delivery Options specific constants
+BASE_TNA_URL = os.getenv("BASE_TNA_URL", "https://www.nationalarchives.gov.uk")
+MAX_BASKET_ITEMS = os.getenv("MAX_BASKET_ITEMS", "10")
+DELIVERY_OPTIONS_CONFIG = os.getenv(
+    "DELIVERY_OPTIONS_CONFIG", "app/deliveryoptions/delivery_options.json"
+)
+ADVANCED_DOCUMENT_ORDER_EMAIL = os.getenv(
+    "ADVANCED_DOCUMENT_ORDER_EMAIL",
+    "advanceddocumentorder@nationalarchives.gov.uk",
+)
+# Comma separated list of distressing content warning prefixes
+DELIVERY_OPTIONS_DCS_LIST = os.getenv("DELIVERY_OPTIONS_DCS_LIST", "LEV")
+
+# Image library URL
+IMAGE_LIBRARY_URL = os.getenv(
+    "IMAGE_LIBRARY_URL", "https://images.nationalarchives.gov.uk/"
+)
 
 # Generated in the CI/CD process
 BUILD_VERSION = os.getenv("BUILD_VERSION", "")
