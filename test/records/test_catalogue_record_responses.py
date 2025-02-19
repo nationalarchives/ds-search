@@ -1,7 +1,7 @@
 import json
 from copy import deepcopy
 
-from app.records.models import APIResponse
+from app.records.models import APIResponse, Record
 from django.conf import settings
 from django.test import SimpleTestCase
 
@@ -60,7 +60,7 @@ class CatalogueRecordResponseTests(SimpleTestCase):
         self.assertEqual(self.record.custodial_history, "")
         self.assertEqual(
             self.record.immediate_source_of_acquisition,
-            ["From 2003  Ministry of Defence"],
+            "<p>From 2003  Ministry of Defence</p>",
         )
         self.assertEqual(self.record.location_of_originals, [])
         self.assertEqual(self.record.restrictions_on_use, "")
@@ -134,9 +134,9 @@ class CatalogueRecordResponseTests(SimpleTestCase):
         self.assertEqual(self.record.separated_materials, ())
         self.assertEqual(self.record.unpublished_finding_aids, [])
         self.assertEqual(len(self.record.hierarchy), 2)
-        self.assertEqual(self.record.next, None)
-        self.assertEqual(self.record.previous, None)
-        self.assertEqual(self.record.parent, None)
+        self.assertIsInstance(self.record.next, Record)
+        self.assertIsInstance(self.record.previous, Record)
+        self.assertIsInstance(self.record.parent, Record)
         self.assertEqual(self.record.is_tna, True)
         self.assertEqual(self.record.is_digitised, False)
 
@@ -181,7 +181,7 @@ class CatalogueRecordResponseTests(SimpleTestCase):
         self.assertEqual(self.record.appraisal_information, "")
         self.assertEqual(self.record.copies_information, "")
         self.assertEqual(self.record.custodial_history, "")
-        self.assertEqual(self.record.immediate_source_of_acquisition, [])
+        self.assertEqual(self.record.immediate_source_of_acquisition, "")
         self.assertEqual(self.record.location_of_originals, [])
         self.assertEqual(self.record.restrictions_on_use, "")
         self.assertEqual(self.record.administrative_background, "")
@@ -221,8 +221,8 @@ class CatalogueRecordResponseTests(SimpleTestCase):
         self.assertEqual(self.record.separated_materials, ())
         self.assertEqual(self.record.unpublished_finding_aids, [])
         self.assertEqual(len(self.record.hierarchy), 3)
-        self.assertEqual(self.record.next, None)
-        self.assertEqual(self.record.previous, None)
-        self.assertEqual(self.record.parent, None)
+        self.assertIsInstance(self.record.next, Record)
+        self.assertIsInstance(self.record.previous, Record)
+        self.assertIsInstance(self.record.parent, Record)
         self.assertEqual(self.record.is_tna, True)
         self.assertEqual(self.record.is_digitised, True)
