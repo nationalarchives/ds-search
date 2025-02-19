@@ -15,7 +15,7 @@ from app.deliveryoptions.utils import (
     html_replacer,
     surrogate_link_builder,
 )
-from app.records.models import Record
+from app.records.models import APIResponse
 from django.conf import settings
 
 
@@ -79,9 +79,9 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
         with open(fixture_path, "r") as f:
             fixture_contents = json.loads(f.read())
 
-        self.record = Record(deepcopy(fixture_contents["data"][0]))
+        self.response = APIResponse(deepcopy(fixture_contents["data"][0]))
+        self.record = self.response.record
 
-        self.surrogate = ["<a href='https://example.com'>Example</a>"]
         self.surrogate = [
             '<a target="_blank" href="https://www.thegenealogist.co.uk/non-conformist-records">The Genealogist</a>',
             '<a target="_blank" href="https://www.thegenealogist.co.uk/other-records">The Genealogist</a>',
