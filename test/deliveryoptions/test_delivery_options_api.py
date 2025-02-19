@@ -1,23 +1,22 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from app.deliveryoptions.delivery_options_api import (  # Adjust the import as per your project structure
-    DeliveryOptionsAPI,
-)
-from app.lib.api import ApiResourceNotFound
+from app.deliveryoptions.delivery_options_api import DeliveryOptionsAPI
+from app.lib.api import ResourceNotFound
 from django.conf import settings
 
 
 class DeliveryOptionsApiClientTests(unittest.TestCase):
     def setUp(self):
         self.api_client = DeliveryOptionsAPI()
+        self.headers = {'Cache-Control': 'no-cache'}
 
     def tearDown(self):
         self.api_client.params.clear()
 
     # Mocking requests.get to test get_results method
     @patch(
-        "app.lib.api.requests.get"
+        "app.lib.api.get"
     )  # Patch the correct path where requests.get is used
     def test_get_results_success(self, mock_get):
         # Mock response setup
@@ -30,18 +29,18 @@ class DeliveryOptionsApiClientTests(unittest.TestCase):
         self.api_client.add_parameter("iaid", "C12345")
 
         # Call the inherited method
-        result = self.api_client.get_results()
+        result = self.api_client.get()
 
         # Assert the mocked call
         mock_get.assert_called_with(
             f"{settings.DELIVERY_OPTIONS_CLIENT_BASE_URL}/",
-            params={"iaid": "C12345"},
+            params={"iaid": "C12345"}, headers=self.headers
         )
 
         # Check the returned data
         self.assertEqual(result, {"delivery_options": ["abc", "def"]})
 
-    @patch("app.lib.api.requests.get")
+    @patch("app.lib.api.get")
     def test_get_results_without_iaid(self, mock_get):
         # Mock API response when no IAID is passed
         mock_response = MagicMock()
@@ -51,18 +50,18 @@ class DeliveryOptionsApiClientTests(unittest.TestCase):
 
         self.api_client = DeliveryOptionsAPI()
 
-        with self.assertRaises(ApiResourceNotFound) as context:
-            self.api_client.get_results()
+        with self.assertRaises(ResourceNotFound) as context:
+            self.api_client.get()
 
         # Assert the exception message
         self.assertEqual(str(context.exception), "Resource not found")
 
         # Ensure correct request call
         mock_get.assert_called_with(
-            f"{settings.DELIVERY_OPTIONS_CLIENT_BASE_URL}/", params={}
+            f"{settings.DELIVERY_OPTIONS_CLIENT_BASE_URL}/", params={}, headers=self.headers
         )
 
-    @patch("app.lib.api.requests.get")
+    @patch("app.lib.api.get")
     def test_get_results_multiple_parameters(self, mock_get):
         # Mock response for multiple parameters
         mock_response = MagicMock()
@@ -77,11 +76,12 @@ class DeliveryOptionsApiClientTests(unittest.TestCase):
         self.api_client.add_parameter("iaid", "C67890")
         self.api_client.add_parameter("category", "books")
 
-        result = self.api_client.get_results()
+        result = self.api_client.get()
 
         mock_get.assert_called_with(
             f"{settings.DELIVERY_OPTIONS_CLIENT_BASE_URL}/",
             params={"iaid": "C67890", "category": "books"},
+            headers=self.headers,
         )
 
         self.assertEqual(
