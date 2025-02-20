@@ -1,12 +1,13 @@
 from app.lib.api import ResourceNotFound
-from app.records.api import record_details_by_id, record_details_by_ref
+from app.records.api import record_details_by_id
 from app.records.labels import FIELD_LABELS
 from django.http import Http404
-from django.template.loader import get_template
 from django.template.response import TemplateResponse
-from django.urls import reverse
 
 # TODO: Implement record_detail_by_reference once Rosetta has support
+# from app.records.api import record_details_by_ref
+# from django.template.loader import get_template
+# from django.urls import reverse
 # def record_detail_by_reference(request, reference):
 #     """
 #     View for rendering a record's details page.
@@ -54,7 +55,7 @@ def record_detail_view(request, id):
     except ResourceNotFound:
         raise Http404
     except Exception as e:
-        context = {"exception_message": e}
+        context = {"exception_message": str(e)}
         return TemplateResponse(
             request=request,
             template="errors/server_error.html",
