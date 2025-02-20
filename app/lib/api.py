@@ -1,6 +1,14 @@
 import logging
 
-from requests import JSONDecodeError, Timeout, TooManyRedirects, codes, get
+from django.conf import settings
+from requests import (
+    ConnectionError,
+    JSONDecodeError,
+    Timeout,
+    TooManyRedirects,
+    codes,
+    get,
+)
 
 logger = logging.getLogger(__name__)
 
