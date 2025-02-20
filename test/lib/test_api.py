@@ -21,5 +21,5 @@ class TestJSONAPIClientGetRequest(SimpleTestCase):
         )
         self.assertDictEqual(
             reponse_dict,
-            {"data": [{"@template": {"details": {"iaid": "C198022"}}}]},
+            {"data": [{"@template": {"details": {"iaid": "C123456"}}}]},
         )
