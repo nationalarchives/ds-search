@@ -1,17 +1,6 @@
-from app.lib.api import JSONAPIClient, ResourceNotFound
+from app.lib.api import ResourceNotFound, rosetta_request_handler
 from app.records.models import APIResponse, APISearchResponse, Record
 from django.conf import settings
-
-
-def rosetta_request_handler(uri, params={}) -> dict:
-    """Prepares and initiates the api url requested and returns response data"""
-    api_url = settings.ROSETTA_API_URL
-    if not api_url:
-        raise Exception("ROSETTA_API_URL not set")
-    client = JSONAPIClient(api_url)
-    client.add_parameters(params)
-    data = client.get(uri)
-    return data
 
 
 def record_details_by_id(id, params={}) -> Record:
