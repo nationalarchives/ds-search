@@ -1,20 +1,20 @@
 import unittest
 from unittest.mock import MagicMock, patch
-
-from app.deliveryoptions.delivery_options_api import DeliveryOptionsAPI
+from app.lib.api import JSONAPIClient
+from app.deliveryoptions.delivery_options_api import get_delivery_option
 from app.lib.api import ResourceNotFound
 from django.conf import settings
 
 
 class DeliveryOptionsApiClientTests(unittest.TestCase):
     def setUp(self):
-        self.api_client = DeliveryOptionsAPI()
+        self.api_client = JSONAPIClient(settings.DELIVERY_OPTIONS_CLIENT_BASE_URL)
         self.headers = {"Cache-Control": "no-cache"}
 
     def tearDown(self):
         self.api_client.params.clear()
 
-    # Mocking requests.get to test get_results method
+    # Mocking requests.get to test get method
     @patch(
         "app.lib.api.get"
     )  # Patch the correct path where requests.get is used
@@ -49,7 +49,7 @@ class DeliveryOptionsApiClientTests(unittest.TestCase):
         mock_response.status_code = 404
         mock_get.return_value = mock_response
 
-        self.api_client = DeliveryOptionsAPI()
+        #self.api_client = DeliveryOptionsAPI()
 
         with self.assertRaises(ResourceNotFound) as context:
             self.api_client.get()

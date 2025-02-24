@@ -92,6 +92,7 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
         "https://tnabase.test.url",
     )
     @patch("app.deliveryoptions.utils.settings.MAX_BASKET_ITEMS", "5")
+    @patch("app.deliveryoptions.utils.settings.DISCOVERY_TNA_URL", "https://discovery.test.url")
     def test_delivery_options_tags(self):
         test_cases = {
             "{AccessConditionText}": "Subject to 30 year closure",
@@ -125,7 +126,7 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
             "{PaidSearchUrl}": "https://tnabase.test.url/paidsearch/foirequest/C18281?type=foirequest",
             "{Price}": "(Unknown price)",
             "{ReadersTicketUrl}": "https://tnabase.test.url/about/visit-us/researching-here/do-i-need-a-readers-ticket/",
-            "{RecordCopyingUrl}": "https://tnabase.test.url/pagecheck/start/C18281/",
+            "{RecordCopyingUrl}": "https://discovery.test.url/pagecheck/start/C18281/",
             "{RecordInformationType}": "(Unknown record information type)",
             "{RecordOpeningDate}": "26 February 1977",
             "{RecordUrl}": "https://tnabase.test.url/details/r/C18281/",
