@@ -4,6 +4,7 @@
 {% from 'components/card/macro.html' import tnaCard %}
 {% from 'components/pagination/macro.html' import tnaPagination %}
 {% from 'components/search-field/macro.html' import tnaSearchField %}
+{% from 'components/secondary-navigation/macro.html' import tnaSecondaryNavigation %}
 {% from 'components/select/macro.html' import tnaSelect %}
 {% from 'components/text-input/macro.html' import tnaTextInput %}
 
@@ -34,17 +35,27 @@
           'small': True
         }) }}
       </div>
-      <ul class="tna-ul">
-        <li>
-          <a href="#">Records at The National Archives (24,521,292)</a>
-        </li>
-        <li>
-          <a href="#">Online records at The National Archives (9,041,961)</a>
-        </li>
-        <li>
-          <a href="#">Records at other UK archives (10,758,426)</a>
-        </li>
-      </ul>
+      {{ tnaSecondaryNavigation({
+        'title': 'Sections',
+        'headingLevel': 2,
+        'items': [
+          {
+            'name': 'Records at The National Archives (24,521,292)',
+            'href': '#',
+            'current': True
+          },
+          {
+            'name': 'Online records at The National Archives (9,041,961)',
+            'href': '#'
+          },
+          {
+            'name': 'Records at other UK archives (10,758,426)',
+            'href': '#'
+          }
+        ],
+        'noBottomBorder': True,
+        'classes': 'tna-!--margin-top-m'
+      }) }}
     </form>
   </div>
 </div>
@@ -180,23 +191,14 @@
       </ul>
     {% else %}
       {% for record in results %}
-      <article class="search-result-list-item tna-!--margin-top-s">
-        <h3 class="tna-heading-m">
-          <a href="{{ url('details-page-machine-readable', kwargs={'id': record.iaid}) }}">{{ record.summary_title }}</a>
-        </h3>
-        <div class="tna-!--margin-top-m">
-          {{ record.description | safe }}
-        </div>
-        <dl class="tna-dl tna-dl--plain tna-!--margin-top-s">
-          <dt>Held by</dt>
-          <dd>{{ record.held_by }}</dd>
-          <dt>Date</dt>
-          <dd>{{ record.date_covering }}</dd>
-          <dt>Reference</dt>
-          <dd>{{ record.reference_number }}</dd>
-        </dl>
-      </article>
-      <hr class="tna-!--margin-top-s">
+      {{ tnaCard({
+        'title': record.summary_title,
+        'headingLevel': 3,
+        'headingSize': 'm',
+        'href': url('details-page-machine-readable', kwargs={'id': record.iaid}),
+        'body': (record.description + '<dl class="tna-dl tna-dl--plain"><dt>Held by</dt><dd>' + record.held_by + '</dd><dt>Date</dt><dd>' + record.date_covering + '</dd><dt>Reference</dt><dd>' + record.reference_number + '</dd></dl>') | safe,
+        'fullAreaClick': True
+      }) }}
       {% endfor %}
     {% endif %}
   </div>
