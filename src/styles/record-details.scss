@@ -1,8 +1,41 @@
+@use "@nationalarchives/frontend/nationalarchives/tools/colour";
+@use "@nationalarchives/frontend/nationalarchives/tools/media";
 @use "@nationalarchives/frontend/nationalarchives/tools/spacing";
+@use "@nationalarchives/frontend/nationalarchives/tools/typography";
+
+.tna-dl--dotted {
+  @include colour.colour-border("keyline", 1px, solid, bottom);
+
+  > dt,
+  > dd {
+    padding-top: spacing.space(0.5);
+    padding-bottom: spacing.space(0.5);
+
+    background-color: transparent !important;
+
+    @include colour.colour-border("keyline", 1px, solid, top);
+  }
+
+  @include media.on-tiny {
+    > dd {
+      border-top: none;
+    }
+  }
+}
 
 .record-details {
   &__label {
     position: sticky;
     top: spacing.space(0.5);
+  }
+
+  &__description {
+    padding-top: spacing.space(0.25);
+    padding-bottom: spacing.space(0.25);
+
+    display: none; // Hide by default, change to 'block' when needed
+    @include typography.detail-font-small;
+    text-transform: none;
+    @include colour.colour-font("font-light");
   }
 }

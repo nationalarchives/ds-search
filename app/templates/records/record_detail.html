@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% from 'components/pagination/macro.html' import tnaPagination %}
+
 {%- set pageTitle = (record.summary_title or '[No title]') | striptags -%}
 
 {% block stylesheets %}
@@ -11,9 +13,10 @@
 <div class="tna-section">
   <div class="tna-container">
     <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
-      <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
-
-      <p>{{ record.custom_record_type }}</p>
+      <hgroup class="tna-hgroup-xl">
+        <p class="tna-hgroup__supertitle">Item</p>
+        <h1 class="tna-hgroup__title">{{ pageTitle }}</h1>
+      </hgroup>
 
       {% if canonical %}
       <p>Canonical: {{ canonical }}</p>
@@ -31,19 +34,6 @@
         </li>
         {% endfor %}
       </ol>
-
-      <ul class="tna-ul">
-      {% if record.previous %}
-        <li>
-          Previous {{ record.previous.level }}: <a href="{{ record.previous.url }}">{{ record.previous.reference_number }}</a>
-        </li>
-      {% endif %}
-      {% if record.next %}
-        <li>
-          Next {{ record.next.level }} : <a href="{{ record.next.url }}">{{ record.next.reference_number }}</a>
-        </li>
-      {% endif %}
-      </ul>
 
       <ul class="tna-ul">
       Legacy Breadcrumb Items for short hierarchy items:
@@ -76,11 +66,18 @@
         'dimensions',
         'creator'
       ] %}
-      <dl class="tna-dl">
+      <dl class="tna-dl tna-dl--plain tna-dl--dotted">
         {% for field in fields %}
         {% if record[field] %}
         <dt>
-          <span class="record-details__label">{{ field_labels[field] }}</span>
+          <span class="record-details__label">
+            {{ field_labels[field].title }}
+            {% if field_labels[field].description %}
+            <span class="record-details__description">
+              <span class="tna-visually-hidden">(</span>{{ field_labels[field].description }}<span class="tna-visually-hidden">)</span>
+            </span>
+            {% endif %}
+          </span>
         </dt>
         <dd>
           {% if field == 'held_by' %}
@@ -99,6 +96,32 @@
         {% endif %}
         {% endfor %}
       </dl>
+
+      {% set previous = None %}
+      {% set next = None %}
+
+      {% if record.previous %}
+      {% set previous = {
+        'text': 'Previous ' + record.previous.level + ': ' + record.previous.reference_number,
+        'href': record.previous.url
+      } %}
+      {% endif %}
+
+      {% if record.next %}
+      {% set next = {
+        'text': 'Next ' + record.next.level + ': ' + record.next.reference_number,
+        'href': record.next.url
+      } %}
+      {% endif %}
+
+      {% if previous or next %}
+      {{ tnaPagination({
+        'previous': previous,
+        'next': next,
+        'spaced': True,
+        'solid': True
+      }) }}
+      {% endif %}
     </div>
   </div>
 </div>
