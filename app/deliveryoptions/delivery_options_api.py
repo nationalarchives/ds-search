@@ -9,7 +9,7 @@ def get_delivery_option(iaid: Optional[str] = None):
 
     if not api_url:
         raise Exception("DELIVERY_OPTIONS_CLIENT_BASE_URL not set")
-    
+
     client = JSONAPIClient(api_url)
     client.add_parameters({"iaid": iaid})
 

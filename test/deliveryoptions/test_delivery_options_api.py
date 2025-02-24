@@ -9,7 +9,7 @@ from django.conf import settings
 class DeliveryOptionsApiClientTests(unittest.TestCase):
     def setUp(self):
         self.api_client = DeliveryOptionsAPI()
-        self.headers = {'Cache-Control': 'no-cache'}
+        self.headers = {"Cache-Control": "no-cache"}
 
     def tearDown(self):
         self.api_client.params.clear()
@@ -34,7 +34,8 @@ class DeliveryOptionsApiClientTests(unittest.TestCase):
         # Assert the mocked call
         mock_get.assert_called_with(
             f"{settings.DELIVERY_OPTIONS_CLIENT_BASE_URL}/",
-            params={"iaid": "C12345"}, headers=self.headers
+            params={"iaid": "C12345"},
+            headers=self.headers,
         )
 
         # Check the returned data
@@ -58,7 +59,9 @@ class DeliveryOptionsApiClientTests(unittest.TestCase):
 
         # Ensure correct request call
         mock_get.assert_called_with(
-            f"{settings.DELIVERY_OPTIONS_CLIENT_BASE_URL}/", params={}, headers=self.headers
+            f"{settings.DELIVERY_OPTIONS_CLIENT_BASE_URL}/",
+            params={},
+            headers=self.headers,
         )
 
     @patch("app.lib.api.get")
