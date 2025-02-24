@@ -1,14 +1,16 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from app.lib.api import JSONAPIClient
+
 from app.deliveryoptions.delivery_options_api import get_delivery_option
-from app.lib.api import ResourceNotFound
+from app.lib.api import JSONAPIClient, ResourceNotFound
 from django.conf import settings
 
 
 class DeliveryOptionsApiClientTests(unittest.TestCase):
     def setUp(self):
-        self.api_client = JSONAPIClient(settings.DELIVERY_OPTIONS_CLIENT_BASE_URL)
+        self.api_client = JSONAPIClient(
+            settings.DELIVERY_OPTIONS_CLIENT_BASE_URL
+        )
         self.headers = {"Cache-Control": "no-cache"}
 
     def tearDown(self):
@@ -49,7 +51,7 @@ class DeliveryOptionsApiClientTests(unittest.TestCase):
         mock_response.status_code = 404
         mock_get.return_value = mock_response
 
-        #self.api_client = DeliveryOptionsAPI()
+        # self.api_client = DeliveryOptionsAPI()
 
         with self.assertRaises(ResourceNotFound) as context:
             self.api_client.get()

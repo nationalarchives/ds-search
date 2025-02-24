@@ -263,7 +263,9 @@ DELIVERY_OPTIONS_CLIENT_BASE_URL = os.getenv(
 
 # Delivery Options specific constants
 BASE_TNA_URL = os.getenv("BASE_TNA_URL", "https://www.nationalarchives.gov.uk")
-DISCOVERY_TNA_URL = os.getenv("DISCOVERY_TNA_URL", "https://discovery.nationalarchives.gov.uk")
+DISCOVERY_TNA_URL = os.getenv(
+    "DISCOVERY_TNA_URL", "https://discovery.nationalarchives.gov.uk"
+)
 MAX_BASKET_ITEMS = os.getenv("MAX_BASKET_ITEMS", "10")
 DELIVERY_OPTIONS_CONFIG = os.getenv(
     "DELIVERY_OPTIONS_CONFIG", "app/deliveryoptions/delivery_options.json"

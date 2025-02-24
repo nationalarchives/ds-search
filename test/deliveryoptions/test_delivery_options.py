@@ -92,7 +92,10 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
         "https://tnabase.test.url",
     )
     @patch("app.deliveryoptions.utils.settings.MAX_BASKET_ITEMS", "5")
-    @patch("app.deliveryoptions.utils.settings.DISCOVERY_TNA_URL", "https://discovery.test.url")
+    @patch(
+        "app.deliveryoptions.utils.settings.DISCOVERY_TNA_URL",
+        "https://discovery.test.url",
+    )
     def test_delivery_options_tags(self):
         test_cases = {
             "{AccessConditionText}": "Subject to 30 year closure",
