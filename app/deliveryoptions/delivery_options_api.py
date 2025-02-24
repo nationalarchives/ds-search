@@ -4,15 +4,14 @@ from app.lib.api import JSONAPIClient
 from django.conf import settings
 
 
-class DeliveryOptionsAPI(JSONAPIClient):
-    def __init__(self):
-        super().__init__(settings.DELIVERY_OPTIONS_CLIENT_BASE_URL)
-
-
 def get_delivery_option(iaid: Optional[str] = None):
-    do_api = DeliveryOptionsAPI()
+    api_url = settings.DELIVERY_OPTIONS_CLIENT_BASE_URL
 
-    do_api.add_parameter("iaid", iaid)
-    do_api.api_path = ""
+    if not api_url:
+        raise Exception("DELIVERY_OPTIONS_CLIENT_BASE_URL not set")
+    
+    client = JSONAPIClient(api_url)
+    client.add_parameters({"iaid": iaid})
 
-    return do_api.get()
+    data = client.get()
+    return data

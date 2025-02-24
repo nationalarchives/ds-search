@@ -4,7 +4,7 @@ import os
 import re
 from enum import IntEnum
 from functools import cache
-from ipaddress import IPv4Address, IPv6Address, ip_address
+from ipaddress import ip_address
 from typing import Any, Dict, List, Tuple, Union
 
 from app.deliveryoptions.reader_type import (
@@ -295,7 +295,7 @@ def get_readers_ticket_url(record: dict, surrogate: List) -> str:
 
 
 def get_record_copying_url(record: dict, surrogate: List) -> str:
-    return f"{settings.BASE_TNA_URL}/pagecheck/start/{record.iaid}/"
+    return f"{settings.DISCOVERY_TNA_URL}/pagecheck/start/{record.iaid}/"
 
 
 def get_record_information_type(record: dict, surrogate: List) -> str:
