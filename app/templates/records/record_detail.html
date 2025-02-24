@@ -3,6 +3,7 @@
 {% from 'components/pagination/macro.html' import tnaPagination %}
 
 {%- set pageTitle = (record.summary_title or '[No title]') | striptags -%}
+{%- set themeAccent = 'green' -%}
 
 {% block stylesheets %}
 {{ super() }}
@@ -22,19 +23,6 @@
       <p>Canonical: {{ canonical }}</p>
       {% endif %}
 
-      <ol class="tna-ol">
-        <li>
-          Held at:
-          <a href="{{ record.held_by_url }}">{{ record.held_by | safe }}</a>
-        </li>
-        {% for hierarchy_record in record.hierarchy %}
-        <li>
-          {{ hierarchy_record.level }}:
-          <a href="{{ hierarchy_record.url }}">{{ hierarchy_record.summary_title }}</a>
-        </li>
-        {% endfor %}
-      </ol>
-
       <ul class="tna-ul">
       Legacy Breadcrumb Items for short hierarchy items:
       {%- set bci = record.breadcrumb_items -%}  
@@ -53,7 +41,7 @@
       {% endfor %}
       </ul>
 
-      <h2 class="tna-heading-l">Record details</h2>
+      <h2 class="tna-heading-l">Full description and record details</h2>
       {% set fields = [
         'title',
         'reference_number',
@@ -96,6 +84,53 @@
         {% endif %}
         {% endfor %}
       </dl>
+
+      <h2 class="tna-heading-l">Catalogue hierarchy</h2>
+      {% set hierarchy_column_widths = [
+        '3-4',
+        '2-3',
+        '7-12',
+        '1-2',
+        '5-12',
+        '1-3',
+        '1-4',
+        '1-6',
+        '1-12'
+      ] %}
+      <div class="tna-background-tint">
+        <div class="tna-container tna-container--nested tna-!--margin-top-s">
+          <div class="tna-column tna-column--width-{{ hierarchy_column_widths[0] }} tna-column--align-centre">
+            <div class="tna-background-accent tna-!--padding-vertical-s"></div>
+          </div>
+          <div class="tna-column tna-column--flex-1 tna-column--align-centre">
+            <p>???</p>
+          </div>
+          <div class="tna-column tna-column--full">
+            <div class="tna-aside tna-aside--tight">
+              <h3 class="tna-heading-s">This record is held at <a href="{{ record.held_by_url }}">{{ record.held_by | safe }}</a></h3>
+              <p class="tna-!--no-margin-top">???</p>
+            </div>
+          </div>
+        </div>
+        {% for hierarchy_record in record.hierarchy %}
+        {% if not loop.last %}
+        <div class="tna-container tna-container--nested tna-!--margin-top-s">
+          <div class="tna-column tna-column--width-{{ hierarchy_column_widths[loop.index] }} tna-column--align-centre">
+            <div class="tna-background-accent tna-!--padding-vertical-s"></div>
+          </div>
+          <div class="tna-column tna-column--flex-1 tna-column--align-centre">
+            <p>???</p>
+          </div>
+          <div class="tna-column tna-column--full">
+            <div class="tna-aside tna-aside--tight">
+              <h3 class="tna-heading-s">Within the {{ hierarchy_record.level | lower }}: <a href="{{ hierarchy_record.url }}">{{ hierarchy_record.summary_title }}</a></h3>
+              <p class="tna-!--no-margin-top">???</p>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
 
       {% set previous = None %}
       {% set next = None %}
