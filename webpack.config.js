@@ -4,6 +4,7 @@ module.exports = {
   entry: {
     main: "./src/scripts/main.js",
     analytics: "./src/scripts/analytics.js",
+    "record-details": "./src/scripts/record-details.js",
     "catalogue-results": "./src/scripts/catalogue-results.js",
   },
   mode: "production",

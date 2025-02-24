@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% from 'components/checkboxes/macro.html' import tnaCheckboxes %}
 {% from 'components/pagination/macro.html' import tnaPagination %}
 {% from 'records/macros/top_navigation.html' import top_navigation %}
 
@@ -24,6 +25,8 @@
         <h1 class="tna-hgroup__title">{{ pageTitle }}</h1>
       </hgroup>
 
+      <p>Catalogue reference: <strong class="reference">{{ record.reference_number }}</strong></p>
+
       {% if canonical %}
       <p>Canonical: {{ canonical }}</p>
       {% endif %}
@@ -46,9 +49,35 @@
       {% endfor %}
       </ul>
     </div>
+  </div>
 
-    <div class="tna-column tna-column--full tna-!--margin-top-m">
-      <h2 class="tna-heading-l">Full description and record details</h2>
+  <div class="tna-container tna-!--margin-top-m">
+    <div class="tna-column tna-column--flex-1 tna-column--full-small tna-column--full-tiny tna-column--align-centre tna-!--margin-top-s">
+      <h2 class="tna-heading-l" id="details">Full description and record details</h2>
+    </div>
+    <div class="tna-column tna-column--full-small tna-column--full-tiny tna-column--align-centre tna-!--margin-top-s">
+      {{ tnaCheckboxes({
+        'label': 'Record details',
+        'headingLevel': 3,
+        'headingSize': 's',
+        'id': 'field-descriptions',
+        'name': 'field_descriptions',
+        'items': [
+          {
+            'text': 'Show field descriptions',
+            'value': 'show',
+            'checked': request.COOKIES['recordDetailDescriptions'] == 'true'
+          }
+        ],
+        'inline': True,
+        'formGroupAttributes': {
+          'hidden': 'true'
+        }
+      }) }}
+    </div>
+  </div>
+  <div class="tna-container">
+    <div class="tna-column tna-column--full tna-!--margin-top-s">
       {% set fields = [
         'title',
         'reference_number',
@@ -61,14 +90,14 @@
         'dimensions',
         'creator'
       ] %}
-      <dl class="tna-dl tna-dl--plain tna-dl--dotted">
+      <dl class="tna-dl tna-dl--plain tna-dl--dotted record-details" id="record-details">
         {% for field in fields %}
         {% if record[field] %}
         <dt>
           <span class="record-details__label">
             {{ field_labels[field].title }}
             {% if field_labels[field].description %}
-            <span class="record-details__description">
+            <span class="record-details__description" hidden>
               <span class="tna-visually-hidden">(</span>{{ field_labels[field].description }}<span class="tna-visually-hidden">)</span>
             </span>
             {% endif %}
@@ -92,8 +121,11 @@
         {% endfor %}
       </dl>
 
-      <h2 class="tna-heading-l">Catalogue hierarchy</h2>
+      {% if record.hierarchy %}
+      <h2 class="tna-heading-l" id="catalogue-hierarchy">Catalogue hierarchy</h2>
       {% set hierarchy_column_widths = [
+        '11-12',
+        '5-6',
         '3-4',
         '2-3',
         '7-12',
@@ -104,16 +136,21 @@
         '1-6',
         '1-12'
       ] %}
-      <div class="tna-background-tint">
-        <div class="tna-container tna-container--nested tna-!--margin-top-s">
+      <div class="tna-background-tint record-hierarchy tna-!--margin-top-s">
+        <div class="tna-container tna-container--nested">
           <div class="tna-column tna-column--width-{{ hierarchy_column_widths[0] }} tna-column--align-centre">
-            <div class="tna-background-accent tna-!--padding-vertical-s"></div>
-          </div>
-          <div class="tna-column tna-column--flex-1 tna-column--align-centre">
-            <p>???</p>
+            <div class="tna-background-accent record-hierarchy__count">??? items</div>
           </div>
           <div class="tna-column tna-column--full">
             <div class="tna-aside tna-aside--tight">
+              <!-- <hgroup class="tna-hgroup-s">
+                <h3>
+                  <span class="tna-hgroup__supertitle">Held by</span>
+                  <span class="tna-hgroup__title">
+                    <a href="{{ record.held_by_url }}">{{ record.held_by }}</a>
+                  </span>
+                </h3>
+              </hgroup> -->
               <h3 class="tna-heading-s">This record is held at <a href="{{ record.held_by_url }}">{{ record.held_by | safe }}</a></h3>
               <p class="tna-!--no-margin-top">???</p>
             </div>
@@ -121,15 +158,18 @@
         </div>
         {% for hierarchy_record in record.hierarchy %}
         {% if not loop.last %}
-        <div class="tna-container tna-container--nested tna-!--margin-top-s">
+        <div class="tna-container tna-container--nested">
           <div class="tna-column tna-column--width-{{ hierarchy_column_widths[loop.index] }} tna-column--align-centre">
-            <div class="tna-background-accent tna-!--padding-vertical-s"></div>
-          </div>
-          <div class="tna-column tna-column--flex-1 tna-column--align-centre">
-            <p>???</p>
+            <div class="tna-background-accent record-hierarchy__count">??? items</div>
           </div>
           <div class="tna-column tna-column--full">
             <div class="tna-aside tna-aside--tight">
+              <!-- <hgroup class="tna-hgroup-s">
+                <p class="tna-hgroup__supertitle">{{ hierarchy_record.level }}</p>
+                <h3 class="tna-hgroup__title">
+                  <a href="{{ hierarchy_record.url }}">{{ hierarchy_record.summary_title }}</a>
+                </h3>
+              </hgroup> -->
               <h3 class="tna-heading-s">Within the {{ hierarchy_record.level | lower }}: <a href="{{ hierarchy_record.url }}">{{ hierarchy_record.summary_title }}</a></h3>
               <p class="tna-!--no-margin-top">???</p>
             </div>
@@ -138,6 +178,18 @@
         {% endif %}
         {% endfor %}
       </div>
+      <div class="tna-aside tna-aside--tight tna-background-accent tna-!--no-margin-top record-hierarchy-this">
+        <div class="tna-container tna-container--nested">
+          <div class="tna-column tna-column--align-centre">
+            <i class="fa-solid fa-check large-icon" aria-hidden="true"></i>
+          </div>
+          <div class="tna-column tna-column--flex-1 tna-column--align-centre">
+            <h3 class="tna-heading-s">You are currently looking at the item: {{ (record.hierarchy | last).reference_number }}</h3>
+            <p class="tna-!--no-margin-top">???</p>
+          </div>
+        </div>
+      </div>
+      {% endif %}
 
       {% set previous = None %}
       {% set next = None %}
@@ -167,4 +219,9 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block bodyEnd %}
+{{ super() }}
+    <script src="{{ static('record-details.min.js') }}?v={{ app_config.BUILD_VERSION }}" defer></script>
 {% endblock %}
