@@ -34,7 +34,17 @@ urlpatterns = [
     path(
         r"catalogue/id/<id:id>/",
         records_views.record_detail_view,
-        name="details-page-machine-readable",
+        name="record_details",
+    ),
+    path(
+        r"catalogue/id/<id:id>/related/",
+        records_views.related_records_view,
+        name="related_records",
+    ),
+    path(
+        r"catalogue/help/",
+        records_views.records_help,
+        name="records_help",
     ),
     # TODO: Implement record_details_by_ref once Rosetta has support
     # path(

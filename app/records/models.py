@@ -228,13 +228,13 @@ class Record(APIModel):
         if self.held_by_id:
             try:
                 return reverse(
-                    "details-page-machine-readable",
+                    "record_details",
                     kwargs={"id": self.held_by_id},
                 )
             except NoReverseMatch:
                 # warning for partially valid record
                 logger.warning(
-                    f"held_by_url:Record({self.iaid}):No reverse match for details-page-machine-readable with held_by_id={self.held_by_id}"
+                    f"held_by_url:Record({self.iaid}):No reverse match for record_details with held_by_id={self.held_by_id}"
                 )
         return ""
 
@@ -407,9 +407,7 @@ class Record(APIModel):
         """Returns record detail url for iaid, empty str otherwise."""
         if self.iaid:
             try:
-                return reverse(
-                    "details-page-machine-readable", kwargs={"id": self.iaid}
-                )
+                return reverse("record_details", kwargs={"id": self.iaid})
             except NoReverseMatch:
                 pass
         return ""

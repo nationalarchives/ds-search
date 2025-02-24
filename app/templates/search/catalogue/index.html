@@ -35,6 +35,8 @@
           'small': True
         }) }}
       </div>
+    </form>
+    <div class="tna-column tna-column--full">
       {{ tnaSecondaryNavigation({
         'title': 'Sections',
         'headingLevel': 2,
@@ -56,7 +58,7 @@
         'noBottomBorder': True,
         'classes': 'tna-!--margin-top-m'
       }) }}
-    </form>
+    </div>
   </div>
 </div>
 <div class="tna-container">
@@ -168,7 +170,7 @@
               'title': record.summary_title,
               'headingLevel': 3,
               'headingSize': 's',
-              'href': url('details-page-machine-readable', kwargs={'id': record.iaid}),
+              'href': url('record_details', kwargs={'id': record.iaid}),
               'meta': [
                 {
                   'title': 'Held by',
@@ -195,7 +197,7 @@
         'title': record.summary_title,
         'headingLevel': 3,
         'headingSize': 'm',
-        'href': url('details-page-machine-readable', kwargs={'id': record.iaid}),
+        'href': url('record_details', kwargs={'id': record.iaid}),
         'body': (record.description + '<dl class="tna-dl tna-dl--plain"><dt>Held by</dt><dd>' + record.held_by + '</dd><dt>Date</dt><dd>' + record.date_covering + '</dd><dt>Reference</dt><dd>' + record.reference_number + '</dd></dl>') | safe,
         'fullAreaClick': True
       }) }}

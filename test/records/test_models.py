@@ -369,7 +369,7 @@ class RecordModelTests(SimpleTestCase):
             result = self.record.held_by_url
         self.assertEqual(self.record.held_by_url, result)
         self.assertIn(
-            "WARNING:app.records.models:held_by_url:Record(C12345):No reverse match for details-page-machine-readable with held_by_id=INVALID",
+            "WARNING:app.records.models:held_by_url:Record(C12345):No reverse match for record_details with held_by_id=INVALID",
             lc.output,
         )
 

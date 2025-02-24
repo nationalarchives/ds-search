@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% from 'components/pagination/macro.html' import tnaPagination %}
+{% from 'records/macros/top_navigation.html' import top_navigation %}
 
 {%- set pageTitle = (record.summary_title or '[No title]') | striptags -%}
 {%- set themeAccent = 'green' -%}
@@ -8,6 +9,10 @@
 {% block stylesheets %}
 {{ super() }}
     <link rel="stylesheet" href="{{ static('record-details.css') }}?v={{ app_config.BUILD_VERSION }}" media="screen,print">
+{% endblock %}
+
+{% block beforeContent %}
+{{ top_navigation(request, record) }}
 {% endblock %}
 
 {% block content %}
@@ -23,8 +28,8 @@
       <p>Canonical: {{ canonical }}</p>
       {% endif %}
 
+      <p>Legacy Breadcrumb Items for short hierarchy items:</p>
       <ul class="tna-ul">
-      Legacy Breadcrumb Items for short hierarchy items:
       {%- set bci = record.breadcrumb_items -%}  
       {% for bc_item in bci %}
         {% if bc_item.url %}
@@ -40,7 +45,9 @@
         {% endif %}
       {% endfor %}
       </ul>
+    </div>
 
+    <div class="tna-column tna-column--full tna-!--margin-top-m">
       <h2 class="tna-heading-l">Full description and record details</h2>
       {% set fields = [
         'title',

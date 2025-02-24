@@ -20,12 +20,12 @@ def format_link(link_html: str, inc_msg: str = "") -> Dict[str, str]:
     document = pq(link_html)
     iaid = document.attr("href")
     try:
-        href = reverse("details-page-machine-readable", kwargs={"id": iaid})
+        href = reverse("record_details", kwargs={"id": iaid})
     except NoReverseMatch:
         href = ""
         # warning for partially valid data
         logger.warning(
-            f"{inc_msg}format_link:No reverse match for details-page-machine-readable with iaid={iaid}"
+            f"{inc_msg}format_link:No reverse match for record_details with iaid={iaid}"
         )
     return {"id": iaid or "", "href": href, "text": document.text()}
 
@@ -34,7 +34,7 @@ def format_extref_links(html: str) -> str:
     regex = re.compile(f'<a class="extref" href="{IDConverter.regex}"')
     html = re.sub(
         regex,
-        lambda m: f'<a class="extref" href="{reverse("details-page-machine-readable", kwargs={"id": m.group(1)})}"',
+        lambda m: f'<a class="extref" href="{reverse("record_details", kwargs={"id": m.group(1)})}"',
         html,
     )
     return html

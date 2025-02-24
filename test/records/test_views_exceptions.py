@@ -27,9 +27,7 @@ class TestRecordViewExceptions(TestCase):
         response = self.client.get("/catalogue/id/C123456/")
 
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(
-            response.resolver_match.view_name, "details-page-machine-readable"
-        )
+        self.assertEqual(response.resolver_match.view_name, "record_details")
 
     @prevent_request_warnings
     @responses.activate
