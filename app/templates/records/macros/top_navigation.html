@@ -14,9 +14,9 @@
           <span class="back-link__text">Start a new search</span>
         </a>
       </div>
-      {% set record_details_path = url('records:record_details', kwargs={'id': record.iaid}) %}
-      {% set related_records_path = url('records:related_records', kwargs={'id': record.iaid}) %}
-      {% set help_path = url('records:records_help', kwargs={'id': record.iaid}) %}
+      {% set record_details_path = url('records:details', kwargs={'id': record.iaid}) %}
+      {% set related_records_path = url('records:related', kwargs={'id': record.iaid}) %}
+      {% set help_path = url('records:help', kwargs={'id': record.iaid}) %}
       {{ tnaSecondaryNavigation({
         'title': 'Sections',
         'headingLevel': 2,
@@ -38,6 +38,7 @@
           }
         ],
         'noBottomBorder': True,
+        'visuallyHideHeading': True,
         'classes': 'tna-!--margin-top-m'
       }) }}
     </div>

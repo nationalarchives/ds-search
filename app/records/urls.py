@@ -5,17 +5,17 @@ urlpatterns = [
     path(
         r"id/<id:id>/",
         views.record_detail_view,
-        name="record_details",
+        name="details",
     ),
     path(
         r"id/<id:id>/related/",
         views.related_records_view,
-        name="related_records",
+        name="related",
     ),
     path(
         r"id/<id:id>/help/",
         views.records_help_view,
-        name="records_help",
+        name="help",
     ),
     # TODO: Implement record_details_by_ref once Rosetta has support
     # path(

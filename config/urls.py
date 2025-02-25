@@ -32,11 +32,11 @@ urlpatterns = [
     path("healthcheck/", include("app.healthcheck.urls")),
     path(
         "catalogue/",
-        include(("app.records.urls", "records"), namespace="records"),
+        include(("app.search.urls", "search"), namespace="search"),
     ),
     path(
-        "search/",
-        include(("app.search.urls", "search"), namespace="search"),
+        "catalogue/",
+        include(("app.records.urls", "records"), namespace="records"),
     ),
     path(
         "404/",
