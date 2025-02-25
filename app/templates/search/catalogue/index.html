@@ -9,7 +9,6 @@
 {% from 'components/text-input/macro.html' import tnaTextInput %}
 
 {%- set pageTitle = 'Catalogue search results' -%}
-{%- set themeAccent = 'green' -%}
 
 {% block stylesheets %}
 {{ super() }}
@@ -171,7 +170,7 @@
               'title': record.summary_title,
               'headingLevel': 3,
               'headingSize': 's',
-              'href': url('record_details', kwargs={'id': record.iaid}),
+              'href': url('records:record_details', kwargs={'id': record.iaid}),
               'meta': [
                 {
                   'title': 'Held by',
@@ -198,7 +197,7 @@
         'title': record.summary_title,
         'headingLevel': 3,
         'headingSize': 'm',
-        'href': url('record_details', kwargs={'id': record.iaid}),
+        'href': url('records:record_details', kwargs={'id': record.iaid}),
         'body': (record.description + '<dl class="tna-dl tna-dl--plain"><dt>Held by</dt><dd>' + record.held_by + '</dd><dt>Date</dt><dd>' + record.date_covering + '</dd><dt>Reference</dt><dd>' + record.reference_number + '</dd></dl>') | safe,
         'fullAreaClick': True
       }) }}

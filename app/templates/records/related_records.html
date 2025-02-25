@@ -3,7 +3,6 @@
 {% from 'records/macros/top_navigation.html' import top_navigation %}
 
 {%- set pageTitle = 'Related records for ' + (record.title or record.summary_title or '[No title]') | striptags -%}
-{%- set themeAccent = 'green' -%}
 
 {% block stylesheets %}
 {{ super() }}
@@ -11,7 +10,7 @@
 {% endblock %}
 
 {% block beforeContent %}
-{{ top_navigation(request, record) }}
+{{ top_navigation(record, request) }}
 {% endblock %}
 
 {% block content %}

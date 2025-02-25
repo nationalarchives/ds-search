@@ -1,3 +1,4 @@
+@use "@nationalarchives/frontend/nationalarchives/tools/a11y";
 @use "@nationalarchives/frontend/nationalarchives/tools/borders";
 @use "@nationalarchives/frontend/nationalarchives/tools/colour";
 @use "@nationalarchives/frontend/nationalarchives/tools/media";
@@ -35,6 +36,11 @@
   &:focus-visible &__text {
     @include typography.interacted-text-decoration;
   }
+}
+
+.tna-secondary-navigation__heading {
+  // TODO: Enable after next release of TNA Frontend
+  // @include a11y.visually-hidden;
 }
 
 .reference {
