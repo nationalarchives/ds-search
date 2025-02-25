@@ -8,6 +8,12 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+def catalogue(request):
+    template = loader.get_template("main/catalogue.html")
+    context = {"foo": "bar"}
+    return HttpResponse(template.render(context, request))
+
+
 def cookies(request):
     template = loader.get_template("main/cookies.html")
     context = {"foo": "bar"}

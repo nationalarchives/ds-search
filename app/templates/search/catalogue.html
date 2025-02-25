@@ -15,8 +15,31 @@
     <link rel="stylesheet" href="{{ static('catalogue-results.css') }}?v={{ app_config.BUILD_VERSION }}" media="screen,print">
 {% endblock %}
 
+{% block beforeContent %}
+<div class="tna-background-accent">
+  <div class="tna-container">
+    <div class="tna-column tna-column--full">
+      {{ tnaBreadcrumbs({
+        'items': [
+          {
+            'text': 'Home',
+            'href': '/'
+          },
+          {
+            'text': 'Catalogue',
+            'href': url('main:catalogue')
+          }
+        ],
+        'structuredData': True,
+        'classes': 'tna-!--padding-vertical-s'
+      }) }}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="tna-section tna-background-accent tna-!--no-padding-bottom">
+<div class="tna-background-accent tna-!--padding-top-s">
   <div class="tna-container">
     <form id="search-form" class="tna-column tna-column--full">
       {{ tnaSearchField({
@@ -27,14 +50,14 @@
         'name': 'q',
         'value': request.GET.get('q') or ''
       }) }}
-      <div class="tna-button-group tna-!--margin-top-xs">
+      <!-- <div class="tna-button-group tna-!--margin-top-xs">
         {{ tnaButton({
           'text': 'Start new search',
           'href': '?',
           'plain': True,
           'small': True
         }) }}
-      </div>
+      </div> -->
     </form>
     <div class="tna-column tna-column--full">
       {{ tnaSecondaryNavigation({
@@ -56,6 +79,7 @@
           }
         ],
         'noBottomBorder': True,
+        'visuallyHideHeading': True,
         'classes': 'tna-!--margin-top-m'
       }) }}
     </div>
@@ -89,7 +113,7 @@
   </div>
   <div class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
     <div class="tna-container tna-container--nested">
-      <div class="tna-column tna-column--flex-1 tna-column--full-tiny">Showing {{ stats.results | format_number }} of  {{ stats.total | format_number }}</div>
+      <div class="tna-column tna-column--flex-1 tna-column--full-tiny">Showing {{ stats.results | format_number }} of {{ stats.total | format_number }}</div>
       <div class="tna-column tna-column--full-tiny">
         {{ tnaSelect({
           'label': 'Sort by',
@@ -170,7 +194,7 @@
               'title': record.summary_title,
               'headingLevel': 3,
               'headingSize': 's',
-              'href': url('records:record_details', kwargs={'id': record.iaid}),
+              'href': url('records:details', kwargs={'id': record.iaid}),
               'meta': [
                 {
                   'title': 'Held by',
@@ -197,7 +221,7 @@
         'title': record.summary_title,
         'headingLevel': 3,
         'headingSize': 'm',
-        'href': url('records:record_details', kwargs={'id': record.iaid}),
+        'href': url('records:details', kwargs={'id': record.iaid}),
         'body': (record.description + '<dl class="tna-dl tna-dl--plain"><dt>Held by</dt><dd>' + record.held_by + '</dd><dt>Date</dt><dd>' + record.date_covering + '</dd><dt>Reference</dt><dd>' + record.reference_number + '</dd></dl>') | safe,
         'fullAreaClick': True
       }) }}

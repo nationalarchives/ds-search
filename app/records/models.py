@@ -228,7 +228,7 @@ class Record(APIModel):
         if self.held_by_id:
             try:
                 return reverse(
-                    "records:record_details",
+                    "records:details",
                     kwargs={"id": self.held_by_id},
                 )
             except NoReverseMatch:
@@ -407,9 +407,7 @@ class Record(APIModel):
         """Returns record detail url for iaid, empty str otherwise."""
         if self.iaid:
             try:
-                return reverse(
-                    "records:record_details", kwargs={"id": self.iaid}
-                )
+                return reverse("records:details", kwargs={"id": self.iaid})
             except NoReverseMatch:
                 pass
         return ""

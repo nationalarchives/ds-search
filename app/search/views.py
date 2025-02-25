@@ -3,14 +3,8 @@ from django.http import HttpResponse
 from django.template import loader
 
 
-def index(request):
-    template = loader.get_template("search/index.html")
-    context = {"foo": "bar"}
-    return HttpResponse(template.render(context, request))
-
-
-def catalogue_index(request):
-    template = loader.get_template("search/catalogue/index.html")
+def catalogue_search_view(request):
+    template = loader.get_template("search/catalogue.html")
     results = search_records(request.GET.get("q", None))
     context = {
         "results": results.records,
@@ -19,10 +13,4 @@ def catalogue_index(request):
             "results": results.stats_results,
         },
     }
-    return HttpResponse(template.render(context, request))
-
-
-def catalogue_item(request, id):
-    template = loader.get_template("search/catalogue/item.html")
-    context = {"id": id}
     return HttpResponse(template.render(context, request))

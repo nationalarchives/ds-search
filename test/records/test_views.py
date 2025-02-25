@@ -30,9 +30,7 @@ class TestRecordView(TestCase):
         response = self.client.get("/catalogue/id/C123456/")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.view_name, "records:record_details"
-        )
+        self.assertEqual(response.resolver_match.view_name, "records:details")
         self.assertTemplateUsed("records/record_detail.html")
 
         self.assertIsInstance(response.context_data.get("record"), Record)
@@ -61,9 +59,7 @@ class TestRecordView(TestCase):
         response = self.client.get("/catalogue/id/A13530600/")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.view_name, "records:record_details"
-        )
+        self.assertEqual(response.resolver_match.view_name, "records:details")
         self.assertTemplateUsed("records/archon_detail.html")
 
         self.assertIsInstance(response.context_data.get("record"), Record)
