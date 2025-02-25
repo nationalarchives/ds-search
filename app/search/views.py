@@ -1,4 +1,4 @@
-from app.records.api import search_records
+from app.search.api import search_records
 from django.http import HttpResponse
 from django.template import loader
 
