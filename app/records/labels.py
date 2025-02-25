@@ -63,5 +63,6 @@ FIELD_LABELS = {
     "restrictions_on_use": {"title": "Restrictions on use"},
     "separated_materials": {"title": "Separated material"},
     "summary_title": {"title": "Summary title"},
+    "title": {"title": "Title"},
     "unpublished_finding_aids": {"title": "Unpublished finding aids"},
 }
