@@ -116,6 +116,10 @@
     padding-bottom: spacing.space(0.125);
 
     text-align: right;
+
+    @include borders.rounded-border;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 }
 
