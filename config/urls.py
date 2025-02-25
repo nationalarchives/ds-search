@@ -17,7 +17,6 @@ Including another URLconf
 
 from app.errors import views as errors_view
 from app.records import converters
-from app.records import views as records_views
 from django.apps import apps
 from django.conf import settings
 from django.conf.urls.static import static
@@ -32,31 +31,15 @@ urlpatterns = [
     path("", include(("app.main.urls", "main"), namespace="main")),
     path("healthcheck/", include("app.healthcheck.urls")),
     path(
-        r"catalogue/id/<id:id>/",
-        records_views.record_detail_view,
-        name="record_details",
+        "catalogue/",
+        include(("app.records.urls", "records"), namespace="records"),
     ),
-    path(
-        r"catalogue/id/<id:id>/related/",
-        records_views.related_records_view,
-        name="related_records",
-    ),
-    path(
-        r"catalogue/help/",
-        records_views.records_help,
-        name="records_help",
-    ),
-    # TODO: Implement record_details_by_ref once Rosetta has support
-    # path(
-    #     r"catalogue/ref/<path:reference>/",
-    #     records_views.record_detail_by_reference,
-    # ),
     path(
         "search/",
         include(("app.search.urls", "search"), namespace="search"),
     ),
     path(
-        r"404/",
+        "404/",
         errors_view.page_not_found_error_view,
     ),
     path("admin/", admin.site.urls),
