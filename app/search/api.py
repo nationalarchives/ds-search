@@ -4,7 +4,7 @@ from app.records.models import APISearchResponse
 
 def search_records(query, params={}) -> APISearchResponse:
     uri = "search"
-    params.update({"q": query})
+    params.update({"q": query or "*"})
     results = rosetta_request_handler(uri, params)
     if "data" not in results:
         raise Exception("No data returned")
