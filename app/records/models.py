@@ -435,3 +435,11 @@ class Record(APIModel):
             items = items[-3:]
 
         return items
+
+    @cached_property
+    def hierarchy_series(self) -> Record | None:
+        """Returns series record from hierarchy if found, None otherwise"""
+        for item in self.hierarchy:
+            if item.level == "Series":
+                return item
+        return None
