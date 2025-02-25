@@ -1,0 +1,75 @@
+{% from 'components/checkboxes/macro.html' import tnaCheckboxes %}
+
+{% macro detail_fields(record, field_labels, request) %}
+<div class="tna-container tna-!--margin-top-l">
+  <div class="tna-column tna-column--flex-1 tna-column--full-small tna-column--full-tiny tna-column--align-centre tna-!--margin-top-s">
+    <h2 class="tna-heading-l" id="details">Full description and record details</h2>
+  </div>
+  <div class="tna-column tna-column--full-small tna-column--full-tiny tna-column--align-centre tna-!--margin-top-s">
+    {{ tnaCheckboxes({
+      'label': 'Record details',
+      'headingLevel': 3,
+      'headingSize': 's',
+      'id': 'field-descriptions',
+      'name': 'field_descriptions',
+      'items': [
+        {
+          'text': 'Show field descriptions',
+          'value': 'show',
+          'checked': request.COOKIES['recordDetailDescriptions'] == 'true'
+        }
+      ],
+      'inline': True,
+      'formGroupAttributes': {
+        'hidden': 'true'
+      }
+    }) }}
+  </div>
+</div>
+<div class="tna-container">
+  <div class="tna-column tna-column--full tna-!--margin-top-s">
+    {% set fields = [
+      'title',
+      'reference_number',
+      'closure_status',
+      'date_covering',
+      'description',
+      'held_by',
+      'legal_status',
+      'closure_status',
+      'dimensions',
+      'creator'
+    ] %}
+    <dl class="tna-dl tna-dl--plain tna-dl--dotted record-details" id="record-details">
+      {% for field in fields %}
+      {% if record[field] %}
+      <dt>
+        <span class="record-details__label">
+          {{ field_labels[field].title }}
+          {% if field_labels[field].description %}
+          <span class="record-details__description" hidden>
+            <span class="tna-visually-hidden">(</span>{{ field_labels[field].description }}<span class="tna-visually-hidden">)</span>
+          </span>
+          {% endif %}
+        </span>
+      </dt>
+      <dd>
+        {% if field == 'held_by' %}
+        <a href="{{ record.held_by_url }}">{{ record[field] | safe }}</a>
+        {% elif field in ['creator'] %}
+        {# Show a list of items #}
+        <ul class="tna-ul">
+          {% for item in record[field] %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        {{ record[field] | safe }}
+        {% endif %}
+      </dd>
+      {% endif %}
+      {% endfor %}
+    </dl>
+  </div>
+</div>
+{% endmacro %}

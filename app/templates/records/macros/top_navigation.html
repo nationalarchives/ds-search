@@ -2,43 +2,43 @@
 
 {% macro top_navigation(request, record) %}
 <div class="tna-background-tint">
-    <div class="tna-container">
-      <div class="tna-column tna-column--full tna-!--padding-top-s">
-        <div class="back-link-group">
-          <a href="#" class="back-link">
-            <i class="fa-solid fa-chevron-left back-link__icon" aria-hidden="true"></i>
-            <span class="back-link__text">Back to search results</span>
-          </a>
-          <a href="#" class="back-link">
-            <i class="fa-solid fa-search back-link__icon" aria-hidden="true"></i>
-            <span class="back-link__text">Start a new search</span>
-          </a>
-        </div>
-        {% set record_details_path = url('record_details', kwargs={'id': record.iaid}) %}
-        {% set related_records_path = url('related_records', kwargs={'id': record.iaid}) %}
-        {{ tnaSecondaryNavigation({
-          'title': 'Sections',
-          'headingLevel': 2,
-          'items': [
-            {
-              'name': 'About this record',
-              'href': record_details_path,
-              'current': record_details_path == request.path
-            },
-            {
-              'name': 'Related records',
-              'href': related_records_path,
-              'current': related_records_path == request.path
-            },
-            {
-              'name': 'New to archives?',
-              'href': url('records_help')
-            }
-          ],
-          'noBottomBorder': True,
-          'classes': 'tna-!--margin-top-m'
-        }) }}
+  <div class="tna-container">
+    <div class="tna-column tna-column--full tna-!--padding-top-s">
+      <div class="back-link-group">
+        <a href="#" class="back-link">
+          <i class="fa-solid fa-chevron-left back-link__icon" aria-hidden="true"></i>
+          <span class="back-link__text">Back to search results</span>
+        </a>
+        <a href="#" class="back-link">
+          <i class="fa-solid fa-search back-link__icon" aria-hidden="true"></i>
+          <span class="back-link__text">Start a new search</span>
+        </a>
       </div>
+      {% set record_details_path = url('record_details', kwargs={'id': record.iaid}) %}
+      {% set related_records_path = url('related_records', kwargs={'id': record.iaid}) %}
+      {{ tnaSecondaryNavigation({
+        'title': 'Sections',
+        'headingLevel': 2,
+        'items': [
+          {
+            'name': 'About this record',
+            'href': record_details_path,
+            'current': record_details_path == request.path
+          },
+          {
+            'name': 'Related records',
+            'href': related_records_path,
+            'current': related_records_path == request.path
+          },
+          {
+            'name': 'New to archives?',
+            'href': url('records_help')
+          }
+        ],
+        'noBottomBorder': True,
+        'classes': 'tna-!--margin-top-m'
+      }) }}
     </div>
   </div>
+</div>
 {% endmacro %}

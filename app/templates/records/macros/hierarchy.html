@@ -1,0 +1,103 @@
+{% from 'components/pagination/macro.html' import tnaPagination %}
+
+{% macro hierarchy(record) %}
+<div class="tna-container">
+  <div class="tna-column tna-column--full tna-!--margin-top-l">
+    {% if record.hierarchy %}
+    <h2 class="tna-heading-l" id="catalogue-hierarchy">Catalogue hierarchy</h2>
+    {% set hierarchy_column_widths = [
+      '11-12',
+      '5-6',
+      '3-4',
+      '2-3',
+      '7-12',
+      '1-2',
+      '5-12',
+      '1-3',
+      '1-4',
+      '1-6',
+      '1-12'
+    ] %}
+    <div class="tna-background-tint record-hierarchy tna-!--margin-top-s">
+      <div class="tna-container tna-container--nested">
+        <div class="tna-column tna-column--width-{{ hierarchy_column_widths[0] }} tna-column--align-centre">
+          <div class="tna-background-accent record-hierarchy__count">??? items</div>
+        </div>
+        <div class="tna-column tna-column--full">
+          <div class="tna-aside tna-aside--tight">
+            <!-- <hgroup class="tna-hgroup-s">
+              <h3>
+                <span class="tna-hgroup__supertitle">Held by</span>
+                <span class="tna-hgroup__title">
+                  <a href="{{ record.held_by_url }}">{{ record.held_by }}</a>
+                </span>
+              </h3>
+            </hgroup> -->
+            <h3 class="tna-heading-s">This record is held at <a href="{{ record.held_by_url }}">{{ record.held_by | safe }}</a></h3>
+            <p class="tna-!--no-margin-top">???</p>
+          </div>
+        </div>
+      </div>
+      {% for hierarchy_record in record.hierarchy %}
+      {% if not loop.last %}
+      <div class="tna-container tna-container--nested">
+        <div class="tna-column tna-column--width-{{ hierarchy_column_widths[loop.index] }} tna-column--align-centre">
+          <div class="tna-background-accent record-hierarchy__count">??? items</div>
+        </div>
+        <div class="tna-column tna-column--full">
+          <div class="tna-aside tna-aside--tight">
+            <!-- <hgroup class="tna-hgroup-s">
+              <p class="tna-hgroup__supertitle">{{ hierarchy_record.level }}</p>
+              <h3 class="tna-hgroup__title">
+                <a href="{{ hierarchy_record.url }}">{{ hierarchy_record.summary_title }}</a>
+              </h3>
+            </hgroup> -->
+            <h3 class="tna-heading-s">Within the {{ hierarchy_record.level | lower }}: <a href="{{ hierarchy_record.url }}">{{ hierarchy_record.summary_title }}</a></h3>
+            <p class="tna-!--no-margin-top">???</p>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <div class="tna-aside tna-aside--tight tna-background-accent tna-!--no-margin-top record-hierarchy-this">
+      <div class="tna-container tna-container--nested">
+        <div class="tna-column tna-column--align-centre">
+          <i class="fa-solid fa-check large-icon" aria-hidden="true"></i>
+        </div>
+        <div class="tna-column tna-column--flex-1 tna-column--align-centre">
+          <h3 class="tna-heading-s">You are currently looking at the item: {{ (record.hierarchy | last).reference_number }}</h3>
+          <p class="tna-!--no-margin-top">???</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% set previous = None %}
+    {% set next = None %}
+
+    {% if record.previous %}
+    {% set previous = {
+      'text': 'Previous ' + (record.previous.level | lower) + ': ' + record.previous.reference_number,
+      'href': record.previous.url
+    } %}
+    {% endif %}
+
+    {% if record.next %}
+    {% set next = {
+      'text': 'Next ' + (record.next.level | lower) + ': ' + record.next.reference_number,
+      'href': record.next.url
+    } %}
+    {% endif %}
+
+    {% if previous or next %}
+    {{ tnaPagination({
+      'previous': previous,
+      'next': next,
+      'spaced': True,
+      'solid': True
+    }) }}
+    {% endif %}
+  </div>
+</div>
+{% endmacro %}
