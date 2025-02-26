@@ -1,9 +1,13 @@
-{% macro information_boxes() %}
+{% macro information_boxes(record) %}
 <div class="tna-container">
   <div class="tna-column tna-column--width-1-3 tna-column--full-small tna-column--full-tiny tna-!--margin-top-m">
     <div class="tna-aside tna-aside--tight tna-background-contrast full-height-aside">
       <h2 class="tna-heading-m">What's it about?</h2>
-      <p>This record is about <strong>20th Century Paintings and drawings: commercial</strong> from the series <strong>Records of the Copyright Office, Stationers' Company</strong>. It is held at <strong>The National Archives, Kew</strong>.</p>
+      <p>This record is about <strong>{{ record.summary_title }}</strong>
+        {%- if record.hierarchy_series.summary_title %}
+        from the series <strong>{{ record.hierarchy_series.summary_title }}</strong>
+        {%- endif -%}.
+        It is held at <strong>{{ record.held_by }}</strong>.</p>
     </div>
   </div>
   <div class="tna-column tna-column--width-1-3 tna-column--full-small tna-column--full-tiny tna-!--margin-top-m">
@@ -17,7 +21,7 @@
     <div class="tna-aside tna-aside--tight tna-background-contrast full-height-aside">
       <h2 class="tna-heading-m">What to do next</h2>
       <p><a href="#">Order it</a> and plan your visit to Kew.</p>
-      <p>Read more about <a href="#">the series this record is from</a>.</p>
+      <p>Read more about <a href="{{ record.hierarchy_series.url }}">the series this record is from</a>.</p>
     </div>
   </div>
 </div>
