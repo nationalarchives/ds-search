@@ -1,6 +1,8 @@
+import { Cookies } from "@nationalarchives/frontend/nationalarchives/all.mjs";
+
 class toggleDetailsListDescriptions {
-  constructor(checkbox, detailsList) {
-    this.cookies = window.TNAFrontendCookies;
+  constructor(checkbox, detailsList, cookies) {
+    this.cookies = cookies;
 
     this.checkbox = checkbox;
     this.formGroup = this.checkbox.closest(".tna-form__group");
@@ -35,32 +37,36 @@ class toggleDetailsListDescriptions {
 
     if (
       this.cookies.isPolicyAccepted("settings") &&
-      this.cookies.exists("recordDetailDescriptions")
+      this.cookies.exists("hide_record_detail_descriptions")
     ) {
       this.checkbox.checked = this.cookies.hasValue(
-        "recordDetailDescriptions",
+        "hide_record_detail_descriptions",
         "true",
       );
     }
+    console.log(this.checkbox);
+    console.log(this.checkbox.checked);
 
     this.handleCheckboxChange(this.checkbox.checked);
   }
 
-  handleCheckboxChange(show) {
+  handleCheckboxChange(hide) {
+    console.log(hide);
     for (const item of this.detailsListItems) {
-      if (show) {
-        item.removeAttribute("hidden");
-      } else {
+      if (hide) {
         item.setAttribute("hidden", "");
+      } else {
+        item.removeAttribute("hidden");
       }
     }
 
     if (this.cookies.isPolicyAccepted("settings")) {
-      this.cookies.set("recordDetailDescriptions", show);
+      this.cookies.set("hide_record_detail_descriptions", hide);
     }
   }
 }
 
-const checkbox = document.getElementById("field-descriptions-show");
+const checkbox = document.getElementById("field-descriptions-hide");
 const detailsList = document.getElementById("record-details");
-new toggleDetailsListDescriptions(checkbox, detailsList);
+console.log(checkbox, detailsList);
+new toggleDetailsListDescriptions(checkbox, detailsList, new Cookies());
