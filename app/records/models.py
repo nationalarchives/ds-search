@@ -353,11 +353,14 @@ class Record(APIModel):
         for hierarchy_item in self.get("@hierarchy", ()):
             if hierarchy_item.get("identifier"):
                 # page_record_is_tna: carry status to hierarchy record
-                hierarchy_records += (
-                    Record(
-                        hierarchy_item | {"page_record_is_tna": self.is_tna}
-                    ),
+                hierarchy_record = Record(
+                    hierarchy_item | {"page_record_is_tna": self.is_tna}
                 )
+                # skips current record from showing in hierarchy bar
+                if self.iaid == hierarchy_record.iaid:
+                    continue
+                hierarchy_records += (hierarchy_record,)
+
         return hierarchy_records
 
     @cached_property

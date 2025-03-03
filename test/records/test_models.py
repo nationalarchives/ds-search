@@ -155,6 +155,11 @@ class RecordModelTests(SimpleTestCase):
     def test_summary_title_other_places(self):
         self.record = Record(self.template_details)
         # patch raw data
+        self.record._raw["iaid"] = "C11827825"
+        self.record._raw["groupArray"] = [
+            {"value": "record"},
+            {"value": "tna"},
+        ]
         self.record._raw["@previous"] = {
             "summary": {
                 "title": "Law Officers' Department: Patents for Inventions"
@@ -289,6 +294,11 @@ class RecordModelTests(SimpleTestCase):
     def test_level_code_other_places(self):
         self.record = Record(self.template_details)
         # patch raw data
+        self.record._raw["iaid"] = "C11827825"
+        self.record._raw["groupArray"] = [
+            {"value": "record"},
+            {"value": "tna"},
+        ]
         self.record._raw["@hierarchy"] = [
             {
                 "identifier": [
@@ -709,7 +719,7 @@ class RecordModelTests(SimpleTestCase):
             },
         ]
 
-        self.assertEqual(len(self.record.hierarchy), 4)
+        self.assertEqual(len(self.record.hierarchy), 3)
 
         for i, r in enumerate(
             zip(
