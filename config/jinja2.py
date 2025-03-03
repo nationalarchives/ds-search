@@ -1,6 +1,7 @@
 import json
 import re
 from datetime import datetime
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.templatetags.static import static
@@ -28,6 +29,32 @@ def dump_json(obj):
 
 def format_number(num):
     return format(num, ",")
+
+
+def qs_is_value_active(existing_qs, filter, by):
+    """Active when identical key/value in existing query string."""
+    qs_set = {(filter, str(by))}
+    # Not active if either are empty.
+    if not existing_qs or not qs_set:
+        return False
+    # See if the intersection of sets is the same.
+    existing_qs_set = set(existing_qs.items())
+    return existing_qs_set.intersection(qs_set) == qs_set
+
+
+def qs_toggle_value(existing_qs, filter, by):
+    """Resolve filter against an existing query string."""
+    qs = {filter: by}
+    # Don't change the currently rendering existing query string!
+    rtn_qs = existing_qs.copy()
+    # Test for identical key and value in existing query string.
+    if qs_is_value_active(existing_qs, filter, by):
+        # Remove so that buttons toggle their own value on and off.
+        rtn_qs.pop(filter)
+    else:
+        # Update or add the query string.
+        rtn_qs.update(qs)
+    return urlencode(rtn_qs)
 
 
 def environment(**options):
@@ -58,6 +85,8 @@ def environment(**options):
             "feature": {"PHASE_BANNER": settings.FEATURE_PHASE_BANNER},
             "url": reverse,
             "now_iso_8601": now_iso_8601,
+            "qs_is_value_active": qs_is_value_active,
+            "qs_toggle_value": qs_toggle_value,
         }
     )
     env.filters.update(
