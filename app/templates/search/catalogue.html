@@ -111,6 +111,7 @@
       }) }}
     </div>
   </div>
+  {% if results %}
   <div class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
     <div class="tna-container tna-container--nested">
       {% if stats %}
@@ -269,6 +270,13 @@
       }
     }) }}
   </div>
+  {% else %}
+  <div class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
+    <h2 class="tna-heading-xl">No results found</h2>
+    <p>No results were found for your query.</p>
+    <p>Try widening your search.</p>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}
 
