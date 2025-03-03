@@ -113,7 +113,9 @@
   </div>
   <div class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
     <div class="tna-container tna-container--nested">
+      {% if stats %}
       <div class="tna-column tna-column--flex-1 tna-column--full-tiny">Showing {{ stats.results | format_number }} of {{ stats.total | format_number }}</div>
+      {% endif %}
       <div class="tna-column tna-column--full-tiny">
         {{ tnaSelect({
           'label': 'Sort by',

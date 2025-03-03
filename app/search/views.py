@@ -1,3 +1,4 @@
+from app.lib.api import ResourceNotFound
 from app.search.api import search_records
 from django.http import HttpResponse
 from django.template import loader
@@ -5,7 +6,10 @@ from django.template import loader
 
 def catalogue_search_view(request):
     template = loader.get_template("search/catalogue.html")
-    results = search_records(request.GET.get("q", None))
+    try:
+        results = search_records(request.GET.get("q", None))
+    except ResourceNotFound:
+        return HttpResponse(template.render({}, request))
     context = {
         "results": results.records,
         "stats": {
