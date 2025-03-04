@@ -118,7 +118,7 @@
   <div class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
     <div class="tna-container tna-container--nested">
       {% if stats %}
-      <div class="tna-column tna-column--flex-1 tna-column--full-tiny">Showing {{ stats.results | format_number }} of {{ stats.total | format_number }}</div>
+      <div class="tna-column tna-column--flex-1 tna-column--full-tiny">Showing results {{ results_range.from | format_number }}–{{ results_range.to | format_number }} of {{ stats.total | format_number }}</div>
       {% endif %}
       <div class="tna-column tna-column--full-tiny">
         {{ tnaSelect({
@@ -203,7 +203,10 @@
                 }
               ],
               'body': record.description | safe,
-              'fullAreaClick': True
+              'fullAreaClick': True,
+              'attributes': {
+                'id': 'record-' + record.iaid
+              }
             }) }}
           </li>
         {% endfor %}
@@ -216,49 +219,16 @@
         'headingSize': 'm',
         'href': url('records:details', kwargs={'id': record.iaid}) + '?search=' + encodedQuery,
         'body': (record.description + '<dl class="tna-dl tna-dl--plain"><dt>Held by</dt><dd>' + record.held_by + '</dd><dt>Date</dt><dd>' + record.date_covering + '</dd><dt>Reference</dt><dd>' + record.reference_number + '</dd></dl>') | safe,
-        'fullAreaClick': True
+        'fullAreaClick': True,
+        'attributes': {
+          'id': 'record-' + record.iaid
+        }
       }) }}
       {% endfor %}
     {% endif %}
   </div>
   <div class="tna-column tna-column--full tna-!--margin-top-l">
-    {{ tnaPagination({
-      'previous': {
-        'href': '#'
-      },
-      'items': [
-        {
-          'number': 1,
-          'href': '#'
-        },
-        {
-          'ellipsis': True
-        },
-        {
-          'number': 6,
-          'href': '#'
-        },
-        {
-          'number': 7,
-          'current': True,
-          'href': '#'
-        },
-        {
-          'number': 8,
-          'href': '#'
-        },
-        {
-          'ellipsis': True
-        },
-        {
-          'number': 42,
-          'href': '#'
-        }
-      ],
-      'next': {
-        'href': '#'
-      }
-    }) }}
+    {{ tnaPagination(pagination) }}
   </div>
   {% else %}
   <div class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
