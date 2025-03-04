@@ -44,7 +44,6 @@
 <div class="tna-background-accent tna-!--padding-top-s">
   <div class="tna-container">
     <form id="search-form" method="get" class="tna-column tna-column--full">
-      <input type="hidden" name="display" value="{{ request.GET.get('display') or '' }}">
       {{ tnaSearchField({
         'label': pageTitle,
         'headingLevel': 1,
@@ -61,6 +60,7 @@
           'small': True
         }) }}
       </div> -->
+      <input type="hidden" name="display" value="{{ request.GET.get('display') or '' }}">
     </form>
     <div class="tna-column tna-column--full">
       {{ tnaSecondaryNavigation({
