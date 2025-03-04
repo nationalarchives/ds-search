@@ -130,19 +130,29 @@
           'items': [
             {
               'text': 'Relevance',
-              'value': 'relevance'
+              'value': ''
             },
             {
-              'text': 'Date',
-              'value': 'date'
+              'text': 'Date (newest first)',
+              'value': 'date:desc'
             },
             {
-              'text': 'Title',
-              'value': 'title'
+              'text': 'Date (oldest first)',
+              'value': 'date:asc'
+            },
+            {
+              'text': 'Title (A-Z)',
+              'value': 'title:asc'
+            },
+            {
+              'text': 'Title (Z-A)',
+              'value': 'title:desc'
             }
           ],
           'selected': request.GET.get('sort'),
-          'inline': True,
+          'formGroupAttributes': {
+            'id': 'sort-form-group'
+          },
           'attributes': {
             'form': 'search-form'
           }
@@ -160,7 +170,8 @@
         </div>
       </div>
       <div class="tna-column tna-column--full-tiny">
-        <div class="tna-button-group tna-button-group--small">
+        <h2 class="tna-visually-hidden">Results layout</h2>
+        <div class="tna-button-group tna-button-group--small tna-!--no-margin-top">
           {{ tnaButton({
             'text': 'List',
             'href': '?' + qs_toggle_value(request.GET, 'display', 'list'),

@@ -12,11 +12,16 @@ def catalogue_search_view(request):
     template = loader.get_template("search/catalogue.html")
     results_per_page = 20
     page = int(request.GET.get("page", 1))
+    sort_order = request.GET.get("sort", "")
+    sort = sort_order.split(":")[0] if sort_order else ""
+    order = sort_order.split(":")[1] if sort_order else ""
     try:
         results = search_records(
             query=request.GET.get("q", None),
             results_per_page=results_per_page,
             page=page,
+            sort=sort,
+            order=order,
         )
     except ResourceNotFound:
         return HttpResponse(template.render({}, request))
