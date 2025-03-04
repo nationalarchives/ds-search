@@ -25,7 +25,10 @@ def base64_encode(s):
 
 
 def base64_decode(s):
-    s = base64.b64decode(s)
+    try:
+        s = base64.b64decode(s)
+    except Exception:
+        return s
     return s.decode("utf-8", "ignore")
 
 
