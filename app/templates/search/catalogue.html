@@ -203,7 +203,10 @@
                 }
               ],
               'body': record.description | safe,
-              'fullAreaClick': True
+              'fullAreaClick': True,
+              'attributes': {
+                'id': 'record-' + record.iaid
+              }
             }) }}
           </li>
         {% endfor %}
@@ -216,7 +219,10 @@
         'headingSize': 'm',
         'href': url('records:details', kwargs={'id': record.iaid}) + '?search=' + encodedQuery,
         'body': (record.description + '<dl class="tna-dl tna-dl--plain"><dt>Held by</dt><dd>' + record.held_by + '</dd><dt>Date</dt><dd>' + record.date_covering + '</dd><dt>Reference</dt><dd>' + record.reference_number + '</dd></dl>') | safe,
-        'fullAreaClick': True
+        'fullAreaClick': True,
+        'attributes': {
+          'id': 'record-' + record.iaid
+        }
       }) }}
       {% endfor %}
     {% endif %}
