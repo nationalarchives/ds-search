@@ -1,3 +1,4 @@
+import base64
 import json
 import re
 from datetime import datetime
@@ -15,6 +16,17 @@ def slugify(s):
     s = re.sub(r"[\s_-]+", "-", s)
     s = re.sub(r"^-+|-+$", "", s)
     return s
+
+
+def base64_encode(s):
+    s = bytes(s, "utf-8")
+    s = base64.b64encode(s)
+    return s.decode("utf-8", "ignore")
+
+
+def base64_decode(s):
+    s = base64.b64decode(s)
+    return s.decode("utf-8", "ignore")
 
 
 def now_iso_8601():
@@ -94,6 +106,8 @@ def environment(**options):
             "slugify": slugify,
             "dump_json": dump_json,
             "format_number": format_number,
+            "base64_encode": base64_encode,
+            "base64_decode": base64_decode,
         }
     )
     return env

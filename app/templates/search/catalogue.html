@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% from 'components/breadcrumbs/macro.html' import tnaBreadcrumbs %}
 {% from 'components/button/macro.html' import tnaButton %}
 {% from 'components/card/macro.html' import tnaCard %}
 {% from 'components/pagination/macro.html' import tnaPagination %}
@@ -9,6 +10,7 @@
 {% from 'components/text-input/macro.html' import tnaTextInput %}
 
 {%- set pageTitle = 'Catalogue search results' -%}
+{%- set encodedQuery = request.GET.urlencode() | base64_encode -%}
 
 {% block stylesheets %}
 {{ super() }}
@@ -156,7 +158,6 @@
             }
           }) }}
         </div>
-
       </div>
       <div class="tna-column tna-column--full-tiny">
         <div class="tna-button-group tna-button-group--small">
@@ -186,7 +187,7 @@
               'title': record.summary_title,
               'headingLevel': 3,
               'headingSize': 's',
-              'href': url('records:details', kwargs={'id': record.iaid}),
+              'href': url('records:details', kwargs={'id': record.iaid}) + '?search=' + encodedQuery,
               'meta': [
                 {
                   'title': 'Held by',
@@ -213,7 +214,7 @@
         'title': record.summary_title,
         'headingLevel': 3,
         'headingSize': 'm',
-        'href': url('records:details', kwargs={'id': record.iaid}),
+        'href': url('records:details', kwargs={'id': record.iaid}) + '?search=' + encodedQuery,
         'body': (record.description + '<dl class="tna-dl tna-dl--plain"><dt>Held by</dt><dd>' + record.held_by + '</dd><dt>Date</dt><dd>' + record.date_covering + '</dd><dt>Reference</dt><dd>' + record.reference_number + '</dd></dl>') | safe,
         'fullAreaClick': True
       }) }}
