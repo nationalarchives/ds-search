@@ -23,8 +23,7 @@
 
   text-decoration: none;
 
-  &__icon {
-  }
+  &__icon {}
 
   &__text {
     text-decoration: underline;
@@ -64,13 +63,14 @@
   height: 100%;
 
   box-sizing: border-box;
+  border: solid 3px #86bc25;
 }
 
 .tna-dl--dotted {
   @include colour.colour-border("keyline", 1px, solid, bottom);
 
-  > dt,
-  > dd {
+  >dt,
+  >dd {
     padding-top: spacing.space(0.5);
     padding-bottom: spacing.space(0.5);
 
@@ -80,7 +80,7 @@
   }
 
   @include media.on-tiny {
-    > dd {
+    >dd {
       border-top: none;
     }
   }
@@ -119,7 +119,7 @@
   .tna-column:has(&) {
     flex: 1;
 
-    + .tna-column {
+    +.tna-column {
       flex: 6;
     }
   }
