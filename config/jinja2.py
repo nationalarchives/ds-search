@@ -82,6 +82,35 @@ def qs_toggle_value(
     return rtn_qs if return_object else rtn_qs.urlencode()
 
 
+def qs_replace_value(
+    existing_qs: QueryDict, filter: str, by: str, return_object: bool = False
+):
+    # Don't change the currently rendering existing query string!
+    rtn_qs = existing_qs.copy()
+    rtn_qs[filter] = by
+    return rtn_qs if return_object else rtn_qs.urlencode()
+
+
+def qs_append_value(
+    existing_qs: QueryDict, filter: str, by: str, return_object: bool = False
+):
+    # Don't change the currently rendering existing query string!
+    rtn_qs = existing_qs.copy()
+    qs = {filter: by}
+    rtn_qs.update(qs)
+    return rtn_qs if return_object else rtn_qs.urlencode()
+
+
+def qs_remove_value(
+    existing_qs: QueryDict, filter: str, return_object: bool = False
+):
+    # Don't change the currently rendering existing query string!
+    rtn_qs = existing_qs.copy()
+    if filter in rtn_qs:
+        rtn_qs.pop(filter)
+    return rtn_qs if return_object else rtn_qs.urlencode()
+
+
 def environment(**options):
     env = Environment(**options)
 

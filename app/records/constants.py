@@ -1,4 +1,4 @@
-LEVEL = {
+TNA_LEVELS = {
     "1": "Department",
     "2": "Division",
     "3": "Series",
@@ -8,7 +8,7 @@ LEVEL = {
     "7": "Item",
 }
 
-NON_TNA_LEVEL = {
+NON_TNA_LEVELS = {
     "1": "Fonds",
     "2": "Sub-fonds",
     "3": "Sub-sub-fonds",

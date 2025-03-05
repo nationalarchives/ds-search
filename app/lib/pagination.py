@@ -1,4 +1,4 @@
-from config.jinja2 import format_number, qs_toggle_value
+from config.jinja2 import format_number, qs_replace_value
 
 
 def pagination_list(current_page, total_pages, boundaries=1, around=1):
@@ -61,7 +61,6 @@ def pagination_object(
 ):
     if total_pages == 0:
         return {}
-    new_args = qs_toggle_value(current_args, "page", current_page, True)
     current_page_int = int(current_page)
     pagination_object = {}
     pagination_object["items"] = [
@@ -70,7 +69,7 @@ def pagination_object(
             if item == "..."
             else {
                 "number": format_number(item),
-                "href": f"?{qs_toggle_value(new_args, 'page', item)}",
+                "href": f"?{qs_replace_value(current_args, 'page', item)}",
                 "current": item == current_page_int,
             }
         )
@@ -80,8 +79,8 @@ def pagination_object(
     ]
     if current_page_int > 1:
         pagination_object["previous"] = {
-            "href": f"?{qs_toggle_value(
-                new_args,
+            "href": f"?{qs_replace_value(
+                current_args,
                 'page',
                 current_page_int - 1,
             )}",
@@ -89,8 +88,8 @@ def pagination_object(
         }
     if current_page_int < total_pages:
         pagination_object["next"] = {
-            "href": f"?{qs_toggle_value(
-                new_args,
+            "href": f"?{qs_replace_value(
+                current_args,
                 'page',
                 current_page_int + 1,
             )}",

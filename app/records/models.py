@@ -4,7 +4,7 @@ import logging
 import re
 from typing import Any
 
-from app.records.constants import LEVEL, NON_TNA_LEVEL
+from app.records.constants import NON_TNA_LEVELS, TNA_LEVELS
 from app.records.utils import extract, format_extref_links, format_link
 from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
@@ -179,8 +179,8 @@ class Record(APIModel):
     def level(self) -> str:
         """Returns level name for tna, non tna level codes"""
         if self.is_tna:
-            return LEVEL.get(str(self.level_code), "")
-        return NON_TNA_LEVEL.get(str(self.level_code), "")
+            return TNA_LEVELS.get(str(self.level_code), "")
+        return NON_TNA_LEVELS.get(str(self.level_code), "")
 
     @cached_property
     def level_code(self) -> int | None:

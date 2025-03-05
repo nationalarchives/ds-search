@@ -1,6 +1,12 @@
 import unittest
 
-from config.jinja2 import qs_is_value_active, qs_toggle_value
+from config.jinja2 import (
+    qs_append_value,
+    qs_is_value_active,
+    qs_remove_value,
+    qs_replace_value,
+    qs_toggle_value,
+)
 from django.http import QueryDict
 
 
@@ -49,3 +55,35 @@ class ContentParserTestCase(unittest.TestCase):
                 qs_toggle_value(TEST_QS.copy(), "a", "1", True), "a", "2"
             ),
         )
+
+    def test_qs_replace_value(self):
+        TEST_QS = QueryDict("a=1&b=2&d=4&d=5")
+        self.assertEqual(
+            "a=2&b=2&d=4&d=5", qs_replace_value(TEST_QS.copy(), "a", "2")
+        )
+        self.assertEqual(
+            "a=1&b=2&d=4&d=5&c=3", qs_replace_value(TEST_QS.copy(), "c", "3")
+        )
+        self.assertEqual(
+            "a=1&b=2&d=6", qs_replace_value(TEST_QS.copy(), "d", "6")
+        )
+
+    def test_qs_append_value(self):
+        TEST_QS = QueryDict("a=1&b=2&d=4&d=5")
+        self.assertEqual(
+            "a=1&a=2&b=2&d=4&d=5", qs_append_value(TEST_QS.copy(), "a", "2")
+        )
+        self.assertEqual(
+            "a=1&b=2&d=4&d=5&c=3", qs_append_value(TEST_QS.copy(), "c", "3")
+        )
+        self.assertEqual(
+            "a=1&b=2&d=4&d=5&d=6", qs_append_value(TEST_QS.copy(), "d", "6")
+        )
+
+    def test_qs_remove_value(self):
+        TEST_QS = QueryDict("a=1&b=2&d=4&d=5")
+        self.assertEqual("b=2&d=4&d=5", qs_remove_value(TEST_QS.copy(), "a"))
+        self.assertEqual(
+            "a=1&b=2&d=4&d=5", qs_remove_value(TEST_QS.copy(), "c")
+        )
+        self.assertEqual("a=1&b=2", qs_remove_value(TEST_QS.copy(), "d"))

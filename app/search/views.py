@@ -3,8 +3,9 @@ import math
 from app.errors import views as errors_view
 from app.lib.api import ResourceNotFound
 from app.lib.pagination import pagination_object
+from app.records.constants import TNA_LEVELS
 from app.search.api import search_records
-from config.jinja2 import qs_toggle_value
+from config.jinja2 import qs_remove_value
 from django.http import HttpResponse
 from django.template import loader
 
@@ -37,6 +38,7 @@ def catalogue_search_view(request):
     }
     selected_filters = build_selected_filters_list(request)
     context = {
+        "levels": TNA_LEVELS,
         "results": results.records,
         "results_range": results_range,
         "stats": {
@@ -55,7 +57,7 @@ def build_selected_filters_list(request):
         selected_filters.append(
             {
                 "label": f"\"{request.GET.get('q')}\"",
-                "href": f"?{qs_toggle_value(request.GET, 'q', '')}",
+                "href": f"?{qs_remove_value(request.GET, 'q')}",
                 "title": f"Remove query: \"{request.GET.get('q')}\"",
             }
         )
@@ -63,33 +65,33 @@ def build_selected_filters_list(request):
         selected_filters.append(
             {
                 "label": f'Sub query "{request.GET.get("search_within")}"',
-                "href": f"?{qs_toggle_value(request.GET, "search_within", "")}",
+                "href": f"?{qs_remove_value(request.GET, 'search_within')}",
                 "title": "Remove search within",
             }
         )
     if request.GET.get("date_from", None):
         selected_filters.append(
             {
-                "label": f"From: {request.GET.get("date_from")}",
-                "href": f"?{qs_toggle_value(request.GET, "date_from", "")}",
-                "title": "Remove from date",
+                "label": f"Record date from: {request.GET.get("date_from")}",
+                "href": f"?{qs_remove_value(request.GET, 'date_from')}",
+                "title": "Remove record from date",
             }
         )
     if request.GET.get("date_to", None):
         selected_filters.append(
             {
-                "label": f"From: {request.GET.get("date_to")}",
-                "href": f"?{qs_toggle_value(request.GET, "date_to", "")}",
-                "title": "Remove from date",
+                "label": f"Record date to: {request.GET.get("date_to")}",
+                "href": f"?{qs_remove_value(request.GET, 'date_to')}",
+                "title": "Remove record to date",
             }
         )
     if levels := request.GET.getlist("level", None):
         for level in levels:
             selected_filters.append(
                 {
-                    "label": f"Level: {level}",
-                    "href": f"?{qs_toggle_value(request.GET, "level", level)}",
-                    "title": f"Remove {level} level",
+                    "label": f"Level: {TNA_LEVELS.get(level)}",
+                    "href": f"?{qs_remove_value(request.GET, 'level')}",
+                    "title": f"Remove {TNA_LEVELS.get(level)} level",
                 }
             )
     return selected_filters

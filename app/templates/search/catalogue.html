@@ -13,6 +13,10 @@
 {% from 'components/skip-link/macro.html' import tnaSkipLink %}
 {% from 'components/text-input/macro.html' import tnaTextInput %}
 
+{% from 'search/macros/filters/search_within.html' import search_within %}
+{% from 'search/macros/filters/date_range.html' import date_range %}
+{% from 'search/macros/filters/levels_tna.html' import levels_tna %}
+
 {%- set pageTitle = 'Catalogue search results' -%}
 {%- set encodedQuery = request.GET.urlencode() | base64_encode -%}
 
@@ -109,113 +113,9 @@
       'items': selected_filters,
       'removeAllHref': url('search:catalogue'),
     }) }}
-    <div class="tna-aside tna-aside--tight tna-background-tint">
-      {{ tnaTextInput({
-        'label': 'Search within results',
-        'headingLevel': 3,
-        'headingSize': 'm',
-        'id': 'search-within',
-        'name': 'search_within',
-        'value': request.GET.get('search_within') or '',
-        'attributes': {
-          'form': 'search-form'
-        }
-      }) }}
-      <div class="tna-button-group tna-!--margin-top-s">
-        {{ tnaButton({
-          'text': 'Update',
-          'buttonElement': True,
-          'buttonType': 'submit',
-          'small': True,
-          'attributes': {
-            'form': 'search-form'
-          }
-        }) }}
-      </div>
-    </div>
-    <div class="tna-aside tna-aside--tight tna-background-tint tna-!--margin-top-s">
-      <h3 class="tna-heading-m">Filter by date</h3>
-      {{ tnaDateSearch({
-        'label': 'Enter a start date',
-        'headingLevel': 4,
-        'headingSize': 's',
-        'id': 'date-from',
-        'name': 'date_from',
-        'value': request.GET.get('date_from', ''),
-        'formGroupClasses': 'tna-!--margin-top-s',
-        'attributes': {
-          'form': 'search-form'
-        }
-      }) }}
-      {{ tnaDateSearch({
-        'label': 'Enter an end date',
-        'headingLevel': 4,
-        'headingSize': 's',
-        'id': 'date-to',
-        'name': 'date_to',
-        'value': request.GET.get('date_to', ''),
-        'formGroupClasses': 'tna-!--margin-top-s',
-        'attributes': {
-          'form': 'search-form'
-        }
-      }) }}
-      <div class="tna-button-group tna-!--margin-top-s">
-        {{ tnaButton({
-          'text': 'Update',
-          'buttonElement': True,
-          'buttonType': 'submit',
-          'small': True,
-          'attributes': {
-            'form': 'search-form'
-          }
-        }) }}
-      </div>
-    </div>
-    <div class="tna-aside tna-aside--tight tna-background-tint tna-!--margin-top-s">
-      {{ tnaCheckboxes({
-        'label': 'Filter by level',
-        'headingLevel': 3,
-        'headingSize': 'm',
-        'id': 'level',
-        'name': 'level',
-        'items': [
-          {
-            'text': 'Collection',
-            'value': 'collection',
-            'checked': qs_is_value_active(request.GET, 'level', 'collection')
-          },
-          {
-            'text': 'Series',
-            'value': 'series',
-            'checked': qs_is_value_active(request.GET, 'level', 'series')
-          },
-          {
-            'text': 'File',
-            'value': 'file',
-            'checked': qs_is_value_active(request.GET, 'level', 'file')
-          },
-          {
-            'text': 'Item',
-            'value': 'item',
-            'checked': qs_is_value_active(request.GET, 'level', 'item')
-          }
-        ],
-        'attributes': {
-          'form': 'search-form'
-        }
-      }) }}
-      <div class="tna-button-group tna-!--margin-top-s">
-        {{ tnaButton({
-          'text': 'Update',
-          'buttonElement': True,
-          'buttonType': 'submit',
-          'small': True,
-          'attributes': {
-            'form': 'search-form'
-          }
-        }) }}
-      </div>
-    </div>
+    {{ search_within(request) }}
+    {{ date_range(request, 'date', 'date', 'Filter by record date') }}
+    {{ levels_tna(request, levels) }}
   </div>
   {% if results %}
   <div id="results" class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
