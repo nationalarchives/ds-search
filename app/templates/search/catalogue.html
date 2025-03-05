@@ -10,6 +10,7 @@
 {% from 'components/search-field/macro.html' import tnaSearchField %}
 {% from 'components/secondary-navigation/macro.html' import tnaSecondaryNavigation %}
 {% from 'components/select/macro.html' import tnaSelect %}
+{% from 'components/skip-link/macro.html' import tnaSkipLink %}
 {% from 'components/text-input/macro.html' import tnaTextInput %}
 
 {%- set pageTitle = 'Catalogue search results' -%}
@@ -18,6 +19,16 @@
 {% block stylesheets %}
 {{ super() }}
     <link rel="stylesheet" href="{{ static('catalogue-results.css') }}?v={{ app_config.BUILD_VERSION }}" media="screen,print">
+{% endblock %}
+
+{% block skipLink %}
+{% if results %}
+{{ tnaSkipLink({
+  href: 'results',
+  text: 'Skip to results'
+}) }}
+{% endif %}
+{{ super() }}
 {% endblock %}
 
 {% block beforeContent %}
@@ -207,7 +218,7 @@
     </div>
   </div>
   {% if results %}
-  <div class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
+  <div id="results" class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
     <div class="tna-container tna-container--nested">
       {% if stats %}
       <div class="tna-column tna-column--flex-1 tna-column--full-tiny">Showing results {{ results_range.from | format_number }}–{{ results_range.to | format_number }} of {{ stats.total | format_number }}</div>
