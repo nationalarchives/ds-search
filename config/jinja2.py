@@ -67,7 +67,7 @@ def qs_toggle_value(
         # Create a copy of the list.
         new_list = rtn_qs.getlist(filter).copy()
         # Remove the value from the list.
-        new_list.remove(by)
+        new_list.remove(str(by))
         # If the list is not empty, update the query string with the new list.
         if len(new_list):
             rtn_qs.setlist(filter, new_list)

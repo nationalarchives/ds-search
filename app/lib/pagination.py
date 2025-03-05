@@ -61,7 +61,8 @@ def pagination_object(
 ):
     if total_pages == 0:
         return {}
-    current_page = int(current_page)
+    new_args = qs_toggle_value(current_args, "page", current_page, True)
+    current_page_int = int(current_page)
     pagination_object = {}
     pagination_object["items"] = [
         (
@@ -69,29 +70,29 @@ def pagination_object(
             if item == "..."
             else {
                 "number": format_number(item),
-                "href": f"?{qs_toggle_value(current_args, 'page', item)}",
-                "current": item == current_page,
+                "href": f"?{qs_toggle_value(new_args, 'page', item)}",
+                "current": item == current_page_int,
             }
         )
         for item in pagination_list(
-            current_page, total_pages, boundaries, around
+            current_page_int, total_pages, boundaries, around
         )
     ]
-    if current_page > 1:
+    if current_page_int > 1:
         pagination_object["previous"] = {
             "href": f"?{qs_toggle_value(
-                current_args,
+                new_args,
                 'page',
-                current_page - 1,
+                current_page_int - 1,
             )}",
             "title": "Previous page of results",
         }
-    if current_page < total_pages:
+    if current_page_int < total_pages:
         pagination_object["next"] = {
             "href": f"?{qs_toggle_value(
-                current_args,
+                new_args,
                 'page',
-                current_page + 1,
+                current_page_int + 1,
             )}",
             "title": "Next page of results",
         }
