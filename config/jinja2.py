@@ -2,9 +2,9 @@ import base64
 import json
 import re
 from datetime import datetime
-from urllib.parse import urlencode
 
 from django.conf import settings
+from django.http import QueryDict
 from django.templatetags.static import static
 from django.urls import reverse
 from jinja2 import Environment
@@ -46,30 +46,40 @@ def format_number(num):
     return format(num, ",")
 
 
-def qs_is_value_active(existing_qs, filter, by):
+def qs_is_value_active(existing_qs: QueryDict, filter: str, by: str):
     """Active when identical key/value in existing query string."""
     qs_set = {(filter, str(by))}
     # Not active if either are empty.
     if not existing_qs or not qs_set:
         return False
-    # See if the intersection of sets is the same.
-    existing_qs_set = set(existing_qs.items())
-    return existing_qs_set.intersection(qs_set) == qs_set
+    # Test for identical key and value in existing query string.
+    return str(by) in existing_qs.getlist(filter)
 
 
-def qs_toggle_value(existing_qs, filter, by):
+def qs_toggle_value(
+    existing_qs: QueryDict, filter: str, by: str, return_object: bool = False
+):
     """Resolve filter against an existing query string."""
-    qs = {filter: by}
     # Don't change the currently rendering existing query string!
     rtn_qs = existing_qs.copy()
     # Test for identical key and value in existing query string.
     if qs_is_value_active(existing_qs, filter, by):
-        # Remove so that buttons toggle their own value on and off.
-        rtn_qs.pop(filter)
+        # Create a copy of the list.
+        new_list = rtn_qs.getlist(filter).copy()
+        # Remove the value from the list.
+        new_list.remove(by)
+        # If the list is not empty, update the query string with the new list.
+        if len(new_list):
+            rtn_qs.setlist(filter, new_list)
+        else:
+            rtn_qs.pop(filter)
     else:
-        # Update or add the query string.
+        # Add the key/value pair to the query string.
+        qs = {filter: by}
+        # Update the query string with the new key/value pair.
         rtn_qs.update(qs)
-    return urlencode(rtn_qs)
+    # Return the query string as a QueryDict object or as a URL encoded string.
+    return rtn_qs if return_object else rtn_qs.urlencode()
 
 
 def environment(**options):
