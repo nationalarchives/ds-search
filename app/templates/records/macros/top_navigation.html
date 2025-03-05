@@ -8,11 +8,11 @@
     {% if request.GET.get('search') %}
       <div class="back-link-group tna-!--padding-top-s tna-!--padding-bottom-s">
         <a href="{{ url('search:catalogue') }}?{{ request.GET.get('search') | base64_decode }}#record-{{ record.iaid }}" class="back-link">
-          <i class="fa-solid fa-chevron-left back-link__icon" aria-hidden="true"></i>
+          <i class="fa-solid fa-arrow-left back-link__icon" aria-hidden="true"></i>
           <span class="back-link__text">Back to search results</span>
         </a>
         <a href="{{ url('search:catalogue') }}" class="back-link">
-          <i class="fa-solid fa-search back-link__icon" aria-hidden="true"></i>
+          <!-- <i class="fa-solid fa-search back-link__icon" aria-hidden="true"></i> -->
           <span class="back-link__text">Start a new search</span>
         </a>
       </div>
@@ -65,8 +65,7 @@
           }
         ],
         'noBottomBorder': True,
-        'visuallyHideHeading': True,
-        'classes': 'tna-!--margin-top-s'
+        'visuallyHideHeading': True
       }) }}
     </div>
   </div>
