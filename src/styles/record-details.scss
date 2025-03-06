@@ -128,14 +128,8 @@
 }
 
 .copy-url {
-  margin-right: 1em;
-
-  font-family: "Roboto Mono", monospace;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.1;
-  font-style: normal;
-  font-optical-sizing: auto;
+  @include typography.detail-font;
+  @include typography.font-size(16);
 }
 
 .record-hierarchy {
