@@ -48,12 +48,14 @@
 }
 
 .reference {
+  margin-right: 1em;
   padding-right: 0.25em;
   padding-left: 0.25em;
 
   display: inline-block;
-  @include typography.detail-font;
+
   line-height: 1.4;
+  @include typography.detail-font;
   @include colour.tint;
 
   @include colour.colour-border("keyline", 1px);
