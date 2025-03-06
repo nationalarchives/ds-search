@@ -37,13 +37,61 @@
 
   {{ information_boxes(record) }}
 
-  {{ detail_fields(record, field_labels, request) }}
+  
 
-  {{ how_to_order() }}
+<div class="tna-container tna-!--margin-top-l">
+  <div class="tna-column tna-column--full">
 
-  {{ series_information(record) }}
+  <div class="tna-accordion" data-multiselectable="false" data-module="tna-accordion">
+    <div class="tna-accordion__item" data-isopen="true">
+      <h3 class="tna-accordion__heading tna-heading-s">
+        Full description and record details
+      </h3>
+      <div class="tna-accordion__body" id="-content-1">
+        {{ detail_fields(record, field_labels, request) }}
+      </div>
+    </div>
+    <div class="tna-accordion__item" data-isopen="false">
+      <h3 class="tna-accordion__heading tna-heading-s">
+        How to order this record
+      </h3>
+      <div class="tna-accordion__body" id="-content-2">
+        {{ how_to_order() }}
+      </div>
+    </div>
+    <div class="tna-accordion__item" data-isopen="false">
+      <h3 class="tna-accordion__heading tna-heading-s">
+        Series Information
+      </h3>
+      <div class="tna-accordion__body" id="-content-3">
+        {{ series_information(record) }}
+      </div>
+    </div>
+    <div class="tna-accordion__item" data-isopen="false">
+      <h3 class="tna-accordion__heading tna-heading-s">
+        Catalogue hierarchy
+      </h3>
+      <div class="tna-accordion__body" id="-content-4">
+        {{ hierarchy(record) }}
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
 
-  {{ hierarchy(record) }}
+  {# note: commented-out for development
+    {{ detail_fields(record, field_labels, request) }}
+  
+    {{ how_to_order() }}
+
+    {{ series_information(record) }}
+
+    {{ hierarchy(record) }}
+
+  #}
+ 
+
+  
 </div>
 {% endblock %}
 
