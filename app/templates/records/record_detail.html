@@ -37,20 +37,17 @@
 
   {{ information_boxes(record) }}
 
-  
-
 <div class="tna-container tna-!--margin-top-l">
   <div class="tna-column tna-column--full">
 
-  <div class="tna-accordion" data-multiselectable="false" data-module="tna-accordion">
-    <div class="tna-accordion__item" data-isopen="true">
-      <h3 class="tna-accordion__heading tna-heading-s">
-        Full description and record details
-      </h3>
-      <div class="tna-accordion__body" id="-content-1">
-        {{ detail_fields(record, field_labels, request) }}
-      </div>
+    <h3 class="tna-accordion__heading tna-heading-l">
+      Full description and record details
+    </h3>
+    <div class="tna-accordion__body" id="-content-1">
+      {{ detail_fields(record, field_labels, request) }}
     </div>
+
+  <div class="tna-accordion" data-multiselectable="false" data-module="tna-accordion">
     <div class="tna-accordion__item" data-isopen="false">
       <h3 class="tna-accordion__heading tna-heading-s">
         How to order this record
