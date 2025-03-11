@@ -4,6 +4,7 @@ import logging
 import re
 from typing import Any
 
+from app.lib.xslt_transformations import apply_xslt
 from app.records.constants import NON_TNA_LEVELS, TNA_LEVELS
 from app.records.utils import extract, format_extref_links, format_link
 from django.urls import NoReverseMatch, reverse
@@ -325,7 +326,13 @@ class Record(APIModel):
     @cached_property
     def description(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return format_extref_links(self.get("description", ""))
+        description = self.get("description", "")
+        description = format_extref_links(description)
+        if self.iaid == "D7829042":  # TODO: Remove hardcoding
+            description = apply_xslt(
+                description, "RoyalMarines"  # TODO: Schema should be dynamic
+            )
+        return description
 
     @cached_property
     def separated_materials(self) -> tuple[dict[str, Any], ...]:
