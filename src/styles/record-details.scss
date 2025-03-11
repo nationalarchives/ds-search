@@ -7,7 +7,13 @@
 .back-link-group {
   display: flex;
   align-items: flex-start;
+  justify-content: space-between;
   gap: spacing.space(2);
+
+  @include media.on-tiny {
+    flex-direction: column;
+    gap: spacing.space(1);
+  }
 }
 
 .back-link {
@@ -17,13 +23,17 @@
 
   text-decoration: none;
 
-  @include typography.font-size(16);
-
   &__icon {
   }
 
   &__text {
+    text-decoration: underline;
     @include typography.interactable-text-decoration;
+  }
+
+  &:link,
+  &:visited {
+    @include colour.colour-font("font-base");
   }
 
   &:hover,
@@ -38,12 +48,14 @@
 }
 
 .reference {
+  margin-right: 1em;
   padding-right: 0.25em;
   padding-left: 0.25em;
 
   display: inline-block;
-  @include typography.detail-font;
+
   line-height: 1.4;
+  @include typography.detail-font;
   @include colour.tint;
 
   @include colour.colour-border("keyline", 1px);
@@ -122,14 +134,8 @@
 }
 
 .copy-url {
-  margin-right: 1em;
-
-  font-family: "Roboto Mono", monospace;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.1;
-  font-style: normal;
-  font-optical-sizing: auto;
+  @include typography.detail-font;
+  @include typography.font-size(16);
 }
 
 .record-hierarchy {

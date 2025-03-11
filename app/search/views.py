@@ -14,9 +14,9 @@ def catalogue_search_view(request):
     template = loader.get_template("search/catalogue.html")
     results_per_page = 20
     page = int(request.GET.get("page", 1))
-    sort_order = request.GET.get("sort", "")
-    sort = sort_order.split(":")[0] if sort_order else ""
-    order = sort_order.split(":")[1] if sort_order else ""
+    sort_order = request.GET.get("sort", "").split(":")
+    sort = sort_order[0] if sort_order else ""
+    order = sort_order[1] if len(sort_order) > 1 else ""
     try:
         results = search_records(
             query=request.GET.get("q", None),
@@ -53,14 +53,14 @@ def catalogue_search_view(request):
 
 def build_selected_filters_list(request):
     selected_filters = []
-    if request.GET.get("q", None):
-        selected_filters.append(
-            {
-                "label": f"\"{request.GET.get('q')}\"",
-                "href": f"?{qs_remove_value(request.GET, 'q')}",
-                "title": f"Remove query: \"{request.GET.get('q')}\"",
-            }
-        )
+    # if request.GET.get("q", None):
+    #     selected_filters.append(
+    #         {
+    #             "label": f"\"{request.GET.get('q')}\"",
+    #             "href": f"?{qs_remove_value(request.GET, 'q')}",
+    #             "title": f"Remove query: \"{request.GET.get('q')}\"",
+    #         }
+    #     )
     if request.GET.get("search_within", None):
         selected_filters.append(
             {

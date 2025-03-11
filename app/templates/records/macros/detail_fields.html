@@ -62,7 +62,6 @@
         'copies_information',
         'publication_note',
         'record_opening',
-        'record_url',
       ] %}
       <dl class="tna-dl tna-dl--plain tna-dl--dotted record-details" id="record-details">
         {% for field in fields %}
@@ -117,8 +116,10 @@
             </dd>
           {% endif %}
         {% endfor %}
-        <dt>Record url:</dt>
-        <dd><span class="copy-url">https://beta.nationalarchives.gov.uk/catalogue/id/C12103887/</span><span class="reference"><a href="">COPY</a></span></dd>
+        <dt>Subjects</dt>
+        <dd><span class="reference">ARTWORK</span><span class="reference">ART</span><span class="reference">ARTISTS</span><span class="reference">PUBLICITY</span><span class="reference">PROPAGANDA</span></dd>
+        <dt>Record URL</dt>
+        <dd><span class="copy-url">{{ request.build_absolute_uri() }}</span></dd>
       </dl>
     </div>
   </div>
