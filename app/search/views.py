@@ -53,14 +53,14 @@ def catalogue_search_view(request):
 
 def build_selected_filters_list(request):
     selected_filters = []
-    if request.GET.get("q", None):
-        selected_filters.append(
-            {
-                "label": f"\"{request.GET.get('q')}\"",
-                "href": f"?{qs_remove_value(request.GET, 'q')}",
-                "title": f"Remove query: \"{request.GET.get('q')}\"",
-            }
-        )
+    # if request.GET.get("q", None):
+    #     selected_filters.append(
+    #         {
+    #             "label": f"\"{request.GET.get('q')}\"",
+    #             "href": f"?{qs_remove_value(request.GET, 'q')}",
+    #             "title": f"Remove query: \"{request.GET.get('q')}\"",
+    #         }
+    #     )
     if request.GET.get("search_within", None):
         selected_filters.append(
             {
