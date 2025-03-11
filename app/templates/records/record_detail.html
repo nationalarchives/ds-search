@@ -43,7 +43,7 @@
     <h2 class="tna-accordion__heading tna-heading-l">
       Full description and record details
     </h2>
-    <div class="tna-accordion__body" id="-content-1">
+    <div class="tna-accordion__body" id="record-details">
       {{ detail_fields(record, field_labels, request) }}
     </div>
 
@@ -52,7 +52,7 @@
       <h2 class="tna-accordion__heading tna-heading-s">
         How to order this record
       </h2>
-      <div class="tna-accordion__body" id="-content-2">
+      <div class="tna-accordion__body" id="how-to-order">
         {{ how_to_order() }}
       </div>
     </div>
@@ -60,7 +60,7 @@
       <h2 class="tna-accordion__heading tna-heading-s">
         Series Information
       </h2>
-      <div class="tna-accordion__body" id="-content-3">
+      <div class="tna-accordion__body" id="series-information">
         {{ series_information(record) }}
       </div>
     </div>
@@ -68,7 +68,7 @@
       <h2 class="tna-accordion__heading tna-heading-s">
         Catalogue hierarchy
       </h2>
-      <div class="tna-accordion__body" id="-content-4">
+      <div class="tna-accordion__body" id="catalogue-hierarchy">
         {{ hierarchy(record) }}
       </div>
     </div>
