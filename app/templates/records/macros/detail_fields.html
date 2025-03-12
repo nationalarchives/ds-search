@@ -1,9 +1,11 @@
 {% from 'components/checkboxes/macro.html' import tnaCheckboxes %}
 
 {% macro detail_fields(record, field_labels, request) %}
-  <div class="tna-container">
+  <div class="tna-container tna-!--margin-top-m">
     <div class="tna-column tna-column--flex-1 tna-column--full-small tna-column--full-tiny tna-column--align-centre tna-!--margin-top-s">
-     
+      <h2 class="tna-heading-l" id="record-details">
+        Full description and record details
+      </h2>
     </div>
     <div class="tna-column tna-column--full-small tna-column--full-tiny tna-column--align-centre tna-!--margin-top-s">
       {{ tnaCheckboxes({
