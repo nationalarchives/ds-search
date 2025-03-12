@@ -330,9 +330,11 @@ class Record(APIModel):
         description = format_extref_links(description)
         if self.iaid == "D7829042":  # TODO: Remove hardcoding
             description = apply_xslt(
-                description, "RoyalMarines"  # TODO: Schema should be dynamic
+                description,
+                "RoyalMarines",  # TODO: Schema should be dynamic
             )
-        return description
+
+        return str(description)
 
     @cached_property
     def separated_materials(self) -> tuple[dict[str, Any], ...]:
