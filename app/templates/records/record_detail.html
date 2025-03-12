@@ -6,6 +6,8 @@
 {% from 'records/macros/how_to_order.html' import how_to_order %}
 {% from 'records/macros/series_information.html' import series_information %}
 {% from 'records/macros/top_navigation.html' import top_navigation %}
+{% from 'records/macros/related_records_block.html' import related_records_block %}
+
 
 {%- set pageTitle = (record.summary_title or '[No title]') | striptags -%}
 
@@ -37,13 +39,50 @@
 
   {{ information_boxes(record) }}
 
-  {{ detail_fields(record, field_labels, request) }}
+<div class="tna-container tna-!--margin-top-l">
+  <div class="tna-column tna-column--full">
 
-  {{ how_to_order() }}
+    <h2 class="tna-accordion__heading tna-heading-l">
+      Full description and record details
+    </h2>
+    <div class="tna-accordion__body" id="record-details">
+      {{ detail_fields(record, field_labels, request) }}
+    </div>
 
-  {{ series_information(record) }}
 
-  {{ hierarchy(record) }}
+  <div class="tna-accordion" data-multiselectable="false" data-module="tna-accordion">
+    <div class="tna-accordion__item" data-isopen="false">
+      <h2 class="tna-accordion__heading tna-heading-s">
+        How to order this record
+      </h2>
+      <div class="tna-accordion__body" id="how-to-order">
+        {{ how_to_order() }}
+      </div>
+    </div>
+    {% if record.hierarchy_series %}
+    <div class="tna-accordion__item" data-isopen="false">
+      <h2 class="tna-accordion__heading tna-heading-s">
+        Series Information
+      </h2>
+      <div class="tna-accordion__body" id="series-information">
+        {{ series_information(record) }}
+      </div>
+    </div>
+    {% endif %}
+    <div class="tna-accordion__item" data-isopen="false">
+      <h2 class="tna-accordion__heading tna-heading-s">
+        Catalogue hierarchy
+      </h2>
+      <div class="tna-accordion__body" id="catalogue-hierarchy">
+        {{ hierarchy(record) }}
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+  
+  {{ related_records_block(record) }}
+
 </div>
 {% endblock %}
 
