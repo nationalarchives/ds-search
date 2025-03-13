@@ -1,5 +1,5 @@
-from app.lib.api import ResourceNotFound, rosetta_request_handler
-from app.records.models import APIResponse, Record
+from app.lib.api import ResourceNotFound, rosetta_request_handler, iiif_request_handler
+from app.records.models import APIResponse, Record, IIIFManifest
 
 
 def record_details_by_id(id, params={}) -> Record:
@@ -20,3 +20,16 @@ def record_details_by_id(id, params={}) -> Record:
 def record_details_by_ref(reference, params={}):
     # TODO: Implement record_details_by_ref once Rosetta has support
     pass
+
+
+def get_iiif_manifest_by_id(id) -> IIIFManifest:
+    uri = "get"
+    params = {"id": id}
+    results = iiif_request_handler(uri, params)
+    # TODO: Run checks against returned manifest
+    if len(results["data"]) == 1: # TODO: Check if this is the correct way to get a manifest when endpoint is created
+        manifest_data = results["data"][0]
+        response = APIResponse(manifest_data)
+        return response.manifest
+    raise ResourceNotFound(f"id {id} does not exist")
+    
