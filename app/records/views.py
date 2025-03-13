@@ -1,5 +1,5 @@
 from app.lib.api import ResourceNotFound
-from app.records.api import record_details_by_id
+from app.records.api import record_details_by_id, get_iiif_manifest_by_id
 from app.records.labels import FIELD_LABELS
 from django.http import Http404
 from django.template.response import TemplateResponse
@@ -62,9 +62,27 @@ def record_detail_view(request, id):
             context=context,
             status=502,
         )
+    
+    iiif_manifest = None
+    should_fetch_iiif_manifest = record.is_digitised and record.custom_record_type not in ("ARCHON", "CREATORS")
+
+    if should_fetch_iiif_manifest:
+        try:
+            iiif_manifest = get_iiif_manifest_by_id(id=id)
+        except ResourceNotFound:
+            raise Http404
+        except Exception as e:
+            context = {"exception_message": str(e)}
+            return TemplateResponse(
+                request=request,
+                template="errors/server_error.html",
+                context=context,
+                status=502,
+            )
 
     context.update(
         record=record,
+        iiif_manifest=iiif_manifest
     )
 
     if record.custom_record_type:
