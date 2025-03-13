@@ -86,3 +86,13 @@ def rosetta_request_handler(uri, params={}) -> dict:
     client.add_parameters(params)
     data = client.get(uri)
     return data
+
+
+def iiif_request_handler(uri, params={}) -> dict:
+    api_url = settings.IIIF_API_URL
+    if not api_url:
+        raise Exception("IIIF_API_URL not set")
+    client = JSONAPIClient(api_url)
+    client.add_parameters(params)
+    data = client.get(uri)
+    return data
