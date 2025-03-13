@@ -43,6 +43,10 @@ class APIResponse(APIModel):
         if "@template" in self._raw and "details" in self._raw["@template"]:
             return Record(self._raw["@template"]["details"])
         raise Exception("Record template not found in response")
+    
+    @cached_property
+    def manifest(self) -> IIIFManifest:
+        return IIIFManifest.from_api_response(self._raw)
 
 
 class APISearchResponse(APIResponse):
