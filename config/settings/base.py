@@ -231,6 +231,8 @@ DJANGO_SERVE_STATIC = False
 
 ROSETTA_API_URL = os.getenv("ROSETTA_API_URL")
 
+IIIF_API_URL = os.getenv("IIIF_API_URL")
+
 # Should always be True in production
 CLIENT_VERIFY_CERTIFICATES = strtobool(
     os.getenv("ROSETTA_CLIENT_VERIFY_CERTIFICATES", "True")
