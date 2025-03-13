@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Any
+from typing import Any, Self
 
 from app.records.constants import NON_TNA_LEVELS, TNA_LEVELS
 from app.records.utils import extract, format_extref_links, format_link
+from collections.abc import Mapping
 from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
 
@@ -446,3 +447,25 @@ class Record(APIModel):
             if item.level == "Series":
                 return item
         return None
+    
+    @cached_property
+    def thumbnail(self) -> str:
+        """
+        Returns the thumbnail URL for this record, or a blank string if no
+        URL value can be found.
+        """
+        if thumbnail_url := self.template.get("thumbnailUrl"):
+            return thumbnail_url.get("value", "")
+        return ""
+
+
+class IIIFManifest(APIModel):
+    content: Mapping[str, Any]
+
+    def __init__(self, *, raw_data: Mapping[str, Any]) -> None:
+        self.content = raw_data
+
+    @classmethod
+    def from_api_response(cls, response: Mapping[str, Any]) -> Self:
+        return cls(raw_data=response)
+    
