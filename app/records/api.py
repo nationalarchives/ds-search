@@ -22,7 +22,7 @@ def record_details_by_ref(reference, params={}):
     pass
 
 
-def get_iiif_manifest_by_id(id) -> IIIFManifest:
+def iiif_manifest_by_id(id) -> IIIFManifest:
     uri = "get"
     params = {"id": id}
     results = iiif_request_handler(uri, params)
