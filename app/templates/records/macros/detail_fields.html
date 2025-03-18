@@ -119,7 +119,13 @@
           {% endif %}
         {% endfor %}
         <dt>Subjects</dt>
-        <dd><span class="reference">ARTWORK</span><span class="reference">ART</span><span class="reference">ARTISTS</span><span class="reference">PUBLICITY</span><span class="reference">PROPAGANDA</span></dd>
+        <dl class="tna-dl-chips">
+          <div class="tna-dl-chips">
+            <span class="tna-dl-chips__item">ARTWORK</span>
+            <span class="tna-dl-chips__item">ART</span>
+            <span class="tna-dl-chips__item">ARTISTS</span>
+            <span class="tna-dl-chips__item">PUBLICITY</span>
+          </div> 
         <dt>Record URL</dt>
         <dd><span class="copy-url">{{ request.build_absolute_uri() }}</span></dd>
       </dl>
