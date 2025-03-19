@@ -87,4 +87,4 @@ See [Sentry's official guide](https://docs.sentry.io/platforms/python/guides/dja
 | Variable                           | Purpose                                                          | Default in base.py |
 | ---------------------------------- | ---------------------------------------------------------------- | ------------------ |
 | `ROSETTA_API_URL`                  | The base API URL for Rosetta, including the `/rosetta/data` path | No                 |
-| `DELIVERY_OPTIONS_CLIENT_BASE_URL` | Api for Delivery options                                         | Yes                |
+| `DELIVERY_OPTIONS_API_URL ` | Api for Delivery options                                         | Yes                |

@@ -3,9 +3,11 @@ import os
 import unittest
 from unittest.mock import Mock, patch
 
-from app.deliveryoptions.reader_type import (
+from app.deliveryoptions.constants import (
     IP_ONSITE_RANGES,
     IP_STAFFIN_RANGES,
+)
+from app.deliveryoptions.reader_type import (
     get_client_ip,
     is_ip_in_cidr,
 )

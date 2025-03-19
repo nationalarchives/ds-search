@@ -1,15 +1,15 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from app.deliveryoptions.delivery_options_api import get_delivery_option
-from app.lib.api import JSONAPIClient, ResourceNotFound
 from django.conf import settings
+
+from app.lib.api import JSONAPIClient, ResourceNotFound
 
 
 class DeliveryOptionsApiClientTests(unittest.TestCase):
     def setUp(self):
         self.api_client = JSONAPIClient(
-            settings.DELIVERY_OPTIONS_CLIENT_BASE_URL
+            settings.DELIVERY_OPTIONS_API_URL 
         )
         self.headers = {"Cache-Control": "no-cache"}
 
@@ -35,7 +35,7 @@ class DeliveryOptionsApiClientTests(unittest.TestCase):
 
         # Assert the mocked call
         mock_get.assert_called_with(
-            f"{settings.DELIVERY_OPTIONS_CLIENT_BASE_URL}/",
+            f"{settings.DELIVERY_OPTIONS_API_URL }/",
             params={"iaid": "C12345"},
             headers=self.headers,
         )
@@ -61,7 +61,7 @@ class DeliveryOptionsApiClientTests(unittest.TestCase):
 
         # Ensure correct request call
         mock_get.assert_called_with(
-            f"{settings.DELIVERY_OPTIONS_CLIENT_BASE_URL}/",
+            f"{settings.DELIVERY_OPTIONS_API_URL }/",
             params={},
             headers=self.headers,
         )
@@ -84,7 +84,7 @@ class DeliveryOptionsApiClientTests(unittest.TestCase):
         result = self.api_client.get()
 
         mock_get.assert_called_with(
-            f"{settings.DELIVERY_OPTIONS_CLIENT_BASE_URL}/",
+            f"{settings.DELIVERY_OPTIONS_API_URL }/",
             params={"iaid": "C67890", "category": "books"},
             headers=self.headers,
         )

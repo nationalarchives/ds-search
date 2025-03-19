@@ -1,61 +1,22 @@
 import ipaddress
-from typing import List
+from typing import List, Dict, Optional, Union
 
 from django.http import HttpRequest
 
-IP_STAFFIN_RANGES = [
-    {"Address": "172.31.8.0/22", "Description": "Front-end Web servers"},
-    {
-        "Address": "10.96.0.0/13",
-        "Description": "UPTOS servers- all NA- servers",
-    },
-    {
-        "Address": "10.104.0.0/13",
-        "Description": "Staff Edge User Access",
-    },
-    {
-        "Address": "10.95.48.0/24",
-        "Description": "TNA WVD",
-    },
-    {
-        "Address": "172.31.0.0/21",
-        "Description": "BIA Excluding web servers and load balanced services",
-    },
-    {
-        "Address": "10.252.16.0/21",
-        "Description": "Staff Remote Access",
-    },
-    {
-        "Address": "10.252.21.0/24",
-        "Description": "F5 VPN Staff Remote Access",
-    },
-    {
-        "Address": "10.114.1.0/24",
-        "Description": "F5 BIG-IP",
-    },
-]
-
-IP_ONSITE_RANGES = [
-    {
-        "Address": "10.136.0.0/19",
-        "Description": "Public reading rooms device (Thin clients and PCs) VLAN",
-    },
-    {
-        "Address": "167.98.93.94/32",
-        "Description": "Public Wi-Fi",
-    },
-    {
-        "Address": "10.120.0.0/13",
-        "Description": "Public Edge User Access",
-    },
-    {
-        "Address": "10.112.0.0/13",
-        "Description": "Untrusted servers- all WB- servers ( including reading rooms thin client pcs incl staff and public wifi)",
-    },
-]
-
 
 def get_client_ip(request: HttpRequest) -> str:
+    """
+    Extract the client IP address from the HTTP request.
+    
+    Looks for the X-Forwarded-For header first, falling back to the REMOTE_ADDR
+    if not present. When using X-Forwarded-For, only the first IP is considered.
+    
+    Args:
+        request (HttpRequest): The Django HTTP request object
+        
+    Returns:
+        str: The client's IP address
+    """
     x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
         ip = x_forwarded_for.split(",")[0]
@@ -64,7 +25,20 @@ def get_client_ip(request: HttpRequest) -> str:
     return ip
 
 
-def is_ip_in_cidr(ip: str, cidr: list[dict]) -> bool:
+def is_ip_in_cidr(ip: str, cidr: List[Dict[str, str]]) -> bool:
+    """
+    Check if an IP address is within any of the specified CIDR ranges.
+    
+    Args:
+        ip (str): The IP address to check
+        cidr (List[Dict[str, str]]): A list of dictionaries containing CIDR ranges with "Address" keys
+        
+    Returns:
+        bool: True if the IP is within any of the specified ranges, False otherwise
+        
+    Raises:
+        ValueError: If the IP address or CIDR range is invalid
+    """
     try:
         # Parse the IP address
         ip_obj = ipaddress.ip_address(ip)

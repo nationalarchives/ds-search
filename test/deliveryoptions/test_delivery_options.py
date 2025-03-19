@@ -1,23 +1,23 @@
+from copy import deepcopy
 import json
 import unittest
-from copy import deepcopy
 from unittest.mock import Mock, patch
 
-from app.deliveryoptions.utils import (
-    AvailabilityCondition,
-    Reader,
-    deliveryOptionsTags,
+from django.conf import settings
+
+from app.deliveryoptions.constants import deliveryOptionsTags
+from app.deliveryoptions.helpers import (
     get_access_condition_text,
     get_added_to_basket_text,
     get_advance_order_information,
     get_advanced_orders_email_address,
     get_dept,
+)
+from app.deliveryoptions.utils import (
     html_replacer,
     surrogate_link_builder,
 )
 from app.records.models import APIResponse
-from django.conf import settings
-
 
 class TestDeliveryOptionTags(unittest.TestCase):
     def setUp(self):

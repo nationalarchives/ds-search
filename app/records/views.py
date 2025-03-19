@@ -1,6 +1,6 @@
 import logging
 
-from app.deliveryoptions.delivery_options_api import get_delivery_option
+from app.deliveryoptions.api import get_delivery_option
 from app.deliveryoptions.utils import (
     AvailabilityCondition,
     construct_delivery_options,

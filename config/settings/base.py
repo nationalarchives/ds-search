@@ -101,7 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = "en-gb"
+LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
 
@@ -256,8 +256,8 @@ ENVIRONMENT_NAME = os.getenv("ENVIRONMENT_NAME", "production")
 SENTRY_SAMPLE_RATE = float(os.getenv("SENTRY_SAMPLE_RATE", "0.1"))
 
 # Delivery Options API Client
-DELIVERY_OPTIONS_CLIENT_BASE_URL = os.getenv(
-    "DELIVERY_OPTIONS_CLIENT_BASE_URL",
+DELIVERY_OPTIONS_API_URL  = os.getenv(
+    "DELIVERY_OPTIONS_API_URL ",
     "http://discovery-services.live.local/DiscoveryDeliveryOptionsapi/api/DeliveryOptions",
 )
 
