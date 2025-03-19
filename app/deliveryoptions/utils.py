@@ -1,19 +1,15 @@
-from ipaddress import ip_address
 import json
 import logging
 import os
 import re
-from typing import Any, Dict, List, Tuple, Union, Optional
-
-from django.conf import settings
-from django.core.cache import cache
-from django.http import HttpRequest
+from ipaddress import ip_address
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from app.deliveryoptions.constants import (
-    Reader,
-    AvailabilityCondition,
     IP_ONSITE_RANGES,
     IP_STAFFIN_RANGES,
+    AvailabilityCondition,
+    Reader,
     deliveryOptionsTags,
 )
 from app.deliveryoptions.departments import DEPARTMENT_DETAILS
@@ -23,6 +19,9 @@ from app.deliveryoptions.reader_type import (
     is_ip_in_cidr,
 )
 from app.records.models import Record
+from django.conf import settings
+from django.core.cache import cache
+from django.http import HttpRequest
 
 logger = logging.getLogger(__name__)
 
@@ -33,12 +32,12 @@ file_cache = {}
 def read_delivery_options(file_path: str) -> List:
     """
     Read and parse the delivery options JSON configuration file.
-    
+
     Uses a file cache to avoid re-reading the same file multiple times.
-    
+
     Args:
         file_path: Path to the delivery options JSON file
-        
+
     Returns:
         List: The parsed delivery options configuration
     """
@@ -59,36 +58,36 @@ def read_delivery_options(file_path: str) -> List:
 def get_dcs_prefixes() -> List[str]:
     """
     Get the list of prefixes for records with distressing content.
-    
+
     Returns:
         List[str]: The list of prefixes for records with distressing content
     """
     # Define a cache key
     cache_key = "dcs_prefixes"
-    
+
     # Try to get the result from the cache
     cached_prefixes = cache.get(cache_key)
     if cached_prefixes is not None:
         return cached_prefixes
-    
+
     # If not in cache, compute the prefixes
     dcs = settings.DELIVERY_OPTIONS_DCS_LIST
     prefixes = dcs.split()
-    
+
     # Store the result in the cache (you can specify a timeout in seconds as the third parameter)
     # Using a longer timeout since this likely doesn't change often
     cache.set(cache_key, prefixes, 60 * 60 * 24)  # Cache for 24 hours
-    
+
     return prefixes
 
 
 def distressing_content_match(reference: str) -> bool:
     """
     Check if a reference number matches any of the distressing content prefixes.
-    
+
     Args:
         reference: The reference number to check
-        
+
     Returns:
         bool: True if the reference number starts with any distressing content prefix
     """
@@ -100,11 +99,11 @@ def distressing_content_match(reference: str) -> bool:
 def get_record(cache: Dict, record_id: int) -> Optional[Dict[str, Any]]:
     """
     Get a record from the cache by its ID.
-    
+
     Args:
         cache: The cache dictionary
         record_id: The record ID to retrieve
-        
+
     Returns:
         Optional[Dict[str, Any]]: The record if found, None otherwise
     """
@@ -117,18 +116,18 @@ def get_record(cache: Dict, record_id: int) -> Optional[Dict[str, Any]]:
 def html_replacer(string: str, record: Record, surrogate_data: List) -> str:
     """
     Replace placeholders in a string with actual values.
-    
+
     Finds all tags in the format {TagName} and replaces them with
     the result of calling the corresponding function from deliveryOptionsTags.
-    
+
     Args:
         string: The string containing placeholders
         record: The record object
         surrogate_data: List of surrogate data
-        
+
     Returns:
         str: The string with placeholders replaced with actual values
-        
+
     Raises:
         Exception: If a placeholder function call fails
     """
@@ -156,13 +155,13 @@ def html_builder(
 ) -> str:
     """
     Build HTML content from delivery option data, replacing placeholders.
-    
+
     Args:
         delivery_option_data: The delivery option data to process
         record_data: The record object
         surrogate_data: List of surrogate data
         dcs: Whether to include distressing content section
-        
+
     Returns:
         str: The processed HTML content
     """
@@ -191,12 +190,12 @@ def orderbuttons_builder(
 ) -> List:
     """
     Process order buttons data, replacing placeholders.
-    
+
     Args:
         delivery_option_data: The order buttons data
         record_data: The record object
         surrogate_data: List of surrogate data
-        
+
     Returns:
         List: The processed order buttons data
     """
@@ -216,11 +215,11 @@ def basketlimit_builder(
 ) -> str:
     """
     Process basket limit data, replacing placeholders.
-    
+
     Args:
         delivery_option_data: The basket limit data
         record_data: The record object
-        
+
     Returns:
         str: The processed basket limit HTML
     """
@@ -233,11 +232,11 @@ def expandlink_builder(
 ) -> str:
     """
     Process expand link data, replacing placeholders.
-    
+
     Args:
         delivery_option_data: The expand link data
         record_data: The record object
-        
+
     Returns:
         str: The processed expand link HTML
     """
@@ -252,14 +251,14 @@ def description_builder(
 ) -> str:
     """
     Process description data, replacing placeholders.
-    
+
     Handles special case for distressing content.
-    
+
     Args:
         delivery_option_data: The description data
         record_data: The record object
         surrogate_data: List of surrogate data
-        
+
     Returns:
         str: The processed description HTML
     """
@@ -284,12 +283,12 @@ def supplemental_builder(
 ) -> str:
     """
     Process supplemental data, replacing placeholders.
-    
+
     Args:
         delivery_option_data: The supplemental data
         record_data: The record object
         surrogate_data: List of surrogate data
-        
+
     Returns:
         str: The processed supplemental HTML
     """
@@ -304,12 +303,12 @@ def heading_builder(
 ) -> str:
     """
     Process heading data, replacing placeholders.
-    
+
     Args:
         delivery_option_data: The heading data
         record_data: The record object
         surrogate_data: List of surrogate data
-        
+
     Returns:
         str: The processed heading HTML
     """
@@ -321,10 +320,10 @@ def heading_builder(
 def surrogate_link_builder(surrogates: List) -> Tuple[List[Any], List[Any]]:
     """
     Extract surrogate links and AV media links from surrogate data.
-    
+
     Args:
         surrogates: The list of surrogate data
-        
+
     Returns:
         Tuple[List[Any], List[Any]]: A tuple containing surrogate links and AV media links
     """
@@ -345,10 +344,10 @@ def surrogate_link_builder(surrogates: List) -> Tuple[List[Any], List[Any]]:
 def is_onsite(visitor_ip_address: str) -> bool:
     """
     Check if a visitor's IP address is within the on-site IP ranges.
-    
+
     Args:
         visitor_ip_address: The visitor's IP address
-        
+
     Returns:
         bool: True if the visitor is on-site, False otherwise
     """
@@ -358,7 +357,7 @@ def is_onsite(visitor_ip_address: str) -> bool:
 def is_subscribed() -> bool:
     """
     Check if the user has a subscription.
-    
+
     Returns:
         bool: True if the user has a subscription, False otherwise
     """
@@ -369,10 +368,10 @@ def is_subscribed() -> bool:
 def is_staff(visitor_ip_address: str) -> bool:
     """
     Check if a visitor's IP address is within the staff IP ranges.
-    
+
     Args:
         visitor_ip_address: The visitor's IP address
-        
+
     Returns:
         bool: True if the visitor is staff, False otherwise
     """
@@ -382,7 +381,7 @@ def is_staff(visitor_ip_address: str) -> bool:
 def get_dev_reader_type() -> Reader:
     """
     Get the reader type from the environment variable for development/testing.
-    
+
     Returns:
         Reader: The reader type from the environment variable or UNDEFINED if not set
     """
@@ -411,10 +410,10 @@ def get_dev_reader_type() -> Reader:
 def get_reader_type(request: HttpRequest) -> Reader:
     """
     Determine the reader type based on request information.
-    
+
     Args:
         request: The HTTP request
-        
+
     Returns:
         Reader: The determined reader type
     """
@@ -450,15 +449,15 @@ def construct_delivery_options(
 ) -> Dict[str, Any]:
     """
     Construct delivery options based on record and request information.
-    
+
     This is the main function called from records.py to build the delivery options
     for a record.
-    
+
     Args:
         doptions: List of delivery options
         record: The record object
         request: The HTTP request
-        
+
     Returns:
         Dict[str, Any]: The constructed delivery options
     """

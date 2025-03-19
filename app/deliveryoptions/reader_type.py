@@ -1,5 +1,5 @@
 import ipaddress
-from typing import List, Dict, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from django.http import HttpRequest
 
@@ -7,13 +7,13 @@ from django.http import HttpRequest
 def get_client_ip(request: HttpRequest) -> str:
     """
     Extract the client IP address from the HTTP request.
-    
+
     Looks for the X-Forwarded-For header first, falling back to the REMOTE_ADDR
     if not present. When using X-Forwarded-For, only the first IP is considered.
-    
+
     Args:
         request (HttpRequest): The Django HTTP request object
-        
+
     Returns:
         str: The client's IP address
     """
@@ -28,14 +28,14 @@ def get_client_ip(request: HttpRequest) -> str:
 def is_ip_in_cidr(ip: str, cidr: List[Dict[str, str]]) -> bool:
     """
     Check if an IP address is within any of the specified CIDR ranges.
-    
+
     Args:
         ip (str): The IP address to check
         cidr (List[Dict[str, str]]): A list of dictionaries containing CIDR ranges with "Address" keys
-        
+
     Returns:
         bool: True if the IP is within any of the specified ranges, False otherwise
-        
+
     Raises:
         ValueError: If the IP address or CIDR range is invalid
     """

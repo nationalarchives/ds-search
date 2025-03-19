@@ -1,9 +1,7 @@
-from copy import deepcopy
 import json
 import unittest
+from copy import deepcopy
 from unittest.mock import Mock, patch
-
-from django.conf import settings
 
 from app.deliveryoptions.constants import deliveryOptionsTags
 from app.deliveryoptions.helpers import (
@@ -18,6 +16,8 @@ from app.deliveryoptions.utils import (
     surrogate_link_builder,
 )
 from app.records.models import APIResponse
+from django.conf import settings
+
 
 class TestDeliveryOptionTags(unittest.TestCase):
     def setUp(self):

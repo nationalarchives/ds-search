@@ -5,18 +5,18 @@ These functions are used in the deliveryOptionsTags dictionary.
 """
 
 import re
-from typing import List, Optional, Any
-
-from django.conf import settings
-from django.core.cache import cache
+from typing import Any, List, Optional
 
 from app.deliveryoptions.departments import DEPARTMENT_DETAILS
 from app.records.models import Record
+from django.conf import settings
+from django.core.cache import cache
+
 
 def get_dept(reference_number: str, field: str) -> Optional[str]:
     """
     Get department information from a reference number.
-    
+
     The reference_number is the entire reference, e.g. "PROB 11/1022/1" or "RAIL 1005/190"
     We are looking to see if the first x characters of the reference_number match the key in
     the dept_details dictionary.
@@ -24,38 +24,39 @@ def get_dept(reference_number: str, field: str) -> Optional[str]:
     Args:
         reference_number: The full reference number
         field: The key to retrieve, either 'deptname' or 'depturl'
-    
+
     Returns:
         The value for the specified field from the matching department or None if not found
     """
     # Create a cache key based on the parameters
     cache_key = f"dept_{reference_number}_{field}"
-    
+
     # Try to get the result from the cache
     cached_result = cache.get(cache_key)
     if cached_result is not None:
         return cached_result
-    
+
     # If not in cache, compute the result
     result = None
     for key, value in DEPARTMENT_DETAILS.items():
         if reference_number.startswith(key):
             result = value[field]
             break
-    
+
     # Store the result in the cache (default timeout)
     cache.set(cache_key, result)
-    
+
     return result
+
 
 def get_access_condition_text(record: Record, surrogate: List) -> str:
     """
     Get the access condition text for a record.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The access condition text or a space if none exists
     """
@@ -67,11 +68,11 @@ def get_access_condition_text(record: Record, surrogate: List) -> str:
 def get_added_to_basket_text(record: Record, surrogate: List) -> str:
     """
     Get the text to display for adding to basket.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The text for the add to basket button
     """
@@ -81,11 +82,11 @@ def get_added_to_basket_text(record: Record, surrogate: List) -> str:
 def get_advanced_orders_email_address(record: Record, surrogate: List) -> str:
     """
     Get the email address for advanced orders.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The email address for advanced document orders
     """
@@ -95,11 +96,11 @@ def get_advanced_orders_email_address(record: Record, surrogate: List) -> str:
 def get_advance_order_information(record: Record, surrogate: List) -> str:
     """
     Get the URL for advance order information.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for advance order information
     """
@@ -109,11 +110,11 @@ def get_advance_order_information(record: Record, surrogate: List) -> str:
 def get_archive_link(record: Record, surrogate: List) -> str:
     """
     Get the link to the archive holding the record.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL of the archive holding the record
     """
@@ -123,11 +124,11 @@ def get_archive_link(record: Record, surrogate: List) -> str:
 def get_archive_name(record: Record, surrogate: List) -> str:
     """
     Get the name of the archive holding the record.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The name of the archive holding the record
     """
@@ -137,11 +138,11 @@ def get_archive_name(record: Record, surrogate: List) -> str:
 def get_basket_type(record: Record, surrogate: List) -> str:
     """
     Get the basket type.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The basket type (e.g., "Digital Downloads")
     """
@@ -152,11 +153,11 @@ def get_basket_type(record: Record, surrogate: List) -> str:
 def get_basket_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for the basket.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for the basket
     """
@@ -166,11 +167,11 @@ def get_basket_url(record: Record, surrogate: List) -> str:
 def get_browse_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for browsing the record hierarchy.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for browsing the record hierarchy
     """
@@ -182,11 +183,11 @@ def get_browse_url(record: Record, surrogate: List) -> str:
 def get_contact_form_url_mould(record: Record, surrogate: List) -> str:
     """
     Get the URL for the contact form for records needing mould treatment.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for the mould treatment contact form
     """
@@ -196,11 +197,11 @@ def get_contact_form_url_mould(record: Record, surrogate: List) -> str:
 def get_contact_form_url_unfit(record: Record, surrogate: List) -> str:
     """
     Get the URL for the contact form for unfit records.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for the unfit record contact form
     """
@@ -210,11 +211,11 @@ def get_contact_form_url_unfit(record: Record, surrogate: List) -> str:
 def get_contact_form_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for the general contact form.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for the general contact form
     """
@@ -224,11 +225,11 @@ def get_contact_form_url(record: Record, surrogate: List) -> str:
 def get_data_protection_act_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for the Data Protection Act information.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for the Data Protection Act information
     """
@@ -238,11 +239,11 @@ def get_data_protection_act_url(record: Record, surrogate: List) -> str:
 def get_dept_name(record: Record, surrogate: List) -> str:
     """
     Get the name of the department responsible for a record.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The name of the department or empty string if not found
     """
@@ -255,11 +256,11 @@ def get_dept_name(record: Record, surrogate: List) -> str:
 def get_dept_url(record: Record, surrogate: List) -> str:
     """
     Get the URL of the department responsible for a record.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL of the department or empty string if not found
     """
@@ -269,32 +270,14 @@ def get_dept_url(record: Record, surrogate: List) -> str:
         return ""
 
 
-def get_dept(reference_number: str, field: str) -> Optional[str]:
-    """
-    Get department information from a reference number.
-    
-    Args:
-        reference_number: The full reference number (e.g., "PROB 11/1022/1")
-        field: The field to retrieve (either 'deptname' or 'depturl')
-        
-    Returns:
-        The requested department field value or None if not found
-    """
-    for key, value in DEPARTMENT_DETAILS.items():
-        if reference_number.startswith(key):
-            return value[field]
-
-    return None
-
-
 def get_download_format(record: Record, surrogate: List) -> str:
     """
     Get the download format for a record.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The download format (e.g., "PDF" or "ZIP")
     """
@@ -305,11 +288,11 @@ def get_download_format(record: Record, surrogate: List) -> str:
 def get_download_text(record: Record, surrogate: List) -> str:
     """
     Get the text for the download button.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The text for the download button
     """
@@ -319,11 +302,11 @@ def get_download_text(record: Record, surrogate: List) -> str:
 def get_download_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for downloading a record.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for downloading the record
     """
@@ -333,11 +316,11 @@ def get_download_url(record: Record, surrogate: List) -> str:
 def get_file_authority_type(record: Record, surrogate: List) -> str:
     """
     Get the file authority type.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The file authority type
     """
@@ -348,11 +331,11 @@ def get_file_authority_type(record: Record, surrogate: List) -> str:
 def get_foi_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for submitting a Freedom of Information request.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for submitting an FOI request for this record
     """
@@ -362,25 +345,27 @@ def get_foi_url(record: Record, surrogate: List) -> str:
 def get_image_library_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for the image library.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for the image library
     """
     return settings.IMAGE_LIBRARY_URL
 
 
-def get_item_num_of_files_and_size_in_MB(record: Record, surrogate: List) -> str:
+def get_item_num_of_files_and_size_in_MB(
+    record: Record, surrogate: List
+) -> str:
     """
     Get the number of files and total size for a record.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         A string describing the number of files and size in MB
     """
@@ -391,11 +376,11 @@ def get_item_num_of_files_and_size_in_MB(record: Record, surrogate: List) -> str
 def get_keepers_gallery_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for the Keepers' Gallery.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for the Keepers' Gallery
     """
@@ -405,11 +390,11 @@ def get_keepers_gallery_url(record: Record, surrogate: List) -> str:
 def get_kew_booking_system_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for the Kew booking system.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for the Kew booking system
     """
@@ -419,11 +404,11 @@ def get_kew_booking_system_url(record: Record, surrogate: List) -> str:
 def get_max_items(record: Record, surrogate: List) -> str:
     """
     Get the maximum number of items allowed in a basket.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The maximum number of items allowed
     """
@@ -433,11 +418,11 @@ def get_max_items(record: Record, surrogate: List) -> str:
 def get_open_date_desc(record: Record, surrogate: List) -> str:
     """
     Get the description for the record opening date.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The text "Opening date: " if a record opening date exists, otherwise a space
     """
@@ -449,11 +434,11 @@ def get_open_date_desc(record: Record, surrogate: List) -> str:
 def get_opening_times_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for the opening times information.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for opening times information
     """
@@ -463,11 +448,11 @@ def get_opening_times_url(record: Record, surrogate: List) -> str:
 def get_order_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for ordering a record.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for ordering the record
     """
@@ -478,11 +463,11 @@ def get_order_url(record: Record, surrogate: List) -> str:
 def get_paid_search_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for paid search options.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for paid search options for this record
     """
@@ -492,11 +477,11 @@ def get_paid_search_url(record: Record, surrogate: List) -> str:
 def get_price(record: Record, surrogate: List) -> str:
     """
     Get the price for a record.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The price for the record
     """
@@ -507,11 +492,11 @@ def get_price(record: Record, surrogate: List) -> str:
 def get_readers_ticket_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for information about reader's tickets.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for reader's ticket information
     """
@@ -521,11 +506,11 @@ def get_readers_ticket_url(record: Record, surrogate: List) -> str:
 def get_record_copying_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for the record copying service.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for the record copying service
     """
@@ -535,11 +520,11 @@ def get_record_copying_url(record: Record, surrogate: List) -> str:
 def get_record_information_type(record: Record, surrogate: List) -> str:
     """
     Get the record information type.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The record information type
     """
@@ -550,11 +535,11 @@ def get_record_information_type(record: Record, surrogate: List) -> str:
 def get_record_opening_date(record: Record, surrogate: List) -> str:
     """
     Get the record opening date.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The record opening date or a space if none exists
     """
@@ -566,11 +551,11 @@ def get_record_opening_date(record: Record, surrogate: List) -> str:
 def get_record_url(record: Record, surrogate: List) -> str:
     """
     Get the URL for viewing a record's details.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL for viewing the record's details
     """
@@ -581,11 +566,11 @@ def get_record_url(record: Record, surrogate: List) -> str:
 def get_first_website_url(record: Record, surrogate: List) -> str:
     """
     Get the URL of the first website in the surrogate list.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The URL of the first website or empty string if none exists
     """
@@ -603,11 +588,11 @@ def get_first_website_url(record: Record, surrogate: List) -> str:
 def get_first_website_url_full(record: Record, surrogate: List) -> str:
     """
     Get the full HTML for the first website in the surrogate list.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The full HTML for the first website or empty string if none exists
     """
@@ -620,11 +605,11 @@ def get_first_website_url_full(record: Record, surrogate: List) -> str:
 def get_subsequent_website_urls(record: Record, surrogate: List) -> str:
     """
     Get HTML for all websites in the surrogate list except the first one.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         HTML for all websites except the first one
     """
@@ -638,11 +623,11 @@ def get_subsequent_website_urls(record: Record, surrogate: List) -> str:
 def get_all_website_urls(record: Record, surrogate: List) -> str:
     """
     Get HTML for all websites in the surrogate list.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         HTML for all websites in the surrogate list
     """
@@ -655,11 +640,11 @@ def get_all_website_urls(record: Record, surrogate: List) -> str:
 def get_website_url_text(record: Record, surrogate: List) -> str:
     """
     Get the text from the first website URL in the surrogate list.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The text from the first website URL or a space if none exists
     """
@@ -675,11 +660,11 @@ def get_website_url_text(record: Record, surrogate: List) -> str:
 def get_your_order_link(record: Record, surrogate: List) -> str:
     """
     Get the link to the user's current order.
-    
+
     Args:
         record: The record object
         surrogate: List of surrogate data
-        
+
     Returns:
         The link to the user's current order
     """

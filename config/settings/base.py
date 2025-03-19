@@ -256,7 +256,7 @@ ENVIRONMENT_NAME = os.getenv("ENVIRONMENT_NAME", "production")
 SENTRY_SAMPLE_RATE = float(os.getenv("SENTRY_SAMPLE_RATE", "0.1"))
 
 # Delivery Options API Client
-DELIVERY_OPTIONS_API_URL  = os.getenv(
+DELIVERY_OPTIONS_API_URL = os.getenv(
     "DELIVERY_OPTIONS_API_URL ",
     "http://discovery-services.live.local/DiscoveryDeliveryOptionsapi/api/DeliveryOptions",
 )
