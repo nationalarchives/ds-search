@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% from 'records/macros/top_navigation.html' import top_navigation %}
+{% from 'components/accordion/macro.html' import tnaAccordion %}
 
 {%- set pageTitle = 'New to archives?' -%}
 
@@ -16,8 +17,85 @@
 {% block content %}
 <div class="tna-section">
   <div class="tna-container">
-    <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
-      <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
+    <div class="tna-column tna-column--width-3-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
+      <h1 class="tna-heading-l">Getting started at The National Archives</h1>
+      <p>If you are new to The National Archives and want some help getting started with your family history or any other kind of research, you're in the right place.</p>
+      <p>Use the sections below to find out where and how to starty your research or <a href="">explore curatedhighlights from our collection.</a>
+      </p>
+
+      <!--accordion-->
+      <div class="tna-accordion" data-multiselectable="false" data-module="tna-accordion">
+        <div class="tna-accordion__item" data-isopen="true">
+          <h3 class="tna-accordion__heading tna-heading-s">
+            What we have
+          </h3>
+          <div class="tna-accordion__body" id="accordion-what-we-have">
+            <p>The National Artchive is home to millions of historical documents, known as <b>records</b>, which were created and collected by UK central government departments and major courts of law.</p>
+            <p>For example, we have records from the Home Office, the Foreign Office and the Central Criminal Court.</p>
+            <p>It takes 185km of shelving to store our records, and this increases every year.</p>
+
+            <section class="tna-section">
+                <!--youtube embed-->
+                <iframe width="100%" height="461" src="https://www.youtube.com/embed/VjwAAypYL8M" title="The records we hold" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <!--end youtube embed-->
+            </section>
+              
+
+          </div>
+        </div>
+        <div class="tna-accordion__item" data-isopen="false">
+          <h3 class="tna-accordion__heading tna-heading-s">
+            What we don't have
+          </h3>
+          <div class="tna-accordion__body" id="accordion-demo-content-2">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim vehicula magna, et hendrerit quam iaculis a. Mauris in ultricies enim. Donec bibendum est leo, sed dapibus mauris facilisis vitae.</p>
+            <p>Quisque hendrerit condimentum nisl, non volutpat ex eleifend at. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Morbi id suscipit felis, sed tincidunt arcu. Etiam vel blandit diam, vitae commodo mi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla blandit mi vel rhoncus aliquam.</p>
+            <p>Pellentesque ultrices bibendum nibh, sit amet ornare turpis efficitur id. Aenean ullamcorper neque eget justo sagittis, rutrum ultrices urna varius. Mauris sodales a lorem at sodales.</p>
+          </div>
+        </div>
+        <div class="tna-accordion__item" data-isopen="false">
+          <h3 class="tna-accordion__heading tna-heading-s">
+            What's online
+          </h3>
+          <div class="tna-accordion__body" id="accordion-online">
+            <ul class="tna-ul">
+              <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+              <li>Nulla dignissim vehicula magna, et hendrerit quam iaculis a. Mauris in ultricies enim.</li>
+              <li>Donec bibendum est leo, sed dapibus mauris facilisis vitae.</li>
+              <li>Quisque hendrerit condimentum nisl, non volutpat ex eleifend at. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Morbi id suscipit felis, sed tincidunt arcu. Etiam vel blandit diam, vitae commodo mi.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tna-accordion__item" data-isopen="false">
+          <h3 class="tna-accordion__heading tna-heading-s">
+            What are archives?
+          </h3>
+          <div class="tna-accordion__body" id="accordion-what-are-archives">
+            <ul class="tna-ul">
+              <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+              <li>Nulla dignissim vehicula magna, et hendrerit quam iaculis a. Mauris in ultricies enim.</li>
+              <li>Donec bibendum est leo, sed dapibus mauris facilisis vitae.</li>
+              <li>Quisque hendrerit condimentum nisl, non volutpat ex eleifend at. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Morbi id suscipit felis, sed tincidunt arcu. Etiam vel blandit diam, vitae commodo mi.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tna-accordion__item" data-isopen="false">
+          <h3 class="tna-accordion__heading tna-heading-s">
+            How to use archives?
+          </h3>
+          <div class="tna-accordion__body" id="accordion-how-to-use">
+            <ul class="tna-ul">
+              <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+              <li>Nulla dignissim vehicula magna, et hendrerit quam iaculis a. Mauris in ultricies enim.</li>
+              <li>Donec bibendum est leo, sed dapibus mauris facilisis vitae.</li>
+              <li>Quisque hendrerit condimentum nisl, non volutpat ex eleifend at. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Morbi id suscipit felis, sed tincidunt arcu. Etiam vel blandit diam, vitae commodo mi.</li>
+            </ul>
+          </div>
+        </div>
+        
+      </div>
+
+      <!--end accordion-->
     </div>
   </div>
 </div>
