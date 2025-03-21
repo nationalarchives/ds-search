@@ -1,7 +1,7 @@
 import logging
 
-from app.deliveryoptions.api import get_delivery_option
-from app.deliveryoptions.utils import (
+from app.deliveryoptions.api import delivery_options_request_handler
+from app.deliveryoptions.delivery_options import (
     AvailabilityCondition,
     construct_delivery_options,
 )
@@ -76,38 +76,49 @@ def record_detail_view(request, id):
         record=record,
     )
 
-    # Get the delivery options for the iaid
-    do_ctx = {}
+    determine_delivery_options = True
 
-    try:
-        delivery_options = get_delivery_option(iaid=record.iaid)
-
-        do_ctx = construct_delivery_options(delivery_options, record, request)
-
-    except Exception as e:
-        # Built in order exception option
-        logger.warning(
-            f"DORIS Connection error - returning OrderException from Availability Conditions {e.args}"
-        )
-
-        do_ctx = construct_delivery_options(
-            [
-                {
-                    "options": AvailabilityCondition.OrderException,
-                    "surrogateLinks": [],
-                    "advancedOrderUrlParameters": "",
-                }
-            ],
-            record,
-            request,
-        )
-
-    context.update(do_ctx)
     if record.custom_record_type:
         if record.custom_record_type == "ARCHON":
+            determine_delivery_options = False
             template_name = "records/archon_detail.html"
         if record.custom_record_type == "CREATORS":
             template_name = "records/creator_detail.html"
+            determine_delivery_options = False
+
+    if determine_delivery_options:
+        # Only get the delivery options if we are looking at records
+        # Get the delivery options for the iaid
+        delivery_options_context = {}
+
+        try:
+            delivery_options = delivery_options_request_handler(
+                iaid=record.iaid
+            )
+
+            delivery_options_context = construct_delivery_options(
+                delivery_options, record, request
+            )
+
+        except Exception as e:
+            # Built in order exception option
+            logger.error(
+                f"DORIS Connection error - returning OrderException from Availability Conditions {e.args}"
+            )
+
+            delivery_options_context = construct_delivery_options(
+                [
+                    {
+                        "options": AvailabilityCondition.OrderException,
+                        "surrogateLinks": [],
+                        "advancedOrderUrlParameters": "",
+                    }
+                ],
+                record,
+                request,
+            )
+
+        context.update(delivery_options_context)
 
     return TemplateResponse(
         request=request, template=template_name, context=context

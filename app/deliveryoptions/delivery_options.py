@@ -1,23 +1,19 @@
 import json
 import logging
-import os
 import re
 from ipaddress import ip_address
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union
 
 from app.deliveryoptions.constants import (
     IP_ONSITE_RANGES,
     IP_STAFFIN_RANGES,
     AvailabilityCondition,
-    Reader,
-    deliveryOptionsTags,
+    delivery_option_tags,
 )
 from app.deliveryoptions.departments import DEPARTMENT_DETAILS
 from app.deliveryoptions.helpers import get_dept
-from app.deliveryoptions.reader_type import (
-    get_client_ip,
-    is_ip_in_cidr,
-)
+from app.deliveryoptions.reader_type import get_reader_type
+from app.lib.utils import validate_setting
 from app.records.models import Record
 from django.conf import settings
 from django.core.cache import cache
@@ -29,7 +25,7 @@ logger = logging.getLogger(__name__)
 file_cache = {}
 
 
-def read_delivery_options(file_path: str) -> List:
+def read_delivery_options(file_path: str) -> Dict:
     """
     Read and parse the delivery options JSON configuration file.
 
@@ -39,7 +35,7 @@ def read_delivery_options(file_path: str) -> List:
         file_path: Path to the delivery options JSON file
 
     Returns:
-        List: The parsed delivery options configuration
+        Dict: The parsed delivery options configuration
     """
     # Check if file content is already in the cache
     if file_path not in file_cache:
@@ -71,17 +67,24 @@ def get_dcs_prefixes() -> List[str]:
         return cached_prefixes
 
     # If not in cache, compute the prefixes
-    dcs = settings.DELIVERY_OPTIONS_DCS_LIST
-    prefixes = dcs.split()
+    dcs = validate_setting(
+        settings, "DELIVERY_OPTIONS_DCS_LIST", str, default=""
+    )
 
-    # Store the result in the cache (you can specify a timeout in seconds as the third parameter)
-    # Using a longer timeout since this likely doesn't change often
+    prefixes = []
+    if (
+        dcs
+    ):  # This check is sufficient since validate_setting ensures dcs is a string or default
+        prefixes = [prefix.strip() for prefix in dcs.split(",")]
+    else:
+        logger.error("Malformed or missing DCS string")
+
+    # Store the result in the cache
     cache.set(cache_key, prefixes, 60 * 60 * 24)  # Cache for 24 hours
-
     return prefixes
 
 
-def distressing_content_match(reference: str) -> bool:
+def has_distressing_content_match(reference: str) -> bool:
     """
     Check if a reference number matches any of the distressing content prefixes.
 
@@ -113,17 +116,17 @@ def get_record(cache: Dict, record_id: int) -> Optional[Dict[str, Any]]:
         return None
 
 
-def html_replacer(string: str, record: Record, surrogate_data: List) -> str:
+def html_replacer(value: str, record: Record, api_surrogate_data: List) -> str:
     """
     Replace placeholders in a string with actual values.
 
     Finds all tags in the format {TagName} and replaces them with
-    the result of calling the corresponding function from deliveryOptionsTags.
+    the result of calling the corresponding function from delivery_option_tags.
 
     Args:
-        string: The string containing placeholders
+        value: The string containing placeholders
         record: The record object
-        surrogate_data: List of surrogate data
+        api_surrogate_data: List of surrogate data
 
     Returns:
         str: The string with placeholders replaced with actual values
@@ -131,26 +134,26 @@ def html_replacer(string: str, record: Record, surrogate_data: List) -> str:
     Raises:
         Exception: If a placeholder function call fails
     """
-    subs = re.findall(r"{[A-Za-z]*}", string)
+    subs = re.findall(r"{[A-Za-z]*}", value)
 
     for s in subs:
         try:
-            func = deliveryOptionsTags[s]
+            func = delivery_option_tags[s]
 
             # If the tag doesn't have any data (can happen with surrogate links),
             # rather than have a string with something missing, just return an
             # empty string and it won't get displayed
-            if f := func(record, surrogate_data):
-                string = string.replace(s, f)
+            if f := func(record, api_surrogate_data):
+                value = value.replace(s, f)
         except Exception:
             raise
-    return string
+    return value
 
 
 def html_builder(
     delivery_option_data: Union[List, str],
     record_data: Record,
-    surrogate_data: List = [],
+    api_surrogate_data: List = None,
     dcs: bool = False,
 ) -> str:
     """
@@ -159,7 +162,7 @@ def html_builder(
     Args:
         delivery_option_data: The delivery option data to process
         record_data: The record object
-        surrogate_data: List of surrogate data
+        api_surrogate_data: List of surrogate data
         dcs: Whether to include distressing content section
 
     Returns:
@@ -167,8 +170,10 @@ def html_builder(
     """
     html = ""
 
-    if delivery_option_data is None:
-        return html
+    # The description can contain an ordinary description and a DCS description. Which one
+    # is chosen is down to whether the document reference prefix matches any in
+    # DELIVERY_OPTIONS_DCS_LIST. So, if the code finds a descriptionDCS record but
+    # the prefix doesn't match, it skips it.
 
     if isinstance(delivery_option_data, list):
         for item in delivery_option_data:
@@ -176,17 +181,19 @@ def html_builder(
                 pass
             else:
                 html += html_replacer(
-                    item["value"], record_data, surrogate_data
+                    item["value"], record_data, api_surrogate_data
                 )
     else:
-        html = html_replacer(delivery_option_data, record_data, surrogate_data)
+        html = html_replacer(
+            delivery_option_data, record_data, api_surrogate_data
+        )
 
     return html
 
 
 # Specific pre-processing for the order buttons data
 def orderbuttons_builder(
-    delivery_option_data: List, record_data: Record, surrogate_data: List
+    delivery_option_data: List, record_data: Record, api_surrogate_data: List
 ) -> List:
     """
     Process order buttons data, replacing placeholders.
@@ -194,19 +201,30 @@ def orderbuttons_builder(
     Args:
         delivery_option_data: The order buttons data
         record_data: The record object
-        surrogate_data: List of surrogate data
+        api_surrogate_data: List of surrogate data
 
     Returns:
         List: The processed order buttons data
     """
+
+    result = []
+
     for item in delivery_option_data:
-        item["href"] = html_builder(
-            item["href"], record_data, surrogate_data=surrogate_data
-        )
-        item["text"] = html_builder(
-            item["text"], record_data, surrogate_data=surrogate_data
-        )
-    return delivery_option_data
+        # Create a new dictionary with the same content
+        processed_item = {}
+
+        # Copy all key/value pairs, processing 'href' and 'text' if present
+        for key, value in item.items():
+            if key == "href" or key == "text":
+                processed_item[key] = html_builder(
+                    value, record_data, api_surrogate_data=api_surrogate_data
+                )
+            else:
+                processed_item[key] = value
+
+        result.append(processed_item)
+
+    return result
 
 
 # Specific pre-processing for the basket limit data
@@ -247,7 +265,7 @@ def expandlink_builder(
 def description_builder(
     delivery_option_data: Union[List, str],
     record_data: Record,
-    surrogate_data: List,
+    api_surrogate_data: List,
 ) -> str:
     """
     Process description data, replacing placeholders.
@@ -257,21 +275,21 @@ def description_builder(
     Args:
         delivery_option_data: The description data
         record_data: The record object
-        surrogate_data: List of surrogate data
+        api_surrogate_data: List of surrogate data
 
     Returns:
         str: The processed description HTML
     """
-    if distressing_content_match(record_data.reference_number):
+    if has_distressing_content_match(record_data.reference_number):
         return html_builder(
             delivery_option_data,
             record_data,
-            surrogate_data=surrogate_data,
+            api_surrogate_data=api_surrogate_data,
             dcs=True,
         )
 
     return html_builder(
-        delivery_option_data, record_data, surrogate_data=surrogate_data
+        delivery_option_data, record_data, api_surrogate_data=api_surrogate_data
     )
 
 
@@ -279,7 +297,7 @@ def description_builder(
 def supplemental_builder(
     delivery_option_data: Union[List, str],
     record_data: Record,
-    surrogate_data: List,
+    api_surrogate_data: List,
 ) -> str:
     """
     Process supplemental data, replacing placeholders.
@@ -287,19 +305,19 @@ def supplemental_builder(
     Args:
         delivery_option_data: The supplemental data
         record_data: The record object
-        surrogate_data: List of surrogate data
+        api_surrogate_data: List of surrogate data
 
     Returns:
         str: The processed supplemental HTML
     """
     return html_builder(
-        delivery_option_data, record_data, surrogate_data=surrogate_data
+        delivery_option_data, record_data, api_surrogate_data=api_surrogate_data
     )
 
 
 # Specific pre-processing for the heading
 def heading_builder(
-    delivery_option_data: str, record_data: Record, surrogate_data: List
+    delivery_option_data: str, record_data: Record, api_surrogate_data: List
 ) -> str:
     """
     Process heading data, replacing placeholders.
@@ -307,17 +325,17 @@ def heading_builder(
     Args:
         delivery_option_data: The heading data
         record_data: The record object
-        surrogate_data: List of surrogate data
+        api_surrogate_data: List of surrogate data
 
     Returns:
         str: The processed heading HTML
     """
     return html_builder(
-        delivery_option_data, record_data, surrogate_data=surrogate_data
+        delivery_option_data, record_data, api_surrogate_data=api_surrogate_data
     )
 
 
-def surrogate_link_builder(surrogates: List) -> Tuple[List[Any], List[Any]]:
+def surrogate_link_builder(surrogates: List) -> List[Any]:
     """
     Extract surrogate links and AV media links from surrogate data.
 
@@ -325,127 +343,19 @@ def surrogate_link_builder(surrogates: List) -> Tuple[List[Any], List[Any]]:
         surrogates: The list of surrogate data
 
     Returns:
-        Tuple[List[Any], List[Any]]: A tuple containing surrogate links and AV media links
+        List[Any]: A list containing surrogate links (including AV media links)
     """
     surrogate_list = []
-    av_media_list = []
 
     for s in surrogates:
         if s["xReferenceURL"]:
             surrogate_list.append(s["xReferenceURL"])
 
-        if s["xReferenceType"] == "AV_MEDIA":
-            if s["xReferenceURL"]:
-                av_media_list.append(s["xReferenceURL"])
-
-    return surrogate_list, av_media_list
+    return surrogate_list
 
 
-def is_onsite(visitor_ip_address: str) -> bool:
-    """
-    Check if a visitor's IP address is within the on-site IP ranges.
-
-    Args:
-        visitor_ip_address: The visitor's IP address
-
-    Returns:
-        bool: True if the visitor is on-site, False otherwise
-    """
-    return is_ip_in_cidr(visitor_ip_address, IP_ONSITE_RANGES)
-
-
-def is_subscribed() -> bool:
-    """
-    Check if the user has a subscription.
-
-    Returns:
-        bool: True if the user has a subscription, False otherwise
-    """
-    # TODO once user management is in place
-    return False
-
-
-def is_staff(visitor_ip_address: str) -> bool:
-    """
-    Check if a visitor's IP address is within the staff IP ranges.
-
-    Args:
-        visitor_ip_address: The visitor's IP address
-
-    Returns:
-        bool: True if the visitor is staff, False otherwise
-    """
-    return is_ip_in_cidr(visitor_ip_address, IP_STAFFIN_RANGES)
-
-
-def get_dev_reader_type() -> Reader:
-    """
-    Get the reader type from the environment variable for development/testing.
-
-    Returns:
-        Reader: The reader type from the environment variable or UNDEFINED if not set
-    """
-    override_reader_type = os.getenv("OVERRIDE_READER_TYPE", Reader.UNDEFINED)
-
-    # If environment variable is set, validate it
-    if override_reader_type != Reader.UNDEFINED:
-        try:
-            # Convert the environment variable to an integer
-            reader_value = int(override_reader_type)
-
-            # Check if it's a valid Reader enum value
-            if reader_value in Reader._value2member_map_:
-                return Reader(
-                    reader_value
-                )  # Return the corresponding Reader enum value
-
-        except Exception as e:
-            logger.warning(
-                f"Override reader type '{override_reader_type}' cannot be determined - returning UNDEFINED ({type(e)}: {e.args})"
-            )
-
-    return Reader.UNDEFINED  # Default to UNDEFINED
-
-
-def get_reader_type(request: HttpRequest) -> Reader:
-    """
-    Determine the reader type based on request information.
-
-    Args:
-        request: The HTTP request
-
-    Returns:
-        Reader: The determined reader type
-    """
-    reader = Reader.UNDEFINED
-
-    try:
-        visitor_ip_address = get_client_ip(request)
-    except Exception as e:
-        logger.warning(
-            f"Cannot determine the users ip address - returning OFFSITE ({type(e)}: {e.args})"
-        )
-        return Reader.OFFSITE
-
-    # Check if there is an override of reader type - used for testing and demonstrations.
-    reader = get_dev_reader_type()
-
-    if reader == Reader.UNDEFINED:
-        if is_subscribed():
-            reader = Reader.SUBSCRIPTION
-        elif is_onsite(visitor_ip_address):
-            reader = Reader.ONSITEPUBLIC
-        elif is_staff(visitor_ip_address):
-            reader = Reader.STAFFIN
-        else:
-            reader = Reader.OFFSITE
-
-    return reader
-
-
-# Main routine called from records.py
 def construct_delivery_options(
-    doptions: List, record: Record, request: HttpRequest
+    api_result: List, record: Record, request: HttpRequest
 ) -> Dict[str, Any]:
     """
     Construct delivery options based on record and request information.
@@ -454,85 +364,77 @@ def construct_delivery_options(
     for a record.
 
     Args:
-        doptions: List of delivery options
+        api_result: List of delivery options
         record: The record object
         request: The HTTP request
 
     Returns:
         Dict[str, Any]: The constructed delivery options
     """
-    do = {}
+    # To do: The api_result list contains zero or more dictionaries. Only 1 should be
+    # allowed, so fail on zero or greater than 1
+
+    if api_length := len(api_result) > 1:
+        raise ValueError(
+            f"Too many results ({api_length}) from DORIS database for IAID {record.iaid}"
+        )
+
+    delivery_options_context_dict = {}
 
     reader_type = get_reader_type(request)
 
-    do["reader_type"] = reader_type
+    delivery_options_context_dict["reader_type"] = reader_type
 
     do_dict = read_delivery_options(settings.DELIVERY_OPTIONS_CONFIG)
 
-    # To do: The doptions list contains zero or more dictionaries. Only 1 should be
-    # allowed, so fail on zero or greater than 1
-
     # Surrogate links is always present as a list, which can be empty
-    do["do_surrogate"], do["do_av_media"] = surrogate_link_builder(
-        doptions[0]["surrogateLinks"]
-    )
+    do_surrogate = surrogate_link_builder(api_result[0]["surrogateLinks"])
 
-    # if surrogate links is not an empty list, it will contain one or more dictionaries of the form:
-    """     {
-                "xReferenceId": null,
-                "xReferenceCode": null,
-                "xReferenceName": null,
-                "xReferenceType": "DIGITIZED_DISCOVERY",
-                "xReferenceURL": "<a target=\"_blank\" href=\"https://www.thegenealogist.co.uk/non-conformist-records\">The Genealogist</a>",
-                "xReferenceDescription": null,
-                "xReferenceSortWord": null
-            },
-    """
-
-    if doptions[0]["options"] == AvailabilityCondition.ClosedRetainedDeptKnown:
+    if (
+        api_result[0]["options"]
+        == AvailabilityCondition.ClosedRetainedDeptKnown
+    ):
         # Special case. Sometimes, for record type 14 (ClosedRetainedDeptKnown), the department name does not match
         # any entry in the DEPARTMENT_DETAILS dictionary. This shouldn't happen but it does. Therefore, reset the type
         # with that for AvailabilityCondition.ClosedRetainedDeptUnKnown
         if not get_dept(record.reference_number, "deptname"):
-            doptions[0][
+            api_result[0][
                 "options"
             ] = AvailabilityCondition.ClosedRetainedDeptUnKnown
 
     # Get the specific delivery option for this artefact
-    delivery_option = get_record(do_dict, doptions[0]["options"])
+    delivery_option = get_record(do_dict, api_result[0]["options"])
 
     reader_option = delivery_option["readertype"][reader_type]
 
-    # The reader_option has the following fields:
-    #   reader - (staffin/onsitepublic/subsription/offsite) - mandatory
-    #   description - is a list of one or more dictionaries containing name and value fields - optional
-    #       NOTE: there is a special case when the description name is 'descriptionDCS' - this is for distressing material
-    #   heading - string - optional.
-    #   orderbuttons - a string containing html for buttons in an unordered list - optional
-    #   supplementalcontent - is a list of one or more dictionaries containing name and value fields - optional
-
-    if title := reader_option.get("heading"):
-        do["do_heading"] = heading_builder(title, record, do["do_surrogate"])
+    if heading := reader_option.get("heading"):
+        delivery_options_context_dict["do_heading"] = heading_builder(
+            heading, record, do_surrogate
+        )
 
     if text := reader_option.get("description"):
-        do["do_description"] = description_builder(
-            text, record, do["do_surrogate"]
+        delivery_options_context_dict["do_description"] = description_builder(
+            text, record, do_surrogate
         )
 
     if supp := reader_option.get("supplementalcontent"):
-        do["do_supplemental"] = supplemental_builder(
-            supp, record, do["do_surrogate"]
+        delivery_options_context_dict["do_supplemental"] = supplemental_builder(
+            supp, record, do_surrogate
         )
 
     if obutton := reader_option.get("orderbuttons"):
-        do["do_orderbuttons"] = orderbuttons_builder(
-            obutton, record, do["do_surrogate"]
+        delivery_options_context_dict["do_orderbuttons"] = orderbuttons_builder(
+            obutton, record, do_surrogate
         )
 
     if expand := reader_option.get("expandlink"):
-        do["do_expandlink"] = expandlink_builder(expand, record)
+        delivery_options_context_dict["do_expandlink"] = expandlink_builder(
+            expand, record
+        )
 
     if basket := reader_option.get("basketlimit"):
-        do["do_basketlimit"] = basketlimit_builder(basket, record)
+        delivery_options_context_dict["do_basketlimit"] = basketlimit_builder(
+            basket, record
+        )
 
-    return do
+    return delivery_options_context_dict

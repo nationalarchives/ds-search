@@ -3,7 +3,11 @@ import unittest
 from copy import deepcopy
 from unittest.mock import Mock, patch
 
-from app.deliveryoptions.constants import deliveryOptionsTags
+from app.deliveryoptions.constants import delivery_option_tags
+from app.deliveryoptions.delivery_options import (
+    html_replacer,
+    surrogate_link_builder,
+)
 from app.deliveryoptions.helpers import (
     get_access_condition_text,
     get_added_to_basket_text,
@@ -11,18 +15,14 @@ from app.deliveryoptions.helpers import (
     get_advanced_orders_email_address,
     get_dept,
 )
-from app.deliveryoptions.utils import (
-    html_replacer,
-    surrogate_link_builder,
-)
 from app.records.models import APIResponse
 from django.conf import settings
 
 
 class TestDeliveryOptionTags(unittest.TestCase):
     def setUp(self):
-        # This is a simplified example of the deliveryOptionTags dictionary.
-        self.deliveryOptionTags = deliveryOptionsTags
+        # This is a simplified example of the delivery_option_tags dictionary.
+        self.delivery_option_tags = delivery_option_tags
 
         # Path to the JSON file containing the delivery options
         self.json_file_path = settings.DELIVERY_OPTIONS_CONFIG
@@ -63,13 +63,13 @@ class TestDeliveryOptionTags(unittest.TestCase):
         # Extract all markup tags from the JSON data
         extracted_tags = self.extract_tags(delivery_options_json)
 
-        # Check that each extracted tag is in the deliveryOptionTags dictionary
+        # Check that each extracted tag is in the delivery_option_tags dictionary
         for tag in extracted_tags:
             with self.subTest(tag=tag):
                 self.assertIn(
                     f"{{{tag}}}",
-                    self.deliveryOptionTags,
-                    f"Tag {tag} is missing in deliveryOptionTags dictionary.",
+                    self.delivery_option_tags,
+                    f"Tag {tag} is missing in delivery_option_tags dictionary.",
                 )
 
 
@@ -88,12 +88,14 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
         ]
 
     @patch(
-        "app.deliveryoptions.utils.settings.BASE_TNA_URL",
+        "app.deliveryoptions.delivery_options.settings.BASE_TNA_URL",
         "https://tnabase.test.url",
     )
-    @patch("app.deliveryoptions.utils.settings.MAX_BASKET_ITEMS", "5")
     @patch(
-        "app.deliveryoptions.utils.settings.DISCOVERY_TNA_URL",
+        "app.deliveryoptions.delivery_options.settings.MAX_BASKET_ITEMS", "5"
+    )
+    @patch(
+        "app.deliveryoptions.delivery_options.settings.DISCOVERY_TNA_URL",
         "https://discovery.test.url",
     )
     def test_delivery_options_tags(self):
@@ -143,7 +145,7 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
 
         for tag, expected_value in test_cases.items():
             with self.subTest(tag=tag):
-                result = deliveryOptionsTags[tag](self.record, self.surrogate)
+                result = delivery_option_tags[tag](self.record, self.surrogate)
                 self.assertEqual(result, expected_value)
 
     def test_get_dept_existing(self):
@@ -176,7 +178,7 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
         )
 
     @patch(
-        "app.deliveryoptions.utils.settings.BASE_TNA_URL",
+        "app.deliveryoptions.delivery_options.settings.BASE_TNA_URL",
         "https://tnabase.test.url",
     )
     def test_get_advance_order_information(self):
@@ -206,7 +208,7 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
         }
 
         with patch(
-            "app.deliveryoptions.utils.distressing_content_match",
+            "app.deliveryoptions.delivery_options.has_distressing_content_match",
             return_value=True,
         ):
             selected_description = next(
@@ -232,7 +234,7 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
         }
 
         with patch(
-            "app.deliveryoptions.utils.distressing_content_match",
+            "app.deliveryoptions.delivery_options.has_distressing_content_match",
             return_value=False,
         ):
             selected_description = next(
@@ -249,9 +251,8 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
 class TestSurrogateReferences(unittest.TestCase):
     def test_empty_list(self):
         reference_list = []
-        surrogate_list, av_media_list = surrogate_link_builder(reference_list)
+        surrogate_list = surrogate_link_builder(reference_list)
         self.assertEqual(surrogate_list, [])
-        self.assertEqual(av_media_list, [])
 
     def test_non_empty_list_with_no_av_media(self):
         reference_list = [
@@ -264,11 +265,10 @@ class TestSurrogateReferences(unittest.TestCase):
                 "xReferenceType": "DIGITIZED_DISCOVERY",
             },
         ]
-        surrogate_list, av_media_list = surrogate_link_builder(reference_list)
+        surrogate_list = surrogate_link_builder(reference_list)
         self.assertEqual(
             surrogate_list, ["https://example.com/1", "https://example.com/2"]
         )
-        self.assertEqual(av_media_list, [])
 
     def test_list_with_av_media(self):
         reference_list = [
@@ -285,7 +285,7 @@ class TestSurrogateReferences(unittest.TestCase):
                 "xReferenceType": "AV_MEDIA",
             },
         ]
-        surrogate_list, av_media_list = surrogate_link_builder(reference_list)
+        surrogate_list = surrogate_link_builder(reference_list)
         self.assertEqual(
             surrogate_list,
             [
@@ -293,9 +293,6 @@ class TestSurrogateReferences(unittest.TestCase):
                 "https://example.com/2",
                 "https://example.com/3",
             ],
-        )
-        self.assertEqual(
-            av_media_list, ["https://example.com/1", "https://example.com/3"]
         )
 
     def test_list_with_empty_values(self):
@@ -306,6 +303,5 @@ class TestSurrogateReferences(unittest.TestCase):
                 "xReferenceType": "AV_MEDIA",
             },
         ]
-        surrogate_list, av_media_list = surrogate_link_builder(reference_list)
+        surrogate_list = surrogate_link_builder(reference_list)
         self.assertEqual(surrogate_list, ["https://example.com/1"])
-        self.assertEqual(av_media_list, ["https://example.com/1"])

@@ -8,23 +8,23 @@ from app.deliveryoptions.constants import (
     IP_STAFFIN_RANGES,
 )
 from app.deliveryoptions.reader_type import (
-    get_client_ip,
-    is_ip_in_cidr,
-)
-from app.deliveryoptions.utils import (
     Reader,
+    get_client_ip,
     get_dev_reader_type,
+    is_ip_in_cidr,
     is_onsite,
     is_staff,
 )
+from django.test import override_settings
 
 
 class TestIPFunctions(unittest.TestCase):
+    @override_settings(TRUSTED_PROXIES=["192.168.1.50"])
     def test_get_client_ip_from_headers(self):
         request = Mock()
         request.META = {
             "HTTP_X_FORWARDED_FOR": "203.0.113.45, 192.168.1.100",
-            "REMOTE_ADDR": "192.168.1.50",
+            "REMOTE_ADDR": "192.168.1.50",  # This is now a trusted proxy
         }
         ip = get_client_ip(request)
         self.assertEqual(ip, "203.0.113.45")  # Extract first IP from header
@@ -71,7 +71,7 @@ class TestIPFunctions(unittest.TestCase):
 
 
 class TestVisitorTypeDetection(unittest.TestCase):
-    @patch("app.deliveryoptions.utils.get_client_ip")
+    @patch("app.deliveryoptions.reader_type.get_client_ip")
     def test_is_staff_with_mocked_ip(self, mock_get_client_ip):
         # Mock staff IP within range
         ip_address = mock_get_client_ip.return_value = "10.252.21.17"
@@ -81,7 +81,7 @@ class TestVisitorTypeDetection(unittest.TestCase):
         ip_address = mock_get_client_ip.return_value = "8.8.8.8"
         self.assertFalse(is_staff(ip_address))
 
-    @patch("app.deliveryoptions.utils.get_client_ip")
+    @patch("app.deliveryoptions.reader_type.get_client_ip")
     def test_is_onsite_with_mocked_ip(self, mock_get_client_ip):
         # Mock onsite IP within range
         ip_address = mock_get_client_ip.return_value = "167.98.93.94"
@@ -91,7 +91,7 @@ class TestVisitorTypeDetection(unittest.TestCase):
         ip_address = mock_get_client_ip.return_value = "167.98.93.95"
         self.assertFalse(is_onsite(ip_address))
 
-    @patch("app.deliveryoptions.utils.get_client_ip")
+    @patch("app.deliveryoptions.reader_type.get_client_ip")
     def test_is_not_onsite_or_staff_with_mocked_ipv6(self, mock_get_client_ip):
         # Mock offsite IPv6 address
         ip_address = mock_get_client_ip.return_value = "2001:db8:4::1"

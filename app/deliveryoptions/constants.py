@@ -126,7 +126,7 @@ IP_ONSITE_RANGES = [
 
 # Mapping of template tags to their corresponding helper functions
 # These are used to replace placeholders in HTML templates with dynamic content
-deliveryOptionsTags = {
+delivery_option_tags = {
     "{AccessConditionText}": h.get_access_condition_text,
     "{AddedToBasketText}": h.get_added_to_basket_text,
     "{AdvancedOrdersEmailAddress}": h.get_advanced_orders_email_address,
