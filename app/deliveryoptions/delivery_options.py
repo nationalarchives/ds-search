@@ -191,7 +191,6 @@ def html_builder(
     return html
 
 
-# Specific pre-processing for the order buttons data
 def orderbuttons_builder(
     delivery_option_data: List, record_data: Record, api_surrogate_data: List
 ) -> List:
@@ -227,7 +226,6 @@ def orderbuttons_builder(
     return result
 
 
-# Specific pre-processing for the basket limit data
 def basketlimit_builder(
     delivery_option_data: Union[List, str], record_data: Record
 ) -> str:
@@ -244,7 +242,6 @@ def basketlimit_builder(
     return html_builder(delivery_option_data, record_data)
 
 
-# Specific pre-processing for the expand link data
 def expandlink_builder(
     delivery_option_data: Union[List, str], record_data: Record
 ) -> str:
@@ -261,7 +258,6 @@ def expandlink_builder(
     return html_builder(delivery_option_data, record_data)
 
 
-# Specific pre-processing for the description data
 def description_builder(
     delivery_option_data: Union[List, str],
     record_data: Record,
@@ -293,7 +289,6 @@ def description_builder(
     )
 
 
-# Specific pre-processing for the supplemental data
 def supplemental_builder(
     delivery_option_data: Union[List, str],
     record_data: Record,
@@ -315,7 +310,6 @@ def supplemental_builder(
     )
 
 
-# Specific pre-processing for the heading
 def heading_builder(
     delivery_option_data: str, record_data: Record, api_surrogate_data: List
 ) -> str:
@@ -371,8 +365,6 @@ def construct_delivery_options(
     Returns:
         Dict[str, Any]: The constructed delivery options
     """
-    # To do: The api_result list contains zero or more dictionaries. Only 1 should be
-    # allowed, so fail on zero or greater than 1
 
     if api_length := len(api_result) > 1:
         raise ValueError(

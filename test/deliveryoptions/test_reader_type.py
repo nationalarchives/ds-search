@@ -10,7 +10,6 @@ from app.deliveryoptions.constants import (
 from app.deliveryoptions.reader_type import (
     Reader,
     get_client_ip,
-    get_dev_reader_type,
     is_ip_in_cidr,
     is_onsite,
     is_staff,
@@ -109,57 +108,3 @@ class TestGetDevReaderType(unittest.TestCase):
     def tearDownClass(cls):
         logging.disable(logging.NOTSET)
         super().tearDownClass()
-
-    @patch.dict(
-        os.environ, {"OVERRIDE_READER_TYPE": "0"}
-    )  # Mock environment variable to the minimum valid value
-    def test_min_valid_reader_type(self):
-        result = get_dev_reader_type()
-        self.assertEqual(
-            result, Reader.STAFFIN
-        )  # Should return 0 as it is within the valid range (0-3)
-
-    @patch.dict(
-        os.environ, {"OVERRIDE_READER_TYPE": "3"}
-    )  # Mock environment variable to the maximum valid value
-    def test_max_valid_reader_type(self):
-        result = get_dev_reader_type()
-        self.assertEqual(
-            result, Reader.OFFSITE
-        )  # Should return 3 as it is within the valid range (0-3)
-
-    @patch.dict(
-        os.environ, {"OVERRIDE_READER_TYPE": "4"}
-    )  # Mock environment variable to an invalid value
-    def test_invalid_reader_type_high(self):
-        result = get_dev_reader_type()
-        self.assertEqual(
-            result, Reader.UNDEFINED
-        )  # Should return -1 as the value is outside the valid range
-
-    @patch.dict(
-        os.environ, {"OVERRIDE_READER_TYPE": "-1"}
-    )  # Mock environment variable to a negative value
-    def test_invalid_reader_type_negative(self):
-        result = get_dev_reader_type()
-        self.assertEqual(
-            result, Reader.UNDEFINED
-        )  # Should return -1 as the value is outside the valid range
-
-    @patch.dict(
-        os.environ, {"OVERRIDE_READER_TYPE": "not_a_number"}
-    )  # Mock environment variable to a non-numeric value
-    def test_invalid_reader_type_non_numeric(self):
-        result = get_dev_reader_type()
-        self.assertEqual(
-            result, Reader.UNDEFINED
-        )  # Should return -1 as the value is not numeric
-
-    @patch.dict(
-        os.environ, {}, clear=True
-    )  # Mock environment variable to be unset
-    def test_no_override_set(self):
-        result = get_dev_reader_type()
-        self.assertEqual(
-            result, Reader.UNDEFINED
-        )  # Should return -1 as the environment variable is not set

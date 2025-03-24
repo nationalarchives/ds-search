@@ -8,10 +8,8 @@ from requests.exceptions import ConnectionError, RequestException
 
 def delivery_options_request_handler(iaid: str) -> List[Dict[str, Any]]:
     """
-    Retrieve delivery options data for a specified archive item.
-
     Makes an API call to the delivery options service to fetch available
-    delivery options for a given item.
+    delivery options for a given iaid.
 
     Args:
         iaid (str): The item archive ID to retrieve delivery options for
@@ -25,7 +23,8 @@ def delivery_options_request_handler(iaid: str) -> List[Dict[str, Any]]:
     """
     # Validate API URL configuration
     api_url = getattr(settings, "DELIVERY_OPTIONS_API_URL", "").strip()
-    if not api_url:
+
+    if api_url == "":
         raise ImproperlyConfigured("DELIVERY_OPTIONS_API_URL not set")
 
     try:

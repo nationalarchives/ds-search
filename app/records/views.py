@@ -1,4 +1,5 @@
 import logging
+import os
 
 from app.deliveryoptions.api import delivery_options_request_handler
 from app.deliveryoptions.delivery_options import (
@@ -103,9 +104,12 @@ def record_detail_view(request, id):
         except Exception as e:
             # Built in order exception option
             logger.error(
-                f"DORIS Connection error - returning OrderException from Availability Conditions {e.args}"
+                f"DORIS Connection error using url '{os.getenv("DELIVERY_OPTIONS_API_URL", "")}' - returning OrderException from Availability Conditions {str(e)}"
             )
 
+            # The delivery options include a special case called OrderException which has nothing to do with
+            # python exceptions. It is the message to be displayed when the connection is down or there is no
+            # match for the given iaid. So, we don't treat it as a python exception beyond this point.
             delivery_options_context = construct_delivery_options(
                 [
                     {

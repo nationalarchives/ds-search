@@ -51,36 +51,6 @@ def is_staff(visitor_ip_address: str) -> bool:
     return is_ip_in_cidr(visitor_ip_address, IP_STAFFIN_RANGES)
 
 
-def get_dev_reader_type() -> Reader:
-    """
-    Get the reader type from the environment variable for development/testing.
-    Returns:
-        Reader: The reader type from the environment variable or UNDEFINED if not set
-    """
-    # Get raw environment variable
-    override_reader_type_str = os.getenv("OVERRIDE_READER_TYPE")
-
-    # If environment variable exists, try to process it
-    if override_reader_type_str is not None:
-        try:
-            # Convert the environment variable to an integer
-            reader_value = int(override_reader_type_str)
-
-            # For IntEnum, use the list of values from the enum members
-            valid_values = [item.value for item in Reader]
-
-            # Check if it's a valid Reader enum value
-            if reader_value in valid_values:
-                return Reader(reader_value)
-        except Exception as e:
-            logger.warning(
-                f"Override reader type '{override_reader_type_str}' cannot be determined - returning UNDEFINED ({type(e)}: {e.args})"
-            )
-
-    # Default to UNDEFINED if any condition fails
-    return Reader.UNDEFINED
-
-
 def get_reader_type(request: HttpRequest) -> Reader:
     """
     Determine the reader type based on request information.
@@ -100,9 +70,6 @@ def get_reader_type(request: HttpRequest) -> Reader:
             f"Cannot determine the users ip address - returning OFFSITE ({type(e)}: {e.args})"
         )
         return Reader.OFFSITE
-
-    # Check if there is an override of reader type - used for testing and demonstrations.
-    reader = get_dev_reader_type()
 
     if reader == Reader.UNDEFINED:
         if is_subscribed():

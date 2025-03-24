@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import MagicMock, patch
 
 from app.deliveryoptions.api import delivery_options_request_handler
 from app.deliveryoptions.constants import AvailabilityCondition, Reader
@@ -104,6 +104,9 @@ class DeliveryOptionsIntegrationTestCase(unittest.TestCase):
 
         # Now patch the specific functions that are used in the code path
         with (
+            patch(
+                "app.deliveryoptions.api.settings"
+            ) as mock_settings,  # noqa: F841
             patch(
                 "app.deliveryoptions.delivery_options.get_reader_type",
                 return_value=Reader.OFFSITE,
