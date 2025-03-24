@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% from 'records/macros/top_navigation.html' import top_navigation %}
+{% from 'records/macros/related_records_page.html' import related_records_page %}
 
 {%- set pageTitle = 'Related records for ' + (record.title or record.summary_title or '[No title]') | striptags -%}
 
@@ -16,10 +17,10 @@
 {% block content %}
 <div class="tna-section">
   <div class="tna-container">
-    <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
-      <h1 class="tna-heading-xl">Related records for {{ pageTitle }}</h1>
+    <div class="tna-column tna-column--width-3-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
 
-      <p>{{ record.custom_record_type }}</p>
+      {{ related_records_page(record) }}
+
     </div>
   </div>
 </div>

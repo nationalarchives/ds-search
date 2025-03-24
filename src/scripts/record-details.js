@@ -44,8 +44,6 @@ class toggleDetailsListDescriptions {
         "true",
       );
     }
-    console.log(this.checkbox);
-    console.log(this.checkbox.checked);
 
     this.handleCheckboxChange(this.checkbox.checked);
   }
@@ -67,6 +65,5 @@ class toggleDetailsListDescriptions {
 }
 
 const checkbox = document.getElementById("field-descriptions-hide");
-const detailsList = document.getElementById("record-details");
-console.log(checkbox, detailsList);
+const detailsList = document.getElementById("record-details-list");
 new toggleDetailsListDescriptions(checkbox, detailsList, new Cookies());

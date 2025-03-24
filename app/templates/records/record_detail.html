@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% from 'components/accordion/macro.html' import tnaAccordion %}
 {% from 'records/macros/information_boxes.html' import information_boxes %}
 {% from 'records/macros/detail_fields.html' import detail_fields %}
 {% from 'records/macros/hierarchy.html' import hierarchy %}
@@ -39,49 +40,40 @@
 
   {{ information_boxes(record) }}
 
-<div class="tna-container tna-!--margin-top-l">
-  <div class="tna-column tna-column--full">
+  {{ detail_fields(record, field_labels, request) }}
 
-    <h2 class="tna-accordion__heading tna-heading-l">
-      Full description and record details
-    </h2>
-    <div class="tna-accordion__body" id="record-details">
-      {{ detail_fields(record, field_labels, request) }}
-    </div>
+  <div class="tna-container tna-!--margin-top-m">
+    <div class="tna-column tna-column--full tna-margin-top-m">
+      {% set accordion_items = [] %}
 
+      {% set accordion_items = accordion_items + [{
+        'title': 'How to order this record',
+        'body': how_to_order()
+      }] %}
 
-  <div class="tna-accordion" data-multiselectable="false" data-module="tna-accordion">
-    <div class="tna-accordion__item" data-isopen="false">
-      <h2 class="tna-accordion__heading tna-heading-s">
-        How to order this record
-      </h2>
-      <div class="tna-accordion__body" id="how-to-order">
-        {{ how_to_order() }}
-      </div>
+      {% if record.hierarchy_series %}
+        {% set accordion_items = accordion_items + [{
+          'title': 'Series information',
+          'body': series_information(record)
+        }] %}
+      {% endif %}
+
+      {% set accordion_items = accordion_items + [{
+        'title': 'Catalogue hierarchy',
+        'body': hierarchy(record)
+      }] %}
+      
+      {{ tnaAccordion({
+        'itemHeadingLevel': 3,
+        'items': accordion_items,
+        'id': 'record-extended-details',
+        'openMultipleItems': True
+      }) }}
     </div>
-    {% if record.hierarchy_series %}
-    <div class="tna-accordion__item" data-isopen="false">
-      <h2 class="tna-accordion__heading tna-heading-s">
-        Series Information
-      </h2>
-      <div class="tna-accordion__body" id="series-information">
-        {{ series_information(record) }}
-      </div>
-    </div>
-    {% endif %}
-    <div class="tna-accordion__item" data-isopen="false">
-      <h2 class="tna-accordion__heading tna-heading-s">
-        Catalogue hierarchy
-      </h2>
-      <div class="tna-accordion__body" id="catalogue-hierarchy">
-        {{ hierarchy(record) }}
-      </div>
-    </div>
-  </div>
   </div>
 </div>
-  
-  {{ related_records_block(record) }}
+
+{{ related_records_block(record) }}
 
 </div>
 {% endblock %}

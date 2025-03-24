@@ -12,6 +12,9 @@ from django.template import loader
 
 def catalogue_search_view(request):
     template = loader.get_template("search/catalogue.html")
+    context = {
+        "levels": TNA_LEVELS,
+    }
     results_per_page = 20
     page = int(request.GET.get("page", 1))
     sort_order = request.GET.get("sort", "").split(":")
@@ -26,7 +29,7 @@ def catalogue_search_view(request):
             order=order,
         )
     except ResourceNotFound:
-        return HttpResponse(template.render({}, request))
+        return HttpResponse(template.render(context, request))
     pages = math.ceil(results.stats_total / results_per_page)
     if pages > 500:
         pages = 500
@@ -37,17 +40,18 @@ def catalogue_search_view(request):
         "to": ((page - 1) * results_per_page) + results.stats_results,
     }
     selected_filters = build_selected_filters_list(request)
-    context = {
-        "levels": TNA_LEVELS,
-        "results": results.records,
-        "results_range": results_range,
-        "stats": {
-            "total": results.stats_total,
-            "results": results.stats_results,
-        },
-        "selected_filters": selected_filters,
-        "pagination": pagination_object(page, pages, request.GET),
-    }
+    context.update(
+        {
+            "results": results.records,
+            "results_range": results_range,
+            "stats": {
+                "total": results.stats_total,
+                "results": results.stats_results,
+            },
+            "selected_filters": selected_filters,
+            "pagination": pagination_object(page, pages, request.GET),
+        }
+    )
     return HttpResponse(template.render(context, request))
 
 
