@@ -326,7 +326,7 @@ class Record(APIModel):
     @cached_property
     def description(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        description = self.get("description", "")
+        description = self.get("description.value", "")
         description = format_extref_links(description)
         if self.iaid == "D7829042":  # TODO: Remove hardcoding
             description = apply_xslt(
