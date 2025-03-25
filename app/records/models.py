@@ -325,7 +325,7 @@ class Record(APIModel):
     @cached_property
     def description(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return format_extref_links(self.get("description", ""))
+        return format_extref_links(self.get("description.value", ""))
 
     @cached_property
     def separated_materials(self) -> tuple[dict[str, Any], ...]:
