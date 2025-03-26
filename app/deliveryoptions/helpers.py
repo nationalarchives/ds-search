@@ -7,11 +7,10 @@ These functions are used in the delivery_option_tagsdictionary.
 import re
 from typing import Any, List, Optional
 
-from django.conf import settings
-from django.core.cache import cache
-
 from app.deliveryoptions.departments import DEPARTMENT_DETAILS
 from app.records.models import Record
+from django.conf import settings
+from django.core.cache import cache
 
 
 def get_dept(reference_number: str, key_type: str) -> Optional[str]:
@@ -63,7 +62,7 @@ def get_access_condition_text(record: Record, _: List) -> str:
     """
     if ac := record.access_condition:  # If it's not None, return it
         return ac
-    
+
     # Has to be a space otherwise it messes up the text. Will change when we move to templating
     return " "
 
@@ -179,7 +178,7 @@ def get_browse_url(record: Record, _: List) -> str:
 
     Returns:
         The URL for browsing the record hierarchy
-        
+
     TODO: This will be the browse URL for the hierarchy we are currently in.
           On Discovery, an example would be https://discovery.nationalarchives.gov.uk/browse/r/h/C325982
     """
@@ -431,7 +430,7 @@ def get_max_items(_: Record, __: List) -> str:
 
     Returns:
         The maximum number of items allowed
-    
+
     TODO: Is probably going to be discarded. Needs to co-ordinate with settings on
           ds-etna-basket
     """

@@ -1,6 +1,6 @@
-from enum import IntEnum
 import json
 import os
+from enum import IntEnum
 
 import app.deliveryoptions.helpers as h
 
@@ -68,13 +68,17 @@ class AvailabilityCondition(IntEnum):
 
 
 # IP address ranges for identifying staff members within the organization
-IP_STAFFIN_RANGES = json.loads(os.getenv('IP_STAFFIN_RANGES', '[]'))
+IP_STAFFIN_RANGES = json.loads(os.getenv("IP_STAFFIN_RANGES", "[]"))
 
 # IP address ranges for identifying on-site public users
-IP_ONSITE_RANGES = json.loads(os.getenv('IP_ONSITE_RANGES', '[]'))
+IP_ONSITE_RANGES = json.loads(os.getenv("IP_ONSITE_RANGES", "[]"))
 
 # Distressing content prefixes
-DCS_PREFIXES = [item.strip() for item in os.getenv("DELIVERY_OPTIONS_DCS_LIST", "").split(",") if item.strip()]
+DCS_PREFIXES = [
+    item.strip()
+    for item in os.getenv("DELIVERY_OPTIONS_DCS_LIST", "").split(",")
+    if item.strip()
+]
 
 # Mapping of template tags to their corresponding helper functions
 # These are used to replace placeholders in HTML templates with dynamic content

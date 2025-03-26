@@ -1,17 +1,13 @@
-from ipaddress import ip_address
 import json
 import logging
 import re
+from ipaddress import ip_address
 from typing import Any, Dict, List, Optional, Union
 
-from django.conf import settings
-from django.core.cache import cache
-from django.http import HttpRequest
-
 from app.deliveryoptions.constants import (
+    DCS_PREFIXES,
     IP_ONSITE_RANGES,
     IP_STAFFIN_RANGES,
-    DCS_PREFIXES,
     AvailabilityCondition,
     delivery_option_tags,
 )
@@ -19,11 +15,15 @@ from app.deliveryoptions.departments import DEPARTMENT_DETAILS
 from app.deliveryoptions.helpers import get_dept
 from app.deliveryoptions.reader_type import get_reader_type
 from app.records.models import Record
+from django.conf import settings
+from django.core.cache import cache
+from django.http import HttpRequest
 
 logger = logging.getLogger(__name__)
 
 # Dictionary to serve as a cache for file contents, preventing redundant file reads
 file_cache = {}
+
 
 def read_delivery_options(file_path: str) -> Dict:
     """
@@ -65,19 +65,21 @@ def has_distressing_content_match(reference: str) -> bool:
     return list(filter(reference.startswith, DCS_PREFIXES)) != []
 
 
-def get_delivery_option_dict(cache: Dict, record_id: int) -> Optional[Dict[str, Any]]:
+def get_delivery_option_dict(
+    dict_cache: Dict, record_id: int
+) -> Optional[Dict[str, Any]]:
     """
     Get a record from the cache by its ID.
 
     Args:
-        cache: The cache dictionary
+        dictcache: The cache dictionary
         record_id: The record ID to retrieve
 
     Returns:
         The record if found, None otherwise
     """
     try:
-        return cache["deliveryOptions"]["option"][record_id]
+        return dict_cache["deliveryOptions"]["option"][record_id]
     except Exception:
         return None
 
@@ -180,7 +182,7 @@ def generic_builder(
     delivery_option_data: Union[List, str],
     record_data: Record,
     api_surrogate_data: List = None,
-    builder_type: str = 'default'
+    builder_type: str = "default",
 ) -> Union[str, List]:
     """
     A generic builder function to handle various delivery option content types.
@@ -196,20 +198,24 @@ def generic_builder(
     """
     # Handle special case for distressing content
     dcs_flag = False
-    if builder_type == 'description' and has_distressing_content_match(record_data.reference_number):
+    if builder_type == "description" and has_distressing_content_match(
+        record_data.reference_number
+    ):
         dcs_flag = True
 
     # Default HTML building
-    if builder_type == 'orderbuttons' and isinstance(delivery_option_data, list):
+    if builder_type == "orderbuttons" and isinstance(
+        delivery_option_data, list
+    ):
         result = []
         for item in delivery_option_data:
             processed_item = {}
             for key, value in item.items():
-                if key in ['href', 'text']:
+                if key in ["href", "text"]:
                     processed_item[key] = html_builder(
-                        value, 
-                        record_data, 
-                        api_surrogate_data=api_surrogate_data
+                        value,
+                        record_data,
+                        api_surrogate_data=api_surrogate_data,
                     )
                 else:
                     processed_item[key] = value
@@ -218,11 +224,12 @@ def generic_builder(
 
     # Standard HTML building
     return html_builder(
-        delivery_option_data, 
-        record_data, 
-        api_surrogate_data=api_surrogate_data, 
-        dcs=dcs_flag
+        delivery_option_data,
+        record_data,
+        api_surrogate_data=api_surrogate_data,
+        dcs=dcs_flag,
     )
+
 
 def construct_delivery_options(
     api_result: List, record: Record, request: HttpRequest
@@ -271,28 +278,29 @@ def construct_delivery_options(
             ] = AvailabilityCondition.ClosedRetainedDeptUnKnown
 
     # Get the specific delivery option for this artefact
-    delivery_option = get_delivery_option_dict(do_dict, api_result[0]["options"])
+    delivery_option = get_delivery_option_dict(
+        do_dict, api_result[0]["options"]
+    )
 
     reader_option = delivery_option["readertype"][reader_type]
 
     # Mapping of builder types for different option keys
     builder_mappings = {
-        'heading': ('do_heading', 'heading'),
-        'description': ('do_description', 'description'),
-        'supplementalcontent': ('do_supplemental', 'supplemental'),
-        'orderbuttons': ('do_orderbuttons', 'orderbuttons'),
-        'expandlink': ('do_expandlink', 'expandlink'),
-        'basketlimit': ('do_basketlimit', 'basketlimit')
+        "heading": ("do_heading", "heading"),
+        "description": ("do_description", "description"),
+        "supplementalcontent": ("do_supplemental", "supplemental"),
+        "orderbuttons": ("do_orderbuttons", "orderbuttons"),
+        "expandlink": ("do_expandlink", "expandlink"),
+        "basketlimit": ("do_basketlimit", "basketlimit"),
     }
 
     for option_key, (context_key, builder_type) in builder_mappings.items():
         if content := reader_option.get(option_key):
             delivery_options_context_dict[context_key] = generic_builder(
-                content, 
-                record, 
-                api_surrogate_data=do_surrogate, 
-                builder_type=builder_type
+                content,
+                record,
+                api_surrogate_data=do_surrogate,
+                builder_type=builder_type,
             )
 
     return delivery_options_context_dict
-

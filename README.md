@@ -85,7 +85,7 @@ See [Sentry's official guide](https://docs.sentry.io/platforms/python/guides/dja
 `.env` variables:
 
 | Variable                    | Purpose                                                             | Default in base.py | Example                                                       |
-| --------------------------- | ------------------------------------------------------------------- | ------------------ | --------------------------------------------------------------|
+| --------------------------- | ------------------------------------------------------------------- | ------------------ | ------------------------------------------------------------- |
 | `ROSETTA_API_URL`           | The base API URL for Rosetta, including the `/rosetta/data` path    | No                 |                                                               |
 | `DELIVERY_OPTIONS_API_URL`  | Api for Delivery options                                            | No                 |                                                               |
 | `DELIVERY_OPTIONS_DCS_LIST` | List of document prefixes for distressing content                   | Yes                | "ABC,XYZ"                                                     |
