@@ -25,3 +25,12 @@ class ContentParserTestCase(unittest.TestCase):
 """,
             str(apply_xslt(source, schema)),
         )
+
+    def test_ignored_transformation(self):
+        # C11536911
+        source = '<span class="wrapper"><span altrender="doctype" class="emph"></span>Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945</span>'
+        schema = "Miscellaneous"
+        self.assertEqual(
+            '<span class="wrapper"><span altrender="doctype" class="emph"></span>Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945</span>',
+            str(apply_xslt(source, schema)),
+        )

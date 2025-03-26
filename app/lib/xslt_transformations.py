@@ -6,7 +6,8 @@ SCHEMAS = {
     "RoyalMarines": "app/resources/xslt/RoyalMarines_DetailScope_inc.xsl"
 }
 
-IGNORE_SCHEMAS = [
+# Temporary list of schemas to implement - this list will be removed once all schemas are implemented
+SCHEMAS_TO_IMPLEMENT = [
     "default",
     "Airwomen",
     "AliensRegCards",
@@ -22,7 +23,6 @@ IGNORE_SCHEMAS = [
     "GallantrySea",
     "LootedArt",
     "Medal",
-    "Miscellaneous",
     "MusterRolls",
     "NavalOfficers",
     "NavalReserve",
@@ -49,6 +49,33 @@ IGNORE_SCHEMAS = [
     "Wrns",
 ]
 
+# These schemas have no known transformation
+IGNORE_SCHEMAS = [
+    "ANLists",
+    "APS",
+    "AncestorsMagazine",
+    "Datasets",
+    "DixonScott",
+    "EdenPaper",
+    "FOI",
+    "IrishMaps",
+    "MRR",
+    "MapPicture",
+    "Miscellaneous",
+    "NavyList",
+    "Opening2002",
+    "Opening2003Defe4",
+    "Opening2003Defe5",
+    "Opening2003",
+    "Opening2006Prem16",
+    "Opening2007Prem16",
+    "Opening2008Prem16",
+    "PrimeMin",
+    "RoyalChelsea",
+    "SecurityServiceKV",
+    "SecurityService",
+    "ShipsExploration",
+]
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +87,9 @@ def apply_xslt(html_source, schema):
     try:
         schema_xslt = SCHEMAS[schema]
     except KeyError:
-        logger.error(f"Schema '{schema}' not found")
+        # Temporary check to avoid errors while implementing all schemas
+        if schema not in SCHEMAS_TO_IMPLEMENT:
+            logger.error(f"Schema '{schema}' not found")
         return html_source
     xslt = etree.parse(schema_xslt)
     transform = etree.XSLT(xslt)
