@@ -1,29 +1,29 @@
+from ipaddress import ip_address
 import json
 import logging
 import re
-from ipaddress import ip_address
 from typing import Any, Dict, List, Optional, Union
+
+from django.conf import settings
+from django.core.cache import cache
+from django.http import HttpRequest
 
 from app.deliveryoptions.constants import (
     IP_ONSITE_RANGES,
     IP_STAFFIN_RANGES,
+    DCS_PREFIXES,
     AvailabilityCondition,
     delivery_option_tags,
 )
 from app.deliveryoptions.departments import DEPARTMENT_DETAILS
 from app.deliveryoptions.helpers import get_dept
 from app.deliveryoptions.reader_type import get_reader_type
-from app.lib.utils import validate_setting
 from app.records.models import Record
-from django.conf import settings
-from django.core.cache import cache
-from django.http import HttpRequest
 
 logger = logging.getLogger(__name__)
 
 # Dictionary to serve as a cache for file contents, preventing redundant file reads
 file_cache = {}
-
 
 def read_delivery_options(file_path: str) -> Dict:
     """
@@ -35,7 +35,7 @@ def read_delivery_options(file_path: str) -> Dict:
         file_path: Path to the delivery options JSON file
 
     Returns:
-        Dict: The parsed delivery options configuration
+        The parsed delivery options configuration
     """
     # Check if file content is already in the cache
     if file_path not in file_cache:
@@ -51,39 +51,6 @@ def read_delivery_options(file_path: str) -> Dict:
     return file_cache[file_path]
 
 
-def get_dcs_prefixes() -> List[str]:
-    """
-    Get the list of prefixes for records with distressing content.
-
-    Returns:
-        List[str]: The list of prefixes for records with distressing content
-    """
-    # Define a cache key
-    cache_key = "dcs_prefixes"
-
-    # Try to get the result from the cache
-    cached_prefixes = cache.get(cache_key)
-    if cached_prefixes is not None:
-        return cached_prefixes
-
-    # If not in cache, compute the prefixes
-    dcs = validate_setting(
-        settings, "DELIVERY_OPTIONS_DCS_LIST", str, default=""
-    )
-
-    prefixes = []
-    if (
-        dcs
-    ):  # This check is sufficient since validate_setting ensures dcs is a string or default
-        prefixes = [prefix.strip() for prefix in dcs.split(",")]
-    else:
-        logger.error("Malformed or missing DCS string")
-
-    # Store the result in the cache
-    cache.set(cache_key, prefixes, 60 * 60 * 24)  # Cache for 24 hours
-    return prefixes
-
-
 def has_distressing_content_match(reference: str) -> bool:
     """
     Check if a reference number matches any of the distressing content prefixes.
@@ -92,14 +59,13 @@ def has_distressing_content_match(reference: str) -> bool:
         reference: The reference number to check
 
     Returns:
-        bool: True if the reference number starts with any distressing content prefix
+        True if the reference number starts with any distressing content prefix
     """
-    dcs_prefixes = get_dcs_prefixes()
 
-    return list(filter(reference.startswith, dcs_prefixes)) != []
+    return list(filter(reference.startswith, DCS_PREFIXES)) != []
 
 
-def get_record(cache: Dict, record_id: int) -> Optional[Dict[str, Any]]:
+def get_delivery_option_dict(cache: Dict, record_id: int) -> Optional[Dict[str, Any]]:
     """
     Get a record from the cache by its ID.
 
@@ -108,7 +74,7 @@ def get_record(cache: Dict, record_id: int) -> Optional[Dict[str, Any]]:
         record_id: The record ID to retrieve
 
     Returns:
-        Optional[Dict[str, Any]]: The record if found, None otherwise
+        The record if found, None otherwise
     """
     try:
         return cache["deliveryOptions"]["option"][record_id]
@@ -129,7 +95,7 @@ def html_replacer(value: str, record: Record, api_surrogate_data: List) -> str:
         api_surrogate_data: List of surrogate data
 
     Returns:
-        str: The string with placeholders replaced with actual values
+        The string with placeholders replaced with actual values
 
     Raises:
         Exception: If a placeholder function call fails
@@ -166,7 +132,7 @@ def html_builder(
         dcs: Whether to include distressing content section
 
     Returns:
-        str: The processed HTML content
+        The processed HTML content
     """
     html = ""
 
@@ -191,144 +157,6 @@ def html_builder(
     return html
 
 
-def orderbuttons_builder(
-    delivery_option_data: List, record_data: Record, api_surrogate_data: List
-) -> List:
-    """
-    Process order buttons data, replacing placeholders.
-
-    Args:
-        delivery_option_data: The order buttons data
-        record_data: The record object
-        api_surrogate_data: List of surrogate data
-
-    Returns:
-        List: The processed order buttons data
-    """
-
-    result = []
-
-    for item in delivery_option_data:
-        # Create a new dictionary with the same content
-        processed_item = {}
-
-        # Copy all key/value pairs, processing 'href' and 'text' if present
-        for key, value in item.items():
-            if key == "href" or key == "text":
-                processed_item[key] = html_builder(
-                    value, record_data, api_surrogate_data=api_surrogate_data
-                )
-            else:
-                processed_item[key] = value
-
-        result.append(processed_item)
-
-    return result
-
-
-def basketlimit_builder(
-    delivery_option_data: Union[List, str], record_data: Record
-) -> str:
-    """
-    Process basket limit data, replacing placeholders.
-
-    Args:
-        delivery_option_data: The basket limit data
-        record_data: The record object
-
-    Returns:
-        str: The processed basket limit HTML
-    """
-    return html_builder(delivery_option_data, record_data)
-
-
-def expandlink_builder(
-    delivery_option_data: Union[List, str], record_data: Record
-) -> str:
-    """
-    Process expand link data, replacing placeholders.
-
-    Args:
-        delivery_option_data: The expand link data
-        record_data: The record object
-
-    Returns:
-        str: The processed expand link HTML
-    """
-    return html_builder(delivery_option_data, record_data)
-
-
-def description_builder(
-    delivery_option_data: Union[List, str],
-    record_data: Record,
-    api_surrogate_data: List,
-) -> str:
-    """
-    Process description data, replacing placeholders.
-
-    Handles special case for distressing content.
-
-    Args:
-        delivery_option_data: The description data
-        record_data: The record object
-        api_surrogate_data: List of surrogate data
-
-    Returns:
-        str: The processed description HTML
-    """
-    if has_distressing_content_match(record_data.reference_number):
-        return html_builder(
-            delivery_option_data,
-            record_data,
-            api_surrogate_data=api_surrogate_data,
-            dcs=True,
-        )
-
-    return html_builder(
-        delivery_option_data, record_data, api_surrogate_data=api_surrogate_data
-    )
-
-
-def supplemental_builder(
-    delivery_option_data: Union[List, str],
-    record_data: Record,
-    api_surrogate_data: List,
-) -> str:
-    """
-    Process supplemental data, replacing placeholders.
-
-    Args:
-        delivery_option_data: The supplemental data
-        record_data: The record object
-        api_surrogate_data: List of surrogate data
-
-    Returns:
-        str: The processed supplemental HTML
-    """
-    return html_builder(
-        delivery_option_data, record_data, api_surrogate_data=api_surrogate_data
-    )
-
-
-def heading_builder(
-    delivery_option_data: str, record_data: Record, api_surrogate_data: List
-) -> str:
-    """
-    Process heading data, replacing placeholders.
-
-    Args:
-        delivery_option_data: The heading data
-        record_data: The record object
-        api_surrogate_data: List of surrogate data
-
-    Returns:
-        str: The processed heading HTML
-    """
-    return html_builder(
-        delivery_option_data, record_data, api_surrogate_data=api_surrogate_data
-    )
-
-
 def surrogate_link_builder(surrogates: List) -> List[Any]:
     """
     Extract surrogate links and AV media links from surrogate data.
@@ -337,7 +165,7 @@ def surrogate_link_builder(surrogates: List) -> List[Any]:
         surrogates: The list of surrogate data
 
     Returns:
-        List[Any]: A list containing surrogate links (including AV media links)
+        A list containing surrogate links (including AV media links)
     """
     surrogate_list = []
 
@@ -347,6 +175,54 @@ def surrogate_link_builder(surrogates: List) -> List[Any]:
 
     return surrogate_list
 
+
+def generic_builder(
+    delivery_option_data: Union[List, str],
+    record_data: Record,
+    api_surrogate_data: List = None,
+    builder_type: str = 'default'
+) -> Union[str, List]:
+    """
+    A generic builder function to handle various delivery option content types.
+
+    Args:
+        delivery_option_data: The data to process
+        record_data: The record object
+        api_surrogate_data: List of surrogate data
+        builder_type: Type of builder to determine special processing
+
+    Returns:
+        Processed content (str or List) based on the builder type
+    """
+    # Handle special case for distressing content
+    dcs_flag = False
+    if builder_type == 'description' and has_distressing_content_match(record_data.reference_number):
+        dcs_flag = True
+
+    # Default HTML building
+    if builder_type == 'orderbuttons' and isinstance(delivery_option_data, list):
+        result = []
+        for item in delivery_option_data:
+            processed_item = {}
+            for key, value in item.items():
+                if key in ['href', 'text']:
+                    processed_item[key] = html_builder(
+                        value, 
+                        record_data, 
+                        api_surrogate_data=api_surrogate_data
+                    )
+                else:
+                    processed_item[key] = value
+            result.append(processed_item)
+        return result
+
+    # Standard HTML building
+    return html_builder(
+        delivery_option_data, 
+        record_data, 
+        api_surrogate_data=api_surrogate_data, 
+        dcs=dcs_flag
+    )
 
 def construct_delivery_options(
     api_result: List, record: Record, request: HttpRequest
@@ -363,7 +239,7 @@ def construct_delivery_options(
         request: The HTTP request
 
     Returns:
-        Dict[str, Any]: The constructed delivery options
+        The constructed delivery options
     """
 
     if api_length := len(api_result) > 1:
@@ -395,38 +271,28 @@ def construct_delivery_options(
             ] = AvailabilityCondition.ClosedRetainedDeptUnKnown
 
     # Get the specific delivery option for this artefact
-    delivery_option = get_record(do_dict, api_result[0]["options"])
+    delivery_option = get_delivery_option_dict(do_dict, api_result[0]["options"])
 
     reader_option = delivery_option["readertype"][reader_type]
 
-    if heading := reader_option.get("heading"):
-        delivery_options_context_dict["do_heading"] = heading_builder(
-            heading, record, do_surrogate
-        )
+    # Mapping of builder types for different option keys
+    builder_mappings = {
+        'heading': ('do_heading', 'heading'),
+        'description': ('do_description', 'description'),
+        'supplementalcontent': ('do_supplemental', 'supplemental'),
+        'orderbuttons': ('do_orderbuttons', 'orderbuttons'),
+        'expandlink': ('do_expandlink', 'expandlink'),
+        'basketlimit': ('do_basketlimit', 'basketlimit')
+    }
 
-    if text := reader_option.get("description"):
-        delivery_options_context_dict["do_description"] = description_builder(
-            text, record, do_surrogate
-        )
-
-    if supp := reader_option.get("supplementalcontent"):
-        delivery_options_context_dict["do_supplemental"] = supplemental_builder(
-            supp, record, do_surrogate
-        )
-
-    if obutton := reader_option.get("orderbuttons"):
-        delivery_options_context_dict["do_orderbuttons"] = orderbuttons_builder(
-            obutton, record, do_surrogate
-        )
-
-    if expand := reader_option.get("expandlink"):
-        delivery_options_context_dict["do_expandlink"] = expandlink_builder(
-            expand, record
-        )
-
-    if basket := reader_option.get("basketlimit"):
-        delivery_options_context_dict["do_basketlimit"] = basketlimit_builder(
-            basket, record
-        )
+    for option_key, (context_key, builder_type) in builder_mappings.items():
+        if content := reader_option.get(option_key):
+            delivery_options_context_dict[context_key] = generic_builder(
+                content, 
+                record, 
+                api_surrogate_data=do_surrogate, 
+                builder_type=builder_type
+            )
 
     return delivery_options_context_dict
+

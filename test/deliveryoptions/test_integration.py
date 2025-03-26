@@ -70,11 +70,11 @@ class DeliveryOptionsIntegrationTestCase(unittest.TestCase):
         """
         Test the complete flow from API request to template context construction.
         """
-        # First, let's examine what get_record is expecting
-        # The function call is: delivery_option = get_record(do_dict, api_result[0]["options"])
+        # First, let's examine what get_delivery_option_dict is expecting
+        # The function call is: delivery_option = get_delivery_option_dict(do_dict, api_result[0]["options"])
         # Where api_result[0]["options"] is AvailabilityCondition.DigitizedDiscovery (which is 3)
 
-        # Create mock data that exactly matches the format expected by get_record
+        # Create mock data that exactly matches the format expected by get_delivery_option_dict
         mock_do_dict = {
             "deliveryOptions": {
                 "option": {
@@ -136,9 +136,9 @@ class DeliveryOptionsIntegrationTestCase(unittest.TestCase):
 
             # Add debugging to see what's happening
             with patch(
-                "app.deliveryoptions.delivery_options.get_record"
+                "app.deliveryoptions.delivery_options.get_delivery_option_dict"
             ) as mock_get_record:
-                # Make get_record return a value we know works
+                # Make get_delivery_option_dict return a value we know works
                 mock_get_record.return_value = mock_do_dict["deliveryOptions"][
                     "option"
                 ][3]
@@ -157,7 +157,7 @@ class DeliveryOptionsIntegrationTestCase(unittest.TestCase):
                 self.assertIn("do_description", context)
                 self.assertIn("do_orderbuttons", context)
 
-    @patch("django.conf.settings.DELIVERY_OPTIONS_API_URL", "")
+    @patch("django.conf.settings.DELIVERY_OPTIONS_API_URL", None)
     def test_delivery_options_api_url_not_set(self):
         """Test that an exception is raised when DELIVERY_OPTIONS_API_URL is not set."""
         with self.assertRaises(ImproperlyConfigured) as context:
@@ -217,7 +217,7 @@ class DeliveryOptionsAdditionalTests(unittest.TestCase):
         # Check the error message
         self.assertIn("missing required keys", str(context.exception))
 
-    @patch("django.conf.settings.DELIVERY_OPTIONS_API_URL", "")
+    @patch("django.conf.settings.DELIVERY_OPTIONS_API_URL", None)
     def test_api_url_not_set(self):
         """Test handling when DELIVERY_OPTIONS_API_URL is not set."""
         # Expect an ImproperlyConfigured exception

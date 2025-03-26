@@ -22,7 +22,7 @@ def is_onsite(visitor_ip_address: str) -> bool:
         visitor_ip_address: The visitor's IP address
 
     Returns:
-        bool: True if the visitor is on-site, False otherwise
+        True if the visitor is on-site, False otherwise
     """
     return is_ip_in_cidr(visitor_ip_address, IP_ONSITE_RANGES)
 
@@ -32,9 +32,10 @@ def is_subscribed() -> bool:
     Check if the user has a subscription.
 
     Returns:
-        bool: True if the user has a subscription, False otherwise
+        True if the user has a subscription, False otherwise
+
+    TODO: once user management is in place
     """
-    # TODO once user management is in place
     return False
 
 
@@ -46,7 +47,7 @@ def is_staff(visitor_ip_address: str) -> bool:
         visitor_ip_address: The visitor's IP address
 
     Returns:
-        bool: True if the visitor is staff, False otherwise
+        True if the visitor is staff, False otherwise
     """
     return is_ip_in_cidr(visitor_ip_address, IP_STAFFIN_RANGES)
 
@@ -59,7 +60,7 @@ def get_reader_type(request: HttpRequest) -> Reader:
         request: The HTTP request
 
     Returns:
-        Reader: The determined reader type
+        The determined reader type
     """
     reader = Reader.UNDEFINED
 
@@ -98,11 +99,10 @@ def get_client_ip(request: HttpRequest) -> Optional[str]:
     use the leftmost non-trusted-proxy IP in the X-Forwarded-For chain.
 
     Args:
-        request (HttpRequest): The Django HTTP request object
+        request: The Django HTTP request object
 
     Returns:
-        Optional[str]: The client's IP address, or None if it couldn't be determined
-                      or was invalid
+        The client's IP address, or None if it couldn't be determined or was invalid
 
     Example:
         ip = get_client_ip(request)
@@ -150,10 +150,10 @@ def validate_ip(ip_str: str) -> Optional[str]:
     Validate that the string is a proper IP address.
 
     Args:
-        ip_str (str): String representation of an IP address
+        ip_str: String representation of an IP address
 
     Returns:
-        Optional[str]: Valid IP address string or None if invalid
+        Valid IP address string or None if invalid
     """
     if not ip_str:
         return None
@@ -171,11 +171,11 @@ def is_ip_in_cidr(ip: str, cidr: List[Dict[str, str]]) -> bool:
     Check if an IP address is within any of the specified CIDR ranges.
 
     Args:
-        ip (str): The IP address to check
-        cidr (List[Dict[str, str]]): A list of dictionaries containing CIDR ranges with "Address" keys
+        ip : The IP address to check
+        cidr: A list of dictionaries containing CIDR ranges with "Address" keys
 
     Returns:
-        bool: True if the IP is within any of the specified ranges, False otherwise
+        True if the IP is within any of the specified ranges, False otherwise
 
     Raises:
         ValueError: If the IP address or CIDR range is invalid

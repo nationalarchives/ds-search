@@ -7,10 +7,11 @@ These functions are used in the delivery_option_tagsdictionary.
 import re
 from typing import Any, List, Optional
 
-from app.deliveryoptions.departments import DEPARTMENT_DETAILS
-from app.records.models import Record
 from django.conf import settings
 from django.core.cache import cache
+
+from app.deliveryoptions.departments import DEPARTMENT_DETAILS
+from app.records.models import Record
 
 
 def get_dept(reference_number: str, key_type: str) -> Optional[str]:
@@ -62,6 +63,8 @@ def get_access_condition_text(record: Record, _: List) -> str:
     """
     if ac := record.access_condition:  # If it's not None, return it
         return ac
+    
+    # Has to be a space otherwise it messes up the text. Will change when we move to templating
     return " "
 
 
@@ -145,6 +148,8 @@ def get_basket_type(_: Record, __: List) -> str:
 
     Returns:
         The basket type (e.g., "Digital Downloads")
+
+    TODO: Confirmation required as to wording. Probably changing when templates are brought in
     """
     # Covered originally in ticket EDEV-113. Assumed to be 'Digital Downloads'
     return "Digital Downloads"
@@ -174,9 +179,10 @@ def get_browse_url(record: Record, _: List) -> str:
 
     Returns:
         The URL for browsing the record hierarchy
+        
+    TODO: This will be the browse URL for the hierarchy we are currently in.
+          On Discovery, an example would be https://discovery.nationalarchives.gov.uk/browse/r/h/C325982
     """
-    # This will be the browse URL for the hierarchy we are currently in.
-    # On Discovery, an example would be https://discovery.nationalarchives.gov.uk/browse/r/h/C325982
     return f"{settings.BASE_TNA_URL}/browse/tbd/{record.iaid}/"
 
 
@@ -190,6 +196,8 @@ def get_contact_form_url_mould(record: Record, surrogate: List) -> str:
 
     Returns:
         The URL for the mould treatment contact form
+
+    TODO: URL will undoubtedly change with Etna
     """
     return f"{get_contact_form_url(record, surrogate)}document-condition-feedback/?catalogue-reference={record.reference_number}&mould-treatment-required=true"
 
@@ -204,6 +212,8 @@ def get_contact_form_url_unfit(record: Record, surrogate: List) -> str:
 
     Returns:
         The URL for the unfit record contact form
+
+    TODO: URL will undoubtedly change with Etna
     """
     return f"{get_contact_form_url(record, surrogate)}document-condition-feedback/?catalogue-reference={record.reference_number}&conservation-treatment-required=true"
 
@@ -218,6 +228,8 @@ def get_contact_form_url(_: Record, __: List) -> str:
 
     Returns:
         The URL for the general contact form
+
+    TODO: URL may change with Etna
     """
     return f"{settings.BASE_TNA_URL}/contact-us/"
 
@@ -232,6 +244,8 @@ def get_data_protection_act_url(_: Record, __: List) -> str:
 
     Returns:
         The URL for the Data Protection Act information
+
+    TODO: URL will undoubtedly change with Etna
     """
     return f"{settings.BASE_TNA_URL}/content/documents/county-durham-home-guard-service-record-subject-access-request-form.pdf"
 
@@ -280,8 +294,9 @@ def get_download_format(record: Record, _: List) -> str:
 
     Returns:
         The download format (e.g., "PDF" or "ZIP")
+
+    TODO: Waiting for Rosetta data - PDF or ZIP file - in Discovery, defined in discovery/RDWeb/Services/Mapper/DeliveryOptionsMapper.cs
     """
-    # TODO: PDF or ZIP file - in Discovery, defined in discovery/RDWeb/Services/Mapper/DeliveryOptionsMapper.cs
     return "(Unknown download format)"
 
 
@@ -309,6 +324,8 @@ def get_download_url(_: Record, __: List) -> str:
 
     Returns:
         The URL for downloading the record
+
+    TODO: URL will undoubtedly change with Etna
     """
     return "details/download"
 
@@ -338,6 +355,8 @@ def get_foi_url(record: Record, _: List) -> str:
 
     Returns:
         The URL for submitting an FOI request for this record
+
+    TODO: URL will undoubtedly change with Etna
     """
     return f"{settings.BASE_TNA_URL}/foirequest?reference={record.reference_number}"
 
@@ -366,8 +385,9 @@ def get_item_num_of_files_and_size_in_MB(record: Record, _: List) -> str:
 
     Returns:
         A string describing the number of files and size in MB
+
+    TODO: Waiting on update to Rosetta for this information
     """
-    # TODO: On Discovery this is held in Mongo - no equivalent is yet available on Rosetta
     return "(Unknown number of files and file size)"
 
 
@@ -395,6 +415,8 @@ def get_kew_booking_system_url(_: Record, __: List) -> str:
 
     Returns:
         The URL for the Kew booking system
+
+    TODO: URL will undoubtedly change with Etna
     """
     return f"{settings.BASE_TNA_URL}/book-a-reading-room-visit/"
 
@@ -409,6 +431,9 @@ def get_max_items(_: Record, __: List) -> str:
 
     Returns:
         The maximum number of items allowed
+    
+    TODO: Is probably going to be discarded. Needs to co-ordinate with settings on
+          ds-etna-basket
     """
     return settings.MAX_BASKET_ITEMS
 
@@ -439,6 +464,8 @@ def get_opening_times_url(_: Record, __: List) -> str:
 
     Returns:
         The URL for opening times information
+
+    TODO: URL will undoubtedly change with Etna
     """
     return f"{settings.BASE_TNA_URL}/about/visit-us/"
 
@@ -453,8 +480,10 @@ def get_order_url(_: Record, __: List) -> str:
 
     Returns:
         The URL for ordering the record
+
+    TODO: On Discovery, this is related to cookie settings for a DORIS cookie. Needs to tie in
+          with ds-etna-basket
     """
-    # TODO On Discovery, this is related to cookie settings for a DORIS cookie.
     return "Order URL not yet available"
 
 
@@ -468,6 +497,8 @@ def get_paid_search_url(record: Record, _: List) -> str:
 
     Returns:
         The URL for paid search options for this record
+
+    TODO: URL will undoubtedly change with Etna
     """
     return f"{settings.BASE_TNA_URL}/paidsearch/foirequest/{record.iaid}?type=foirequest"
 
@@ -482,8 +513,9 @@ def get_price(record: Record, __: List) -> str:
 
     Returns:
         The price for the record
+
+    TODO: Waiting on update to Rosetta for this information
     """
-    # TODO: Derivation not yet available
     return "(Unknown price)"
 
 
@@ -497,6 +529,8 @@ def get_readers_ticket_url(_: Record, __: List) -> str:
 
     Returns:
         The URL for reader's ticket information
+
+    TODO: URL will undoubtedly change with Etna
     """
     return f"{settings.BASE_TNA_URL}/about/visit-us/researching-here/do-i-need-a-readers-ticket/"
 
@@ -511,6 +545,8 @@ def get_record_copying_url(record: Record, _: List) -> str:
 
     Returns:
         The URL for the record copying service
+
+    TODO: URL will undoubtedly change with Etna
     """
     return f"{settings.DISCOVERY_TNA_URL}/pagecheck/start/{record.iaid}/"
 
@@ -525,8 +561,9 @@ def get_record_information_type(record: Record, _: List) -> str:
 
     Returns:
         The record information type
+
+    TODO: Waiting on update to Rosetta for this information
     """
-    # TODO: Derivation not yet available
     return "(Unknown record information type)"
 
 
@@ -556,8 +593,9 @@ def get_record_url(record: Record, _: List) -> str:
 
     Returns:
         The URL for viewing the record's details
+
+    TODO: URL may change with Etna
     """
-    # Subject to change once ds-detail is fleshed out
     return f"{settings.BASE_TNA_URL}/details/r/{record.iaid}/"
 
 
@@ -665,6 +703,7 @@ def get_your_order_link(_: Record, __: List) -> str:
 
     Returns:
         The link to the user's current order
+
+    TODO: Value will change with Etna once downloads have been implemented
     """
-    # TODO: Unknown derivation
     return "(Unknown order link)"
