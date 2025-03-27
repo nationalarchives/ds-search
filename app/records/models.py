@@ -4,10 +4,12 @@ import logging
 import re
 from typing import Any
 
+from app.lib.xslt_transformations import apply_xslt
 from app.records.constants import NON_TNA_LEVELS, TNA_LEVELS
 from app.records.utils import extract, format_extref_links, format_link
 from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
+from lxml import etree
 
 from .converters import IDConverter
 
@@ -325,7 +327,19 @@ class Record(APIModel):
     @cached_property
     def description(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return format_extref_links(self.get("description", ""))
+        description = self.get("description.value", "")
+        description = format_extref_links(description)
+        if description_schema := self.description_schema:
+            description = apply_xslt(description, description_schema)
+        return str(description)
+
+    @cached_property
+    def description_schema(self) -> str:
+        if schema := self.get("description.schema", ""):
+            colltype = etree.fromstring(schema)
+            if colltype_id := colltype.get("id", ""):
+                return colltype_id
+        return ""
 
     @cached_property
     def separated_materials(self) -> tuple[dict[str, Any], ...]:

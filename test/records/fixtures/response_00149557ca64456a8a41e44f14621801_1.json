@@ -12,7 +12,10 @@
           "closureStatus": "Open Document, Open Description",
           "dateCovering": "2015-07-31",
           "deliveryOption": "No availability condition provisioned for this record",
-          "description": "Witness statement of Clive Timmons dated 11 February 2015",
+          "description": {
+            "value": "Witness statement of Clive Timmons dated 11 February 2015",
+            "schema": ""
+          },
           "digitised": true,
           "groupArray": [
             {
