@@ -2,6 +2,16 @@
 Helper functions module for the Django app.
 Contains functions to replace template placeholders with dynamic content.
 These functions are used in the delivery_option_tagsdictionary.
+
+NOTE:
+The helper functions all have either 0, 1 or 2 parameters in their signature.
+Some include a parameter called 'record', some include a parameter called 'api_surrogate_list'
+and some have both or neither.
+These functions are all called generically from html_replacer().
+As more information is made available from Rosetta, (or elsewhere), we may need to add one or
+other of these parameters to some of the helper functions. All that needs to be done is to add
+'record: Record' or 'api_surrogate_list: List' to the parameter list (as required) and the
+generic function will automatically handle it.
 """
 
 import re
@@ -49,13 +59,12 @@ def get_dept(reference_number: str, key_type: str) -> Optional[str]:
     return result
 
 
-def get_access_condition_text(record: Record, _: List) -> str:
+def helper_get_access_condition_text(record: Record) -> str:
     """
     Get the access condition text for a record.
 
     Args:
         record: The record object
-        _: List of surrogate data (unused in this function)
 
     Returns:
         The access condition text or a space if none exists
@@ -67,13 +76,12 @@ def get_access_condition_text(record: Record, _: List) -> str:
     return " "
 
 
-def get_added_to_basket_text(_: Record, __: List) -> str:
+def helper_get_added_to_basket_text() -> str:
     """
     Get the text to display for adding to basket.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The text for the add to basket button
@@ -81,13 +89,12 @@ def get_added_to_basket_text(_: Record, __: List) -> str:
     return "Add to basket"
 
 
-def get_advanced_orders_email_address(_: Record, __: List) -> str:
+def helper_get_advanced_orders_email_address() -> str:
     """
     Get the email address for advanced orders.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The email address for advanced document orders
@@ -95,13 +102,12 @@ def get_advanced_orders_email_address(_: Record, __: List) -> str:
     return settings.ADVANCED_DOCUMENT_ORDER_EMAIL
 
 
-def get_advance_order_information(_: Record, __: List) -> str:
+def helper_get_advance_order_information() -> str:
     """
     Get the URL for advance order information.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The URL for advance order information
@@ -109,13 +115,12 @@ def get_advance_order_information(_: Record, __: List) -> str:
     return f"{settings.BASE_TNA_URL}/about/visit-us/"
 
 
-def get_archive_link(record: Record, _: List) -> str:
+def helper_get_archive_link(record: Record) -> str:
     """
     Get the link to the archive holding the record.
 
     Args:
         record: The record object
-        _: List of surrogate data (unused in this function)
 
     Returns:
         The URL of the archive holding the record
@@ -123,13 +128,12 @@ def get_archive_link(record: Record, _: List) -> str:
     return record.held_by_url
 
 
-def get_archive_name(record: Record, _: List) -> str:
+def helper_get_archive_name(record: Record) -> str:
     """
     Get the name of the archive holding the record.
 
     Args:
         record: The record object
-        _: List of surrogate data (unused in this function)
 
     Returns:
         The name of the archive holding the record
@@ -137,13 +141,12 @@ def get_archive_name(record: Record, _: List) -> str:
     return record.held_by
 
 
-def get_basket_type(_: Record, __: List) -> str:
+def helper_get_basket_type() -> str:
     """
     Get the basket type.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The basket type (e.g., "Digital Downloads")
@@ -154,13 +157,12 @@ def get_basket_type(_: Record, __: List) -> str:
     return "Digital Downloads"
 
 
-def get_basket_url(_: Record, __: List) -> str:
+def helper_get_basket_url() -> str:
     """
     Get the URL for the basket.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The URL for the basket
@@ -168,13 +170,12 @@ def get_basket_url(_: Record, __: List) -> str:
     return f"{settings.BASE_TNA_URL}/basket/"
 
 
-def get_browse_url(record: Record, _: List) -> str:
+def helper_get_browse_url(record: Record) -> str:
     """
     Get the URL for browsing the record hierarchy.
 
     Args:
         record: The record object
-        _: List of surrogate data (unused in this function)
 
     Returns:
         The URL for browsing the record hierarchy
@@ -185,45 +186,42 @@ def get_browse_url(record: Record, _: List) -> str:
     return f"{settings.BASE_TNA_URL}/browse/tbd/{record.iaid}/"
 
 
-def get_contact_form_url_mould(record: Record, surrogate: List) -> str:
+def helper_get_contact_form_url_mould(record: Record) -> str:
     """
     Get the URL for the contact form for records needing mould treatment.
 
     Args:
         record: The record object
-        surrogate: List of surrogate data
 
     Returns:
         The URL for the mould treatment contact form
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{get_contact_form_url(record, surrogate)}document-condition-feedback/?catalogue-reference={record.reference_number}&mould-treatment-required=true"
+    return f"{helper_get_contact_form_url()}document-condition-feedback/?catalogue-reference={record.reference_number}&mould-treatment-required=true"
 
 
-def get_contact_form_url_unfit(record: Record, surrogate: List) -> str:
+def helper_get_contact_form_url_unfit(record: Record) -> str:
     """
     Get the URL for the contact form for unfit records.
 
     Args:
         record: The record object
-        surrogate: List of surrogate data
 
     Returns:
         The URL for the unfit record contact form
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{get_contact_form_url(record, surrogate)}document-condition-feedback/?catalogue-reference={record.reference_number}&conservation-treatment-required=true"
+    return f"{helper_get_contact_form_url()}document-condition-feedback/?catalogue-reference={record.reference_number}&conservation-treatment-required=true"
 
 
-def get_contact_form_url(_: Record, __: List) -> str:
+def helper_get_contact_form_url() -> str:
     """
     Get the URL for the general contact form.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The URL for the general contact form
@@ -233,13 +231,12 @@ def get_contact_form_url(_: Record, __: List) -> str:
     return f"{settings.BASE_TNA_URL}/contact-us/"
 
 
-def get_data_protection_act_url(_: Record, __: List) -> str:
+def helper_get_data_protection_act_url() -> str:
     """
     Get the URL for the Data Protection Act information.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The URL for the Data Protection Act information
@@ -249,47 +246,44 @@ def get_data_protection_act_url(_: Record, __: List) -> str:
     return f"{settings.BASE_TNA_URL}/content/documents/county-durham-home-guard-service-record-subject-access-request-form.pdf"
 
 
-def get_dept_name(record: Record, _: List) -> str:
+def helper_get_dept_name(record: Record) -> str:
     """
     Get the name of the department responsible for a record.
 
     Args:
         record: The record object
-        _: List of surrogate data (unused in this function)
 
     Returns:
         The name of the department or empty string if not found
     """
     if name := get_dept(record.reference_number, "deptname"):
         return name
-    else:
-        return ""
+
+    return ""
 
 
-def get_dept_url(record: Record, _: List) -> str:
+def helper_get_dept_url(record: Record) -> str:
     """
     Get the URL of the department responsible for a record.
 
     Args:
         record: The record object
-        _: List of surrogate data (unused in this function)
 
     Returns:
         The URL of the department or empty string if not found
     """
     if url := get_dept(record.reference_number, "depturl"):
         return url
-    else:
-        return ""
+
+    return ""
 
 
-def get_download_format(record: Record, _: List) -> str:
+def helper_get_download_format() -> str:
     """
     Get the download format for a record.
 
     Args:
-        record: The record object
-        _: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The download format (e.g., "PDF" or "ZIP")
@@ -299,13 +293,12 @@ def get_download_format(record: Record, _: List) -> str:
     return "(Unknown download format)"
 
 
-def get_download_text(_: Record, __: List) -> str:
+def helper_get_download_text() -> str:
     """
     Get the text for the download button.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The text for the download button
@@ -313,13 +306,12 @@ def get_download_text(_: Record, __: List) -> str:
     return "Download now"
 
 
-def get_download_url(_: Record, __: List) -> str:
+def helper_get_download_url() -> str:
     """
     Get the URL for downloading a record.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The URL for downloading the record
@@ -329,13 +321,12 @@ def get_download_url(_: Record, __: List) -> str:
     return "details/download"
 
 
-def get_file_authority_type(_: Record, __: List) -> str:
+def helper_get_file_authority_type() -> str:
     """
     Get the file authority type.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The file authority type
@@ -344,13 +335,12 @@ def get_file_authority_type(_: Record, __: List) -> str:
     return " "
 
 
-def get_foi_url(record: Record, _: List) -> str:
+def helper_get_foi_url(record: Record) -> str:
     """
     Get the URL for submitting a Freedom of Information request.
 
     Args:
         record: The record object
-        _: List of surrogate data (unused in this function)
 
     Returns:
         The URL for submitting an FOI request for this record
@@ -360,13 +350,12 @@ def get_foi_url(record: Record, _: List) -> str:
     return f"{settings.BASE_TNA_URL}/foirequest?reference={record.reference_number}"
 
 
-def get_image_library_url(_: Record, __: List) -> str:
+def helper_get_image_library_url() -> str:
     """
     Get the URL for the image library.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The URL for the image library
@@ -374,13 +363,12 @@ def get_image_library_url(_: Record, __: List) -> str:
     return settings.IMAGE_LIBRARY_URL
 
 
-def get_item_num_of_files_and_size_in_MB(record: Record, _: List) -> str:
+def helper_get_item_num_of_files_and_size_in_MB() -> str:
     """
     Get the number of files and total size for a record.
 
     Args:
-        record: The record object
-        _: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         A string describing the number of files and size in MB
@@ -390,13 +378,12 @@ def get_item_num_of_files_and_size_in_MB(record: Record, _: List) -> str:
     return "(Unknown number of files and file size)"
 
 
-def get_keepers_gallery_url(_: Record, __: List) -> str:
+def helper_get_keepers_gallery_url() -> str:
     """
     Get the URL for the Keepers' Gallery.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The URL for the Keepers' Gallery
@@ -404,13 +391,12 @@ def get_keepers_gallery_url(_: Record, __: List) -> str:
     return f"{settings.BASE_TNA_URL}/about/visit-us/whats-on/keepers-gallery/"
 
 
-def get_kew_booking_system_url(_: Record, __: List) -> str:
+def helper_get_kew_booking_system_url() -> str:
     """
     Get the URL for the Kew booking system.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The URL for the Kew booking system
@@ -420,13 +406,12 @@ def get_kew_booking_system_url(_: Record, __: List) -> str:
     return f"{settings.BASE_TNA_URL}/book-a-reading-room-visit/"
 
 
-def get_max_items(_: Record, __: List) -> str:
+def helper_get_max_items() -> str:
     """
     Get the maximum number of items allowed in a basket.
 
     Args:
-        _: The record object (unused in this function)
-        _: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The maximum number of items allowed
@@ -437,13 +422,12 @@ def get_max_items(_: Record, __: List) -> str:
     return settings.MAX_BASKET_ITEMS
 
 
-def get_open_date_desc(record: Record, _: List) -> str:
+def helper_get_open_date_desc(record: Record) -> str:
     """
     Get the description for the record opening date.
 
     Args:
         record : The record object
-        _: List of surrogate data (unused in this function)
 
     Returns:
         The text "Opening date: " if a record opening date exists, otherwise a space
@@ -453,13 +437,12 @@ def get_open_date_desc(record: Record, _: List) -> str:
     return " "
 
 
-def get_opening_times_url(_: Record, __: List) -> str:
+def helper_get_opening_times_url() -> str:
     """
     Get the URL for the opening times information.
 
     Args:
-        _: The record object (unused in this function)
-        _: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The URL for opening times information
@@ -469,13 +452,12 @@ def get_opening_times_url(_: Record, __: List) -> str:
     return f"{settings.BASE_TNA_URL}/about/visit-us/"
 
 
-def get_order_url(_: Record, __: List) -> str:
+def helper_get_order_url() -> str:
     """
     Get the URL for ordering a record.
 
     Args:
-        _: The record object (unused in this function)
-        _: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The URL for ordering the record
@@ -486,13 +468,12 @@ def get_order_url(_: Record, __: List) -> str:
     return "Order URL not yet available"
 
 
-def get_paid_search_url(record: Record, _: List) -> str:
+def helper_get_paid_search_url(record: Record) -> str:
     """
     Get the URL for paid search options.
 
     Args:
         record: The record object
-        _: List of surrogate data (unused in this function)
 
     Returns:
         The URL for paid search options for this record
@@ -502,13 +483,12 @@ def get_paid_search_url(record: Record, _: List) -> str:
     return f"{settings.BASE_TNA_URL}/paidsearch/foirequest/{record.iaid}?type=foirequest"
 
 
-def get_price(record: Record, __: List) -> str:
+def helper_get_price() -> str:
     """
     Get the price for a record.
 
     Args:
-        record: The record object
-        _: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The price for the record
@@ -518,13 +498,12 @@ def get_price(record: Record, __: List) -> str:
     return "(Unknown price)"
 
 
-def get_readers_ticket_url(_: Record, __: List) -> str:
+def helper_get_readers_ticket_url() -> str:
     """
     Get the URL for information about reader's tickets.
 
     Args:
-        _: The record object (unused in this function)
-        _: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The URL for reader's ticket information
@@ -534,13 +513,12 @@ def get_readers_ticket_url(_: Record, __: List) -> str:
     return f"{settings.BASE_TNA_URL}/about/visit-us/researching-here/do-i-need-a-readers-ticket/"
 
 
-def get_record_copying_url(record: Record, _: List) -> str:
+def helper_get_record_copying_url(record: Record) -> str:
     """
     Get the URL for the record copying service.
 
     Args:
         record: The record object
-        _: List of surrogate data (unused in this function)
 
     Returns:
         The URL for the record copying service
@@ -550,13 +528,12 @@ def get_record_copying_url(record: Record, _: List) -> str:
     return f"{settings.DISCOVERY_TNA_URL}/pagecheck/start/{record.iaid}/"
 
 
-def get_record_information_type(record: Record, _: List) -> str:
+def helper_get_record_information_type() -> str:
     """
     Get the record information type.
 
     Args:
-        record: The record object
-        _: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The record information type
@@ -566,13 +543,12 @@ def get_record_information_type(record: Record, _: List) -> str:
     return "(Unknown record information type)"
 
 
-def get_record_opening_date(record: Record, _: List) -> str:
+def helper_get_record_opening_date(record: Record) -> str:
     """
     Get the record opening date.
 
     Args:
         record: The record object
-        _: List of surrogate data (unused in this function)
 
     Returns:
         The record opening date or a space if none exists
@@ -582,13 +558,12 @@ def get_record_opening_date(record: Record, _: List) -> str:
     return " "
 
 
-def get_record_url(record: Record, _: List) -> str:
+def helper_get_record_url(record: Record) -> str:
     """
     Get the URL for viewing a record's details.
 
     Args:
         record: The record object
-        _: List of surrogate data (unused in this function)
 
     Returns:
         The URL for viewing the record's details
@@ -598,13 +573,12 @@ def get_record_url(record: Record, _: List) -> str:
     return f"{settings.BASE_TNA_URL}/details/r/{record.iaid}/"
 
 
-def get_first_website_url(_: Record, surrogate: List) -> str:
+def helper_get_first_website_url(api_surrogate_list: List) -> str:
     """
     Get the URL of the first website in the surrogate list.
 
     Args:
-        _: The record object (unused in this function)
-        surrogate: List of surrogate data
+        api_surrogate_list: List of surrogate data
 
     Returns:
         The URL of the first website or empty string if none exists
@@ -612,93 +586,88 @@ def get_first_website_url(_: Record, surrogate: List) -> str:
     # This comes from the delivery options surrogate dictionary. They all have html markup
     # embedded in them but this particular case is for a button, so we need to extract the
     # href from the string.
-    if len(surrogate) > 0:
-        match = re.search(r'href="([^"]+)"', surrogate[0])
+    if len(api_surrogate_list) > 0:
+        match = re.search(r'href="([^"]+)"', api_surrogate_list[0])
 
         return match.group(1) if match else ""
-    else:
-        return ""
+
+    return ""
 
 
-def get_first_website_url_full(_: Record, surrogate: List) -> str:
+def helper_get_first_website_url_full(api_surrogate_list: List) -> str:
     """
     Get the full HTML for the first website in the surrogate list.
 
     Args:
-        _: The record object (unused in this function)
-        surrogate: List of surrogate data
+        api_surrogate_list: List of surrogate data
 
     Returns:
         The full HTML for the first website or empty string if none exists
     """
-    if len(surrogate) > 0:
-        return surrogate[0]
-    else:
-        return ""
+    if len(api_surrogate_list) > 0:
+        return api_surrogate_list[0]
+
+    return ""
 
 
-def get_subsequent_website_urls(_: Record, surrogate: List) -> str:
+def helper_get_subsequent_website_urls(api_surrogate_list: List) -> str:
     """
     Get HTML for all websites in the surrogate list except the first one.
 
     Args:
-        _: The record object (unused in this function)
-        surrogate: List of surrogate data
+        api_surrogate_list: List of surrogate data
 
     Returns:
         HTML for all websites except the first one
     """
     st = " "
-    if len(surrogate) > 1:
-        for s in surrogate[1:]:
+    if len(api_surrogate_list) > 1:
+        for s in api_surrogate_list[1:]:
             st += "<li>" + s + "</li>"
     return st
 
 
-def get_all_website_urls(_: Record, surrogate: List) -> str:
+def helper_get_all_website_urls(api_surrogate_list: List) -> str:
     """
     Get HTML for all websites in the surrogate list.
 
     Args:
-        _: The record object (unused in this function)
-        surrogate: List of surrogate data
+        api_surrogate_list: List of surrogate data
 
     Returns:
         HTML for all websites in the surrogate list
     """
     st = " "
-    for s in surrogate:
+    for s in api_surrogate_list:
         st += "<li>" + s + "</li>"
     return st
 
 
-def get_website_url_text(_: Record, surrogate: List) -> str:
+def helper_get_website_url_text(api_surrogate_list: List) -> str:
     """
     Get the text from the first website URL in the surrogate list.
 
     Args:
-        _: The record object (unused in this function)
-        surrogate: List of surrogate data
+        api_surrogate_list: List of surrogate data
 
     Returns:
         The text from the first website URL or a space if none exists
     """
     pattern = r">(.*?)<"
 
-    if len(surrogate):
-        match = re.search(pattern, surrogate[0])
+    if len(api_surrogate_list):
+        match = re.search(pattern, api_surrogate_list[0])
         return match.group(1) if match else ""
     else:
         return " "
 
 
-def get_your_order_link(_: Record, __: List) -> str:
+def helper_get_your_order_link() -> str:
     """
     Get the link to the user's current order.
 
     Args:
-        _: The record object (unused in this function)
-        __: List of surrogate data (unused in this function)
+        None - see note at top of file
 
     Returns:
         The link to the user's current order

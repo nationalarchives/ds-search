@@ -1,5 +1,5 @@
+import inspect
 import json
-import unittest
 from copy import deepcopy
 from unittest.mock import Mock, patch
 
@@ -9,17 +9,18 @@ from app.deliveryoptions.delivery_options import (
     surrogate_link_builder,
 )
 from app.deliveryoptions.helpers import (
-    get_access_condition_text,
-    get_added_to_basket_text,
-    get_advance_order_information,
-    get_advanced_orders_email_address,
     get_dept,
+    helper_get_access_condition_text,
+    helper_get_added_to_basket_text,
+    helper_get_advance_order_information,
+    helper_get_advanced_orders_email_address,
 )
 from app.records.models import APIResponse
 from django.conf import settings
+from django.test import TestCase
 
 
-class TestDeliveryOptionTags(unittest.TestCase):
+class TestDeliveryOptionTags(TestCase):
     def setUp(self):
         # This is a simplified example of the delivery_option_tags dictionary.
         self.delivery_option_tags = delivery_option_tags
@@ -73,7 +74,7 @@ class TestDeliveryOptionTags(unittest.TestCase):
                 )
 
 
-class TestDeliveryOptionSubstitution(unittest.TestCase):
+class TestDeliveryOptionSubstitution(TestCase):
     def setUp(self):
         fixture_path = f"{settings.BASE_DIR}/test/deliveryoptions/fixtures/response_C18281.json"
         with open(fixture_path, "r") as f:
@@ -82,6 +83,7 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
         self.response = APIResponse(deepcopy(fixture_contents["data"][0]))
         self.record = self.response.record
 
+        # Rename to api_surrogate_list to match the updated parameter name in helper functions
         self.surrogate = [
             '<a target="_blank" href="https://www.thegenealogist.co.uk/non-conformist-records">The Genealogist</a>',
             '<a target="_blank" href="https://www.thegenealogist.co.uk/other-records">The Genealogist</a>',
@@ -145,7 +147,25 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
 
         for tag, expected_value in test_cases.items():
             with self.subTest(tag=tag):
-                result = delivery_option_tags[tag](self.record, self.surrogate)
+                func = delivery_option_tags[tag]
+
+                # Use inspect to determine what parameters the function expects
+                sig = inspect.signature(func)
+                params = {}
+
+                # Add only the parameters the function expects
+                param_names = set(sig.parameters.keys())
+                if "record" in param_names:
+                    params["record"] = self.record
+
+                # Make sure we're using the correct parameter name for surrogate data
+                if "api_surrogate_list" in param_names:
+                    params["api_surrogate_list"] = self.surrogate
+                elif "surrogate" in param_names:
+                    params["surrogate"] = self.surrogate
+
+                # Call the function with the appropriate parameters
+                result = func(**params)
                 self.assertEqual(result, expected_value)
 
     def test_get_dept_existing(self):
@@ -160,20 +180,22 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
     def test_get_dept_non_existing(self):
         self.assertIsNone(get_dept("XYZ 1234", "deptname"))
 
-    def test_get_access_condition_text(self):
+    def test_helper_get_access_condition_text(self):
         record = Mock()
         record.access_condition = "Open access"
-        self.assertEqual(get_access_condition_text(record, []), "Open access")
+        self.assertEqual(
+            helper_get_access_condition_text(record), "Open access"
+        )
 
         record.access_condition = None
-        self.assertEqual(get_access_condition_text(record, []), " ")
+        self.assertEqual(helper_get_access_condition_text(record), " ")
 
-    def test_get_added_to_basket_text(self):
-        self.assertEqual(get_added_to_basket_text({}, []), "Add to basket")
+    def test_helper_get_added_to_basket_text(self):
+        self.assertEqual(helper_get_added_to_basket_text(), "Add to basket")
 
-    def test_get_advanced_orders_email_address(self):
+    def test_helper_get_advanced_orders_email_address(self):
         self.assertEqual(
-            get_advanced_orders_email_address({}, []),
+            helper_get_advanced_orders_email_address(),
             settings.ADVANCED_DOCUMENT_ORDER_EMAIL,
         )
 
@@ -181,9 +203,9 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
         "app.deliveryoptions.delivery_options.settings.BASE_TNA_URL",
         "https://tnabase.test.url",
     )
-    def test_get_advance_order_information(self):
+    def test_helper_get_advance_order_information(self):
         self.assertEqual(
-            get_advance_order_information({}, []),
+            helper_get_advance_order_information(),
             "https://tnabase.test.url/about/visit-us/",
         )
 
@@ -248,7 +270,7 @@ class TestDeliveryOptionSubstitution(unittest.TestCase):
             self.assertEqual(selected_description, "Regular description")
 
 
-class TestSurrogateReferences(unittest.TestCase):
+class TestSurrogateReferences(TestCase):
     def test_empty_list(self):
         reference_list = []
         surrogate_list = surrogate_link_builder(reference_list)

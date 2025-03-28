@@ -1,3 +1,4 @@
+import inspect
 import json
 import logging
 import re
@@ -84,7 +85,7 @@ def get_delivery_option_dict(
         return None
 
 
-def html_replacer(value: str, record: Record, api_surrogate_data: List) -> str:
+def html_replacer(value: str, record: Record, api_surrogate_list: List) -> str:
     """
     Replace placeholders in a string with actual values.
 
@@ -102,19 +103,30 @@ def html_replacer(value: str, record: Record, api_surrogate_data: List) -> str:
     Raises:
         Exception: If a placeholder function call fails
     """
-    subs = re.findall(r"{[A-Za-z]*}", value)
+    tags = re.findall(r"{[A-Za-z]*}", value)
 
-    for s in subs:
+    for tag in tags:
         try:
-            func = delivery_option_tags[s]
+            function = delivery_option_tags[tag]
 
-            # If the tag doesn't have any data (can happen with surrogate links),
-            # rather than have a string with something missing, just return an
-            # empty string and it won't get displayed
-            if f := func(record, api_surrogate_data):
-                value = value.replace(s, f)
+            # Get the function signature parameters
+            function_signature = inspect.signature(function)
+            params = {}
+
+            # Add only the parameters the function expects
+            param_names = set(function_signature.parameters.keys())
+
+            if "record" in param_names:
+                params["record"] = record
+            if "api_surrogate_list" in param_names:
+                params["api_surrogate_list"] = api_surrogate_list
+
+            if replacement := function(**params):
+                value = value.replace(tag, replacement)
+
         except Exception:
             raise
+
     return value
 
 

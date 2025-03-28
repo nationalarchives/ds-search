@@ -1,5 +1,4 @@
 """
-Departments module for the Django app.
 Contains mapping of department reference codes to their names and URLs.
 """
 
