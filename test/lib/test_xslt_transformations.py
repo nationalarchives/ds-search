@@ -4,6 +4,22 @@ from app.lib.xslt_transformations import apply_xslt
 
 
 class ContentParserTestCase(unittest.TestCase):
+    def test_Airwomen(self):
+        # D8030479
+        source = '<emph altrender="doctype">AW</emph><persname><emph altrender="surname">Aarons</emph> <emph altrender="forenames">Ethel</emph></persname><emph altrender="num">21906</emph><emph altrender="doe">19 October 1918</emph>'
+        schema = "Airwomen"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Aarons, Ethel</dd>
+<dt>Service number</dt>
+<dd>21906</dd>
+<dt>Date of enrolment</dt>
+<dd>19 October 1918</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_BritishWarMedal(self):
         # D8030479
         source = '<emph altrender="doctype">BW</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">Henry William</emph></persname><geogname>Rowhedge</geogname><emph altrender="dob">1873</emph>'

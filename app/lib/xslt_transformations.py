@@ -3,6 +3,7 @@ import logging
 from lxml import etree, html
 
 SCHEMAS = {
+    "Airwomen": "Airwomen.xsl",
     "BritishWarMedal": "BritishWarMedal.xsl",
     "CombatRepWW2": "CombatRepWW2.xsl",
     "DeathDuty": "DeathDuty.xsl",
@@ -21,7 +22,6 @@ SCHEMAS = {
 
 # Temporary list of schemas to implement - this list will be removed once all schemas are implemented
 SCHEMAS_TO_IMPLEMENT = [
-    "Airwomen",
     "AliensRegCards",
     "AncientPetitions",
     "CabinetPapers",
