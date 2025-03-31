@@ -9,7 +9,7 @@
 		Created.
 		-->
   </xsl:template>
-  <!-- ignore 'doctype' text (should be 'BW') -->
+  <!-- ignore 'doctype' text (should be 'S') -->
   <xsl:template match="emph[@altrender='doctype']">
 	</xsl:template>
   <xsl:template match="/">
@@ -30,16 +30,16 @@
       <xsl:value-of select="emph[@altrender='forenames']/text()"/>
     </dd>
   </xsl:template>
-  <!-- add Place of Birth -->
-  <xsl:template match="geogname">
-    <dt>Place of birth</dt>
+  <!-- add  dischargeno -->
+  <xsl:template match="emph[@altrender='dischargeno']">
+    <dt>Discharge number</dt>
     <dd>
       <xsl:value-of select="text()"/>
     </dd>
   </xsl:template>
-  <!-- add Remarks -->
-  <xsl:template match="emph[@altrender='remark']">
-    <dt>Remarks</dt>
+  <!-- add  name of place -->
+  <xsl:template match="geogname">
+    <dt>Place of birth</dt>
     <dd>
       <xsl:value-of select="text()"/>
     </dd>

@@ -92,6 +92,22 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_SeamenMedal(self):
+        # D4340681
+        source = '<emph altrender="doctype">S</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">William Henry</emph></persname><emph altrender="dischargeno">R166522</emph><emph altrender="dob">01 September 1919</emph>'
+        schema = "SeamenMedal"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Hillyard, William Henry</dd>
+<dt>Discharge number</dt>
+<dd>R166522</dd>
+<dt>Date of birth</dt>
+<dd>01 September 1919</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_SeamenRegister(self):
         # D7004597
         source = '<emph altrender="doctype">R</emph><persname><emph altrender="surname">Hillyard</emph> <emph altrender="forenames">Ernest Edward</emph></persname><emph altrender="num">K46763</emph><geogname>Luton, Bedfordshire</geogname><emph altrender="dob">24 August 1899</emph>'

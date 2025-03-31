@@ -25,19 +25,19 @@
         <xsl:text>Sentence of </xsl:text>
       </xsl:when>
       <xsl:when test="text()='IW'">
-        <xsl:text>Incomplete Will of </xsl:text>
+        <xsl:text>Incomplete will of </xsl:text>
       </xsl:when>
       <xsl:when test="text()='UW'">
-        <xsl:text>Unfinished Will of </xsl:text>
+        <xsl:text>Unfinished will of </xsl:text>
       </xsl:when>
       <xsl:when test="text()='US'">
-        <xsl:text>Unfinished Sentence of </xsl:text>
+        <xsl:text>Unfinished sentence of </xsl:text>
       </xsl:when>
       <xsl:when test="text()='IS'">
-        <xsl:text>Incomplete Sentence of </xsl:text>
+        <xsl:text>Incomplete sentence of </xsl:text>
       </xsl:when>
       <xsl:when test="text()='WS'">
-        <xsl:text>Will and Sentence of </xsl:text>
+        <xsl:text>Will and sentence of </xsl:text>
       </xsl:when>
     </xsl:choose>
   </xsl:template>

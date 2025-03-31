@@ -7,6 +7,7 @@ SCHEMAS = {
     "Medal": "Medal.xsl",
     "NavalReserve": "RoyalNavalReserve.xsl",
     "RoyalMarines": "RoyalMarines.xsl",
+    "SeamenMedal": "SeamenMedal.xsl",
     "SeamenRegister": "RegSea.xsl",
     "Will": "Will.xsl",
 }
@@ -37,7 +38,6 @@ SCHEMAS_TO_IMPLEMENT = [
     "RNASOfficers",
     "RNOfficer",
     "RecHonours",
-    "SeamenMedal",
     "SeamenWill",
     "ShippingSeamen",
     "Squadron",
