@@ -192,6 +192,24 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_VolunteerReserve(self):
+        # D7670951
+        source = '<emph altrender="doctype">RV</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">William Stanley</emph></persname><emph altrender="num">Z/8171</emph><emph altrender="division">Bristol</emph><emph altrender="dob">28 November 1900</emph>'
+        schema = "VolunteerReserve"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Hillyard, William Stanley</dd>
+<dt>Service number</dt>
+<dd>Z/8171</dd>
+<dt>RNVR division</dt>
+<dd>Bristol</dd>
+<dt>Date of birth</dt>
+<dd>28 November 1900</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_Will(self):
         # D538741
         source = '<emph altrender="doctype">W</emph><persname><emph altrender="forenames">William</emph><emph altrender="surname">Cribb</emph></persname><occupation>Baker</occupation><geogname>Wareham , Dorset</geogname>'

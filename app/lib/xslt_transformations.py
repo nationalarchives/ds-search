@@ -13,6 +13,7 @@ SCHEMAS = {
     "RoyalMarines": "RoyalMarines.xsl",
     "SeamenMedal": "SeamenMedal.xsl",
     "SeamenRegister": "RegSea.xsl",
+    "VolunteerReserve": "RNVRWW1.xsl",
     "Will": "Will.xsl",
 }
 
