@@ -94,6 +94,32 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_RecHonours(self):
+        # C9041173
+        source = '<emph altrender="doctype">H</emph><persname> <emph altrender="surname">Fetterley</emph><emph altrender="forenames">James</emph></persname><emph altrender="rank">Lieutenant</emph><emph altrender="regno">CDN541</emph><corpname>2 Battalion The East Yorkshire Regiment</corpname><geogname>North West Europe</geogname><emph altrender="award">Military Cross</emph><emph altrender="date">21 December 1944</emph><emph altrender="folio">2-3</emph>'
+        schema = "RecHonours"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Fetterley, James</dd>
+<dt>Rank</dt>
+<dd>Lieutenant</dd>
+<dt>Service number</dt>
+<dd>CDN541</dd>
+<dt>Regiment</dt>
+<dd>2 Battalion The East Yorkshire Regiment</dd>
+<dt>Theatre of combat or operation</dt>
+<dd>North West Europe</dd>
+<dt>Award</dt>
+<dd>Military Cross</dd>
+<dt>Date of announcement in London Gazette</dt>
+<dd>21 December 1944</dd>
+<dt>Folio</dt>
+<dd>2-3</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_RoyalMarines(self):
         # D7829042
         source = '<emph altrender="doctype">RM</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">Ernest Percy</emph></persname><emph altrender="num">21311</emph><emph altrender="division">Royal Marine Light Infantry: Plymouth Division</emph><emph altrender="date2">01 October 1918</emph><emph altrender="dob">09 October 1900</emph>'
