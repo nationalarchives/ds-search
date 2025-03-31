@@ -14,6 +14,7 @@ other of these parameters to some of the helper functions. All that needs to be 
 generic function will automatically handle it.
 """
 
+import os
 import re
 from typing import Any, List, Optional
 
@@ -21,6 +22,12 @@ from app.deliveryoptions.departments import DEPARTMENT_DETAILS
 from app.records.models import Record
 from django.conf import settings
 from django.core.cache import cache
+
+BASE_TNA_URL = os.getenv("BASE_TNA_URL", "https://www.nationalarchives.gov.uk")
+MAX_BASKET_ITEMS = os.getenv("MAX_BASKET_ITEMS", "10")
+DISCOVERY_TNA_URL = os.getenv(
+    "DISCOVERY_TNA_URL", "https://discovery.nationalarchives.gov.uk"
+)
 
 
 def get_dept(reference_number: str, key_type: str) -> Optional[str]:
@@ -39,7 +46,7 @@ def get_dept(reference_number: str, key_type: str) -> Optional[str]:
         The value for the specified key_type from the matching department or None if not found
     """
     # Create a cache key based on the parameters
-    cache_key = f"dept_{reference_number}_{key_type}"
+    cache_key = f"dept_{reference_number.replace(" ", "")}_{key_type}"
 
     # Try to get the result from the cache
     cached_result = cache.get(cache_key)
@@ -59,7 +66,7 @@ def get_dept(reference_number: str, key_type: str) -> Optional[str]:
     return result
 
 
-def helper_get_access_condition_text(record: Record) -> str:
+def get_access_condition_text(record: Record) -> str:
     """
     Get the access condition text for a record.
 
@@ -76,7 +83,7 @@ def helper_get_access_condition_text(record: Record) -> str:
     return " "
 
 
-def helper_get_added_to_basket_text() -> str:
+def get_added_to_basket_text() -> str:
     """
     Get the text to display for adding to basket.
 
@@ -89,7 +96,7 @@ def helper_get_added_to_basket_text() -> str:
     return "Add to basket"
 
 
-def helper_get_advanced_orders_email_address() -> str:
+def get_advanced_orders_email_address() -> str:
     """
     Get the email address for advanced orders.
 
@@ -102,7 +109,7 @@ def helper_get_advanced_orders_email_address() -> str:
     return settings.ADVANCED_DOCUMENT_ORDER_EMAIL
 
 
-def helper_get_advance_order_information() -> str:
+def get_advance_order_information() -> str:
     """
     Get the URL for advance order information.
 
@@ -112,10 +119,10 @@ def helper_get_advance_order_information() -> str:
     Returns:
         The URL for advance order information
     """
-    return f"{settings.BASE_TNA_URL}/about/visit-us/"
+    return f"{BASE_TNA_URL}/about/visit-us/"
 
 
-def helper_get_archive_link(record: Record) -> str:
+def get_archive_link(record: Record) -> str:
     """
     Get the link to the archive holding the record.
 
@@ -128,7 +135,7 @@ def helper_get_archive_link(record: Record) -> str:
     return record.held_by_url
 
 
-def helper_get_archive_name(record: Record) -> str:
+def get_archive_name(record: Record) -> str:
     """
     Get the name of the archive holding the record.
 
@@ -141,7 +148,7 @@ def helper_get_archive_name(record: Record) -> str:
     return record.held_by
 
 
-def helper_get_basket_type() -> str:
+def get_basket_type() -> str:
     """
     Get the basket type.
 
@@ -157,7 +164,7 @@ def helper_get_basket_type() -> str:
     return "Digital Downloads"
 
 
-def helper_get_basket_url() -> str:
+def get_basket_url() -> str:
     """
     Get the URL for the basket.
 
@@ -167,10 +174,10 @@ def helper_get_basket_url() -> str:
     Returns:
         The URL for the basket
     """
-    return f"{settings.BASE_TNA_URL}/basket/"
+    return f"{BASE_TNA_URL}/basket/"
 
 
-def helper_get_browse_url(record: Record) -> str:
+def get_browse_url(record: Record) -> str:
     """
     Get the URL for browsing the record hierarchy.
 
@@ -183,10 +190,10 @@ def helper_get_browse_url(record: Record) -> str:
     TODO: This will be the browse URL for the hierarchy we are currently in.
           On Discovery, an example would be https://discovery.nationalarchives.gov.uk/browse/r/h/C325982
     """
-    return f"{settings.BASE_TNA_URL}/browse/tbd/{record.iaid}/"
+    return f"{BASE_TNA_URL}/browse/tbd/{record.iaid}/"
 
 
-def helper_get_contact_form_url_mould(record: Record) -> str:
+def get_contact_form_url_mould(record: Record) -> str:
     """
     Get the URL for the contact form for records needing mould treatment.
 
@@ -198,10 +205,10 @@ def helper_get_contact_form_url_mould(record: Record) -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{helper_get_contact_form_url()}document-condition-feedback/?catalogue-reference={record.reference_number}&mould-treatment-required=true"
+    return f"{get_contact_form_url()}document-condition-feedback/?catalogue-reference={record.reference_number}&mould-treatment-required=true"
 
 
-def helper_get_contact_form_url_unfit(record: Record) -> str:
+def get_contact_form_url_unfit(record: Record) -> str:
     """
     Get the URL for the contact form for unfit records.
 
@@ -213,10 +220,10 @@ def helper_get_contact_form_url_unfit(record: Record) -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{helper_get_contact_form_url()}document-condition-feedback/?catalogue-reference={record.reference_number}&conservation-treatment-required=true"
+    return f"{get_contact_form_url()}document-condition-feedback/?catalogue-reference={record.reference_number}&conservation-treatment-required=true"
 
 
-def helper_get_contact_form_url() -> str:
+def get_contact_form_url() -> str:
     """
     Get the URL for the general contact form.
 
@@ -228,10 +235,10 @@ def helper_get_contact_form_url() -> str:
 
     TODO: URL may change with Etna
     """
-    return f"{settings.BASE_TNA_URL}/contact-us/"
+    return f"{BASE_TNA_URL}/contact-us/"
 
 
-def helper_get_data_protection_act_url() -> str:
+def get_data_protection_act_url() -> str:
     """
     Get the URL for the Data Protection Act information.
 
@@ -243,10 +250,10 @@ def helper_get_data_protection_act_url() -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{settings.BASE_TNA_URL}/content/documents/county-durham-home-guard-service-record-subject-access-request-form.pdf"
+    return f"{BASE_TNA_URL}/content/documents/county-durham-home-guard-service-record-subject-access-request-form.pdf"
 
 
-def helper_get_dept_name(record: Record) -> str:
+def get_dept_name(record: Record) -> str:
     """
     Get the name of the department responsible for a record.
 
@@ -262,7 +269,7 @@ def helper_get_dept_name(record: Record) -> str:
     return ""
 
 
-def helper_get_dept_url(record: Record) -> str:
+def get_dept_url(record: Record) -> str:
     """
     Get the URL of the department responsible for a record.
 
@@ -278,7 +285,7 @@ def helper_get_dept_url(record: Record) -> str:
     return ""
 
 
-def helper_get_download_format() -> str:
+def get_download_format() -> str:
     """
     Get the download format for a record.
 
@@ -293,7 +300,7 @@ def helper_get_download_format() -> str:
     return "(Unknown download format)"
 
 
-def helper_get_download_text() -> str:
+def get_download_text() -> str:
     """
     Get the text for the download button.
 
@@ -306,7 +313,7 @@ def helper_get_download_text() -> str:
     return "Download now"
 
 
-def helper_get_download_url() -> str:
+def get_download_url() -> str:
     """
     Get the URL for downloading a record.
 
@@ -321,7 +328,7 @@ def helper_get_download_url() -> str:
     return "details/download"
 
 
-def helper_get_file_authority_type() -> str:
+def get_file_authority_type() -> str:
     """
     Get the file authority type.
 
@@ -335,7 +342,7 @@ def helper_get_file_authority_type() -> str:
     return " "
 
 
-def helper_get_foi_url(record: Record) -> str:
+def get_foi_url(record: Record) -> str:
     """
     Get the URL for submitting a Freedom of Information request.
 
@@ -347,10 +354,10 @@ def helper_get_foi_url(record: Record) -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{settings.BASE_TNA_URL}/foirequest?reference={record.reference_number}"
+    return f"{BASE_TNA_URL}/foirequest?reference={record.reference_number}"
 
 
-def helper_get_image_library_url() -> str:
+def get_image_library_url() -> str:
     """
     Get the URL for the image library.
 
@@ -363,7 +370,7 @@ def helper_get_image_library_url() -> str:
     return settings.IMAGE_LIBRARY_URL
 
 
-def helper_get_item_num_of_files_and_size_in_MB() -> str:
+def get_item_num_of_files_and_size_in_MB() -> str:
     """
     Get the number of files and total size for a record.
 
@@ -378,7 +385,7 @@ def helper_get_item_num_of_files_and_size_in_MB() -> str:
     return "(Unknown number of files and file size)"
 
 
-def helper_get_keepers_gallery_url() -> str:
+def get_keepers_gallery_url() -> str:
     """
     Get the URL for the Keepers' Gallery.
 
@@ -388,10 +395,10 @@ def helper_get_keepers_gallery_url() -> str:
     Returns:
         The URL for the Keepers' Gallery
     """
-    return f"{settings.BASE_TNA_URL}/about/visit-us/whats-on/keepers-gallery/"
+    return f"{BASE_TNA_URL}/about/visit-us/whats-on/keepers-gallery/"
 
 
-def helper_get_kew_booking_system_url() -> str:
+def get_kew_booking_system_url() -> str:
     """
     Get the URL for the Kew booking system.
 
@@ -403,10 +410,10 @@ def helper_get_kew_booking_system_url() -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{settings.BASE_TNA_URL}/book-a-reading-room-visit/"
+    return f"{BASE_TNA_URL}/book-a-reading-room-visit/"
 
 
-def helper_get_max_items() -> str:
+def get_max_items() -> str:
     """
     Get the maximum number of items allowed in a basket.
 
@@ -419,10 +426,10 @@ def helper_get_max_items() -> str:
     TODO: Is probably going to be discarded. Needs to co-ordinate with settings on
           ds-etna-basket
     """
-    return settings.MAX_BASKET_ITEMS
+    return MAX_BASKET_ITEMS
 
 
-def helper_get_open_date_desc(record: Record) -> str:
+def get_open_date_desc(record: Record) -> str:
     """
     Get the description for the record opening date.
 
@@ -437,7 +444,7 @@ def helper_get_open_date_desc(record: Record) -> str:
     return " "
 
 
-def helper_get_opening_times_url() -> str:
+def get_opening_times_url() -> str:
     """
     Get the URL for the opening times information.
 
@@ -449,10 +456,10 @@ def helper_get_opening_times_url() -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{settings.BASE_TNA_URL}/about/visit-us/"
+    return f"{BASE_TNA_URL}/about/visit-us/"
 
 
-def helper_get_order_url() -> str:
+def get_order_url() -> str:
     """
     Get the URL for ordering a record.
 
@@ -468,7 +475,7 @@ def helper_get_order_url() -> str:
     return "Order URL not yet available"
 
 
-def helper_get_paid_search_url(record: Record) -> str:
+def get_paid_search_url(record: Record) -> str:
     """
     Get the URL for paid search options.
 
@@ -480,10 +487,10 @@ def helper_get_paid_search_url(record: Record) -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{settings.BASE_TNA_URL}/paidsearch/foirequest/{record.iaid}?type=foirequest"
+    return f"{BASE_TNA_URL}/paidsearch/foirequest/{record.iaid}?type=foirequest"
 
 
-def helper_get_price() -> str:
+def get_price() -> str:
     """
     Get the price for a record.
 
@@ -498,7 +505,7 @@ def helper_get_price() -> str:
     return "(Unknown price)"
 
 
-def helper_get_readers_ticket_url() -> str:
+def get_readers_ticket_url() -> str:
     """
     Get the URL for information about reader's tickets.
 
@@ -510,10 +517,10 @@ def helper_get_readers_ticket_url() -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{settings.BASE_TNA_URL}/about/visit-us/researching-here/do-i-need-a-readers-ticket/"
+    return f"{BASE_TNA_URL}/about/visit-us/researching-here/do-i-need-a-readers-ticket/"
 
 
-def helper_get_record_copying_url(record: Record) -> str:
+def get_record_copying_url(record: Record) -> str:
     """
     Get the URL for the record copying service.
 
@@ -525,10 +532,10 @@ def helper_get_record_copying_url(record: Record) -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{settings.DISCOVERY_TNA_URL}/pagecheck/start/{record.iaid}/"
+    return f"{DISCOVERY_TNA_URL}/pagecheck/start/{record.iaid}/"
 
 
-def helper_get_record_information_type() -> str:
+def get_record_information_type() -> str:
     """
     Get the record information type.
 
@@ -543,7 +550,7 @@ def helper_get_record_information_type() -> str:
     return "(Unknown record information type)"
 
 
-def helper_get_record_opening_date(record: Record) -> str:
+def get_record_opening_date(record: Record) -> str:
     """
     Get the record opening date.
 
@@ -558,7 +565,7 @@ def helper_get_record_opening_date(record: Record) -> str:
     return " "
 
 
-def helper_get_record_url(record: Record) -> str:
+def get_record_url(record: Record) -> str:
     """
     Get the URL for viewing a record's details.
 
@@ -570,10 +577,10 @@ def helper_get_record_url(record: Record) -> str:
 
     TODO: URL may change with Etna
     """
-    return f"{settings.BASE_TNA_URL}/details/r/{record.iaid}/"
+    return f"{BASE_TNA_URL}/details/r/{record.iaid}/"
 
 
-def helper_get_first_website_url(api_surrogate_list: List) -> str:
+def get_first_website_url(api_surrogate_list: List) -> str:
     """
     Get the URL of the first website in the surrogate list.
 
@@ -594,7 +601,7 @@ def helper_get_first_website_url(api_surrogate_list: List) -> str:
     return ""
 
 
-def helper_get_first_website_url_full(api_surrogate_list: List) -> str:
+def get_first_website_url_full(api_surrogate_list: List) -> str:
     """
     Get the full HTML for the first website in the surrogate list.
 
@@ -610,7 +617,7 @@ def helper_get_first_website_url_full(api_surrogate_list: List) -> str:
     return ""
 
 
-def helper_get_subsequent_website_urls(api_surrogate_list: List) -> str:
+def get_subsequent_website_urls(api_surrogate_list: List) -> str:
     """
     Get HTML for all websites in the surrogate list except the first one.
 
@@ -627,7 +634,7 @@ def helper_get_subsequent_website_urls(api_surrogate_list: List) -> str:
     return st
 
 
-def helper_get_all_website_urls(api_surrogate_list: List) -> str:
+def get_all_website_urls(api_surrogate_list: List) -> str:
     """
     Get HTML for all websites in the surrogate list.
 
@@ -643,7 +650,7 @@ def helper_get_all_website_urls(api_surrogate_list: List) -> str:
     return st
 
 
-def helper_get_website_url_text(api_surrogate_list: List) -> str:
+def get_website_url_text(api_surrogate_list: List) -> str:
     """
     Get the text from the first website URL in the surrogate list.
 
@@ -662,7 +669,7 @@ def helper_get_website_url_text(api_surrogate_list: List) -> str:
         return " "
 
 
-def helper_get_your_order_link() -> str:
+def get_your_order_link() -> str:
     """
     Get the link to the user's current order.
 

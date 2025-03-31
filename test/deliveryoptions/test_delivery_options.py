@@ -3,17 +3,21 @@ import json
 from copy import deepcopy
 from unittest.mock import Mock, patch
 
-from app.deliveryoptions.constants import delivery_option_tags
+from app.deliveryoptions.constants import (
+    DELIVERY_OPTIONS_CONFIG,
+    delivery_option_tags,
+)
 from app.deliveryoptions.delivery_options import (
     html_replacer,
     surrogate_link_builder,
 )
 from app.deliveryoptions.helpers import (
+    BASE_TNA_URL,
+    get_access_condition_text,
+    get_added_to_basket_text,
+    get_advance_order_information,
+    get_advanced_orders_email_address,
     get_dept,
-    helper_get_access_condition_text,
-    helper_get_added_to_basket_text,
-    helper_get_advance_order_information,
-    helper_get_advanced_orders_email_address,
 )
 from app.records.models import APIResponse
 from django.conf import settings
@@ -26,7 +30,7 @@ class TestDeliveryOptionTags(TestCase):
         self.delivery_option_tags = delivery_option_tags
 
         # Path to the JSON file containing the delivery options
-        self.json_file_path = settings.DELIVERY_OPTIONS_CONFIG
+        self.json_file_path = DELIVERY_OPTIONS_CONFIG
 
     def extract_tags(self, data):
         """
@@ -90,14 +94,12 @@ class TestDeliveryOptionSubstitution(TestCase):
         ]
 
     @patch(
-        "app.deliveryoptions.delivery_options.settings.BASE_TNA_URL",
+        "app.deliveryoptions.helpers.BASE_TNA_URL",
         "https://tnabase.test.url",
     )
+    @patch("app.deliveryoptions.helpers.MAX_BASKET_ITEMS", "5")
     @patch(
-        "app.deliveryoptions.delivery_options.settings.MAX_BASKET_ITEMS", "5"
-    )
-    @patch(
-        "app.deliveryoptions.delivery_options.settings.DISCOVERY_TNA_URL",
+        "app.deliveryoptions.helpers.DISCOVERY_TNA_URL",
         "https://discovery.test.url",
     )
     def test_delivery_options_tags(self):
@@ -180,32 +182,30 @@ class TestDeliveryOptionSubstitution(TestCase):
     def test_get_dept_non_existing(self):
         self.assertIsNone(get_dept("XYZ 1234", "deptname"))
 
-    def test_helper_get_access_condition_text(self):
+    def test_get_access_condition_text(self):
         record = Mock()
         record.access_condition = "Open access"
-        self.assertEqual(
-            helper_get_access_condition_text(record), "Open access"
-        )
+        self.assertEqual(get_access_condition_text(record), "Open access")
 
         record.access_condition = None
-        self.assertEqual(helper_get_access_condition_text(record), " ")
+        self.assertEqual(get_access_condition_text(record), " ")
 
-    def test_helper_get_added_to_basket_text(self):
-        self.assertEqual(helper_get_added_to_basket_text(), "Add to basket")
+    def test_get_added_to_basket_text(self):
+        self.assertEqual(get_added_to_basket_text(), "Add to basket")
 
-    def test_helper_get_advanced_orders_email_address(self):
+    def test_get_advanced_orders_email_address(self):
         self.assertEqual(
-            helper_get_advanced_orders_email_address(),
+            get_advanced_orders_email_address(),
             settings.ADVANCED_DOCUMENT_ORDER_EMAIL,
         )
 
     @patch(
-        "app.deliveryoptions.delivery_options.settings.BASE_TNA_URL",
+        "app.deliveryoptions.helpers.BASE_TNA_URL",
         "https://tnabase.test.url",
     )
-    def test_helper_get_advance_order_information(self):
+    def test_get_advance_order_information(self):
         self.assertEqual(
-            helper_get_advance_order_information(),
+            get_advance_order_information(),
             "https://tnabase.test.url/about/visit-us/",
         )
 

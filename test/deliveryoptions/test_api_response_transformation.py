@@ -1,4 +1,3 @@
-import json
 import unittest
 from unittest.mock import MagicMock, mock_open, patch
 
@@ -19,11 +18,7 @@ class DeliveryOptionsTestCase(unittest.TestCase):
         # Mock settings
         self.settings_patcher = patch.multiple(
             "django.conf.settings",
-            DELIVERY_OPTIONS_CONFIG="mock_config.json",
-            BASE_TNA_URL="https://test.nationalarchives.gov.uk",
             ADVANCED_DOCUMENT_ORDER_EMAIL="test@example.com",
-            MAX_BASKET_ITEMS="10",
-            DISCOVERY_TNA_URL="https://discovery.nationalarchives.gov.uk",
         )
         self.settings_patcher.start()
 

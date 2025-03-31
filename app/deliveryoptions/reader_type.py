@@ -1,11 +1,8 @@
 import logging
-import os
-from ipaddress import IPv4Address, IPv6Address, ip_address, ip_network
-from typing import Dict, List, Optional, Union
+from ipaddress import ip_address, ip_network
+from typing import List, Optional
 
 from app.deliveryoptions.constants import (
-    IP_ONSITE_RANGES,
-    IP_STAFFIN_RANGES,
     Reader,
 )
 from django.conf import settings
@@ -24,7 +21,7 @@ def is_onsite(visitor_ip_address: str) -> bool:
     Returns:
         True if the visitor is on-site, False otherwise
     """
-    return is_ip_in_cidr(visitor_ip_address, IP_ONSITE_RANGES)
+    return is_ip_in_cidr(visitor_ip_address, settings.IP_ONSITE_RANGES)
 
 
 def is_subscribed() -> bool:
@@ -49,7 +46,7 @@ def is_staff(visitor_ip_address: str) -> bool:
     Returns:
         True if the visitor is staff, False otherwise
     """
-    return is_ip_in_cidr(visitor_ip_address, IP_STAFFIN_RANGES)
+    return is_ip_in_cidr(visitor_ip_address, settings.IP_STAFFIN_RANGES)
 
 
 def get_reader_type(request: HttpRequest) -> Reader:
@@ -166,17 +163,14 @@ def validate_ip(ip_str: str) -> Optional[str]:
         return None
 
 
-def is_ip_in_cidr(ip: str, cidr: List[Dict[str, str]]) -> bool:
+def is_ip_in_cidr(ip: str, cidr: List[str]) -> bool:
     """
     Check if an IP address is within any of the specified CIDR ranges.
-
     Args:
         ip : The IP address to check
-        cidr: A list of dictionaries containing CIDR ranges with "Address" keys
-
+        cidr: A list of strings containing CIDR ranges
     Returns:
         True if the IP is within any of the specified ranges, False otherwise
-
     Raises:
         ValueError: If the IP address or CIDR range is invalid
     """
@@ -184,14 +178,12 @@ def is_ip_in_cidr(ip: str, cidr: List[Dict[str, str]]) -> bool:
         # Parse the IP address
         ip_obj = ip_address(ip)
 
-        # Parse the CIDR range
-        for cidr_obj in cidr:
-            network = ip_network(cidr_obj["Address"], strict=False)
-
+        # Parse each CIDR range
+        for cidr_range in cidr:
+            network = ip_network(cidr_range.strip(), strict=False)
             if ip_obj in network:
                 return True
-
-        # Check if the IP address is in the network
+        # If no match is found
         return False
     except ValueError as e:
         raise ValueError(f"Invalid IP or CIDR: {e}")

@@ -1,3 +1,10 @@
+"""
+Module for handling delivery options for records.
+
+Provides functionality to construct and process delivery options for records
+based on their availability conditions and the type of user requesting access.
+"""
+
 import inspect
 import json
 import logging
@@ -7,8 +14,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from app.deliveryoptions.constants import (
     DCS_PREFIXES,
-    IP_ONSITE_RANGES,
-    IP_STAFFIN_RANGES,
+    DELIVERY_OPTIONS_CONFIG,
     AvailabilityCondition,
     delivery_option_tags,
 )
@@ -152,7 +158,7 @@ def html_builder(
 
     # The description can contain an ordinary description and a DCS description. Which one
     # is chosen is down to whether the document reference prefix matches any in
-    # DELIVERY_OPTIONS_DCS_LIST. So, if the code finds a descriptionDCS record but
+    # DCS_PREFIXES. So, if the code finds a descriptionDCS record but
     # the prefix doesn't match, it skips it.
 
     if isinstance(delivery_option_data, list):
@@ -190,6 +196,38 @@ def surrogate_link_builder(surrogates: List) -> List[Any]:
     return surrogate_list
 
 
+def process_order_buttons(
+    delivery_option_data: List,
+    record_data: Record,
+    api_surrogate_data: List = None,
+) -> List[Dict]:
+    """
+    Process order buttons data with HTML replacement.
+
+    Args:
+        delivery_option_data: The data to process
+        record_data: The record object
+        api_surrogate_data: List of surrogate data
+
+    Returns:
+        A list of processed order button data
+    """
+    result = []
+    for item in delivery_option_data:
+        processed_item = {}
+        for key, value in item.items():
+            if key in ["href", "text"]:
+                processed_item[key] = html_builder(
+                    value,
+                    record_data,
+                    api_surrogate_data=api_surrogate_data,
+                )
+            else:
+                processed_item[key] = value
+        result.append(processed_item)
+    return result
+
+
 def generic_builder(
     delivery_option_data: Union[List, str],
     record_data: Record,
@@ -215,24 +253,13 @@ def generic_builder(
     ):
         dcs_flag = True
 
-    # Default HTML building
+    # Handle order buttons specifically
     if builder_type == "orderbuttons" and isinstance(
         delivery_option_data, list
     ):
-        result = []
-        for item in delivery_option_data:
-            processed_item = {}
-            for key, value in item.items():
-                if key in ["href", "text"]:
-                    processed_item[key] = html_builder(
-                        value,
-                        record_data,
-                        api_surrogate_data=api_surrogate_data,
-                    )
-                else:
-                    processed_item[key] = value
-            result.append(processed_item)
-        return result
+        return process_order_buttons(
+            delivery_option_data, record_data, api_surrogate_data
+        )
 
     # Standard HTML building
     return html_builder(
@@ -249,8 +276,7 @@ def construct_delivery_options(
     """
     Construct delivery options based on record and request information.
 
-    This is the main function called from records.py to build the delivery options
-    for a record.
+    This is the main function to build the delivery options for a record.
 
     Args:
         api_result: List of delivery options
@@ -272,7 +298,7 @@ def construct_delivery_options(
 
     delivery_options_context_dict["reader_type"] = reader_type
 
-    do_dict = read_delivery_options(settings.DELIVERY_OPTIONS_CONFIG)
+    do_dict = read_delivery_options(DELIVERY_OPTIONS_CONFIG)
 
     # Surrogate links is always present as a list, which can be empty
     do_surrogate = surrogate_link_builder(api_result[0]["surrogateLinks"])

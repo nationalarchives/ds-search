@@ -84,10 +84,10 @@ See [Sentry's official guide](https://docs.sentry.io/platforms/python/guides/dja
 
 `.env` variables:
 
-| Variable                    | Purpose                                                             | Default in base.py | Example                                                       |
-| --------------------------- | ------------------------------------------------------------------- | ------------------ | ------------------------------------------------------------- |
-| `ROSETTA_API_URL`           | The base API URL for Rosetta, including the `/rosetta/data` path    | No                 |                                                               |
-| `DELIVERY_OPTIONS_API_URL`  | Api for Delivery options                                            | No                 |                                                               |
-| `DELIVERY_OPTIONS_DCS_LIST` | List of document prefixes for distressing content                   | Yes                | "ABC,XYZ"                                                     |
-| `IP_STAFFIN_RANGES`         | JSON list of CIDR format IP addresses representing Staff ip's       | No                 | [{"Address": "10.20.30.40/19"},{"Address": "11.21.31.41/32"}] |
-| `IP_ONSITE_RANGES`          | JSON list of CIDR format IP addresses representing onsite user ip's | No                 | Ditto                                                         |
+| Variable                   | Purpose                                                          | Default in base.py | Example                         |
+| -------------------------- | ---------------------------------------------------------------- | ------------------ | ------------------------------- |
+| `ROSETTA_API_URL`          | The base API URL for Rosetta, including the `/rosetta/data` path | No                 |                                 |
+| `DELIVERY_OPTIONS_API_URL` | Api for Delivery options                                         | No                 |                                 |
+| `DCS_PREFIXES`             | List of document prefixes for distressing content                | Yes                | "ABC,XYZ"                       |
+| `IP_STAFFIN_RANGES`        | List of CIDR format IP addresses representing Staff ip's         | No                 | "10.20.30.40/19,11.21.31.41/32" |
+| `IP_ONSITE_RANGES`         | List of CIDR format IP addresses representing onsite user ip's   | No                 | Ditto                           |

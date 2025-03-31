@@ -12,7 +12,7 @@ class Reader(IntEnum):
     """
 
     UNDEFINED = -1  # Default value when reader type cannot be determined
-    STAFFIN = 0  # Staff members within the organization
+    STAFFIN = 0  # Staff members within the organisation
     ONSITEPUBLIC = 1  # Public users physically present at the facility
     SUBSCRIPTION = 2  # Users with a paid subscription
     OFFSITE = 3  # Remote users with no special access
@@ -51,7 +51,7 @@ class AvailabilityCondition(IntEnum):
     Surrogate = 18  # Surrogate version is available
     Unfit = 19  # Record is unfit for production
     MouldTreatment = 20  # Record requires mould treatment
-    Onloan = 21  # Record is on loan to another organization
+    Onloan = 21  # Record is on loan to another organisation
     DisplayAtMuseum = 22  # Record is on display at a museum
     MissingLost = 23  # Record is missing or lost
     GovtWebArchive = 24  # Record is in the government web archive
@@ -67,61 +67,51 @@ class AvailabilityCondition(IntEnum):
     Relocation = 34  # Record is being relocated
 
 
-# IP address ranges for identifying staff members within the organization
-IP_STAFFIN_RANGES = json.loads(os.getenv("IP_STAFFIN_RANGES", "[]"))
-
-# IP address ranges for identifying on-site public users
-IP_ONSITE_RANGES = json.loads(os.getenv("IP_ONSITE_RANGES", "[]"))
-
-# Distressing content prefixes
-DCS_PREFIXES = [
-    item.strip()
-    for item in os.getenv("DELIVERY_OPTIONS_DCS_LIST", "").split(",")
-    if item.strip()
-]
+# This is a temporary constant and will be removed when the templating solution is implemented
+DELIVERY_OPTIONS_CONFIG = "app/deliveryoptions/delivery_options.json"
 
 # Mapping of template tags to their corresponding helper functions
 # These are used to replace placeholders in HTML templates with dynamic content
 delivery_option_tags = {
-    "{AccessConditionText}": h.helper_get_access_condition_text,
-    "{AddedToBasketText}": h.helper_get_added_to_basket_text,
-    "{AdvancedOrdersEmailAddress}": h.helper_get_advanced_orders_email_address,
-    "{AdvanceOrderInformationUrl}": h.helper_get_advance_order_information,
-    "{ArchiveLink}": h.helper_get_archive_link,
-    "{ArchiveName}": h.helper_get_archive_name,
-    "{BasketType}": h.helper_get_basket_type,
-    "{BasketUrl}": h.helper_get_basket_url,
-    "{BrowseUrl}": h.helper_get_browse_url,
-    "{ContactFormUrlUnfit}": h.helper_get_contact_form_url_unfit,
-    "{ContactFormUrlMould}": h.helper_get_contact_form_url_mould,
-    "{ContactFormUrl}": h.helper_get_contact_form_url,
-    "{DataProtectionActUrl}": h.helper_get_data_protection_act_url,
-    "{DeptName}": h.helper_get_dept_name,
-    "{DeptUrl}": h.helper_get_dept_url,
-    "{DownloadFormat}": h.helper_get_download_format,
-    "{DownloadText}": h.helper_get_download_text,
-    "{DownloadUrl}": h.helper_get_download_url,
-    "{FAType}": h.helper_get_file_authority_type,
-    "{FoiUrl}": h.helper_get_foi_url,
-    "{ImageLibraryUrl}": h.helper_get_image_library_url,
-    "{ItemNumOfFilesAndSizeInMB}": h.helper_get_item_num_of_files_and_size_in_MB,
-    "{KeepersGalleryUrl}": h.helper_get_keepers_gallery_url,
-    "{KewBookingSystemUrl}": h.helper_get_kew_booking_system_url,
-    "{MaxItems}": h.helper_get_max_items,
-    "{OpenDateDesc}": h.helper_get_open_date_desc,
-    "{OpeningTimesUrl}": h.helper_get_opening_times_url,
-    "{OrderUrl}": h.helper_get_order_url,
-    "{PaidSearchUrl}": h.helper_get_paid_search_url,
-    "{Price}": h.helper_get_price,
-    "{ReadersTicketUrl}": h.helper_get_readers_ticket_url,
-    "{RecordCopyingUrl}": h.helper_get_record_copying_url,
-    "{RecordInformationType}": h.helper_get_record_information_type,
-    "{RecordOpeningDate}": h.helper_get_record_opening_date,
-    "{RecordUrl}": h.helper_get_record_url,
-    "{AllWebsiteUrls}": h.helper_get_all_website_urls,
-    "{SubsWebsiteUrls}": h.helper_get_subsequent_website_urls,
-    "{FirstWebsiteUrl}": h.helper_get_first_website_url,
-    "{FirstWebsiteUrlFull}": h.helper_get_first_website_url_full,
-    "{WebsiteUrlText}": h.helper_get_website_url_text,
-    "{YourOrderLink}": h.helper_get_your_order_link,
+    "{AccessConditionText}": h.get_access_condition_text,
+    "{AddedToBasketText}": h.get_added_to_basket_text,
+    "{AdvancedOrdersEmailAddress}": h.get_advanced_orders_email_address,
+    "{AdvanceOrderInformationUrl}": h.get_advance_order_information,
+    "{ArchiveLink}": h.get_archive_link,
+    "{ArchiveName}": h.get_archive_name,
+    "{BasketType}": h.get_basket_type,
+    "{BasketUrl}": h.get_basket_url,
+    "{BrowseUrl}": h.get_browse_url,
+    "{ContactFormUrlUnfit}": h.get_contact_form_url_unfit,
+    "{ContactFormUrlMould}": h.get_contact_form_url_mould,
+    "{ContactFormUrl}": h.get_contact_form_url,
+    "{DataProtectionActUrl}": h.get_data_protection_act_url,
+    "{DeptName}": h.get_dept_name,
+    "{DeptUrl}": h.get_dept_url,
+    "{DownloadFormat}": h.get_download_format,
+    "{DownloadText}": h.get_download_text,
+    "{DownloadUrl}": h.get_download_url,
+    "{FAType}": h.get_file_authority_type,
+    "{FoiUrl}": h.get_foi_url,
+    "{ImageLibraryUrl}": h.get_image_library_url,
+    "{ItemNumOfFilesAndSizeInMB}": h.get_item_num_of_files_and_size_in_MB,
+    "{KeepersGalleryUrl}": h.get_keepers_gallery_url,
+    "{KewBookingSystemUrl}": h.get_kew_booking_system_url,
+    "{MaxItems}": h.get_max_items,
+    "{OpenDateDesc}": h.get_open_date_desc,
+    "{OpeningTimesUrl}": h.get_opening_times_url,
+    "{OrderUrl}": h.get_order_url,
+    "{PaidSearchUrl}": h.get_paid_search_url,
+    "{Price}": h.get_price,
+    "{ReadersTicketUrl}": h.get_readers_ticket_url,
+    "{RecordCopyingUrl}": h.get_record_copying_url,
+    "{RecordInformationType}": h.get_record_information_type,
+    "{RecordOpeningDate}": h.get_record_opening_date,
+    "{RecordUrl}": h.get_record_url,
+    "{AllWebsiteUrls}": h.get_all_website_urls,
+    "{SubsWebsiteUrls}": h.get_subsequent_website_urls,
+    "{FirstWebsiteUrl}": h.get_first_website_url,
+    "{FirstWebsiteUrlFull}": h.get_first_website_url_full,
+    "{WebsiteUrlText}": h.get_website_url_text,
+    "{YourOrderLink}": h.get_your_order_link,
 }

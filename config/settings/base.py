@@ -230,7 +230,18 @@ GA4_ID = os.environ.get("GA4_ID", "")
 DJANGO_SERVE_STATIC = False
 
 ROSETTA_API_URL = os.getenv("ROSETTA_API_URL")
+
+# DORIS
 DELIVERY_OPTIONS_API_URL = os.getenv("DELIVERY_OPTIONS_API_URL")
+
+# IP address ranges for identifying staff members within the organisation
+IP_STAFFIN_RANGES = os.getenv("IP_STAFFIN_RANGES", "").split(",")
+
+# IP address ranges for identifying on-site public users
+IP_ONSITE_RANGES = os.getenv("IP_ONSITE_RANGES", "").split(",")
+
+# Distressing content prefixes
+DCS_PREFIXES = os.getenv("DCS_PREFIXES", "").split(",")
 
 # Should always be True in production
 CLIENT_VERIFY_CERTIFICATES = strtobool(
@@ -256,22 +267,10 @@ SENTRY_DSN = os.getenv("SENTRY_DSN", "")
 ENVIRONMENT_NAME = os.getenv("ENVIRONMENT_NAME", "production")
 SENTRY_SAMPLE_RATE = float(os.getenv("SENTRY_SAMPLE_RATE", "0.1"))
 
-
-# Delivery Options specific constants
-BASE_TNA_URL = os.getenv("BASE_TNA_URL", "https://www.nationalarchives.gov.uk")
-DISCOVERY_TNA_URL = os.getenv(
-    "DISCOVERY_TNA_URL", "https://discovery.nationalarchives.gov.uk"
-)
-MAX_BASKET_ITEMS = os.getenv("MAX_BASKET_ITEMS", "10")
-DELIVERY_OPTIONS_CONFIG = os.getenv(
-    "DELIVERY_OPTIONS_CONFIG", "app/deliveryoptions/delivery_options.json"
-)
 ADVANCED_DOCUMENT_ORDER_EMAIL = os.getenv(
     "ADVANCED_DOCUMENT_ORDER_EMAIL",
     "advanceddocumentorder@nationalarchives.gov.uk",
 )
-# Comma separated list of distressing content warning prefixes
-DELIVERY_OPTIONS_DCS_LIST = os.getenv("DELIVERY_OPTIONS_DCS_LIST")
 
 # Image library URL
 IMAGE_LIBRARY_URL = os.getenv(

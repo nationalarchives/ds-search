@@ -11,6 +11,7 @@ from app.records.api import record_details_by_id
 from app.records.labels import FIELD_LABELS
 from django.http import Http404
 from django.template.response import TemplateResponse
+from sentry_sdk import capture_message
 
 # TODO: Implement record_detail_by_reference once Rosetta has support
 # from app.records.api import record_details_by_ref
@@ -103,9 +104,10 @@ def record_detail_view(request, id):
 
         except Exception as e:
             # Built in order exception option
-            logger.error(
-                f"DORIS Connection error using url '{os.getenv("DELIVERY_OPTIONS_API_URL", "")}' - returning OrderException from Availability Conditions {str(e)}"
-            )
+            error_message = f"DORIS Connection error using url '{os.getenv("DELIVERY_OPTIONS_API_URL", "")}' - returning OrderException from Availability Conditions {str(e)}"
+
+            logger.error(error_message)
+            capture_message(error_message)
 
             # The delivery options include a special case called OrderException which has nothing to do with
             # python exceptions. It is the message to be displayed when the connection is down or there is no

@@ -1,6 +1,7 @@
 import json
 import unittest
 
+from app.deliveryoptions.constants import DELIVERY_OPTIONS_CONFIG
 from django.conf import settings
 
 
@@ -9,7 +10,7 @@ class TestDeliveryOptionsJSON(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Load JSON file once for all tests
-        with open(settings.DELIVERY_OPTIONS_CONFIG, "r") as f:
+        with open(DELIVERY_OPTIONS_CONFIG, "r") as f:
             cls.data = json.load(f)
 
     def test_delivery_options_exist(self):
