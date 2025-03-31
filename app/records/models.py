@@ -332,7 +332,9 @@ class Record(APIModel):
             if description_schema := self.description_schema:
                 description = apply_xslt(description, description_schema)
             return str(description)
-        return self.get("description.value", "")
+        description =  self.get("description.value", "")
+        description = format_extref_links(description)
+        return description
 
     @cached_property
     def raw_description(self) -> str:
