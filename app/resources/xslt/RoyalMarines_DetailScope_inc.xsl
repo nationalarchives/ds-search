@@ -12,31 +12,31 @@
 		-->
   </xsl:template>
 
-	<xsl:template match="span[@class='emph' and @altrender='doctype']">
+	<xsl:template match="emph[@altrender='doctype']">
 	</xsl:template>
 
 	<xsl:template match="/">
-    <dl class="tna-dl">
+    <dl class="tna-dl tna-dl--plain tna-dl--dotted">
       <xsl:apply-templates/>
     </dl>
 	</xsl:template>
 
   <!-- Display lastname, firstname -->
-  <xsl:template match="span[@class='persname']">
+  <xsl:template match="persname">
     <dt>
       <xsl:text disable-output-escaping="yes">Name</xsl:text>
     </dt>
     <dd>
-      <xsl:value-of select="span[@class='emph' and @altrender='surname']/text()"/>
-      <xsl:if test="span[@class='emph' and @altrender='surname'] and span[@class='emph' and @altrender='forenames']">
+      <xsl:value-of select="emph[@altrender='surname']/text()"/>
+      <xsl:if test="emph[@altrender='surname'] and emph[@altrender='forenames']">
         <xsl:text disable-output-escaping="yes">, </xsl:text>
       </xsl:if>
-      <xsl:value-of select="span[@class='emph' and @altrender='forenames']/text()"/>
+      <xsl:value-of select="emph[@altrender='forenames']/text()"/>
     </dd>
   </xsl:template>
 
   <!-- add  age -->
-  <xsl:template match="span[@class='emph' and @altrender='num']">
+  <xsl:template match="emph[@altrender='num']">
     <dt>Register number</dt>
     <dd>
       <xsl:value-of select="text()"/>
@@ -44,7 +44,7 @@
   </xsl:template>
 
   <!-- add  age -->
-  <xsl:template match="span[@class='emph' and @altrender='division']">
+  <xsl:template match="emph[@altrender='division']">
     <dt>Division</dt>
     <dd>
       <xsl:value-of select="text()"/>
@@ -52,7 +52,7 @@
   </xsl:template>
 
   <!-- add  age -->
-  <xsl:template match="span[@class='emph' and @altrender='dob']">
+  <xsl:template match="emph[@altrender='dob']">
     <dt>Date of birth</dt>
     <dd>
       <xsl:value-of select="text()"/>
@@ -60,7 +60,7 @@
   </xsl:template>
 
   <!-- add  age -->
-  <xsl:template match="span[@class='emph' and @altrender='date2']">
+  <xsl:template match="emph[@altrender='date2']">
     <dt>When enlisted/date of enlistment</dt>
     <dd>
       <xsl:value-of select="text()"/>
@@ -68,7 +68,7 @@
   </xsl:template>
 
   <!-- add Date of Birth -->
-  <xsl:template match="span[@class='emph' and @altrender='dob']">
+  <xsl:template match="emph[@altrender='dob']">
     <dt>Date of birth</dt>
     <dd>
       <xsl:value-of select="text()"/>

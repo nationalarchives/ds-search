@@ -7,10 +7,10 @@ from lxml import html
 class ContentParserTestCase(unittest.TestCase):
     def test_RoyalMarines(self):
         # D7829042
-        source = '<span class="wrapper"><span altrender="doctype" class="emph"></span><span class="persname"><span altrender="surname" class="emph">Hillyard</span><span altrender="forenames" class="emph">Ernest Percy</span></span><span altrender="num" class="emph">21311</span><span altrender="division" class="emph">Royal Marine Light Infantry: Plymouth Division</span><span altrender="date2" class="emph">01 October 1918</span><span altrender="dob" class="emph">09 October 1900</span></span>'
+        source = '<emph altrender="doctype">RM</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">Ernest Percy</emph></persname><emph altrender="num">21311</emph><emph altrender="division">Royal Marine Light Infantry: Plymouth Division</emph><emph altrender="date2">01 October 1918</emph><emph altrender="dob">09 October 1900</emph>'
         schema = "RoyalMarines"
         self.assertEqual(
-            """<dl class="tna-dl">
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
 <dt>Name</dt>
 <dd>Hillyard, Ernest Percy</dd>
 <dt>Register number</dt>

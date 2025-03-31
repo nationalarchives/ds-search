@@ -83,6 +83,25 @@
     @include colour.colour-border("keyline", 1px, solid, top);
   }
 
+  & & {
+    border-bottom: none;
+
+    > dt,
+    > dd {
+      &:first-of-type {
+        padding-top: 0;
+        border-top: none;
+      }
+    }
+
+    > dt:last-of-type {
+      &,
+      & ~ dd {
+        padding-bottom: 0;
+      }
+    }
+  }
+
   @include media.on-tiny {
     > dd {
       border-top: none;
@@ -104,6 +123,17 @@
     @include typography.detail-font-small;
     text-transform: none;
     @include colour.colour-font("font-light");
+  }
+
+  textarea {
+    width: 100%;
+    padding: spacing.space(0.125) spacing.space(0.25);
+
+    display: block;
+
+    resize: vertical;
+    @include colour.colour-border("keyline", 1px);
+    @include borders.rounded-border;
   }
 }
 
@@ -167,8 +197,4 @@
   @include media.on-larger-than-tiny {
     margin-left: spacing.space(1);
   }
-}
-
-.tna-dl dd + dd {
-  margin-left: 0;
 }
