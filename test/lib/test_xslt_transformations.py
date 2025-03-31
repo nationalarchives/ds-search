@@ -21,6 +21,40 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_Medal(self):
+        # D2874592
+        self.maxDiff = None
+        source = '<emph altrender="doctype">M</emph><persname><emph altrender="surname">Hillyard</emph> <emph altrender="forenames">Ernest S</emph></persname><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">9004</emph><emph altrender="rank">Driver</emph></emph><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">9004</emph><emph altrender="rank">Private</emph></emph><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">5875061</emph><emph altrender="rank">Private</emph></emph>'
+        schema = "Medal"
+        self.assertEqual(
+            """<div class="tna-table-wrapper"><table class="tna-table">
+<caption class="tna-table__caption">Medal card of Hillyard, Ernest S</caption>
+<thead class="tna-table__head"><tr class="tna-table__row">
+<th scope="col" class="tna-table__header">Corps</th>
+<th scope="col" class="tna-table__header">Regiment number</th>
+<th scope="col" class="tna-table__header">Rank</th>
+</tr></thead>
+<tbody class="tna-table__body">
+<tr class="tna-table__row">
+<th class="tna-table__header" scope="row">Northamptonshire Regiment</th>
+<td class="tna-table__cell">9004</td>
+<td class="tna-table__cell">Driver</td>
+</tr>
+<tr class="tna-table__row">
+<th class="tna-table__header" scope="row">Northamptonshire Regiment</th>
+<td class="tna-table__cell">9004</td>
+<td class="tna-table__cell">Private</td>
+</tr>
+<tr class="tna-table__row">
+<th class="tna-table__header" scope="row">Northamptonshire Regiment</th>
+<td class="tna-table__cell">5875061</td>
+<td class="tna-table__cell">Private</td>
+</tr>
+</tbody>
+</table></div>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_RoyalMarines(self):
         # D7829042
         source = '<emph altrender="doctype">RM</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">Ernest Percy</emph></persname><emph altrender="num">21311</emph><emph altrender="division">Royal Marine Light Infantry: Plymouth Division</emph><emph altrender="date2">01 October 1918</emph><emph altrender="dob">09 October 1900</emph>'

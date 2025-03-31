@@ -4,6 +4,7 @@ from lxml import etree, html
 
 SCHEMAS = {
     "BritishWarMedal": "BritishWarMedal.xsl",
+    "Medal": "Medal.xsl",
     "RoyalMarines": "RoyalMarines.xsl",
     "SeamenRegister": "RegSea.xsl",
     "Will": "Will.xsl",

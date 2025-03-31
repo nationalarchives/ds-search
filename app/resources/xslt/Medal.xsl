@@ -17,44 +17,52 @@
   <!-- ignore 'doctype' text (should be 'M') -->
   <xsl:template match="emph[@altrender='doctype']">
 	</xsl:template>
-  <!-- Display lastname, firstname -->
+  <!-- Display the table -->
+  <xsl:template match="/">
+    <div class="tna-table-wrapper">
+      <table class="tna-table">
+        <xsl:apply-templates select="node()/persname"/>
+        <thead class="tna-table__head">
+          <tr class="tna-table__row">
+            <th scope="col" class="tna-table__header">Corps</th>
+            <th scope="col" class="tna-table__header">Regiment number</th>
+            <th scope="col" class="tna-table__header">Rank</th>
+          </tr>
+        </thead>
+        <tbody class="tna-table__body">
+          <xsl:apply-templates select="node()/emph[@altrender='medal']"/>
+        </tbody>
+      </table>
+    </div>
+  </xsl:template>
+  <!-- Display details of the person -->
   <xsl:template match="persname">
-    <tr>
-      <td colspan="2" class="medalplain">
-        <xsl:text>Medal card of </xsl:text>
-        <xsl:value-of select="emph[@altrender='surname']/text()"/>
-        <xsl:if test="emph[@altrender='surname'] and emph[@altrender='forenames']">
-          <xsl:text disable-output-escaping="yes">, </xsl:text>
-        </xsl:if>
-        <xsl:value-of select="emph[@altrender='forenames']/text()"/>
-      </td>
-    </tr>
+    <caption class="tna-table__caption">
+      <xsl:text>Medal card of </xsl:text>
+      <xsl:value-of select="emph[@altrender='surname']/text()"/>
+      <xsl:if test="emph[@altrender='surname'] and emph[@altrender='forenames']">
+        <xsl:text disable-output-escaping="yes">, </xsl:text>
+      </xsl:if>
+      <xsl:value-of select="emph[@altrender='forenames']/text()"/>
+    </caption>
   </xsl:template>
   <!-- Display details of all regiments -->
   <xsl:template match="emph[@altrender='medal']">
-    <!-- show heading row for regiment details columns -->
-    <xsl:if test="count(preceding-sibling::emph[@altrender='medal']) = 0">
-      <tr class="medalHeaderDetail">
-        <th width="33%" scope="col" class="medalplain">Corps</th>
-        <th width="33%" scope="col" class="medalplain">Regiment No</th>
-        <th width="33%" scope="col" class="medalplain">Rank</th>
-      </tr>
-    </xsl:if>
-    <tr valign="top">
+    <tr class="tna-table__row">
       <!-- show regiment name in first column -->
-      <td class="medalplain">
+      <th class="tna-table__header" scope="row">
         <xsl:if test="corpname">
           <xsl:value-of select="corpname/text()"/>
         </xsl:if>
-      </td>
+      </th>
       <!-- show regiment number in second column -->
-      <td class="medalplain">
+      <td class="tna-table__cell">
         <xsl:if test="emph[@altrender='regno']">
           <xsl:value-of select="emph[@altrender='regno']/text()"/>
         </xsl:if>
       </td>
       <!-- show rank in third column -->
-      <td class="medalplain">
+      <td class="tna-table__cell">
         <xsl:if test="emph[@altrender='rank']">
           <xsl:value-of select="emph[@altrender='rank']/text()"/>
         </xsl:if>

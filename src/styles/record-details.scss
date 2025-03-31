@@ -102,6 +102,17 @@
     }
   }
 
+  .tna-table {
+    margin-top: spacing.space(0.5);
+    margin-bottom: spacing.space(1);
+
+    &__caption {
+      caption-side: top;
+
+      padding: 0 0 spacing.space(0.5);
+    }
+  }
+
   @include media.on-tiny {
     > dd {
       border-top: none;
