@@ -23,7 +23,6 @@ class ContentParserTestCase(unittest.TestCase):
 
     def test_Medal(self):
         # D2874592
-        self.maxDiff = None
         source = '<emph altrender="doctype">M</emph><persname><emph altrender="surname">Hillyard</emph> <emph altrender="forenames">Ernest S</emph></persname><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">9004</emph><emph altrender="rank">Driver</emph></emph><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">9004</emph><emph altrender="rank">Private</emph></emph><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">5875061</emph><emph altrender="rank">Private</emph></emph>'
         schema = "Medal"
         self.assertEqual(
@@ -52,6 +51,24 @@ class ContentParserTestCase(unittest.TestCase):
 </tr>
 </tbody>
 </table></div>""",
+            str(apply_xslt(source, schema)),
+        )
+
+    def test_NavalReserve(self):
+        # D8485886
+        source = '<emph altrender="doctype">RR</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">Edward Joshua</emph></persname><geogname>Rowhedge, Essex</geogname><emph altrender="certno">B 3813</emph><emph altrender="rank"></emph><emph altrender="date"></emph><emph altrender="dob">19 November 1885</emph>'
+        schema = "NavalReserve"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Hillyard, Edward Joshua</dd>
+<dt>Place of birth</dt>
+<dd>Rowhedge, Essex</dd>
+<dt>Number</dt>
+<dd>B 3813</dd>
+<dt>Date of birth</dt>
+<dd>19 November 1885</dd>
+</dl>""",
             str(apply_xslt(source, schema)),
         )
 
