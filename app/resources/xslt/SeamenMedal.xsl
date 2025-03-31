@@ -1,15 +1,6 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:output method="html"/>
-  <xsl:template match="version">
-    <!--
-		VERSION CONTROL	SeamenMedal_SimpleScope_XSL XSL STYLESHEET
-	
-		###	VERSION: 1.0 	AUTHOR: CDICKSON	DATE: 08/07/2004
-		Created.
-		-->
-  </xsl:template>
-  <!-- ignore 'doctype' text (should be 'S') -->
   <xsl:template match="emph[@altrender='doctype']">
 	</xsl:template>
   <xsl:template match="/">
@@ -17,7 +8,6 @@
       <xsl:apply-templates/>
     </dl>
   </xsl:template>
-  <!-- Display lastname, firstname -->
   <xsl:template match="persname">
     <dt>
       <xsl:text disable-output-escaping="yes">Name</xsl:text>
@@ -30,21 +20,18 @@
       <xsl:value-of select="emph[@altrender='forenames']/text()"/>
     </dd>
   </xsl:template>
-  <!-- add  dischargeno -->
   <xsl:template match="emph[@altrender='dischargeno']">
     <dt>Discharge number</dt>
     <dd>
       <xsl:value-of select="text()"/>
     </dd>
   </xsl:template>
-  <!-- add  name of place -->
   <xsl:template match="geogname">
     <dt>Place of birth</dt>
     <dd>
       <xsl:value-of select="text()"/>
     </dd>
   </xsl:template>
-  <!-- add Date of Birth -->
   <xsl:template match="emph[@altrender='dob']">
     <dt>Date of birth</dt>
     <dd>

@@ -20,19 +20,19 @@
       <xsl:value-of select="emph[@altrender='forenames']/text()"/>
     </dd>
   </xsl:template>
-  <xsl:template match="geogname">
-    <dt>Place of birth</dt>
+  <xsl:template match="emph[@altrender='rating']">
+    <dt>Rank or rating</dt>
     <dd>
       <xsl:value-of select="text()"/>
     </dd>
   </xsl:template>
-  <xsl:template match="emph[@altrender='remark']">
-    <dt>Remarks</dt>
+  <xsl:template match="emph[@altrender='num']">
+    <dt>Service number(s)</dt>
     <dd>
       <xsl:value-of select="text()"/>
     </dd>
   </xsl:template>
-  <xsl:template match="emph[@altrender='dob']">
+  <xsl:template match="emph[@altrender='age']">
     <dt>Date of birth</dt>
     <dd>
       <xsl:value-of select="text()"/>

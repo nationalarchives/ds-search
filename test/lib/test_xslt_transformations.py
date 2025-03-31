@@ -80,6 +80,22 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_NavyLandService(self):
+        # D7287863
+        source = '<emph altrender="doctype">LS</emph><persname><emph altrender="surname">Hillyard</emph> <emph altrender="forenames">James</emph></persname><emph altrender="num">Z/3146</emph><emph altrender="age">13 October 1894</emph>'
+        schema = "NavyLandService"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Hillyard, James</dd>
+<dt>Service number(s)</dt>
+<dd>Z/3146</dd>
+<dt>Date of birth</dt>
+<dd>13 October 1894</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_RAFOfficers(self):
         # D8272609
         source = '<emph altrender="doctype">RO</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">Frederick</emph></persname><emph altrender="dob">08 July 1898</emph>'

@@ -7,6 +7,7 @@ SCHEMAS = {
     "DeathDuty": "DeathDuty.xsl",
     "Medal": "Medal.xsl",
     "NavalReserve": "RoyalNavalReserve.xsl",
+    "NavyLandService": "NavyLandService.xsl",
     "RAFOfficers": "RAFOfficers.xsl",
     "RecHonours": "RecHonours.xsl",
     "RNOfficer": "RNOfficer.xsl",
@@ -32,7 +33,6 @@ SCHEMAS_TO_IMPLEMENT = [
     "LootedArt",
     "MusterRolls",
     "NavalOfficers",
-    "NavyLandService",
     "NursingService",
     "Olympic",
     "PoorLaw",
@@ -44,7 +44,6 @@ SCHEMAS_TO_IMPLEMENT = [
     "Squadron",
     "Titanic",
     "VictoriaCross",
-    "VolunteerReserve",
     "WomensCorps",
     "Wrns",
 ]
