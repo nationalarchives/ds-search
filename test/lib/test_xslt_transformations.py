@@ -11,7 +11,7 @@ class ContentParserTestCase(unittest.TestCase):
         schema = "BritishWarMedal"
         self.assertEqual(
             """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
-<dt>Medal card of</dt>
+<dt>Name</dt>
 <dd>Hillyard, Henry William</dd>
 <dt>Place of birth</dt>
 <dd>Rowhedge</dd>
@@ -68,6 +68,20 @@ class ContentParserTestCase(unittest.TestCase):
 <dd>B 3813</dd>
 <dt>Date of birth</dt>
 <dd>19 November 1885</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
+    def test_RAFOfficers(self):
+        # D8272609
+        source = '<emph altrender="doctype">RO</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">Frederick</emph></persname><emph altrender="dob">08 July 1898</emph>'
+        schema = "RAFOfficers"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Hillyard, Frederick</dd>
+<dt>Date of birth</dt>
+<dd>08 July 1898</dd>
 </dl>""",
             str(apply_xslt(source, schema)),
         )
