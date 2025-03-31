@@ -36,6 +36,28 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_AncientPetitions(self):
+        # C9439604
+        source = '<emph altrender="doctype">AP</emph><emph altrender="petitioners">John de Heghman.</emph><emph altrender="name"><persname><emph altrender="surname">de Heghman</emph> <emph altrender="forenames">John</emph></persname></emph><emph altrender="addressees">King.</emph><emph altrender="request">Heghman requests that the king grant his letters to Guildford and his companions assigned to take an attaint at the suit of Heghman that they not assent to the order to be at parliament.</emph><emph altrender="endorsement">[None].</emph><emph altrender="people"><persname>Henry de Gyldeford (Guildford), justice.</persname></emph>'
+        schema = "AncientPetitions"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Petitioners</dt>
+<dd>John de Heghman.</dd>
+<dt>Name(s)</dt>
+<dd>de Heghman, John</dd>
+<dt>Addressees</dt>
+<dd>King.</dd>
+<dt>Nature of request</dt>
+<dd>Heghman requests that the king grant his letters to Guildford and his companions assigned to take an attaint at the suit of Heghman that they not assent to the order to be at parliament.</dd>
+<dt>Nature of endorsement</dt>
+<dd>[None].</dd>
+<dt>People mentioned</dt>
+<dd>Henry de Gyldeford (Guildford), justice.</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_BritishWarMedal(self):
         # D8030479
         source = '<emph altrender="doctype">BW</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">Henry William</emph></persname><geogname>Rowhedge</geogname><emph altrender="dob">1873</emph>'
