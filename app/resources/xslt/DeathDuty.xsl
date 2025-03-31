@@ -13,20 +13,20 @@
   <xsl:template match="emph[@altrender='doctype']">
     <xsl:choose>
       <xsl:when test="text()='W'">
-        <xsl:text>Abstract of Will of </xsl:text>
+        <xsl:text>Abstract of will of </xsl:text>
       </xsl:when>
       <xsl:when test="text()='A'">
-        <xsl:text>Abstract of Administration of </xsl:text>
+        <xsl:text>Abstract of administration of </xsl:text>
       </xsl:when>
       <xsl:when test="text()='W '">
-        <xsl:text>Abstract of Will of </xsl:text>
+        <xsl:text>Abstract of will of </xsl:text>
       </xsl:when>
       <xsl:when test="text()='A '">
-        <xsl:text>Abstract of Administration of </xsl:text>
+        <xsl:text>Abstract of administration of </xsl:text>
       </xsl:when>
     </xsl:choose>
   </xsl:template>
-  <!-- show title and " "-->
+  <!-- show title and " " -->
   <xsl:template match="emph[@altrender='perstitle']">
     <xsl:value-of select="text()"/>
     <xsl:text> </xsl:text>

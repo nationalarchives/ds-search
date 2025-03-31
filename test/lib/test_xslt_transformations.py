@@ -1,7 +1,6 @@
 import unittest
 
 from app.lib.xslt_transformations import apply_xslt
-from lxml import html
 
 
 class ContentParserTestCase(unittest.TestCase):
@@ -18,6 +17,15 @@ class ContentParserTestCase(unittest.TestCase):
 <dt>Date of birth</dt>
 <dd>1873</dd>
 </dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
+    def test_DeathDuty(self):
+        # D8030479
+        source = '<emph altrender="doctype">A</emph><persname> <emph altrender="forenames">Edmund</emph><emph altrender="surname">Barnes</emph></persname><occupation>Farmer</occupation><geogname>Cringleford, Norfolk</geogname>'
+        schema = "DeathDuty"
+        self.assertEqual(
+            """Abstract of administration of Edmund Barnes, Farmer of Cringleford, Norfolk""",
             str(apply_xslt(source, schema)),
         )
 
