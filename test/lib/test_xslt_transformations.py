@@ -20,6 +20,22 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_AliensRegCards(self):
+        # C8675691
+        source = '<emph altrender="doctype">AR</emph><persname><emph altrender="forenames">Jean Margaret</emph><emph altrender="surname">Aal</emph></persname><emph altrender="age">27 January 1917</emph><emph altrender="nation">German</emph>'
+        schema = "AliensRegCards"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Aal, Jean Margaret</dd>
+<dt>Date of birth</dt>
+<dd>27 January 1917</dd>
+<dt>Nationality</dt>
+<dd>German</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_BritishWarMedal(self):
         # D8030479
         source = '<emph altrender="doctype">BW</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">Henry William</emph></persname><geogname>Rowhedge</geogname><emph altrender="dob">1873</emph>'
