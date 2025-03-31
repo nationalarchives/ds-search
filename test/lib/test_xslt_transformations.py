@@ -20,6 +20,24 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_CombatRepWW2(self):
+        # D7440727
+        source = '<emph altrender="doctype">CR</emph><persname> <emph altrender="surname">Gibson</emph> <emph altrender="forenames">G P</emph></persname><emph altrender="rank">Flight Lieutenant, Squadron Leader</emph><emph altrender= "corpname">29</emph><emph altrender="date">14 March 1941; 23 April 1941, 03 May 1941, 07 July 1941</emph>'
+        schema = "CombatRepWW2"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Gibson, G P</dd>
+<dt>Rank</dt>
+<dd>Flight Lieutenant, Squadron Leader</dd>
+<dt>Squadron</dt>
+<dd>29</dd>
+<dt>Other dates of combat</dt>
+<dd>14 March 1941; 23 April 1941, 03 May 1941, 07 July 1941</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_DeathDuty(self):
         # D8030479
         source = '<emph altrender="doctype">A</emph><persname> <emph altrender="forenames">Edmund</emph><emph altrender="surname">Barnes</emph></persname><occupation>Farmer</occupation><geogname>Cringleford, Norfolk</geogname>'

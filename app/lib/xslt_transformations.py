@@ -4,17 +4,18 @@ from lxml import etree, html
 
 SCHEMAS = {
     "BritishWarMedal": "BritishWarMedal.xsl",
+    "CombatRepWW2": "CombatRepWW2.xsl",
     "DeathDuty": "DeathDuty.xsl",
     "Medal": "Medal.xsl",
-    "NavalReserve": "RoyalNavalReserve.xsl",
+    "NavalReserve": "NavalReserve.xsl",
     "NavyLandService": "NavyLandService.xsl",
     "RAFOfficers": "RAFOfficers.xsl",
     "RecHonours": "RecHonours.xsl",
     "RNOfficer": "RNOfficer.xsl",
     "RoyalMarines": "RoyalMarines.xsl",
     "SeamenMedal": "SeamenMedal.xsl",
-    "SeamenRegister": "RegSea.xsl",
-    "VolunteerReserve": "RNVRWW1.xsl",
+    "SeamenRegister": "SeamenRegister.xsl",
+    "VolunteerReserve": "VolunteerReserve.xsl",
     "Will": "Will.xsl",
 }
 
@@ -24,7 +25,6 @@ SCHEMAS_TO_IMPLEMENT = [
     "AliensRegCards",
     "AncientPetitions",
     "CabinetPapers",
-    "CombatRepWW2",
     "DNPC",
     "DomesdayBook",
     "EffectsPapers",
