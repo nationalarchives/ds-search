@@ -13,7 +13,6 @@ from ipaddress import ip_address
 from typing import Any, Dict, List, Optional, Union
 
 from app.deliveryoptions.constants import (
-    DCS_PREFIXES,
     DELIVERY_OPTIONS_CONFIG,
     AvailabilityCondition,
     delivery_option_tags,
@@ -69,7 +68,7 @@ def has_distressing_content_match(reference: str) -> bool:
         True if the reference number starts with any distressing content prefix
     """
 
-    return list(filter(reference.startswith, DCS_PREFIXES)) != []
+    return list(filter(reference.startswith, settings.DCS_PREFIXES)) != []
 
 
 def get_delivery_option_dict(
