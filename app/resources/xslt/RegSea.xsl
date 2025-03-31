@@ -3,24 +3,20 @@
   <xsl:output method="html"/>
   <xsl:template match="version">
     <!--
-		VERSION CONTROL	RoyalMarines_SimpleScope_XSL XSL STYLESHEET
+		VERSION CONTROL	SeamenMedal_SimpleScope_XSL XSL STYLESHEET
 	
 		###	VERSION: 1.0 	AUTHOR: CDICKSON	DATE: 08/07/2004
 		Created.
-
-    ORIGINAL: https://github.com/nationalarchives/discovery/blob/master/RDWeb/Helpers/XSLs/DoLStyles/RoyalMarines_DetailScope_inc.xsl
 		-->
   </xsl:template>
-
-	<xsl:template match="emph[@altrender='doctype']">
+  <!-- ignore 'doctype' text (should be 'R') -->
+  <xsl:template match="emph[@altrender='doctype']">
 	</xsl:template>
-
-	<xsl:template match="/">
+  <xsl:template match="/">
     <dl class="tna-dl tna-dl--plain tna-dl--dotted">
       <xsl:apply-templates/>
     </dl>
-	</xsl:template>
-
+  </xsl:template>
   <!-- Display lastname, firstname -->
   <xsl:template match="persname">
     <dt>
@@ -34,42 +30,58 @@
       <xsl:value-of select="emph[@altrender='forenames']/text()"/>
     </dd>
   </xsl:template>
-
-  <!-- add  age -->
+  <!-- add Official Number -->
   <xsl:template match="emph[@altrender='num']">
-    <dt>Register number</dt>
+    <dt>Official number</dt>
     <dd>
       <xsl:value-of select="text()"/>
     </dd>
   </xsl:template>
-
-  <!-- add  age -->
-  <xsl:template match="emph[@altrender='division']">
-    <dt>Division</dt>
+  <!-- add Official Number -->
+  <xsl:template match="emph[@altrender='num2']">
+    <dt>Continuous service number</dt>
     <dd>
       <xsl:value-of select="text()"/>
     </dd>
   </xsl:template>
-
-  <!-- add  age -->
-  <xsl:template match="emph[@altrender='dob']">
+  <!-- add  Date of birth -->
+  <xsl:template match="emph[@altrender='age']">
     <dt>Date of birth</dt>
     <dd>
       <xsl:value-of select="text()"/>
     </dd>
   </xsl:template>
-
-  <!-- add  age -->
-  <xsl:template match="emph[@altrender='date2']">
-    <dt>When enlisted/date of enlistment</dt>
+  <!-- add  Date of Volunteering -->
+  <xsl:template match="emph[@altrender='date']">
+    <dt>Date of volunteering</dt>
     <dd>
       <xsl:value-of select="text()"/>
     </dd>
   </xsl:template>
-
+  <!-- add  place of birth -->
+  <xsl:template match="geogname">
+    <dt>Place of birth</dt>
+    <dd>
+      <xsl:value-of select="text()"/>
+    </dd>
+  </xsl:template>
+  <!-- add Rank -->
+  <xsl:template match="emph[@altrender='rank']">
+    <dt>RNVR division</dt>
+    <dd>
+      <xsl:value-of select="text()"/>
+    </dd>
+  </xsl:template>
   <!-- add Date of Birth -->
   <xsl:template match="emph[@altrender='dob']">
     <dt>Date of birth</dt>
+    <dd>
+      <xsl:value-of select="text()"/>
+    </dd>
+  </xsl:template>
+  <!-- add Comments-->
+  <xsl:template match="emph[@altrender='comments']">
+    <dt>Comments</dt>
     <dd>
       <xsl:value-of select="text()"/>
     </dd>

@@ -3,16 +3,17 @@ import logging
 from lxml import etree, html
 
 SCHEMAS = {
-    "RoyalMarines": "app/resources/xslt/RoyalMarines_DetailScope_inc.xsl"
+    "BritishWarMedal": "BritishWarMedal.xsl",
+    "RoyalMarines": "RoyalMarines.xsl",
+    "SeamenRegister": "RegSea.xsl",
+    "Will": "Will.xsl",
 }
 
 # Temporary list of schemas to implement - this list will be removed once all schemas are implemented
 SCHEMAS_TO_IMPLEMENT = [
-    "default",
     "Airwomen",
     "AliensRegCards",
     "AncientPetitions",
-    "BritishWarMedal",
     "CabinetPapers",
     "CombatRepWW2",
     "DNPC",
@@ -37,14 +38,12 @@ SCHEMAS_TO_IMPLEMENT = [
     "RNOfficer",
     "RecHonours",
     "SeamenMedal",
-    "SeamenRegister",
     "SeamenWill",
     "ShippingSeamen",
     "Squadron",
     "Titanic",
     "VictoriaCross",
     "VolunteerReserve",
-    "Will",
     "WomensCorps",
     "Wrns",
 ]
@@ -80,7 +79,7 @@ IGNORE_SCHEMAS = [
 logger = logging.getLogger(__name__)
 
 
-def apply_xslt(html_source, schema):
+def apply_xslt(html_source: str, schema: str) -> str:
     if schema in IGNORE_SCHEMAS:
         return html_source
     dom = html.fromstring(html_source)
@@ -91,7 +90,13 @@ def apply_xslt(html_source, schema):
         if schema not in SCHEMAS_TO_IMPLEMENT:
             logger.error(f"Schema '{schema}' not found")
         return html_source
-    xslt = etree.parse(schema_xslt)
+    try:
+        xslt = etree.parse(f"app/resources/xslt/{schema_xslt}")
+    except Exception as e:
+        logger.error(
+            f"Unexpected error while loading XSLT file '{schema_xslt}': {e}"
+        )
+        return html_source
     transform = etree.XSLT(xslt)
     result = transform(dom)
-    return result
+    return str(result).strip()

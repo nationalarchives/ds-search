@@ -331,8 +331,8 @@ class Record(APIModel):
             description = format_extref_links(description)
             if description_schema := self.description_schema:
                 description = apply_xslt(description, description_schema)
-            return str(description)
-        description =  self.get("description.value", "")
+            return description
+        description = self.get("description.value", "")
         description = format_extref_links(description)
         return description
 
