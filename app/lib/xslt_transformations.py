@@ -24,7 +24,6 @@ SCHEMAS_TO_IMPLEMENT = [
     "FameWill",
     "GallantrySea",
     "LootedArt",
-    "Medal",
     "MusterRolls",
     "NavalOfficers",
     "NavalReserve",
