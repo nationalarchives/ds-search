@@ -12,31 +12,31 @@
   <!-- write 'doctype' static text depending on value -->
   <xsl:template match="emph[@altrender='doctype']">
     <xsl:choose>
-      <xsl:when test="text() = 'W'">
+      <xsl:when test="text()='W'">
         <xsl:text>Will of </xsl:text>
       </xsl:when>
-      <xsl:when test="text() = 'S'">
+      <xsl:when test="text()='S'">
         <xsl:text>Sentence of </xsl:text>
       </xsl:when>
-      <xsl:when test="text() = 'W '">
+      <xsl:when test="text()='W '">
         <xsl:text>Will of </xsl:text>
       </xsl:when>
-      <xsl:when test="text() = 'S '">
+      <xsl:when test="text()='S '">
         <xsl:text>Sentence of </xsl:text>
       </xsl:when>
-      <xsl:when test="text() = 'IW'">
+      <xsl:when test="text()='IW'">
         <xsl:text>Incomplete Will of </xsl:text>
       </xsl:when>
-      <xsl:when test="text() = 'UW'">
+      <xsl:when test="text()='UW'">
         <xsl:text>Unfinished Will of </xsl:text>
       </xsl:when>
-      <xsl:when test="text() = 'US'">
+      <xsl:when test="text()='US'">
         <xsl:text>Unfinished Sentence of </xsl:text>
       </xsl:when>
-      <xsl:when test="text() = 'IS'">
+      <xsl:when test="text()='IS'">
         <xsl:text>Incomplete Sentence of </xsl:text>
       </xsl:when>
-      <xsl:when test="text() = 'WS'">
+      <xsl:when test="text()='WS'">
         <xsl:text>Will and Sentence of </xsl:text>
       </xsl:when>
     </xsl:choose>
