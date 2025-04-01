@@ -9,14 +9,12 @@
     </dl>
   </xsl:template>
   <xsl:template match="emph[@altrender='surname']">
-
     <dt>Attendees</dt>
-    
-        <xsl:for-each select="./surname">
-    <dd>
-          <xsl:value-of disable-output-escaping="yes" select="text()"/>
-    </dd>
-        </xsl:for-each>
+    <xsl:for-each select="./surname">
+      <dd>
+        <xsl:value-of disable-output-escaping="yes" select="text()"/>
+      </dd>
+    </xsl:for-each>
   </xsl:template>
   <xsl:template match="emph[@altrender='agenda']">
     <dt>Agenda</dt>

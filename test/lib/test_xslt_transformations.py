@@ -118,6 +118,29 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_DomesdayBook(self):
+        # D7296365
+        source = '<emph altrender="doctype">D</emph><emph altrender="placename"><geogname>North Benfleet, Essex</geogname></emph><emph altrender="folio">1v Little Domesday Book</emph><emph altrender="domesdayform"><geogname>Benflet</geogname></emph><emph altrender="peoplementioned"><persname>Church of St Mary, Benfleet</persname><persname>Earl Harold Godwineson</persname><persname>Ralph Baynard, sheriff of Essex</persname><persname>Ranulf brother of Ilger</persname><persname>Swein of Essex, sheriff of Essex</persname><persname>sokemen</persname></emph>'
+        schema = "DomesdayBook"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Place name</dt>
+<dd>North Benfleet, Essex</dd>
+<dt>Folio</dt>
+<dd>1v Little Domesday Book</dd>
+<dt>Domesday place name</dt>
+<dd>Benflet</dd>
+<dt>People mentioned within entire folio</dt>
+<dd>Church of St Mary, Benfleet</dd>
+<dd>Earl Harold Godwineson</dd>
+<dd>Ralph Baynard, sheriff of Essex</dd>
+<dd>Ranulf brother of Ilger</dd>
+<dd>Swein of Essex, sheriff of Essex</dd>
+<dd>sokemen</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_Medal(self):
         # D2874592
         source = '<emph altrender="doctype">M</emph><persname><emph altrender="surname">Hillyard</emph> <emph altrender="forenames">Ernest S</emph></persname><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">9004</emph><emph altrender="rank">Driver</emph></emph><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">9004</emph><emph altrender="rank">Private</emph></emph><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">5875061</emph><emph altrender="rank">Private</emph></emph>'
