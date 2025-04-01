@@ -228,6 +228,22 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_MusterRolls(self):
+        # D7152922
+        source = '<emph altrender="doctype">MS</emph><persname><emph altrender="surname">Boisnard</emph> <emph altrender="forenames">Francois</emph></persname><corpname>Duguay-Trouin</corpname><emph altrender="rating">Etat Major</emph>'
+        schema = "MusterRolls"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Boisnard, Francois</dd>
+<dt>Ship name</dt>
+<dd>Duguay-Trouin</dd>
+<dt>Rank</dt>
+<dd>Etat Major</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_NavalReserve(self):
         # D8485886
         source = '<emph altrender="doctype">RR</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">Edward Joshua</emph></persname><geogname>Rowhedge, Essex</geogname><emph altrender="certno">B 3813</emph><emph altrender="rank"></emph><emph altrender="date"></emph><emph altrender="dob">19 November 1885</emph>'
