@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
-{% from 'records/macros/top_navigation.html' import top_navigation %}
 {% from 'components/accordion/macro.html' import tnaAccordion %}
+{% from 'components/hero/macro.html' import tnaHero %}
+{% from 'records/macros/top_navigation.html' import top_navigation %}
 
 {%- set pageTitle = 'New to archives?' -%}
 
@@ -96,34 +97,24 @@
       </div>
        <!--end accordion-->
     </div>
-
-    <!--card/hero element-->
-    <div class="tna-hero tna-!--margin-top-m">
-      <figure class="tna-hero__figure">
-        <div class="tna-container tna-hero__inner">
-          <div class="tna-column tna-column--width-2-3 tna-column--full-small tna-column--full-tiny tna-hero__content">
-            <div class="tna-hero__content-inner tna-background-accent">
-              <hgroup class="tna-hgroup-l tna-hero__heading">
-                
-                <h2 class="tna-hgroup__title">
-                  Explore the collection
-                </h2>
-              </hgroup>
-              <p>Discover the stories behind the records. Read articles about the incredible people whose lives can be traced in the archive, or go deep into a new perspectives on historical events.</p>
-              <a href="/explore-the-collection/" class="tna-button tna-!--margin-top-s">
-                Explore
-              </a>
-            </div>
-
-          </div>
-        </div>
-        <picture class="tna-hero__image">
-          <img src="{{ static('assets/images/festival-hall.jpg') }}" alt="An illustration of the Festival of Britain" width="1200" height="480">
-        </picture>
-      </figure>
-    </div>
-
-    <!--end card/hero element-->
   </div>
 </div>
+
+{{ tnaHero({
+  'headingLevel': 2,
+  'headingSize': 'l',
+  'title': 'Explore the collection',
+  'text': 'Discover the stories behind the records. Read articles about the incredible people whose lives can be traced in the archive, or go deep into a new perspectives on historical events.',
+  'imageSrc': static('assets/images/festival-hall.jpg'),
+  'imageAlt': 'An illustration of the Festival of Britain',
+  'imageWidth': 1200,
+  'imageHeight': 480,
+  'actions': [
+    {
+      'text': 'Explore',
+      'href': '/explore-the-collection/'
+    }
+  ],
+  'style': 'accent'
+}) }}
 {% endblock %}
