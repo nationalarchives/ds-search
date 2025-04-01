@@ -3,9 +3,9 @@ import unittest
 from app.lib.xslt_transformations import apply_xslt
 
 
-class ContentParserTestCase(unittest.TestCase):
+class XsltTransformationsTestCase(unittest.TestCase):
     def test_Airwomen(self):
-        # D8030479
+        # D7493830
         source = '<emph altrender="doctype">AW</emph><persname><emph altrender="surname">Aarons</emph> <emph altrender="forenames">Ethel</emph></persname><emph altrender="num">21906</emph><emph altrender="doe">19 October 1918</emph>'
         schema = "Airwomen"
         self.assertEqual(
@@ -109,7 +109,7 @@ class ContentParserTestCase(unittest.TestCase):
         )
 
     def test_DeathDuty(self):
-        # D8030479
+        # D7238397
         source = '<emph altrender="doctype">A</emph><persname> <emph altrender="forenames">Edmund</emph><emph altrender="surname">Barnes</emph></persname><occupation>Farmer</occupation><geogname>Cringleford, Norfolk</geogname>'
         schema = "DeathDuty"
         self.assertEqual(
