@@ -17,10 +17,10 @@
       <xsl:if test="emph[@altrender='surname'] and emph[@altrender='forenames']">
         <xsl:text disable-output-escaping="yes">, </xsl:text>
       </xsl:if>
-        <xsl:value-of select="emph[@altrender='perstitle']/text()"/>
-        <xsl:if test="emph[@altrender='perstitle']">
-          <xsl:text disable-output-escaping="yes"> </xsl:text>
-        </xsl:if>
+      <xsl:value-of select="emph[@altrender='perstitle']/text()"/>
+      <xsl:if test="emph[@altrender='perstitle']">
+        <xsl:text disable-output-escaping="yes"> </xsl:text>
+      </xsl:if>
       <xsl:value-of select="emph[@altrender='forenames']/text()"/>
     </dd>
   </xsl:template>
