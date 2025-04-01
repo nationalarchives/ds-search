@@ -15,6 +15,7 @@ SCHEMAS = {
     "EffectsPapers": "EffectsPapers.xsl",
     "FameWill": "FameWill.xsl",
     "GallantrySea": "GallantrySea.xsl",
+    "LootedArt": "LootedArt.xsl",
     "Medal": "Medal.xsl",
     "Miscellaneous": "Miscellaneous.xsl",
     "NavalReserve": "NavalReserve.xsl",
@@ -31,7 +32,6 @@ SCHEMAS = {
 
 # Temporary list of schemas to implement - this list will be removed once all schemas are implemented
 SCHEMAS_TO_IMPLEMENT = [
-    "LootedArt",
     "MusterRolls",
     "NavalOfficers",
     "NursingService",

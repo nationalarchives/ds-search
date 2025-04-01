@@ -177,6 +177,15 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_LootedArt(self):
+        # C13373873
+        source = '<emph altrender="doctype">LA</emph><emph altrender="scope">Registry Number: W 15182/108/64. Correspondence between Sir E Maclagan of the Victoria and Albert Museum and Sir S Gaselee at the Foreign Office about a request from exiled governments for the Central Institute of Art and Design under the chairmanship of Mr Charles Tennyson to assist firstly in the restitution of works of art from enemy-occupied countries, secondly in the prevention of their sale in the US and elsewhere, and lastly in the assurance of their return after the declaration of peace, dated October 1942. No reference to specific works of art.</emph>'
+        schema = "LootedArt"
+        self.assertEqual(
+            "Registry Number: W 15182/108/64. Correspondence between Sir E Maclagan of the Victoria and Albert Museum and Sir S Gaselee at the Foreign Office about a request from exiled governments for the Central Institute of Art and Design under the chairmanship of Mr Charles Tennyson to assist firstly in the restitution of works of art from enemy-occupied countries, secondly in the prevention of their sale in the US and elsewhere, and lastly in the assurance of their return after the declaration of peace, dated October 1942. No reference to specific works of art.",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_Medal(self):
         # D2874592
         source = '<emph altrender="doctype">M</emph><persname><emph altrender="surname">Hillyard</emph> <emph altrender="forenames">Ernest S</emph></persname><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">9004</emph><emph altrender="rank">Driver</emph></emph><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">9004</emph><emph altrender="rank">Private</emph></emph><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">5875061</emph><emph altrender="rank">Private</emph></emph>'
