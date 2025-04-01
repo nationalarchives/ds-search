@@ -502,6 +502,22 @@ class XsltTransformationsTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_ShippingSeamen(self):
+        # D8658651
+        source = '<emph altrender="doctype">SS</emph><emph altrender="name">Ioannis Chandris</emph><emph altrender="name2">Ionion,  Empire Keats</emph><emph altrender="size">7035</emph>'
+        schema = "ShippingSeamen"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Ship name</dt>
+<dd>Ioannis Chandris</dd>
+<dt>Former ship name</dt>
+<dd>Ionion,  Empire Keats</dd>
+<dt>Gross tonnage</dt>
+<dd>7035</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_VolunteerReserve(self):
         # D7670951
         source = '<emph altrender="doctype">RV</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">William Stanley</emph></persname><emph altrender="num">Z/8171</emph><emph altrender="division">Bristol</emph><emph altrender="dob">28 November 1900</emph>'
