@@ -4,6 +4,6 @@
   <xsl:template match="emph[@altrender='doctype']">
 	</xsl:template>
   <xsl:template match="emph[@altrender='scope']">
-      <xsl:value-of select="text()"/>
+    <xsl:value-of select="text()"/>
   </xsl:template>
 </xsl:stylesheet>

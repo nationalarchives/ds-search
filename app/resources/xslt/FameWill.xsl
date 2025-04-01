@@ -1,50 +1,12 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:output method="html"/>
-  <xsl:template match="version">
-    <!--
-		VERSION CONTROL	FameWill_DetailScope_XSL XSL STYLESHEET
-
-		###	VERSION: 1.0 	AUTHOR: RDICKINSON	DATE: 07/08/2013
-		Created.
-		-->
-  </xsl:template>
-  <!-- write 'doctype' static text depending on value -->
-  <!--
-	<xsl:template match="emph[@altrender='doctype']">
-	-->
-  <!--tr class="medalRow"-->
-  <!--
-	<td class="medalplain" width="20%">
-		<xsl:choose>
-			<xsl:when test="text()='W'">
-				<xsl:text>Will of </xsl:text>
-			</xsl:when>
-			<xsl:when test="text()='P'">
-				<xsl:text>Papers relating to </xsl:text>
-			</xsl:when>
-		</xsl:choose>
-	</td>
-
-	-->
-  <!--td class="medalplain">
-		<xsl:value-of select="emph[@altrender='surname']/text()" />
-			<xsl:if test="emph[@altrender='surname'] and emph[@altrender='forenames']">
-		<xsl:text disable-output-escaping="yes">, </xsl:text>
-		</xsl:if>
-		<xsl:value-of select="emph[@altrender='forenames']/text()" />
-	</td-->
-  <!--/tr-->
-  <!--
-	</xsl:template>-->
   <xsl:template match="emph[@altrender='doctype']">
   </xsl:template>
-  <!-- show title and " "-->
   <xsl:template match="emph[@altrender='perstitle']">
     <xsl:value-of select="text()"/>
     <xsl:text> </xsl:text>
   </xsl:template>
-  <!-- show firstname " " lastname -->
   <xsl:template match="persname">
     <xsl:value-of select="emph[@altrender='forenames']/text()"/>
     <xsl:if test="emph[@altrender='surname']">
@@ -53,7 +15,6 @@
     </xsl:if>
     <xsl:text> </xsl:text>
   </xsl:template>
-  <!--Replace NEWLINE chars with <br/>-->
   <xsl:template match="text()">
     <xsl:call-template name="replace">
       <xsl:with-param name="string" select="."/>
