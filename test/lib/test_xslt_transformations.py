@@ -141,6 +141,15 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_EffectsPapers(self):
+        # C9943251
+        source = '<emph altrender="doctype">EP</emph><emph altrender="scope">Number: 1   Thomas Finn, Superannuated boatswain, who died: 2 August 1854. Notes on executor\'s application for money owed by the Royal Navy.</emph>'
+        schema = "EffectsPapers"
+        self.assertEqual(
+            "Number: 1   Thomas Finn, Superannuated boatswain, who died: 2 August 1854. Notes on executor's application for money owed by the Royal Navy.",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_Medal(self):
         # D2874592
         source = '<emph altrender="doctype">M</emph><persname><emph altrender="surname">Hillyard</emph> <emph altrender="forenames">Ernest S</emph></persname><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">9004</emph><emph altrender="rank">Driver</emph></emph><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">9004</emph><emph altrender="rank">Private</emph></emph><emph altrender="medal"><corpname>Northamptonshire Regiment</corpname><emph altrender="regno">5875061</emph><emph altrender="rank">Private</emph></emph>'
