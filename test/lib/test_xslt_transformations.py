@@ -566,6 +566,28 @@ class XsltTransformationsTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_VictoriaCross(self):
+        # D7231288
+        source = '<emph altrender="doctype">V</emph><persname><emph altrender="surname">Buckley</emph> <emph altrender="forenames">Cecil William</emph></persname><emph altrender="rank">Lieutenant</emph><corpname>Royal Navy</corpname><emph altrender="date">29 May 1855</emph><emph altrender="campaign">Crimea</emph><geogname>Genitichi, Tanganrog</geogname>'
+        schema = "VictoriaCross"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Buckley, Cecil William</dd>
+<dt>Rank</dt>
+<dd>Lieutenant</dd>
+<dt>Regiment</dt>
+<dd>Royal Navy</dd>
+<dt>Date of act of bravery</dt>
+<dd>29 May 1855</dd>
+<dt>Campaign</dt>
+<dd>Crimea</dd>
+<dt>Locale</dt>
+<dd>Genitichi, Tanganrog</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_VolunteerReserve(self):
         # D7670951
         source = '<emph altrender="doctype">RV</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">William Stanley</emph></persname><emph altrender="num">Z/8171</emph><emph altrender="division">Bristol</emph><emph altrender="dob">28 November 1900</emph>'
