@@ -13,6 +13,7 @@ SCHEMAS = {
     "DomesdayBook": "DomesdayBook.xsl",
     "EffectsPapers": "EffectsPapers.xsl",
     "FameWill": "FameWill.xsl",
+    "GallantrySea": "GallantrySea.xsl",
     "Medal": "Medal.xsl",
     "NavalReserve": "NavalReserve.xsl",
     "NavyLandService": "NavyLandService.xsl",
@@ -29,7 +30,6 @@ SCHEMAS = {
 # Temporary list of schemas to implement - this list will be removed once all schemas are implemented
 SCHEMAS_TO_IMPLEMENT = [
     "DNPC",
-    "GallantrySea",
     "LootedArt",
     "MusterRolls",
     "NavalOfficers",

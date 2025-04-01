@@ -152,10 +152,19 @@ class ContentParserTestCase(unittest.TestCase):
 
     def test_FameWill(self):
         # C198019
-        source = '<emph altrender=\"doctype\">G</emph> Will of <persname> <emph altrender=\"forenames\">Robert</emph> <emph altrender=\"surname\">Dudley, Earl of Leicester</emph></persname>  (copy) 1 August 1587. Proved 6 September 1588.'
+        source = '<emph altrender="doctype">G</emph> Will of <persname> <emph altrender="forenames">Robert</emph> <emph altrender="surname">Dudley, Earl of Leicester</emph></persname>  (copy) 1 August 1587. Proved 6 September 1588.'
         schema = "FameWill"
         self.assertEqual(
             "Will of Robert Dudley, Earl of Leicester   (copy) 1 August 1587. Proved 6 September 1588.",
+            str(apply_xslt(source, schema)),
+        )
+
+    def test_GallantrySea(self):
+        # C432714
+        source = '<emph altrender="doctype">GS</emph><emph altrender="scope">Lists of persons rewarded by British, Colonial and foreign Governments</emph>'
+        schema = "GallantrySea"
+        self.assertEqual(
+            "Lists of persons rewarded by British, Colonial and foreign Governments",
             str(apply_xslt(source, schema)),
         )
 
