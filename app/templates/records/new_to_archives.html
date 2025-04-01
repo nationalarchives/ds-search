@@ -34,14 +34,7 @@
             <p>The National Artchive is home to millions of historical documents, known as <strong>records</strong>, which were created and collected by UK central government departments and major courts of law.</p>
             <p>For example, we have records from the Home Office, the Foreign Office and the Central Criminal Court.</p>
             <p>It takes 185km of shelving to store our records, and this increases every year.</p>
-
-            <section class="tna-section">
-                <!--youtube embed-->
-                <iframe width="100%" height="461" src="https://www.youtube.com/embed/VjwAAypYL8M" title="The records we hold" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                <!--end youtube embed-->
-            </section>
-              
-
+            <p id="youtube-link" data-youtube-video-id="VjwAAypYL8M"><a href="https://www.youtube.com/watch?v=VjwAAypYL8M" rel="noreferrer nofollow noopener">Watch &quot;The records we have&quot; on YouTube</a>.</p>
           </div>
         </div>
         <div class="tna-accordion__item" data-isopen="false">
@@ -117,4 +110,9 @@
   ],
   'style': 'accent'
 }) }}
+{% endblock %}
+
+{% block bodyEnd %}
+{{ super() }}
+    <script src="{{ static('record-details.min.js') }}?v={{ app_config.BUILD_VERSION }}" defer></script>
 {% endblock %}

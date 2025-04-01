@@ -64,6 +64,39 @@ class toggleDetailsListDescriptions {
   }
 }
 
+const cookies = new Cookies();
+
 const checkbox = document.getElementById("field-descriptions-hide");
 const detailsList = document.getElementById("record-details-list");
-new toggleDetailsListDescriptions(checkbox, detailsList, new Cookies());
+if (checkbox && detailsList) {
+  new toggleDetailsListDescriptions(checkbox, detailsList, cookies);
+}
+
+const youtubeLink = document.getElementById("youtube-link");
+if (
+  youtubeLink &&
+  youtubeLink.dataset.youtubeVideoId &&
+  cookies.isPolicyAccepted("marketing")
+) {
+  const embededPlayer = document.createElement("iframe");
+  embededPlayer.id = "youtube-embeded-player";
+  embededPlayer.setAttribute("width", "100%");
+  embededPlayer.setAttribute("height", "400");
+  embededPlayer.setAttribute(
+    "src",
+    `https://www.youtube.com/embed/${youtubeLink.dataset.youtubeVideoId}`,
+  );
+  embededPlayer.setAttribute("title", "Video: The records we hold");
+  embededPlayer.setAttribute("frameborder", "0");
+  embededPlayer.setAttribute(
+    "allow",
+    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+  );
+  embededPlayer.setAttribute(
+    "referrerpolicy",
+    "strict-origin-when-cross-origin",
+  );
+  embededPlayer.setAttribute("allowfullscreen", "true");
+  embededPlayer.classList.add("tna-!--margin-top-m");
+  youtubeLink.replaceWith(embededPlayer);
+}
