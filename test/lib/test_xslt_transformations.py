@@ -298,6 +298,15 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_NursingService(self):
+        # C10792723
+        source = '<emph altrender="doctype">NS</emph><persname><emph altrender="surname">Abbott</emph><emph altrender="forenames">Ada</emph></persname>'
+        schema = "NursingService"
+        self.assertEqual(
+            "Abbott, Ada",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_RAFOfficers(self):
         # D8272609
         source = '<emph altrender="doctype">RO</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">Frederick</emph></persname><emph altrender="dob">08 July 1898</emph>'
