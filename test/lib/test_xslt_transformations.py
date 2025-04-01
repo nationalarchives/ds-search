@@ -322,7 +322,6 @@ class ContentParserTestCase(unittest.TestCase):
 
     def test_PoorLaw(self):
         # C9723960
-        self.maxDiff = None
         source = '<emph altrender="doctype">PL</emph><persname><emph altrender="surname"><surname>Smith</surname><surname>Chadwick</surname></emph> <emph altrender="forenames"><firstname>Josiah</firstname><firstname>Edwin</firstname></emph></persname><emph altrender="placesmentioned"><geogname>Grassthorpe</geogname></emph><emph altrender="orgsmentioned"><corpname>Poor Law Commission</corpname></emph><emph altrender="scope"><p>Folio 23. Letter from Josiah Smith, to Edwin Chadwick, Poor Law Commission, requesting an answer by return of post to his letter of 20 May, regarding the election of a new guardian for Grassthorpe. It is annotated on 4 June \'acknowledge and state order issued on 1 June\'.</p></emph>'
         schema = "PoorLaw"
         self.assertEqual(
@@ -336,6 +335,26 @@ class ContentParserTestCase(unittest.TestCase):
 <dd>Poor Law Commission</dd>
 <dt>Content</dt>
 <dd>Folio 23. Letter from Josiah Smith, to Edwin Chadwick, Poor Law Commission, requesting an answer by return of post to his letter of 20 May, regarding the election of a new guardian for Grassthorpe. It is annotated on 4 June 'acknowledge and state order issued on 1 June'.</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
+    def test_PrisonerInterview(self):
+        # C9207436
+        source = '<emph altrender="doctype">I</emph><persname> <emph altrender="surname">Beaman</emph></persname><emph altrender="page">2-9</emph><corpname>Royal Army Medical Corps.</corpname><emph altrender="rank">Captain</emph><emph altrender="people"><persname>Major Philip Davy, Royal Army Medical Corps</persname></emph>'
+        schema = "PrisonerInterview"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Beaman</dd>
+<dt>Page number</dt>
+<dd>2-9</dd>
+<dt>Corps</dt>
+<dd>Royal Army Medical Corps.</dd>
+<dt>Rank</dt>
+<dd>Captain</dd>
+<dt>People mentioned</dt>
+<dd>Major Philip Davy, Royal Army Medical Corps</dd>
 </dl>""",
             str(apply_xslt(source, schema)),
         )
