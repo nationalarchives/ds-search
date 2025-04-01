@@ -502,6 +502,24 @@ class XsltTransformationsTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_SeamenWill(self):
+        # D7468207
+        source = '<emph altrender="doctype">W</emph><persname><emph altrender="surname">Adams</emph> <emph altrender="forenames">George</emph></persname><emph altrender="rank">Armourer</emph><corpname>Blonde</corpname><emph altrender="num">75</emph>'
+        schema = "SeamenWill"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Will of </dt>
+<dd>George Adams</dd>
+<dt>Rank/rating</dt>
+<dd>Armourer</dd>
+<dt>Ship name</dt>
+<dd>Blonde</dd>
+<dt>Ship's pay book number</dt>
+<dd>75</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_ShippingSeamen(self):
         # D8658651
         source = '<emph altrender="doctype">SS</emph><emph altrender="name">Ioannis Chandris</emph><emph altrender="name2">Ionion,  Empire Keats</emph><emph altrender="size">7035</emph>'
