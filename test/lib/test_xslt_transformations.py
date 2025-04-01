@@ -421,6 +421,15 @@ class XsltTransformationsTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_RNASOfficers(self):
+        # C9749441
+        source = '<emph altrender="doctype">SQ</emph><emph altrender="num">Page 1: William Harry Ellison.</emph>'
+        schema = "RNASOfficers"
+        self.assertEqual(
+            "Page 1: William Harry Ellison.",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_RNOfficer(self):
         # D7590755
         source = '<emph altrender="doctype">RN</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">George Whiteside</emph></persname><emph altrender="rank">06 February 1864</emph><emph altrender="date">Commander</emph><emph altrender="doe">15 July 1877</emph>'
