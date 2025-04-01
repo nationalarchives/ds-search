@@ -538,7 +538,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 
     def test_Squadron(self):
         # C2504271
-        source = '<emph altrender=\"doctype\">SQ</emph><emph altrender=\"num\">292</emph><emph altrender=\"append\">Y</emph><emph altrender=\"comments\">Diary  </emph>'
+        source = '<emph altrender="doctype">SQ</emph><emph altrender="num">292</emph><emph altrender="append">Y</emph><emph altrender="comments">Diary  </emph>'
         schema = "Squadron"
         self.assertEqual(
             """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
@@ -548,6 +548,20 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dd>Y</dd>
 <dt>Comments</dt>
 <dd>Diary  </dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
+    def test_Titanic(self):
+        # D8455647
+        source = '<emph altrender="doctype">TC</emph><persname><emph altrender="surname">Buckley</emph><emph altrender="forenames">Kath</emph></persname><emph altrender="scope">Female aged 20. Travelling Third class. Occupation: Spinster.</emph>'
+        schema = "Titanic"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Buckley, Kath</dd>
+<dt>Content</dt>
+<dd>Female aged 20. Travelling Third class. Occupation: Spinster.</dd>
 </dl>""",
             str(apply_xslt(source, schema)),
         )
