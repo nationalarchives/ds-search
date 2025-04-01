@@ -114,7 +114,16 @@ class ContentParserTestCase(unittest.TestCase):
         source = '<emph altrender="doctype">A</emph><persname> <emph altrender="forenames">Edmund</emph><emph altrender="surname">Barnes</emph></persname><occupation>Farmer</occupation><geogname>Cringleford, Norfolk</geogname>'
         schema = "DeathDuty"
         self.assertEqual(
-            """Abstract of administration of Edmund Barnes, Farmer of Cringleford, Norfolk""",
+            "Abstract of administration of Edmund Barnes, Farmer of Cringleford, Norfolk",
+            str(apply_xslt(source, schema)),
+        )
+
+    def test_DNPC(self):
+        # C9147871
+        source = '<emph altrender="doctype">DNPC</emph><emph altrender="scope">Naturalisation by Act of Parliament: Dumas, Henry.10 Geo.4.c.57</emph>'
+        schema = "DNPC"
+        self.assertEqual(
+            "Naturalisation by Act of Parliament: Dumas, Henry.10 Geo.4.c.57",
             str(apply_xslt(source, schema)),
         )
 
@@ -198,6 +207,15 @@ class ContentParserTestCase(unittest.TestCase):
 </tr>
 </tbody>
 </table></div>""",
+            str(apply_xslt(source, schema)),
+        )
+
+    def test_Miscellaneous(self):
+        # C11536911
+        source = '<emph altrender="doctype">G</emph>Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945'
+        schema = "Miscellaneous"
+        self.assertEqual(
+            "Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945",
             str(apply_xslt(source, schema)),
         )
 
@@ -375,9 +393,8 @@ class ContentParserTestCase(unittest.TestCase):
         )
 
     def test_ignored_transformation(self):
-        # C11536911
         source = '<emph altrender="doctype">G</emph>Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945'
-        schema = "Miscellaneous"
+        schema = "FOI"
         self.assertEqual(
             '<emph altrender="doctype">G</emph>Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945',
             str(apply_xslt(source, schema)),

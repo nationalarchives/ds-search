@@ -10,11 +10,13 @@ SCHEMAS = {
     "CabinetPapers": "CabinetPapers.xsl",
     "CombatRepWW2": "CombatRepWW2.xsl",
     "DeathDuty": "DeathDuty.xsl",
+    "DNPC": "DNPC.xsl",
     "DomesdayBook": "DomesdayBook.xsl",
     "EffectsPapers": "EffectsPapers.xsl",
     "FameWill": "FameWill.xsl",
     "GallantrySea": "GallantrySea.xsl",
     "Medal": "Medal.xsl",
+    "Miscellaneous": "Miscellaneous.xsl",
     "NavalReserve": "NavalReserve.xsl",
     "NavyLandService": "NavyLandService.xsl",
     "RAFOfficers": "RAFOfficers.xsl",
@@ -29,7 +31,6 @@ SCHEMAS = {
 
 # Temporary list of schemas to implement - this list will be removed once all schemas are implemented
 SCHEMAS_TO_IMPLEMENT = [
-    "DNPC",
     "LootedArt",
     "MusterRolls",
     "NavalOfficers",
@@ -60,7 +61,6 @@ IGNORE_SCHEMAS = [
     "IrishMaps",
     "MRR",
     "MapPicture",
-    "Miscellaneous",
     "NavyList",
     "Opening2002",
     "Opening2003Defe4",
