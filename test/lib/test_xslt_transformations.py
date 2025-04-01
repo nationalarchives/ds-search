@@ -615,6 +615,22 @@ class XsltTransformationsTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_WomensCorps(self):
+        # D538741
+        source = '<emph altrender="doctype">WA</emph><persname><emph altrender="forenames">Sarah Ann nee Phillips</emph><emph altrender="surname">Aaron</emph></persname><geogname>High Street Cefn Mawr, North Wales</geogname><emph altrender="dob">22 August 1894</emph>'
+        schema = "WomensCorps"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Aaron, Sarah Ann nee Phillips</dd>
+<dt>Place of birth</dt>
+<dd>High Street Cefn Mawr, North Wales</dd>
+<dt>Date of birth</dt>
+<dd>22 August 1894</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_ignored_transformation(self):
         source = '<emph altrender="doctype">G</emph>Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945'
         schema = "FOI"

@@ -41,11 +41,11 @@ SCHEMAS = {
     "VictoriaCross": "VictoriaCross.xsl",
     "VolunteerReserve": "VolunteerReserve.xsl",
     "Will": "Will.xsl",
+    "WomensCorps": "WomensCorps.xsl",
 }
 
 # Temporary list of schemas to implement - this list will be removed once all schemas are implemented
 SCHEMAS_TO_IMPLEMENT = [
-    "WomensCorps",
     "Wrns",
 ]
 
