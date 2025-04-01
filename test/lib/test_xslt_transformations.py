@@ -631,6 +631,24 @@ class XsltTransformationsTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_Wrns(self):
+        # D7430419
+        source = '<emph altrender="doctype">WR</emph><persname><emph altrender="surname">Kingham</emph> <emph altrender="forenames">Gwendoline</emph></persname><emph altrender="rank">Motordriver</emph><emph altrender="num">G1</emph><emph altrender="date">21 January 1918</emph>'
+        schema = "Wrns"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Kingham, Gwendoline</dd>
+<dt>Rating</dt>
+<dd>Motordriver</dd>
+<dt>Service number</dt>
+<dd>G1</dd>
+<dt>Date of enrolment</dt>
+<dd>21 January 1918</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_ignored_transformation(self):
         source = '<emph altrender="doctype">G</emph>Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945'
         schema = "FOI"

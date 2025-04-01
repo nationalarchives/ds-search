@@ -42,12 +42,8 @@ SCHEMAS = {
     "VolunteerReserve": "VolunteerReserve.xsl",
     "Will": "Will.xsl",
     "WomensCorps": "WomensCorps.xsl",
+    "Wrns": "Wrns.xsl",
 }
-
-# Temporary list of schemas to implement - this list will be removed once all schemas are implemented
-SCHEMAS_TO_IMPLEMENT = [
-    "Wrns",
-]
 
 # These schemas have no known transformation
 IGNORE_SCHEMAS = [
@@ -86,9 +82,7 @@ def apply_xslt(html_source: str, schema: str) -> str:
     try:
         schema_xslt = SCHEMAS[schema]
     except KeyError:
-        # Temporary check to avoid errors while implementing all schemas
-        if schema not in SCHEMAS_TO_IMPLEMENT:
-            logger.error(f"Schema '{schema}' not found")
+        logger.error(f"Schema '{schema}' not found")
         return html_source
     try:
         xslt = etree.parse(f"app/resources/xslt/{schema_xslt}")
