@@ -3,48 +3,48 @@ import logging
 from lxml import etree, html
 
 SCHEMAS = {
-    "RoyalMarines": "app/resources/xslt/RoyalMarines_DetailScope_inc.xsl"
+    "Airwomen": "Airwomen.xsl",
+    "AliensRegCards": "AliensRegCards.xsl",
+    "AncientPetitions": "AncientPetitions.xsl",
+    "BritishWarMedal": "BritishWarMedal.xsl",
+    "CabinetPapers": "CabinetPapers.xsl",
+    "CombatRepWW2": "CombatRepWW2.xsl",
+    "DeathDuty": "DeathDuty.xsl",
+    "DNPC": "DNPC.xsl",
+    "DomesdayBook": "DomesdayBook.xsl",
+    "EffectsPapers": "EffectsPapers.xsl",
+    "FameWill": "FameWill.xsl",
+    "GallantrySea": "GallantrySea.xsl",
+    "LootedArt": "LootedArt.xsl",
+    "Medal": "Medal.xsl",
+    "Miscellaneous": "Miscellaneous.xsl",
+    "MusterRolls": "MusterRolls.xsl",
+    "NavalOfficers": "NavalOfficers.xsl",
+    "NavalReserve": "NavalReserve.xsl",
+    "NavyLandService": "NavyLandService.xsl",
+    "NursingService": "NursingService.xsl",
+    "Olympic": "Olympic.xsl",
+    "PoorLaw": "PoorLaw.xsl",
+    "prisoner": "prisoner.xsl",
+    "PrisonerInterview": "PrisonerInterview.xsl",
+    "RAFOfficers": "RAFOfficers.xsl",
+    "RecHonours": "RecHonours.xsl",
+    "RNOfficer": "RNOfficer.xsl",
+    "RoyalMarines": "RoyalMarines.xsl",
+    "SeamenMedal": "SeamenMedal.xsl",
+    "SeamenRegister": "SeamenRegister.xsl",
+    "VolunteerReserve": "VolunteerReserve.xsl",
+    "Will": "Will.xsl",
 }
 
 # Temporary list of schemas to implement - this list will be removed once all schemas are implemented
 SCHEMAS_TO_IMPLEMENT = [
-    "default",
-    "Airwomen",
-    "AliensRegCards",
-    "AncientPetitions",
-    "BritishWarMedal",
-    "CabinetPapers",
-    "CombatRepWW2",
-    "DNPC",
-    "DeathDuty",
-    "DomesdayBook",
-    "EffectsPapers",
-    "FameWill",
-    "GallantrySea",
-    "LootedArt",
-    "Medal",
-    "MusterRolls",
-    "NavalOfficers",
-    "NavalReserve",
-    "NavyLandService",
-    "NursingService",
-    "Olympic",
-    "PoorLaw",
-    "prisoner",
-    "PrisonerInterview",
-    "RAFOfficers",
     "RNASOfficers",
-    "RNOfficer",
-    "RecHonours",
-    "SeamenMedal",
-    "SeamenRegister",
     "SeamenWill",
     "ShippingSeamen",
     "Squadron",
     "Titanic",
     "VictoriaCross",
-    "VolunteerReserve",
-    "Will",
     "WomensCorps",
     "Wrns",
 ]
@@ -61,7 +61,6 @@ IGNORE_SCHEMAS = [
     "IrishMaps",
     "MRR",
     "MapPicture",
-    "Miscellaneous",
     "NavyList",
     "Opening2002",
     "Opening2003Defe4",
@@ -80,7 +79,7 @@ IGNORE_SCHEMAS = [
 logger = logging.getLogger(__name__)
 
 
-def apply_xslt(html_source, schema):
+def apply_xslt(html_source: str, schema: str) -> str:
     if schema in IGNORE_SCHEMAS:
         return html_source
     dom = html.fromstring(html_source)
@@ -91,7 +90,13 @@ def apply_xslt(html_source, schema):
         if schema not in SCHEMAS_TO_IMPLEMENT:
             logger.error(f"Schema '{schema}' not found")
         return html_source
-    xslt = etree.parse(schema_xslt)
+    try:
+        xslt = etree.parse(f"app/resources/xslt/{schema_xslt}")
+    except Exception as e:
+        logger.error(
+            f"Unexpected error while loading XSLT file '{schema_xslt}': {e}"
+        )
+        return html_source
     transform = etree.XSLT(xslt)
     result = transform(dom)
-    return result
+    return str(result).strip()

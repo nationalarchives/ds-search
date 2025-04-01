@@ -83,6 +83,38 @@
     @include colour.colour-border("keyline", 1px, solid, top);
   }
 
+  & & {
+    border-bottom: none;
+
+    // @include typography.font-size(16);
+
+    > dt,
+    > dd {
+      &:first-of-type {
+        padding-top: 0;
+        border-top: none;
+      }
+    }
+
+    > dt:last-of-type {
+      &,
+      & ~ dd {
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  .tna-table {
+    margin-top: spacing.space(0.5);
+    margin-bottom: spacing.space(1);
+
+    &__caption {
+      caption-side: top;
+
+      padding: 0 0 spacing.space(0.5);
+    }
+  }
+
   @include media.on-tiny {
     > dd {
       border-top: none;
@@ -104,6 +136,21 @@
     @include typography.detail-font-small;
     text-transform: none;
     @include colour.colour-font("font-light");
+  }
+
+  textarea {
+    width: 100%;
+    padding: spacing.space(0.125) spacing.space(0.25);
+
+    display: block;
+
+    resize: vertical;
+
+    @include typography.font-size(16);
+    @include typography.detail-font;
+
+    @include colour.colour-border("keyline", 1px);
+    @include borders.rounded-border;
   }
 }
 
@@ -167,8 +214,4 @@
   @include media.on-larger-than-tiny {
     margin-left: spacing.space(1);
   }
-}
-
-.tna-dl dd + dd {
-  margin-left: 0;
 }

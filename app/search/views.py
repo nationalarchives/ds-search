@@ -5,7 +5,7 @@ from app.lib.api import ResourceNotFound
 from app.lib.pagination import pagination_object
 from app.records.constants import TNA_LEVELS
 from app.search.api import search_records
-from config.jinja2 import qs_remove_value
+from config.jinja2 import qs_remove_value, qs_toggle_value
 from django.http import HttpResponse
 from django.template import loader
 
@@ -94,7 +94,7 @@ def build_selected_filters_list(request):
             selected_filters.append(
                 {
                     "label": f"Level: {TNA_LEVELS.get(level)}",
-                    "href": f"?{qs_remove_value(request.GET, 'level')}",
+                    "href": f"?{qs_toggle_value(request.GET, 'level', level)}",
                     "title": f"Remove {TNA_LEVELS.get(level)} level",
                 }
             )

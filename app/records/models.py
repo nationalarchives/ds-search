@@ -327,11 +327,19 @@ class Record(APIModel):
     @cached_property
     def description(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
+        if description := self.raw_description:
+            description = format_extref_links(description)
+            if description_schema := self.description_schema:
+                description = apply_xslt(description, description_schema)
+            return description
         description = self.get("description.value", "")
         description = format_extref_links(description)
-        if description_schema := self.description_schema:
-            description = apply_xslt(description, description_schema)
-        return str(description)
+        return description
+
+    @cached_property
+    def raw_description(self) -> str:
+        """Returns the api value of the attr if found, empty str otherwise."""
+        return self.get("description.raw", "")
 
     @cached_property
     def description_schema(self) -> str:
