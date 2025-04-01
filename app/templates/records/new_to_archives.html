@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% from 'components/accordion/macro.html' import tnaAccordion %}
+{% from 'components/hero/macro.html' import tnaHero %}
 {% from 'records/macros/top_navigation.html' import top_navigation %}
 
 {%- set pageTitle = 'New to archives?' -%}
@@ -17,8 +19,100 @@
 <div class="tna-section">
   <div class="tna-container">
     <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
-      <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
+      <h1 class="tna-heading-l">Getting started at The National Archives</h1>
+      <p>If you are new to The National Archives and want some help getting started with your family history or any other kind of research, you're in the right place.</p>
+      <p>Use the sections below to find out where and how to starty your research or <a href="">explore curated highlights from our collection.</a>
+      </p>
+
+      <!--accordion-->
+      <div class="tna-accordion" data-multiselectable="false" data-module="tna-accordion">
+        <div class="tna-accordion__item" data-isopen="true">
+          <h2 class="tna-accordion__heading tna-heading-s">
+            What we have
+          </h2>
+          <div class="tna-accordion__body" id="accordion-what-we-have">
+            <p>The National Artchive is home to millions of historical documents, known as <strong>records</strong>, which were created and collected by UK central government departments and major courts of law.</p>
+            <p>For example, we have records from the Home Office, the Foreign Office and the Central Criminal Court.</p>
+            <p>It takes 185km of shelving to store our records, and this increases every year.</p>
+            <p id="youtube-link" data-youtube-video-id="VjwAAypYL8M"><a href="https://www.youtube.com/watch?v=VjwAAypYL8M" rel="noreferrer nofollow noopener">Watch &quot;The records we have&quot; on YouTube</a>.</p>
+          </div>
+        </div>
+        <div class="tna-accordion__item" data-isopen="false">
+          <h2 class="tna-accordion__heading tna-heading-s">
+            What we don't have
+          </h2>
+          <div class="tna-accordion__body" id="accordion-demo-content-2">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim vehicula magna, et hendrerit quam iaculis a. Mauris in ultricies enim. Donec bibendum est leo, sed dapibus mauris facilisis vitae.</p>
+            <p>Quisque hendrerit condimentum nisl, non volutpat ex eleifend at. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Morbi id suscipit felis, sed tincidunt arcu. Etiam vel blandit diam, vitae commodo mi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla blandit mi vel rhoncus aliquam.</p>
+            <p>Pellentesque ultrices bibendum nibh, sit amet ornare turpis efficitur id. Aenean ullamcorper neque eget justo sagittis, rutrum ultrices urna varius. Mauris sodales a lorem at sodales.</p>
+          </div>
+        </div>
+        <div class="tna-accordion__item" data-isopen="false">
+          <h2 class="tna-accordion__heading tna-heading-s">
+            What's online
+          </h2>
+          <div class="tna-accordion__body" id="accordion-online">
+            <ul class="tna-ul">
+              <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+              <li>Nulla dignissim vehicula magna, et hendrerit quam iaculis a. Mauris in ultricies enim.</li>
+              <li>Donec bibendum est leo, sed dapibus mauris facilisis vitae.</li>
+              <li>Quisque hendrerit condimentum nisl, non volutpat ex eleifend at. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Morbi id suscipit felis, sed tincidunt arcu. Etiam vel blandit diam, vitae commodo mi.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tna-accordion__item" data-isopen="false">
+          <h2 class="tna-accordion__heading tna-heading-s">
+            What are archives?
+          </h2>
+          <div class="tna-accordion__body" id="accordion-what-are-archives">
+            <ul class="tna-ul">
+              <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+              <li>Nulla dignissim vehicula magna, et hendrerit quam iaculis a. Mauris in ultricies enim.</li>
+              <li>Donec bibendum est leo, sed dapibus mauris facilisis vitae.</li>
+              <li>Quisque hendrerit condimentum nisl, non volutpat ex eleifend at. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Morbi id suscipit felis, sed tincidunt arcu. Etiam vel blandit diam, vitae commodo mi.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tna-accordion__item" data-isopen="false">
+          <h2 class="tna-accordion__heading tna-heading-s">
+            How to use archives?
+          </h2>
+          <div class="tna-accordion__body" id="accordion-how-to-use">
+            <ul class="tna-ul">
+              <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+              <li>Nulla dignissim vehicula magna, et hendrerit quam iaculis a. Mauris in ultricies enim.</li>
+              <li>Donec bibendum est leo, sed dapibus mauris facilisis vitae.</li>
+              <li>Quisque hendrerit condimentum nisl, non volutpat ex eleifend at. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Morbi id suscipit felis, sed tincidunt arcu. Etiam vel blandit diam, vitae commodo mi.</li>
+            </ul>
+          </div>
+        </div>
+        
+      </div>
+       <!--end accordion-->
     </div>
   </div>
 </div>
+
+{{ tnaHero({
+  'headingLevel': 2,
+  'headingSize': 'l',
+  'title': 'Explore the collection',
+  'text': 'Discover the stories behind the records. Read articles about the incredible people whose lives can be traced in the archive, or go deep into a new perspectives on historical events.',
+  'imageSrc': static('assets/images/festival-hall.jpg'),
+  'imageAlt': 'An illustration of the Festival of Britain',
+  'imageWidth': 1200,
+  'imageHeight': 480,
+  'actions': [
+    {
+      'text': 'Explore',
+      'href': '/explore-the-collection/'
+    }
+  ],
+  'style': 'accent'
+}) }}
+{% endblock %}
+
+{% block bodyEnd %}
+{{ super() }}
+    <script src="{{ static('record-details.min.js') }}?v={{ app_config.BUILD_VERSION }}" defer></script>
 {% endblock %}
