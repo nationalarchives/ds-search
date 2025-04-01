@@ -339,6 +339,28 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_prisoner(self):
+        # C9072323
+        source = '<emph altrender="doctype">P</emph><persname><emph altrender="surname">Wells</emph> <emph altrender="forenames">Benjamin</emph></persname><emph altrender="age">18</emph><geogname>Surrey</geogname><emph altrender="court">Surrey Sessions</emph><emph altrender="offence">Larceny (after a previous conviction):  stealing a piece of bacon</emph><emph altrender="sentence">12 calendar months hard labour</emph>'
+        schema = "prisoner"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name (and alias if used) of prisoner</dt>
+<dd>Wells, Benjamin</dd>
+<dt>Age</dt>
+<dd>18</dd>
+<dt>Place of birth</dt>
+<dd>Surrey</dd>
+<dt>Place/court of conviction</dt>
+<dd>Surrey Sessions</dd>
+<dt>Offence</dt>
+<dd>Larceny (after a previous conviction):  stealing a piece of bacon</dd>
+<dt>Sentence</dt>
+<dd>12 calendar months hard labour</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_PrisonerInterview(self):
         # C9207436
         source = '<emph altrender="doctype">I</emph><persname> <emph altrender="surname">Beaman</emph></persname><emph altrender="page">2-9</emph><corpname>Royal Army Medical Corps.</corpname><emph altrender="rank">Captain</emph><emph altrender="people"><persname>Major Philip Davy, Royal Army Medical Corps</persname></emph>'
