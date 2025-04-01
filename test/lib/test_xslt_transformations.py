@@ -649,10 +649,10 @@ class XsltTransformationsTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
-    def test_ignored_transformation(self):
+    def test_unknown_transformation(self):
         source = '<emph altrender="doctype">G</emph>Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945'
-        schema = "FOI"
+        schema = "UNKNOWN"
         self.assertEqual(
-            '<emph altrender="doctype">G</emph>Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945',
+            "Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945",
             str(apply_xslt(source, schema)),
         )

@@ -45,45 +45,12 @@ SCHEMAS = {
     "Wrns": "Wrns.xsl",
 }
 
-# These schemas have no known transformation
-IGNORE_SCHEMAS = [
-    "ANLists",
-    "APS",
-    "AncestorsMagazine",
-    "Datasets",
-    "DixonScott",
-    "EdenPaper",
-    "FOI",
-    "IrishMaps",
-    "MRR",
-    "MapPicture",
-    "NavyList",
-    "Opening2002",
-    "Opening2003Defe4",
-    "Opening2003Defe5",
-    "Opening2003",
-    "Opening2006Prem16",
-    "Opening2007Prem16",
-    "Opening2008Prem16",
-    "PrimeMin",
-    "RoyalChelsea",
-    "SecurityServiceKV",
-    "SecurityService",
-    "ShipsExploration",
-]
-
 logger = logging.getLogger(__name__)
 
 
 def apply_xslt(html_source: str, schema: str) -> str:
-    if schema in IGNORE_SCHEMAS:
-        return html_source
     dom = html.fromstring(html_source)
-    try:
-        schema_xslt = SCHEMAS[schema]
-    except KeyError:
-        logger.error(f"Schema '{schema}' not found")
-        return html_source
+    schema_xslt = SCHEMAS.get(schema, "Miscellaneous.xsl")
     try:
         xslt = etree.parse(f"app/resources/xslt/{schema_xslt}")
     except Exception as e:
