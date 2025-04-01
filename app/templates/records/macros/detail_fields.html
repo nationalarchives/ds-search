@@ -128,7 +128,7 @@
                 {{ tnaDetails({
                   'title': 'Raw description',
                   'body': '<textarea rows="8" readonly>' + record.raw_description + '</textarea>',
-                  'classes': 'tna-!--no-margin-top',
+                  'classes': 'tna-!--margin-top-xs',
                 }) }}
                 {% endif %}
 
@@ -138,6 +138,17 @@
               {% endif %}
             </dd>
           {% endif %}
+
+
+          {% if field == 'description' and record.raw_description and show_raw_description %}
+            <dt>Raw description</dt>
+            <dd>
+              <textarea rows="8" readonly>{{ record.raw_description }}</textarea>
+            </dd>
+          {% endif %}
+
+
+
         {% endfor %}
         <dt>Subjects</dt>
         <dd>

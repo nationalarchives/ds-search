@@ -86,6 +86,8 @@
   & & {
     border-bottom: none;
 
+    // @include typography.font-size(16);
+
     > dt,
     > dd {
       &:first-of-type {
@@ -143,6 +145,10 @@
     display: block;
 
     resize: vertical;
+
+    @include typography.font-size(16);
+    @include typography.detail-font;
+
     @include colour.colour-border("keyline", 1px);
     @include borders.rounded-border;
   }
