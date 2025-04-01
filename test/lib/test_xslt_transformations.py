@@ -307,6 +307,20 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_Olympic(self):
+        # C12462510
+        source = '<emph altrender="doctype">OL</emph><geogname>Berlin, Germany</geogname><emph altrender="scope">Olympic Games: German propaganda in Iraq; marked activity encouraging Iraqis to visit Germany</emph>'
+        schema = "Olympic"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Place</dt>
+<dd>Berlin, Germany</dd>
+<dt>Scope and content</dt>
+<dd>Olympic Games: German propaganda in Iraq; marked activity encouraging Iraqis to visit Germany</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_RAFOfficers(self):
         # D8272609
         source = '<emph altrender="doctype">RO</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">Frederick</emph></persname><emph altrender="dob">08 July 1898</emph>'
