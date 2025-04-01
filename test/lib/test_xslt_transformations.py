@@ -76,7 +76,6 @@ class ContentParserTestCase(unittest.TestCase):
 
     def test_CabinetPapers(self):
         # C11083504
-        self.maxDiff = None
         source = '<emph altrender="doctype">CP</emph><emph altrender="type">Precedent Book</emph><emph altrender="agenda">1. Constitutional Position - The Cabinet and the Cabinet System - Collective Responsibility; 2. Composition of the Cabinet and the Position of Ministers Outside the Cabinet - Appointment to the Cabinet - Composition of the Cabinet  - Ministers with Co-ordinating Functions - Ministers Outside the Cabinet - Law Officers - Junior Ministers - Precedence of Members of  Cabinet and Other Ministers; 3. Attendence at the Cabinet - Members of the Cabinet and Ministers of Cabinet Rank - Junior Ministers - Chiefs of Staff - Officials and Others - Historical Notes -  War Cabinet, 1916-1919 - Cabinet, 1919-1939 - War Cabinet, 1939-1945 - Attendance at \'Budget Cabinets\' - Leave of Absence - Movements of Ministers; 4. Cabinet Business - Scope of Business - Foreign and Military Affairs - Parliamentary Business -  Economic Affairs - The Budget - White Papers; 5. Action Prior to Submission of Business; 6. Submission of Business; 7. Action in the Cabinet Office; 8. Programme of Future Business; 9. Agenda; 10. Meetings - General Practice - Frequency of Meetings - Special Meetings - Meetings in Holiday Periods - Messages during Meetings - Attendance of Secretariat; 11. Cabinet Conclusions - General - Dissent from Conclusions - Implementation of Conclusions - Outstanding Conclusions; 12. Secrecy of Cabinet Proceedings; 13. Announcement of Cabinet Decisions; 14. Press Communiques about Cabinet Meetings; 15. War Cabinet Reports; 16. Miscellaneous - Cabinet Photographs - Cabinet Presents, etc</emph><emph altrender="title">Part I - The Cabinet</emph>'
         schema = "CabinetPapers"
         self.assertEqual(
@@ -317,6 +316,26 @@ class ContentParserTestCase(unittest.TestCase):
 <dd>Berlin, Germany</dd>
 <dt>Scope and content</dt>
 <dd>Olympic Games: German propaganda in Iraq; marked activity encouraging Iraqis to visit Germany</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
+    def test_PoorLaw(self):
+        # C9723960
+        self.maxDiff = None
+        source = '<emph altrender="doctype">PL</emph><persname><emph altrender="surname"><surname>Smith</surname><surname>Chadwick</surname></emph> <emph altrender="forenames"><firstname>Josiah</firstname><firstname>Edwin</firstname></emph></persname><emph altrender="placesmentioned"><geogname>Grassthorpe</geogname></emph><emph altrender="orgsmentioned"><corpname>Poor Law Commission</corpname></emph><emph altrender="scope"><p>Folio 23. Letter from Josiah Smith, to Edwin Chadwick, Poor Law Commission, requesting an answer by return of post to his letter of 20 May, regarding the election of a new guardian for Grassthorpe. It is annotated on 4 June \'acknowledge and state order issued on 1 June\'.</p></emph>'
+        schema = "PoorLaw"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name(s)</dt>
+<dd>Smith, Josiah Edwin </dd>
+<dd>Chadwick, Josiah Edwin </dd>
+<dt>Places mentioned</dt>
+<dd>Grassthorpe</dd>
+<dt>Corporations</dt>
+<dd>Poor Law Commission</dd>
+<dt>Content</dt>
+<dd>Folio 23. Letter from Josiah Smith, to Edwin Chadwick, Poor Law Commission, requesting an answer by return of post to his letter of 20 May, regarding the election of a new guardian for Grassthorpe. It is annotated on 4 June 'acknowledge and state order issued on 1 June'.</dd>
 </dl>""",
             str(apply_xslt(source, schema)),
         )
