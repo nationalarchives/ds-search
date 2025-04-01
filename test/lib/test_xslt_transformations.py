@@ -536,6 +536,22 @@ class XsltTransformationsTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_Squadron(self):
+        # C2504271
+        source = '<emph altrender=\"doctype\">SQ</emph><emph altrender=\"num\">292</emph><emph altrender=\"append\">Y</emph><emph altrender=\"comments\">Diary  </emph>'
+        schema = "Squadron"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Squadron number</dt>
+<dd>292</dd>
+<dt>Appendices</dt>
+<dd>Y</dd>
+<dt>Comments</dt>
+<dd>Diary  </dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_VolunteerReserve(self):
         # D7670951
         source = '<emph altrender="doctype">RV</emph><persname><emph altrender="surname">Hillyard</emph><emph altrender="forenames">William Stanley</emph></persname><emph altrender="num">Z/8171</emph><emph altrender="division">Bristol</emph><emph altrender="dob">28 November 1900</emph>'

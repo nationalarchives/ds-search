@@ -36,13 +36,13 @@ SCHEMAS = {
     "SeamenRegister": "SeamenRegister.xsl",
     "SeamenWill": "SeamenWill.xsl",
     "ShippingSeamen": "ShippingSeamen.xsl",
+    "Squadron": "Squadron.xsl",
     "VolunteerReserve": "VolunteerReserve.xsl",
     "Will": "Will.xsl",
 }
 
 # Temporary list of schemas to implement - this list will be removed once all schemas are implemented
 SCHEMAS_TO_IMPLEMENT = [
-    "Squadron",
     "Titanic",
     "VictoriaCross",
     "WomensCorps",
