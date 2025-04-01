@@ -74,6 +74,23 @@ class ContentParserTestCase(unittest.TestCase):
             str(apply_xslt(source, schema)),
         )
 
+    def test_CabinetPapers(self):
+        # C11083504
+        self.maxDiff = None
+        source = '<emph altrender="doctype">CP</emph><emph altrender="type">Precedent Book</emph><emph altrender="agenda">1. Constitutional Position - The Cabinet and the Cabinet System - Collective Responsibility; 2. Composition of the Cabinet and the Position of Ministers Outside the Cabinet - Appointment to the Cabinet - Composition of the Cabinet  - Ministers with Co-ordinating Functions - Ministers Outside the Cabinet - Law Officers - Junior Ministers - Precedence of Members of  Cabinet and Other Ministers; 3. Attendence at the Cabinet - Members of the Cabinet and Ministers of Cabinet Rank - Junior Ministers - Chiefs of Staff - Officials and Others - Historical Notes -  War Cabinet, 1916-1919 - Cabinet, 1919-1939 - War Cabinet, 1939-1945 - Attendance at \'Budget Cabinets\' - Leave of Absence - Movements of Ministers; 4. Cabinet Business - Scope of Business - Foreign and Military Affairs - Parliamentary Business -  Economic Affairs - The Budget - White Papers; 5. Action Prior to Submission of Business; 6. Submission of Business; 7. Action in the Cabinet Office; 8. Programme of Future Business; 9. Agenda; 10. Meetings - General Practice - Frequency of Meetings - Special Meetings - Meetings in Holiday Periods - Messages during Meetings - Attendance of Secretariat; 11. Cabinet Conclusions - General - Dissent from Conclusions - Implementation of Conclusions - Outstanding Conclusions; 12. Secrecy of Cabinet Proceedings; 13. Announcement of Cabinet Decisions; 14. Press Communiques about Cabinet Meetings; 15. War Cabinet Reports; 16. Miscellaneous - Cabinet Photographs - Cabinet Presents, etc</emph><emph altrender="title">Part I - The Cabinet</emph>'
+        schema = "CabinetPapers"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Record type</dt>
+<dd>Precedent Book</dd>
+<dt>Agenda</dt>
+<dd>1. Constitutional Position - The Cabinet and the Cabinet System - Collective Responsibility; 2. Composition of the Cabinet and the Position of Ministers Outside the Cabinet - Appointment to the Cabinet - Composition of the Cabinet  - Ministers with Co-ordinating Functions - Ministers Outside the Cabinet - Law Officers - Junior Ministers - Precedence of Members of  Cabinet and Other Ministers; 3. Attendence at the Cabinet - Members of the Cabinet and Ministers of Cabinet Rank - Junior Ministers - Chiefs of Staff - Officials and Others - Historical Notes -  War Cabinet, 1916-1919 - Cabinet, 1919-1939 - War Cabinet, 1939-1945 - Attendance at 'Budget Cabinets' - Leave of Absence - Movements of Ministers; 4. Cabinet Business - Scope of Business - Foreign and Military Affairs - Parliamentary Business -  Economic Affairs - The Budget - White Papers; 5. Action Prior to Submission of Business; 6. Submission of Business; 7. Action in the Cabinet Office; 8. Programme of Future Business; 9. Agenda; 10. Meetings - General Practice - Frequency of Meetings - Special Meetings - Meetings in Holiday Periods - Messages during Meetings - Attendance of Secretariat; 11. Cabinet Conclusions - General - Dissent from Conclusions - Implementation of Conclusions - Outstanding Conclusions; 12. Secrecy of Cabinet Proceedings; 13. Announcement of Cabinet Decisions; 14. Press Communiques about Cabinet Meetings; 15. War Cabinet Reports; 16. Miscellaneous - Cabinet Photographs - Cabinet Presents, etc</dd>
+<dt>Title</dt>
+<dd>Part I - The Cabinet</dd>
+</dl>""",
+            str(apply_xslt(source, schema)),
+        )
+
     def test_CombatRepWW2(self):
         # D7440727
         source = '<emph altrender="doctype">CR</emph><persname> <emph altrender="surname">Gibson</emph> <emph altrender="forenames">G P</emph></persname><emph altrender="rank">Flight Lieutenant, Squadron Leader</emph><emph altrender= "corpname">29</emph><emph altrender="date">14 March 1941; 23 April 1941, 03 May 1941, 07 July 1941</emph>'

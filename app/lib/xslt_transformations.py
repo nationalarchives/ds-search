@@ -7,6 +7,7 @@ SCHEMAS = {
     "AliensRegCards": "AliensRegCards.xsl",
     "AncientPetitions": "AncientPetitions.xsl",
     "BritishWarMedal": "BritishWarMedal.xsl",
+    "CabinetPapers": "CabinetPapers.xsl",
     "CombatRepWW2": "CombatRepWW2.xsl",
     "DeathDuty": "DeathDuty.xsl",
     "Medal": "Medal.xsl",
