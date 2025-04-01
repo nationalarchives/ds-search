@@ -19,6 +19,7 @@ SCHEMAS = {
     "Medal": "Medal.xsl",
     "Miscellaneous": "Miscellaneous.xsl",
     "MusterRolls": "MusterRolls.xsl",
+    "NavalOfficers": "NavalOfficers.xsl",
     "NavalReserve": "NavalReserve.xsl",
     "NavyLandService": "NavyLandService.xsl",
     "RAFOfficers": "RAFOfficers.xsl",
@@ -33,7 +34,6 @@ SCHEMAS = {
 
 # Temporary list of schemas to implement - this list will be removed once all schemas are implemented
 SCHEMAS_TO_IMPLEMENT = [
-    "NavalOfficers",
     "NursingService",
     "Olympic",
     "PoorLaw",
