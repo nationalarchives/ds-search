@@ -180,14 +180,14 @@
         <div class="tna-button-group tna-button-group--small tna-!--no-margin-top">
           {{ tnaButton({
             'text': 'List',
-            'href': '?' + qs_toggle_value(request.GET, 'display', 'list'),
+            'href': '?' + qs_replace_value(request.GET, 'display', 'list'),
             'small': True,
             'icon': 'list',
             'iconOnly': True
           }) }}
           {{ tnaButton({
             'text': 'Grid',
-            'href': '?' + qs_toggle_value(request.GET, 'display', 'grid'),
+            'href': '?' + qs_replace_value(request.GET, 'display', 'grid'),
             'small': True,
             'icon': 'grip',
             'iconOnly': True
