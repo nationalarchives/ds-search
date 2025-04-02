@@ -16,12 +16,12 @@
   <xsl:template match="persname">
     <tr class="medalRow">
       <td class="medalplain" width="30%">
-        <xsl:text disable-output-escaping="yes">Name </xsl:text>
+        <xsl:text>Name</xsl:text>
       </td>
       <td class="medalplain" width="60%">
         <xsl:value-of select="emph[@altrender='surname']/text()"/>
         <xsl:if test="emph[@altrender='surname'] and emph[@altrender='forenames']">
-          <xsl:text disable-output-escaping="yes">, </xsl:text>
+          <xsl:text>, </xsl:text>
         </xsl:if>
         <xsl:value-of select="emph[@altrender='perstitle']/text()"/>
         <xsl:if test="emph[@altrender='perstitle']">

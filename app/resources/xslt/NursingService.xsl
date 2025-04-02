@@ -6,7 +6,7 @@
   <xsl:template match="persname">
     <xsl:value-of select="emph[@altrender='surname']/text()"/>
     <xsl:if test="emph[@altrender='surname'] and emph[@altrender='forenames']">
-      <xsl:text disable-output-escaping="yes">, </xsl:text>
+      <xsl:text>, </xsl:text>
     </xsl:if>
     <xsl:value-of select="emph[@altrender='forenames']/text()"/>
   </xsl:template>

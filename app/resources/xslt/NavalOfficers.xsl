@@ -10,12 +10,12 @@
   </xsl:template>
   <xsl:template match="persname">
     <dt>
-      <xsl:text disable-output-escaping="yes">Name</xsl:text>
+      <xsl:text>Name</xsl:text>
     </dt>
     <dd>
       <xsl:value-of select="emph[@altrender='surname']/text()"/>
       <xsl:if test="emph[@altrender='surname'] and emph[@altrender='forenames']">
-        <xsl:text disable-output-escaping="yes">, </xsl:text>
+        <xsl:text>, </xsl:text>
       </xsl:if>
       <xsl:value-of select="emph[@altrender='perstitle']/text()"/>
       <xsl:if test="emph[@altrender='perstitle']">
