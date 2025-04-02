@@ -45,19 +45,35 @@ SCHEMAS = {
     "Wrns": "Wrns.xsl",
 }
 
+SERIES_TRANSFORMATIONS = {
+    "ADM 240": "ADM_240.xsl",
+    "DL 25": "DL_25.xsl",
+}
+
+
 logger = logging.getLogger(__name__)
 
 
-def apply_xslt(html_source: str, schema: str) -> str:
-    dom = html.fromstring(html_source)
-    schema_xslt = SCHEMAS.get(schema, "Miscellaneous.xsl")
+def xsl_transformation(source: str, schema_file: str) -> str:
+    dom = html.fromstring(source)
     try:
-        xslt = etree.parse(f"app/resources/xslt/{schema_xslt}")
+        xslt = etree.parse(f"app/resources/xslt/{schema_file}")
     except Exception as e:
         logger.error(
-            f"Unexpected error while loading XSLT file '{schema_xslt}': {e}"
+            f"Unexpected error while loading XSLT file '{schema_file}': {e}"
         )
-        return html_source
+        return source
     transform = etree.XSLT(xslt)
     result = transform(dom)
     return str(result).strip()
+
+
+def apply_schema_xsl(source: str, schema: str) -> str:
+    schema_xslt = SCHEMAS.get(schema, "Miscellaneous.xsl")
+    return xsl_transformation(source, schema_xslt)
+
+
+def apply_series_xsl(source: str, division: str) -> str:
+    if schema := SERIES_TRANSFORMATIONS.get(division):
+        return xsl_transformation(source, schema)
+    return source

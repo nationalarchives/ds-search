@@ -1,6 +1,6 @@
 import unittest
 
-from app.lib.xslt_transformations import apply_xslt
+from app.lib.xslt_transformations import apply_schema_xsl, apply_series_xsl
 
 
 class XsltTransformationsTestCase(unittest.TestCase):
@@ -17,7 +17,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of enrolment</dt>
 <dd>19 October 1918</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_AliensRegCards(self):
@@ -33,7 +33,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Nationality</dt>
 <dd>German</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_AncientPetitions(self):
@@ -55,7 +55,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>People mentioned</dt>
 <dd>Henry de Gyldeford (Guildford), justice.</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_BritishWarMedal(self):
@@ -71,7 +71,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of birth</dt>
 <dd>1873</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_CabinetPapers(self):
@@ -87,7 +87,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Title</dt>
 <dd>Part I - The Cabinet</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_CombatRepWW2(self):
@@ -105,7 +105,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Other dates of combat</dt>
 <dd>14 March 1941; 23 April 1941, 03 May 1941, 07 July 1941</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_DeathDuty(self):
@@ -114,7 +114,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
         schema = "DeathDuty"
         self.assertEqual(
             "Abstract of administration of Edmund Barnes, Farmer of Cringleford, Norfolk",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_DNPC(self):
@@ -123,7 +123,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
         schema = "DNPC"
         self.assertEqual(
             "Naturalisation by Act of Parliament: Dumas, Henry.10 Geo.4.c.57",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_DomesdayBook(self):
@@ -146,7 +146,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dd>Swein of Essex, sheriff of Essex</dd>
 <dd>sokemen</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_EffectsPapers(self):
@@ -155,7 +155,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
         schema = "EffectsPapers"
         self.assertEqual(
             "Number: 1   Thomas Finn, Superannuated boatswain, who died: 2 August 1854. Notes on executor's application for money owed by the Royal Navy.",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_FameWill(self):
@@ -164,7 +164,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
         schema = "FameWill"
         self.assertEqual(
             "Will of Robert Dudley, Earl of Leicester   (copy) 1 August 1587. Proved 6 September 1588.",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_GallantrySea(self):
@@ -173,7 +173,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
         schema = "GallantrySea"
         self.assertEqual(
             "Lists of persons rewarded by British, Colonial and foreign Governments",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_LootedArt(self):
@@ -182,7 +182,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
         schema = "LootedArt"
         self.assertEqual(
             "Registry Number: W 15182/108/64. Correspondence between Sir E Maclagan of the Victoria and Albert Museum and Sir S Gaselee at the Foreign Office about a request from exiled governments for the Central Institute of Art and Design under the chairmanship of Mr Charles Tennyson to assist firstly in the restitution of works of art from enemy-occupied countries, secondly in the prevention of their sale in the US and elsewhere, and lastly in the assurance of their return after the declaration of peace, dated October 1942. No reference to specific works of art.",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_Medal(self):
@@ -215,7 +215,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 </tr>
 </tbody>
 </table></div>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_Miscellaneous(self):
@@ -224,7 +224,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
         schema = "Miscellaneous"
         self.assertEqual(
             "Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_MusterRolls(self):
@@ -240,7 +240,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Rank</dt>
 <dd>Etat Major</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_NavalOfficers(self):
@@ -260,7 +260,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of birth</dt>
 <dd>23 September 1870</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_NavalReserve(self):
@@ -278,7 +278,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of birth</dt>
 <dd>19 November 1885</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_NavyLandService(self):
@@ -294,7 +294,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of birth</dt>
 <dd>13 October 1894</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_NursingService(self):
@@ -303,7 +303,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
         schema = "NursingService"
         self.assertEqual(
             "Abbott, Ada",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_Olympic(self):
@@ -317,7 +317,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Scope and content</dt>
 <dd>Olympic Games: German propaganda in Iraq; marked activity encouraging Iraqis to visit Germany</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_PoorLaw(self):
@@ -336,7 +336,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Content</dt>
 <dd>Folio 23. Letter from Josiah Smith, to Edwin Chadwick, Poor Law Commission, requesting an answer by return of post to his letter of 20 May, regarding the election of a new guardian for Grassthorpe. It is annotated on 4 June 'acknowledge and state order issued on 1 June'.</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_prisoner(self):
@@ -358,7 +358,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Sentence</dt>
 <dd>12 calendar months hard labour</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_PrisonerInterview(self):
@@ -378,7 +378,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>People mentioned</dt>
 <dd>Major Philip Davy, Royal Army Medical Corps</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_RAFOfficers(self):
@@ -392,7 +392,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of birth</dt>
 <dd>08 July 1898</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_RecHonours(self):
@@ -418,7 +418,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Folio</dt>
 <dd>2-3</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_RNASOfficers(self):
@@ -427,7 +427,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
         schema = "RNASOfficers"
         self.assertEqual(
             "Page 1: William Harry Ellison.",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_RNOfficer(self):
@@ -445,7 +445,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of appointment</dt>
 <dd>15 July 1877</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_RoyalMarines(self):
@@ -465,7 +465,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of birth</dt>
 <dd>09 October 1900</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_SeamenMedal(self):
@@ -481,7 +481,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of birth</dt>
 <dd>01 September 1919</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_SeamenRegister(self):
@@ -499,7 +499,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of birth</dt>
 <dd>24 August 1899</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_SeamenWill(self):
@@ -517,7 +517,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Ship's pay book number</dt>
 <dd>75</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_ShippingSeamen(self):
@@ -533,7 +533,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Gross tonnage</dt>
 <dd>7035</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_Squadron(self):
@@ -549,7 +549,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Comments</dt>
 <dd>Diary  </dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_Titanic(self):
@@ -563,7 +563,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Content</dt>
 <dd>Female aged 20. Travelling Third class. Occupation: Spinster.</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_VictoriaCross(self):
@@ -585,7 +585,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Locale</dt>
 <dd>Genitichi, Tanganrog</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_VolunteerReserve(self):
@@ -603,7 +603,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of birth</dt>
 <dd>28 November 1900</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_Will(self):
@@ -612,7 +612,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
         schema = "Will"
         self.assertEqual(
             "Will of William Cribb, Baker of Wareham , Dorset",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_WomensCorps(self):
@@ -628,7 +628,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of birth</dt>
 <dd>22 August 1894</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_Wrns(self):
@@ -646,7 +646,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Date of enrolment</dt>
 <dd>21 January 1918</dd>
 </dl>""",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
         )
 
     def test_unknown_transformation(self):
@@ -654,5 +654,50 @@ class XsltTransformationsTestCase(unittest.TestCase):
         schema = "UNKNOWN"
         self.assertEqual(
             "Joint meeting of the Army-Navy Communication Intelligence Board and Army-Navy Communication Intelligence Co-ordinating Committee, 29 October 1945",
-            str(apply_xslt(source, schema)),
+            str(apply_schema_xsl(source, schema)),
+        )
+
+    def test_series_ADM_240_xsl(self):
+        # C16128233
+        self.maxDiff = None
+        source = '<scopecontent>\r\n\t<p>Name: <persname><emph altrender="forenames">Lewis Martin </emph>\r\n\t\t\t<emph altrender="surname">Wibmer</emph></persname>. </p>\r\n\t<p>Rank: <emph altrender="rank">Commander</emph>. </p>\r\n\t<p>Date of Seniority: 07 March 1904. </p>\r\n\t<p>Date of Birth: [not given]. </p>\r\n\t<p>Place of Birth: [not given]. </p>\r\n</scopecontent>'
+        series = "ADM 240"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Wibmer, Lewis Martin </dd>
+<dt>Rank</dt>
+<dd>Commander</dd>
+<dt>Date of seniority</dt>
+<dd>07 March 1904</dd>
+<dt>Date of birth</dt>
+<dd>[not given]</dd>
+<dt>Place of birth</dt>
+<dd>[not given]</dd>
+</dl>""",
+            str(apply_series_xsl(source, series)),
+        )
+
+    def test_series_DL_25_xsl(self):
+        # C16099010
+        source = '<scopecontent>\r\n\t<p>Name: <persname>Matilda Avranches (de Abrinco), wife of Robert son of King Henry</persname></p>\r\n\t<p>Places: Property in <geogname>Alphington, Devon / Aylesbeare, Devon</geogname>. </p>\r\n\t<p>Document Note: <emph altrender="docnote">The date is from internal evidence: G.E.C., Complete peerage, iv.317; xi.app.106n, 109n.</emph>\r\n\t</p>\r\n\t<p>Seal Design: <emph altrender="sealdesign">Design: includes woman standing full face with a chain (?plait) on the left, Size: 27 x 35 mm, Shape: unknown shape, Colour: uncoloured, Legend: if any lost, Personal</emph>. </p>\r\n\t<p>Material: <emph altrender="material">Wax</emph>. </p>\r\n\t<p>Attachment: <emph altrender="attachment">On tongue</emph>. </p>\r\n\t<p>Seal Note: <emph altrender="sealnote">No name on seal. Impression: fair. Condition: fragment</emph>. </p>\r\n</scopecontent>'
+        series = "DL 25"
+        self.assertEqual(
+            """<dl class="tna-dl tna-dl--plain tna-dl--dotted">
+<dt>Name</dt>
+<dd>Matilda Avranches (de Abrinco), wife of Robert son of King Henry</dd>
+<dt>Places: Property in </dt>
+<dd>Alphington, Devon / Aylesbeare, Devon</dd>
+<dt>Document Note</dt>
+<dd>The date is from internal evidence: G.E.C., Complete peerage, iv.317; xi.app.106n, 109n.</dd>
+<dt>Seal Design</dt>
+<dd>Design: includes woman standing full face with a chain (?plait) on the left, Size: 27 x 35 mm, Shape: unknown shape, Colour: uncoloured, Legend: if any lost, Personal</dd>
+<dt>Material</dt>
+<dd>Wax</dd>
+<dt>Attachment</dt>
+<dd>On tongue</dd>
+<dt>Seal Note</dt>
+<dd>No name on seal. Impression: fair. Condition: fragment</dd>
+</dl>""",
+            str(apply_series_xsl(source, series)),
         )
