@@ -123,7 +123,7 @@
 
               {% elif field == 'description' %}
                 {# Output the field value and maybe the raw value #}
-                {{ record[field] | safe }}
+                {{ record[field] | sanitise_record_description | safe }}
                 {% if record.raw_description and show_raw_description %}
                 {{ tnaDetails({
                   'title': 'Raw description',
@@ -138,17 +138,12 @@
               {% endif %}
             </dd>
           {% endif %}
-
-
           {% if field == 'description' and record.raw_description and show_raw_description %}
             <dt>Raw description</dt>
             <dd>
               <textarea rows="8" readonly>{{ record.raw_description }}</textarea>
             </dd>
           {% endif %}
-
-
-
         {% endfor %}
         <dt>Subjects</dt>
         <dd>

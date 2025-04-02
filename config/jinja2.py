@@ -18,6 +18,12 @@ def slugify(s):
     return s
 
 
+def sanitise_record_description(s):
+    # Remove whitespace between <p> tags
+    s = re.sub(r"(</p>)\s+(<p[ >])", r"\1\2", s)
+    return s
+
+
 def base64_encode(s):
     s = bytes(s, "utf-8")
     s = base64.b64encode(s)
@@ -150,6 +156,7 @@ def environment(**options):
             "format_number": format_number,
             "base64_encode": base64_encode,
             "base64_decode": base64_decode,
+            "sanitise_record_description": sanitise_record_description,
         }
     )
     return env
