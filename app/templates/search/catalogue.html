@@ -208,15 +208,18 @@
               'meta': [
                 {
                   'title': 'Held by',
-                  'text': record.held_by
+                  'text': record.held_by,
+                  'icon': 'building'
                 },
                 {
                   'title': 'Date',
-                  'text': record.date_covering
+                  'text': record.date_covering,
+                  'icon': 'calendar'
                 },
                 {
                   'title': 'Reference',
-                  'text': record.reference_number
+                  'text': record.reference_number,
+                  'icon': 'hashtag'
                 }
               ],
               'body': record.description | safe,

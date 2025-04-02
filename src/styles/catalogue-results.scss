@@ -1,8 +1,3 @@
-@use "@nationalarchives/frontend/nationalarchives/variables/a11y" as
-  a11yVariables;
-@use "@nationalarchives/frontend/nationalarchives/tools/a11y";
-@use "@nationalarchives/frontend/nationalarchives/tools/colour";
-
-.tna-secondary-navigation__heading {
-  display: none; // TODO: Remove after next release of TNA Frontend
+.tna-dl-chips__item {
+  text-align: left;
 }
