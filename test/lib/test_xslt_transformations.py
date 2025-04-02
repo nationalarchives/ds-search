@@ -669,7 +669,7 @@ class XsltTransformationsTestCase(unittest.TestCase):
 <dt>Rank</dt>
 <dd>Commander</dd>
 <dt>Date of seniority</dt>
-<dd>07 March 1904</dd>
+<dd>07 March 1904. </dd>
 <dt>Date of birth</dt>
 <dd>[not given]</dd>
 <dt>Place of birth</dt>

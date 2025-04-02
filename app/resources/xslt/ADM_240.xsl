@@ -16,6 +16,9 @@
   <xsl:template match="p">
     <dt>
       <xsl:choose>
+        <xsl:when test="not(contains(text(),':'))">
+          Title
+        </xsl:when>
         <xsl:when test="substring(text(),(string-length(text()) - 1),1)=':'">
           <xsl:value-of select="substring(text(),0,(string-length(text()) - 1))"/>
         </xsl:when>
@@ -38,6 +41,9 @@
     </dt>
     <dd>
       <xsl:choose>
+        <xsl:when test="not(contains(text(),':'))">
+          <xsl:value-of select="text()"/>
+        </xsl:when>
         <xsl:when test="(persname | span[@class='persname'])">
           <xsl:value-of select="*/*[@altrender='surname']/text()"/>
           <xsl:if test="*/*[@altrender='surname'] and */*[@altrender='forenames']">
@@ -46,7 +52,7 @@
           <xsl:value-of select="*/*[@altrender='forenames']/text()"/>
         </xsl:when>
         <xsl:when test="contains(text(),'Date of Seniority')">
-          <xsl:value-of select="substring-before(substring-after(text(),': '),'.')"/>
+          <xsl:value-of select="substring-after(text(),': ')"/>
         </xsl:when>
         <xsl:when test="contains(text(),'[not given]')">
           <xsl:text>[not given]</xsl:text>
