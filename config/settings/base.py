@@ -238,10 +238,10 @@ DELIVERY_OPTIONS_API_URL = os.getenv("DELIVERY_OPTIONS_API_URL")
 STAFFIN_IP_ADDRESSES = os.getenv("STAFFIN_IP_ADDRESSES", "").split(",")
 
 # IP address ranges for identifying on-site public users
-ONSITE_IP_ADDRESSES = os.getenv("ONSITE_IP_ADDRESSES", "").split(",")
+ONSITE_IP_ADDRESSES = list(filter(None, os.getenv("ONSITE_IP_ADDRESSES", "").split(",")))
 
 # Distressing content prefixes
-DCS_PREFIXES = os.getenv("DCS_PREFIXES", "").split(",")
+DCS_PREFIXES = list(filter(None, os.getenv("DCS_PREFIXES", "").split(",")))
 
 # Should always be True in production
 CLIENT_VERIFY_CERTIFICATES = strtobool(

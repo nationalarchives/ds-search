@@ -311,20 +311,20 @@ def construct_delivery_options(
     # Surrogate links is always present as a list, which can be empty
     do_surrogate = surrogate_link_builder(api_result[0]["surrogateLinks"])
 
-    api_result_option = api_result[0]["options"]
+    availability_condition = api_result[0]["options"]
 
     if (
-        api_result_option == AvailabilityCondition.ClosedRetainedDeptKnown
+        availability_condition == AvailabilityCondition.ClosedRetainedDeptKnown
         and not get_dept(record.reference_number, "deptname")
     ):
         # Special case. Sometimes, for record type 14 (ClosedRetainedDeptKnown), the department name does not match
         # any entry in the DEPARTMENT_DETAILS dictionary. This shouldn't happen but it does. Therefore, reset the type
         # with that for AvailabilityCondition.ClosedRetainedDeptUnKnown
-        api_result_option = AvailabilityCondition.ClosedRetainedDeptUnKnown
+        availability_condition = AvailabilityCondition.ClosedRetainedDeptUnKnown
 
     # Get the specific delivery option for this artefact
     # TODO: the do_dict dictionary will be redundant when we turn to template based code
-    delivery_option = get_delivery_option_dict(do_dict, api_result_option)
+    delivery_option = get_delivery_option_dict(do_dict, availability_condition)
 
     reader_option = delivery_option["readertype"][reader_type]
 

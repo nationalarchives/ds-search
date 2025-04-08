@@ -84,12 +84,12 @@ See [Sentry's official guide](https://docs.sentry.io/platforms/python/guides/dja
 
 `.env` variables:
 
-| Variable                   | Purpose                                                                                | Default | Example                         |
-| -------------------------- | -------------------------------------------------------------------------------------- | ------- | ------------------------------- |
-| `ROSETTA_API_URL`          | The base API URL for Rosetta, including the `/rosetta/data` path                       | No      |                                 |
-| `DELIVERY_OPTIONS_API_URL` | Api for Delivery options                                                               | No      |                                 |
-| `DCS_PREFIXES`             | Comma separated list of document prefixes for distressing content                      | No      | "ABC,XYZ"                       |
-| `STAFFIN_IP_ADDRESSES`     | Comma separated list of CIDR format IP addresses representing staff ip addresses       | No      | "10.20.30.40/19,11.21.31.41/32" |
-| `ONSITE_IP_ADDRESSES`      | Comma separated list of CIDR format IP addresses representing onsite user ip addresses | No      | "20.30.40.50/19,21.31.41.51/32" |
+| Variable                   | Purpose                                                                                | Default | Example   |
+| -------------------------- | -------------------------------------------------------------------------------------- | ------- | --------- |
+| `ROSETTA_API_URL`          | The base API URL for Rosetta, including the `/rosetta/data` path                       | No      |           |
+| `DELIVERY_OPTIONS_API_URL` | Api for Delivery options                                                               | No      |           |
+| `DCS_PREFIXES`             | Comma separated list of document prefixes for distressing content                      | No      | "ABC,XYZ" |
+| `STAFFIN_IP_ADDRESSES`     | Comma separated list of CIDR format IP addresses representing staff ip addresses       | No      |           |
+| `ONSITE_IP_ADDRESSES`      | Comma separated list of CIDR format IP addresses representing onsite user ip addresses | No      |           |
 
 TODO: Find where the IP_ADDRESSES are documented and link to document here
