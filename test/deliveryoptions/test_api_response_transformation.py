@@ -394,7 +394,9 @@ class DeliveryOptionsTestCase(unittest.TestCase):
                         multiple_results, self.record, self.request
                     )
 
-                self.assertIn("Too many results", str(context.exception))
+                self.assertIn(
+                    "Expected one record only", str(context.exception)
+                )
 
     def test_delivery_options_context_structure(self):
         """Test the structure of delivery options context for different combinations."""

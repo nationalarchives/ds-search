@@ -106,6 +106,7 @@ def record_detail_view(request, id):
             # Built in order exception option
             error_message = f"DORIS Connection error using url '{os.getenv("DELIVERY_OPTIONS_API_URL", "")}' - returning OrderException from Availability Conditions {str(e)}"
 
+            # Sentry notification
             logger.error(error_message)
             capture_message(error_message)
 

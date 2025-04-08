@@ -56,4 +56,4 @@ def delivery_options_request_handler(iaid: str) -> List[Dict[str, Any]]:
         logger = logging.getLogger(__name__)
         logger.error(f"Delivery options request error: {str(e)}")
 
-        raise
+        raise Exception("Delivery Options database is currently unavailable")

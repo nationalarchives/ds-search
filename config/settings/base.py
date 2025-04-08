@@ -231,14 +231,14 @@ DJANGO_SERVE_STATIC = False
 
 ROSETTA_API_URL = os.getenv("ROSETTA_API_URL")
 
-# DORIS
+# DORIS is TNA's Document Ordering System that contains Delivery Options data
 DELIVERY_OPTIONS_API_URL = os.getenv("DELIVERY_OPTIONS_API_URL")
 
 # IP address ranges for identifying staff members within the organisation
-IP_STAFFIN_RANGES = os.getenv("IP_STAFFIN_RANGES", "").split(",")
+STAFFIN_IP_ADDRESSES = os.getenv("STAFFIN_IP_ADDRESSES", "").split(",")
 
 # IP address ranges for identifying on-site public users
-IP_ONSITE_RANGES = os.getenv("IP_ONSITE_RANGES", "").split(",")
+ONSITE_IP_ADDRESSES = os.getenv("ONSITE_IP_ADDRESSES", "").split(",")
 
 # Distressing content prefixes
 DCS_PREFIXES = os.getenv("DCS_PREFIXES", "").split(",")

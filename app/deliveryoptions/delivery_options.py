@@ -3,6 +3,9 @@ Module for handling delivery options for records.
 
 Provides functionality to construct and process delivery options for records
 based on their availability conditions and the type of user requesting access.
+
+# TODO: The JSON file will be replaced by templates at some point. This will require
+# an overhaul of much of the code.
 """
 
 import inspect
@@ -28,6 +31,7 @@ from django.http import HttpRequest
 logger = logging.getLogger(__name__)
 
 # Dictionary to serve as a cache for file contents, preventing redundant file reads
+# TODO: To be replaced by templating
 file_cache = {}
 
 
@@ -42,6 +46,8 @@ def read_delivery_options(file_path: str) -> Dict:
 
     Returns:
         The parsed delivery options configuration
+
+    TODO: To be replaced by templating as a future date
     """
     # Check if file content is already in the cache
     if file_path not in file_cache:
@@ -83,6 +89,8 @@ def get_delivery_option_dict(
 
     Returns:
         The record if found, None otherwise
+
+    # TODO: To be replaced by templating
     """
     try:
         return dict_cache["deliveryOptions"]["option"][record_id]
@@ -286,9 +294,9 @@ def construct_delivery_options(
         The constructed delivery options
     """
 
-    if api_length := len(api_result) > 1:
+    if api_length := len(api_result) != 1:
         raise ValueError(
-            f"Too many results ({api_length}) from DORIS database for IAID {record.iaid}"
+            f"Expected one record only ({api_length}) from DORIS database for IAID {record.iaid}"
         )
 
     delivery_options_context_dict = {}
@@ -297,27 +305,26 @@ def construct_delivery_options(
 
     delivery_options_context_dict["reader_type"] = reader_type
 
+    # TODO: the do_dict dictionary will be redundant when we turn to template based code
     do_dict = read_delivery_options(DELIVERY_OPTIONS_CONFIG)
 
     # Surrogate links is always present as a list, which can be empty
     do_surrogate = surrogate_link_builder(api_result[0]["surrogateLinks"])
 
+    api_result_option = api_result[0]["options"]
+
     if (
-        api_result[0]["options"]
-        == AvailabilityCondition.ClosedRetainedDeptKnown
+        api_result_option == AvailabilityCondition.ClosedRetainedDeptKnown
+        and not get_dept(record.reference_number, "deptname")
     ):
         # Special case. Sometimes, for record type 14 (ClosedRetainedDeptKnown), the department name does not match
         # any entry in the DEPARTMENT_DETAILS dictionary. This shouldn't happen but it does. Therefore, reset the type
         # with that for AvailabilityCondition.ClosedRetainedDeptUnKnown
-        if not get_dept(record.reference_number, "deptname"):
-            api_result[0][
-                "options"
-            ] = AvailabilityCondition.ClosedRetainedDeptUnKnown
+        api_result_option = AvailabilityCondition.ClosedRetainedDeptUnKnown
 
     # Get the specific delivery option for this artefact
-    delivery_option = get_delivery_option_dict(
-        do_dict, api_result[0]["options"]
-    )
+    # TODO: the do_dict dictionary will be redundant when we turn to template based code
+    delivery_option = get_delivery_option_dict(do_dict, api_result_option)
 
     reader_option = delivery_option["readertype"][reader_type]
 

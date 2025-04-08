@@ -12,7 +12,7 @@ from app.deliveryoptions.delivery_options import (
     surrogate_link_builder,
 )
 from app.deliveryoptions.helpers import (
-    BASE_TNA_URL,
+    BASE_TNA_HOME_URL,
     get_access_condition_text,
     get_added_to_basket_text,
     get_advance_order_information,
@@ -94,12 +94,12 @@ class TestDeliveryOptionSubstitution(TestCase):
         ]
 
     @patch(
-        "app.deliveryoptions.helpers.BASE_TNA_URL",
+        "app.deliveryoptions.helpers.BASE_TNA_HOME_URL",
         "https://tnabase.test.url",
     )
     @patch("app.deliveryoptions.helpers.MAX_BASKET_ITEMS", "5")
     @patch(
-        "app.deliveryoptions.helpers.DISCOVERY_TNA_URL",
+        "app.deliveryoptions.helpers.BASE_TNA_DISCOVERY_URL",
         "https://discovery.test.url",
     )
     def test_delivery_options_tags(self):
@@ -200,7 +200,7 @@ class TestDeliveryOptionSubstitution(TestCase):
         )
 
     @patch(
-        "app.deliveryoptions.helpers.BASE_TNA_URL",
+        "app.deliveryoptions.helpers.BASE_TNA_HOME_URL",
         "https://tnabase.test.url",
     )
     def test_get_advance_order_information(self):

@@ -21,7 +21,7 @@ def is_onsite(visitor_ip_address: str) -> bool:
     Returns:
         True if the visitor is on-site, False otherwise
     """
-    return is_ip_in_cidr(visitor_ip_address, settings.IP_ONSITE_RANGES)
+    return is_ip_in_cidr(visitor_ip_address, settings.ONSITE_IP_ADDRESSES)
 
 
 def is_subscribed() -> bool:
@@ -46,7 +46,7 @@ def is_staff(visitor_ip_address: str) -> bool:
     Returns:
         True if the visitor is staff, False otherwise
     """
-    return is_ip_in_cidr(visitor_ip_address, settings.IP_STAFFIN_RANGES)
+    return is_ip_in_cidr(visitor_ip_address, settings.STAFFIN_IP_ADDRESSES)
 
 
 def get_reader_type(request: HttpRequest) -> Reader:
@@ -111,6 +111,8 @@ def get_client_ip(request: HttpRequest) -> Optional[str]:
     Note:
         Configure TRUSTED_PROXIES in Django settings to specify which IP
         addresses are allowed to set X-Forwarded-For headers.
+
+    TODO: This is most probably going to be redundant when the code goes to AWS and an alternative will be provided
     """
     # Define trusted proxies
     TRUSTED_PROXIES = getattr(settings, "TRUSTED_PROXIES", [])

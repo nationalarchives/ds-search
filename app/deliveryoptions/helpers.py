@@ -10,7 +10,7 @@ and some have both or neither.
 These functions are all called generically from html_replacer().
 As more information is made available from Rosetta, (or elsewhere), we may need to add one or
 other of these parameters to some of the helper functions. All that needs to be done is to add
-'record: Record' or 'api_surrogate_list: List' to the parameter list (as required) and the
+'record: Record' and/or 'api_surrogate_list: List' to the parameter list (as required) and the
 generic function will automatically handle it.
 """
 
@@ -23,11 +23,13 @@ from app.records.models import Record
 from django.conf import settings
 from django.core.cache import cache
 
-BASE_TNA_URL = os.getenv("BASE_TNA_URL", "https://www.nationalarchives.gov.uk")
-MAX_BASKET_ITEMS = os.getenv("MAX_BASKET_ITEMS", "10")
-DISCOVERY_TNA_URL = os.getenv(
-    "DISCOVERY_TNA_URL", "https://discovery.nationalarchives.gov.uk"
-)
+BASE_TNA_HOME_URL = "https://www.nationalarchives.gov.uk"
+
+# TODO: will no longer be needed in time when Etna is fully functional
+BASE_TNA_DISCOVERY_URL = "https://discovery.nationalarchives.gov.uk"
+
+# TODO: Max basket items may be dropped, or disabled at some point
+MAX_BASKET_ITEMS = "10"
 
 
 def get_dept(reference_number: str, key_type: str) -> Optional[str]:
@@ -119,7 +121,7 @@ def get_advance_order_information() -> str:
     Returns:
         The URL for advance order information
     """
-    return f"{BASE_TNA_URL}/about/visit-us/"
+    return f"{BASE_TNA_HOME_URL}/about/visit-us/"
 
 
 def get_archive_link(record: Record) -> str:
@@ -174,7 +176,7 @@ def get_basket_url() -> str:
     Returns:
         The URL for the basket
     """
-    return f"{BASE_TNA_URL}/basket/"
+    return f"{BASE_TNA_HOME_URL}/basket/"
 
 
 def get_browse_url(record: Record) -> str:
@@ -190,7 +192,7 @@ def get_browse_url(record: Record) -> str:
     TODO: This will be the browse URL for the hierarchy we are currently in.
           On Discovery, an example would be https://discovery.nationalarchives.gov.uk/browse/r/h/C325982
     """
-    return f"{BASE_TNA_URL}/browse/tbd/{record.iaid}/"
+    return f"{BASE_TNA_HOME_URL}/browse/tbd/{record.iaid}/"
 
 
 def get_contact_form_url_mould(record: Record) -> str:
@@ -235,7 +237,7 @@ def get_contact_form_url() -> str:
 
     TODO: URL may change with Etna
     """
-    return f"{BASE_TNA_URL}/contact-us/"
+    return f"{BASE_TNA_HOME_URL}/contact-us/"
 
 
 def get_data_protection_act_url() -> str:
@@ -250,7 +252,7 @@ def get_data_protection_act_url() -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{BASE_TNA_URL}/content/documents/county-durham-home-guard-service-record-subject-access-request-form.pdf"
+    return f"{BASE_TNA_HOME_URL}/content/documents/county-durham-home-guard-service-record-subject-access-request-form.pdf"
 
 
 def get_dept_name(record: Record) -> str:
@@ -354,7 +356,7 @@ def get_foi_url(record: Record) -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{BASE_TNA_URL}/foirequest?reference={record.reference_number}"
+    return f"{BASE_TNA_HOME_URL}/foirequest?reference={record.reference_number}"
 
 
 def get_image_library_url() -> str:
@@ -395,7 +397,7 @@ def get_keepers_gallery_url() -> str:
     Returns:
         The URL for the Keepers' Gallery
     """
-    return f"{BASE_TNA_URL}/about/visit-us/whats-on/keepers-gallery/"
+    return f"{BASE_TNA_HOME_URL}/about/visit-us/whats-on/keepers-gallery/"
 
 
 def get_kew_booking_system_url() -> str:
@@ -410,7 +412,7 @@ def get_kew_booking_system_url() -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{BASE_TNA_URL}/book-a-reading-room-visit/"
+    return f"{BASE_TNA_HOME_URL}/book-a-reading-room-visit/"
 
 
 def get_max_items() -> str:
@@ -456,7 +458,7 @@ def get_opening_times_url() -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{BASE_TNA_URL}/about/visit-us/"
+    return f"{BASE_TNA_HOME_URL}/about/visit-us/"
 
 
 def get_order_url() -> str:
@@ -487,7 +489,7 @@ def get_paid_search_url(record: Record) -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{BASE_TNA_URL}/paidsearch/foirequest/{record.iaid}?type=foirequest"
+    return f"{BASE_TNA_HOME_URL}/paidsearch/foirequest/{record.iaid}?type=foirequest"
 
 
 def get_price() -> str:
@@ -517,7 +519,7 @@ def get_readers_ticket_url() -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{BASE_TNA_URL}/about/visit-us/researching-here/do-i-need-a-readers-ticket/"
+    return f"{BASE_TNA_HOME_URL}/about/visit-us/researching-here/do-i-need-a-readers-ticket/"
 
 
 def get_record_copying_url(record: Record) -> str:
@@ -532,7 +534,7 @@ def get_record_copying_url(record: Record) -> str:
 
     TODO: URL will undoubtedly change with Etna
     """
-    return f"{DISCOVERY_TNA_URL}/pagecheck/start/{record.iaid}/"
+    return f"{BASE_TNA_DISCOVERY_URL}/pagecheck/start/{record.iaid}/"
 
 
 def get_record_information_type() -> str:
@@ -577,7 +579,7 @@ def get_record_url(record: Record) -> str:
 
     TODO: URL may change with Etna
     """
-    return f"{BASE_TNA_URL}/details/r/{record.iaid}/"
+    return f"{BASE_TNA_HOME_URL}/details/r/{record.iaid}/"
 
 
 def get_first_website_url(api_surrogate_list: List) -> str:

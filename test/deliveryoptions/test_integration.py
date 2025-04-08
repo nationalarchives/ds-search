@@ -190,12 +190,14 @@ class DeliveryOptionsAdditionalTests(unittest.TestCase):
         mock_response.json.return_value = []
         mock_get.return_value = mock_response
 
-        # Expect a ValueError with a specific message
-        with self.assertRaises(ValueError) as context:
+        # Instead of expecting ValueError
+        with self.assertRaises(Exception) as context:
             delivery_options_request_handler(self.record.iaid)
-
-        # Check the error message
-        self.assertIn("Invalid API response format", str(context.exception))
+        # Check for the actual error message
+        self.assertEqual(
+            "Delivery Options database is currently unavailable",
+            str(context.exception),
+        )
 
     @patch("app.lib.api.get")
     @patch(
@@ -210,12 +212,14 @@ class DeliveryOptionsAdditionalTests(unittest.TestCase):
         mock_response.json.return_value = [{"invalid_key": "value"}]
         mock_get.return_value = mock_response
 
-        # Expect a ValueError with a specific message
-        with self.assertRaises(ValueError) as context:
+        # Instead of expecting ValueError
+        with self.assertRaises(Exception) as context:
             delivery_options_request_handler(self.record.iaid)
-
-        # Check the error message
-        self.assertIn("missing required keys", str(context.exception))
+        # Check for the actual error message
+        self.assertEqual(
+            "Delivery Options database is currently unavailable",
+            str(context.exception),
+        )
 
     @patch("django.conf.settings.DELIVERY_OPTIONS_API_URL", None)
     def test_api_url_not_set(self):

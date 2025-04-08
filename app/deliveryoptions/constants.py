@@ -67,7 +67,7 @@ class AvailabilityCondition(IntEnum):
     Relocation = 34  # Record is being relocated
 
 
-# This is a temporary constant and will be removed when the templating solution is implemented
+# TODO: This is a temporary constant and will be removed when the templating solution is implemented
 DELIVERY_OPTIONS_CONFIG = "app/deliveryoptions/delivery_options.json"
 
 # Mapping of template tags to their corresponding helper functions
