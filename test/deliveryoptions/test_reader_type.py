@@ -9,10 +9,21 @@ from app.deliveryoptions.reader_type import (
     is_staff,
 )
 from django.conf import settings
-from django.test import override_settings
+from django.test import TestCase, override_settings
 
 
-class TestIPFunctions(unittest.TestCase):
+@override_settings(
+    STAFFIN_IP_ADDRESSES=[
+        "10.252.16.0/21",
+        "10.252.21.0/24",
+        "10.114.1.0/24",
+    ],
+    ONSITE_IP_ADDRESSES=[
+        "10.136.0.0/19",
+        "167.98.93.94/32",
+    ],
+)
+class TestIPFunctions(TestCase):
     @override_settings(TRUSTED_PROXIES=["192.168.1.50"])
     def test_get_client_ip_from_headers(self):
         request = Mock()
@@ -37,10 +48,10 @@ class TestIPFunctions(unittest.TestCase):
 
     def test_is_ip_in_cidr_staff_ip(self):
         self.assertTrue(
-            is_ip_in_cidr("172.31.8.27", settings.STAFFIN_IP_ADDRESSES)
+            is_ip_in_cidr("10.252.21.4", settings.STAFFIN_IP_ADDRESSES)
         )
         self.assertTrue(
-            is_ip_in_cidr("10.114.1.254", settings.STAFFIN_IP_ADDRESSES)
+            is_ip_in_cidr("10.114.1.17", settings.STAFFIN_IP_ADDRESSES)
         )
 
     def test_is_ip_in_cidr_onsite_ip(self):
@@ -48,7 +59,7 @@ class TestIPFunctions(unittest.TestCase):
             is_ip_in_cidr("167.98.93.94", settings.ONSITE_IP_ADDRESSES)
         )
         self.assertTrue(
-            is_ip_in_cidr("10.120.0.0", settings.ONSITE_IP_ADDRESSES)
+            is_ip_in_cidr("10.136.0.4", settings.ONSITE_IP_ADDRESSES)
         )
 
     def test_is_ip_in_cidr_offsite_ip(self):
@@ -88,7 +99,7 @@ class TestIPFunctions(unittest.TestCase):
         )
 
 
-class TestVisitorTypeDetection(unittest.TestCase):
+class TestVisitorTypeDetection(TestCase):
     @override_settings(
         STAFFIN_IP_ADDRESSES=[
             "10.252.16.0/21",
@@ -96,7 +107,6 @@ class TestVisitorTypeDetection(unittest.TestCase):
             "10.114.1.0/24",
         ]
     )
-    @override_settings(ONSITE_IP_ADDRESSES=["10.136.0.0/19", "167.98.93.94/32"])
     @patch("app.deliveryoptions.reader_type.get_client_ip")
     def test_is_staff_with_mocked_ip(self, mock_get_client_ip):
         # Mock staff IP within range
@@ -107,6 +117,12 @@ class TestVisitorTypeDetection(unittest.TestCase):
         ip_address = mock_get_client_ip.return_value = "8.8.8.8"
         self.assertFalse(is_staff(ip_address))
 
+    @override_settings(
+        ONSITE_IP_ADDRESSES=[
+            "10.136.0.0/19",
+            "167.98.93.94/32",
+        ]
+    )
     @patch("app.deliveryoptions.reader_type.get_client_ip")
     def test_is_onsite_with_mocked_ip(self, mock_get_client_ip):
         # Mock onsite IP within range
@@ -117,6 +133,17 @@ class TestVisitorTypeDetection(unittest.TestCase):
         ip_address = mock_get_client_ip.return_value = "167.98.93.95"
         self.assertFalse(is_onsite(ip_address))
 
+    @override_settings(
+        STAFFIN_IP_ADDRESSES=[
+            "10.252.16.0/21",
+            "10.252.21.0/24",
+            "10.114.1.0/24",
+        ],
+        ONSITE_IP_ADDRESSES=[
+            "10.136.0.0/19",
+            "167.98.93.94/32",
+        ],
+    )
     @patch("app.deliveryoptions.reader_type.get_client_ip")
     def test_is_not_onsite_or_staff_with_mocked_ipv6(self, mock_get_client_ip):
         # Mock offsite IPv6 address
@@ -125,7 +152,7 @@ class TestVisitorTypeDetection(unittest.TestCase):
         self.assertFalse(is_staff(ip_address))
 
 
-class TestGetDevReaderType(unittest.TestCase):
+class TestGetDevReaderType(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

@@ -234,13 +234,17 @@ ROSETTA_API_URL = os.getenv("ROSETTA_API_URL")
 # DORIS is TNA's Document Ordering System that contains Delivery Options data
 DELIVERY_OPTIONS_API_URL = os.getenv("DELIVERY_OPTIONS_API_URL")
 
-# IP address ranges for identifying staff members within the organisation
-STAFFIN_IP_ADDRESSES = os.getenv("STAFFIN_IP_ADDRESSES", "").split(",")
+# List of IP address for identifying staff members within the organisation
+STAFFIN_IP_ADDRESSES = list(
+    filter(None, os.getenv("STAFFIN_IP_ADDRESSES", "").split(","))
+)
 
-# IP address ranges for identifying on-site public users
-ONSITE_IP_ADDRESSES = list(filter(None, os.getenv("ONSITE_IP_ADDRESSES", "").split(",")))
+# List of IP address for identifying on-site public users
+ONSITE_IP_ADDRESSES = list(
+    filter(None, os.getenv("ONSITE_IP_ADDRESSES", "").split(","))
+)
 
-# Distressing content prefixes
+# List of Distressing content prefixes
 DCS_PREFIXES = list(filter(None, os.getenv("DCS_PREFIXES", "").split(",")))
 
 # Should always be True in production
