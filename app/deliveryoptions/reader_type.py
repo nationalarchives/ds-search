@@ -84,7 +84,7 @@ def get_reader_type(request: HttpRequest) -> Reader:
 
 def get_client_ip(request: HttpRequest) -> Optional[str]:
     """
-    Extract the client IP address from the HTTP request in a secure manner.
+    Extract the client IP address from the HTTP request.
 
     This function properly handles IP address extraction by:
     1. Only trusting X-Forwarded-For headers when they come from trusted proxies
@@ -93,7 +93,7 @@ def get_client_ip(request: HttpRequest) -> Optional[str]:
 
     The function will use REMOTE_ADDR by default unless the request comes from
     a trusted proxy (defined in settings.TRUSTED_PROXIES), in which case it will
-    use the leftmost non-trusted-proxy IP in the X-Forwarded-For chain.
+    use the leftmost non-trusted-proxy IP in the X-Forwarded-For chain.s
 
     Args:
         request: The Django HTTP request object
