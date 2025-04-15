@@ -6,12 +6,11 @@ from app.lib.pagination import pagination_object
 from app.records.constants import TNA_LEVELS
 from app.search.api import search_records
 from config.jinja2 import qs_remove_value, qs_toggle_value
-from django.http import HttpResponse
-from django.template import loader
+from django.template.response import TemplateResponse
 
 
 def catalogue_search_view(request):
-    template = loader.get_template("search/catalogue.html")
+    template = "search/catalogue.html"
     context = {
         "levels": TNA_LEVELS,
     }
@@ -29,7 +28,12 @@ def catalogue_search_view(request):
             order=order,
         )
     except ResourceNotFound:
-        return HttpResponse(template.render(context, request))
+        return TemplateResponse(
+            request=request,
+            template=template,
+            context=context,
+        )
+
     pages = math.ceil(results.stats_total / results_per_page)
     if pages > 500:
         pages = 500
@@ -52,7 +56,7 @@ def catalogue_search_view(request):
             "pagination": pagination_object(page, pages, request.GET),
         }
     )
-    return HttpResponse(template.render(context, request))
+    return TemplateResponse(request=request, template=template, context=context)
 
 
 def build_selected_filters_list(request):
