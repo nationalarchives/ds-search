@@ -1,5 +1,6 @@
 from app.lib.api import ResourceNotFound, rosetta_request_handler
-from app.records.models import APISearchResponse
+
+from .models import APISearchResponse
 
 
 def search_records(
