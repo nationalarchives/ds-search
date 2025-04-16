@@ -1,5 +1,9 @@
+import copy
 from dataclasses import dataclass
 from enum import StrEnum
+from typing import List
+
+from django.contrib.humanize.templatetags.humanize import intcomma
 
 
 @dataclass
@@ -16,6 +20,23 @@ class Bucket:
     href: str = "#"
     record_count: int = 0
     is_current: bool = False
+
+    @property
+    def label_with_count(self):
+        if self.record_count is None:
+            return self.label
+        return self.label + f" ({intcomma(self.record_count)})"
+
+    @property
+    def for_display(self):
+        """
+        Returns data formatted for front-end component Ex: tnaSecondaryNavigation()
+        """
+        return {
+            "name": self.label_with_count,
+            "href": self.href,
+            "current": self.is_current,
+        }
 
 
 class BucketKeys(StrEnum):
@@ -46,3 +67,26 @@ CATALOGUE_BUCKETS = [
         description="Results for records held at other archives in the UK (and not at The National Archives) that match your search term.",
     ),
 ]
+
+
+def get_buckets_for_display(
+    query: str, buckets: dict, current_bucket_key: str
+) -> list:
+    """
+    Returns modified buckets data to be used in the template
+    by front-end component Ex: tnaSecondaryNavigation()
+    """
+    # new list that is modified
+    bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
+
+    # update buckets from params
+    for bucket in bucket_list:
+        bucket.record_count = buckets.get(bucket.key, 0)
+        bucket.is_current = bucket.key == current_bucket_key
+        if bucket.href == "#":
+            bucket.href = f"?group={bucket.key}"
+            if query:
+                bucket.href += f"&q={query}"
+
+    # return data for display
+    return [bucket.for_display for bucket in bucket_list]
