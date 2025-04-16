@@ -11,7 +11,7 @@ from django.template.response import TemplateResponse
 
 def catalogue_search_view(request):
     template = "search/catalogue.html"
-    context = {
+    context: dict = {
         "levels": TNA_LEVELS,
     }
     results_per_page = 20
