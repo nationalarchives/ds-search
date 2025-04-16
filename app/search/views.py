@@ -9,6 +9,8 @@ from config.jinja2 import qs_remove_value, qs_toggle_value
 from django.http import HttpResponse
 from django.template import loader
 
+from .buckets import BucketKeys, get_buckets_for_display
+
 
 def catalogue_search_view(request):
     template = loader.get_template("search/catalogue.html")
@@ -20,6 +22,11 @@ def catalogue_search_view(request):
     sort_order = request.GET.get("sort", "").split(":")
     sort = sort_order[0] if sort_order else ""
     order = sort_order[1] if len(sort_order) > 1 else ""
+
+    current_bucket_key = request.GET.get("group", BucketKeys.TNA)
+    # filter records for a bucket
+    params = {"filter": f"group:{current_bucket_key}"}
+
     try:
         results = search_records(
             query=request.GET.get("q", None),
@@ -27,6 +34,7 @@ def catalogue_search_view(request):
             page=page,
             sort=sort,
             order=order,
+            params=params,
         )
     except ResourceNotFound:
         return HttpResponse(template.render(context, request))
@@ -40,9 +48,16 @@ def catalogue_search_view(request):
         "to": ((page - 1) * results_per_page) + results.stats_results,
     }
     selected_filters = build_selected_filters_list(request)
+    buckets = get_buckets_for_display(
+        query=request.GET.get("q", ""),
+        buckets=results.buckets,
+        current_bucket_key=current_bucket_key,
+    )
+
     context.update(
         {
             "results": results.records,
+            "buckets": buckets,
             "results_range": results_range,
             "stats": {
                 "total": results.stats_total,
