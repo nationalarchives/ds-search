@@ -99,7 +99,7 @@ class TestFormatLink(SimpleTestCase):
                 '<a href="INVALID">some value</a>',
                 (
                     {"id": "INVALID", "href": "", "text": "some value"},
-                    "WARNING:app.records.utils:format_link:No reverse match for details-page-machine-readable with iaid=INVALID",
+                    "WARNING:app.records.utils:format_link:No reverse match for record_details with iaid=INVALID",
                 ),
             ),
             (
@@ -107,7 +107,7 @@ class TestFormatLink(SimpleTestCase):
                 "some value",
                 (
                     {"id": "", "href": "", "text": "some value"},
-                    "WARNING:app.records.utils:format_link:No reverse match for details-page-machine-readable with iaid=None",
+                    "WARNING:app.records.utils:format_link:No reverse match for record_details with iaid=None",
                 ),
             ),
         )

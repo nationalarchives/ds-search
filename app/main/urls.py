@@ -1,8 +1,8 @@
+from app.main import views
 from django.urls import path
-
-from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("catalogue/", views.catalogue, name="catalogue"),
     path("cookies/", views.cookies, name="cookies"),
 ]

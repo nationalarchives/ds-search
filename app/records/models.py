@@ -4,10 +4,12 @@ import logging
 import re
 from typing import Any
 
-from app.records.constants import LEVEL, NON_TNA_LEVEL
+from app.lib.xslt_transformations import apply_schema_xsl, apply_series_xsl
+from app.records.constants import NON_TNA_LEVELS, TNA_LEVELS
 from app.records.utils import extract, format_extref_links, format_link
 from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
+from lxml import etree
 
 from .converters import IDConverter
 
@@ -179,8 +181,8 @@ class Record(APIModel):
     def level(self) -> str:
         """Returns level name for tna, non tna level codes"""
         if self.is_tna:
-            return LEVEL.get(str(self.level_code), "")
-        return NON_TNA_LEVEL.get(str(self.level_code), "")
+            return TNA_LEVELS.get(str(self.level_code), "")
+        return NON_TNA_LEVELS.get(str(self.level_code), "")
 
     @cached_property
     def level_code(self) -> int | None:
@@ -228,13 +230,13 @@ class Record(APIModel):
         if self.held_by_id:
             try:
                 return reverse(
-                    "details-page-machine-readable",
+                    "records:details",
                     kwargs={"id": self.held_by_id},
                 )
             except NoReverseMatch:
                 # warning for partially valid record
                 logger.warning(
-                    f"held_by_url:Record({self.iaid}):No reverse match for details-page-machine-readable with held_by_id={self.held_by_id}"
+                    f"held_by_url:Record({self.iaid}):No reverse match for record_details with held_by_id={self.held_by_id}"
                 )
         return ""
 
@@ -325,7 +327,29 @@ class Record(APIModel):
     @cached_property
     def description(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return format_extref_links(self.get("description", ""))
+        if description := self.raw_description:
+            description = format_extref_links(description)
+            if description_schema := self.description_schema:
+                description = apply_schema_xsl(description, description_schema)
+            return description
+        description = self.get("description.value", "")
+        if series := self.hierarchy_series:
+            description = apply_series_xsl(description, series.reference_number)
+        description = format_extref_links(description)
+        return description
+
+    @cached_property
+    def raw_description(self) -> str:
+        """Returns the api value of the attr if found, empty str otherwise."""
+        return self.get("description.raw", "")
+
+    @cached_property
+    def description_schema(self) -> str:
+        if schema := self.get("description.schema", ""):
+            colltype = etree.fromstring(schema)
+            if colltype_id := colltype.get("id", ""):
+                return colltype_id
+        return ""
 
     @cached_property
     def separated_materials(self) -> tuple[dict[str, Any], ...]:
@@ -353,11 +377,14 @@ class Record(APIModel):
         for hierarchy_item in self.get("@hierarchy", ()):
             if hierarchy_item.get("identifier"):
                 # page_record_is_tna: carry status to hierarchy record
-                hierarchy_records += (
-                    Record(
-                        hierarchy_item | {"page_record_is_tna": self.is_tna}
-                    ),
+                hierarchy_record = Record(
+                    hierarchy_item | {"page_record_is_tna": self.is_tna}
                 )
+                # skips current record from showing in hierarchy bar
+                if self.iaid == hierarchy_record.iaid:
+                    continue
+                hierarchy_records += (hierarchy_record,)
+
         return hierarchy_records
 
     @cached_property
@@ -407,9 +434,7 @@ class Record(APIModel):
         """Returns record detail url for iaid, empty str otherwise."""
         if self.iaid:
             try:
-                return reverse(
-                    "details-page-machine-readable", kwargs={"id": self.iaid}
-                )
+                return reverse("records:details", kwargs={"id": self.iaid})
             except NoReverseMatch:
                 pass
         return ""
@@ -437,3 +462,11 @@ class Record(APIModel):
             items = items[-3:]
 
         return items
+
+    @cached_property
+    def hierarchy_series(self) -> Record | None:
+        """Returns series record from hierarchy if found, None otherwise"""
+        for item in self.hierarchy:
+            if item.level == "Series":
+                return item
+        return None

@@ -130,3 +130,55 @@ def record_detail_view(request, id):
     return TemplateResponse(
         request=request, template=template_name, context=context
     )
+
+
+def related_records_view(request, id):
+    template_name = "records/related_records.html"
+    context: dict = {}
+
+    try:
+        record = record_details_by_id(id=id)
+    except ResourceNotFound:
+        raise Http404
+    except Exception as e:
+        context = {"exception_message": str(e)}
+        return TemplateResponse(
+            request=request,
+            template="errors/server_error.html",
+            context=context,
+            status=502,
+        )
+
+    context.update(
+        record=record,
+    )
+
+    return TemplateResponse(
+        request=request, template=template_name, context=context
+    )
+
+
+def records_help_view(request, id):
+    template_name = "records/new_to_archives.html"
+    context: dict = {}
+
+    try:
+        record = record_details_by_id(id=id)
+    except ResourceNotFound:
+        raise Http404
+    except Exception as e:
+        context = {"exception_message": str(e)}
+        return TemplateResponse(
+            request=request,
+            template="errors/server_error.html",
+            context=context,
+            status=502,
+        )
+
+    context.update(
+        record=record,
+    )
+
+    return TemplateResponse(
+        request=request, template=template_name, context=context
+    )

@@ -1,8 +1,225 @@
+@use "@nationalarchives/frontend/nationalarchives/tools/borders";
+@use "@nationalarchives/frontend/nationalarchives/tools/colour";
+@use "@nationalarchives/frontend/nationalarchives/tools/media";
 @use "@nationalarchives/frontend/nationalarchives/tools/spacing";
+@use "@nationalarchives/frontend/nationalarchives/tools/typography";
+
+.back-link-group {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: spacing.space(2);
+
+  @include media.on-tiny {
+    flex-direction: column;
+    gap: spacing.space(1);
+  }
+}
+
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: spacing.space(0.5);
+
+  text-decoration: none;
+
+  &__icon {
+  }
+
+  &__text {
+    text-decoration: underline;
+    @include typography.interactable-text-decoration;
+  }
+
+  &:link,
+  &:visited {
+    @include colour.colour-font("font-base");
+  }
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+
+  &:hover &__text,
+  &:focus-visible &__text {
+    @include typography.interacted-text-decoration;
+  }
+}
+
+.reference {
+  margin-right: 1em;
+  padding-right: 0.25em;
+  padding-left: 0.25em;
+
+  display: inline-block;
+
+  line-height: 1.4;
+  @include typography.detail-font;
+  @include colour.tint;
+
+  @include colour.colour-border("keyline", 1px);
+  @include borders.rounded-border;
+}
+
+.full-height-aside {
+  height: 100%;
+
+  box-sizing: border-box;
+
+  border: solid 3px #86bc25;
+}
+
+.tna-dl--dotted {
+  @include colour.colour-border("keyline", 1px, solid, bottom);
+
+  > dt,
+  > dd {
+    padding-top: spacing.space(0.5);
+    padding-bottom: spacing.space(0.5);
+
+    background-color: transparent !important;
+
+    @include colour.colour-border("keyline", 1px, solid, top);
+  }
+
+  & & {
+    border-bottom: none;
+
+    // @include typography.font-size(16);
+
+    > dt,
+    > dd {
+      &:first-of-type {
+        padding-top: 0;
+        border-top: none;
+      }
+    }
+
+    > dt:last-of-type {
+      &,
+      & ~ dd {
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  .tna-table {
+    margin-top: spacing.space(0.5);
+    margin-bottom: spacing.space(1);
+
+    &__caption {
+      caption-side: top;
+
+      padding: 0 0 spacing.space(0.5);
+    }
+  }
+
+  @include media.on-tiny {
+    > dd {
+      border-top: none;
+    }
+  }
+}
 
 .record-details {
   &__label {
     position: sticky;
     top: spacing.space(0.5);
   }
+
+  &__description {
+    padding-top: spacing.space(0.25);
+    padding-bottom: spacing.space(0.25);
+
+    display: block;
+    @include typography.detail-font-small;
+    text-transform: none;
+    @include colour.colour-font("font-light");
+  }
+
+  textarea {
+    width: 100%;
+    padding: spacing.space(0.125) spacing.space(0.25);
+
+    display: block;
+
+    resize: vertical;
+
+    @include typography.font-size(16);
+    @include typography.detail-font;
+
+    @include colour.colour-border("keyline", 1px);
+    @include borders.rounded-border;
+  }
+}
+
+.square {
+  aspect-ratio: 1;
+
+  padding: spacing.space(0.75);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  text-align: center;
+
+  .tna-column:has(&) {
+    flex: 1;
+
+    + .tna-column {
+      flex: 6;
+    }
+  }
+}
+
+.copy-url {
+  @include typography.detail-font;
+  @include typography.font-size(16);
+}
+
+.record-hierarchy {
+  padding-top: spacing.space(0.75);
+
+  overflow: hidden;
+
+  @include borders.rounded-border;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+
+  &__count {
+    padding-top: spacing.space(0.125);
+    padding-right: spacing.space(0.5);
+    padding-bottom: spacing.space(0.125);
+
+    text-align: right;
+
+    @include borders.rounded-border;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.record-hierarchy-this {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.large-icon {
+  font-size: 2em;
+
+  @include media.on-larger-than-tiny {
+    margin-left: spacing.space(1);
+  }
+}
+
+#youtube-link {
+}
+
+#youtube-embeded-player {
+  height: auto;
+  aspect-ratio: 16 / 9;
 }

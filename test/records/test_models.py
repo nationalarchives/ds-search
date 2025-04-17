@@ -155,6 +155,11 @@ class RecordModelTests(SimpleTestCase):
     def test_summary_title_other_places(self):
         self.record = Record(self.template_details)
         # patch raw data
+        self.record._raw["iaid"] = "C11827825"
+        self.record._raw["groupArray"] = [
+            {"value": "record"},
+            {"value": "tna"},
+        ]
         self.record._raw["@previous"] = {
             "summary": {
                 "title": "Law Officers' Department: Patents for Inventions"
@@ -289,6 +294,11 @@ class RecordModelTests(SimpleTestCase):
     def test_level_code_other_places(self):
         self.record = Record(self.template_details)
         # patch raw data
+        self.record._raw["iaid"] = "C11827825"
+        self.record._raw["groupArray"] = [
+            {"value": "record"},
+            {"value": "tna"},
+        ]
         self.record._raw["@hierarchy"] = [
             {
                 "identifier": [
@@ -369,7 +379,7 @@ class RecordModelTests(SimpleTestCase):
             result = self.record.held_by_url
         self.assertEqual(self.record.held_by_url, result)
         self.assertIn(
-            "WARNING:app.records.models:held_by_url:Record(C12345):No reverse match for details-page-machine-readable with held_by_id=INVALID",
+            "WARNING:app.records.models:held_by_url:Record(C12345):No reverse match for record_details with held_by_id=INVALID",
             lc.output,
         )
 
@@ -560,17 +570,54 @@ class RecordModelTests(SimpleTestCase):
     def test_description(self):
         self.record = Record(self.template_details)
         # patch raw data
-        self.record._raw["description"] = (
-            """C16248: Online descriptions of individual records can be viewed """
-            """on Discovery, see <a class=\"extref\" """
-            """href=\"f41eb-1496-446c-8bf8-21dc681223da\">RM 2</a>."""
-            """"C16248: Also see the Royal Botanic Gardens, Kew """
-            """<a class=\"extref\" href=\"https://www2.calmview.co.uk/kew/calmview"""
-            """/Record.aspx?src=CalmView.Catalog&amp;id=MN&amp;pos=1\">online catalogue</a>"""
-            """C244: <span class=\"emph-italic\">Censuses of Population</span>"""
-            """C244: <span class=\"list\"><span class=\"item\">Correspondence and """
-            """papers</span></span>"""
+        self.record._raw["description"] = {
+            "value": (
+                """C16248: Online descriptions of individual records can be viewed """
+                """on Discovery, see <a class=\"extref\" """
+                """href=\"f41eb-1496-446c-8bf8-21dc681223da\">RM 2</a>."""
+                """"C16248: Also see the Royal Botanic Gardens, Kew """
+                """<a class=\"extref\" href=\"https://www2.calmview.co.uk/kew/calmview"""
+                """/Record.aspx?src=CalmView.Catalog&amp;id=MN&amp;pos=1\">online catalogue</a>"""
+                """C244: <span class=\"emph-italic\">Censuses of Population</span>"""
+                """C244: <span class=\"list\"><span class=\"item\">Correspondence and """
+                """papers</span></span>"""
+            ),
+            "schema": "",
+            "raw": "",
+        }
+        self.assertEqual(
+            self.record.description,
+            (
+                """C16248: Online descriptions of individual records can be viewed """
+                """on Discovery, see <a class=\"extref\" """
+                """href=\"f41eb-1496-446c-8bf8-21dc681223da\">RM 2</a>."""
+                """"C16248: Also see the Royal Botanic Gardens, Kew """
+                """<a class=\"extref\" href=\"https://www2.calmview.co.uk/kew/calmview"""
+                """/Record.aspx?src=CalmView.Catalog&amp;id=MN&amp;pos=1\">online catalogue</a>"""
+                """C244: <span class=\"emph-italic\">Censuses of Population</span>"""
+                """C244: <span class=\"list\"><span class=\"item\">Correspondence and """
+                """papers</span></span>"""
+            ),
         )
+
+    def test_raw_description(self):
+        self.record = Record(self.template_details)
+        # patch raw data
+        self.record._raw["description"] = {
+            "value": "",
+            "schema": "",
+            "raw": (
+                """C16248: Online descriptions of individual records can be viewed """
+                """on Discovery, see <a class=\"extref\" """
+                """href=\"f41eb-1496-446c-8bf8-21dc681223da\">RM 2</a>."""
+                """"C16248: Also see the Royal Botanic Gardens, Kew """
+                """<a class=\"extref\" href=\"https://www2.calmview.co.uk/kew/calmview"""
+                """/Record.aspx?src=CalmView.Catalog&amp;id=MN&amp;pos=1\">online catalogue</a>"""
+                """C244: <span class=\"emph-italic\">Censuses of Population</span>"""
+                """C244: <span class=\"list\"><span class=\"item\">Correspondence and """
+                """papers</span></span>"""
+            ),
+        }
         self.assertEqual(
             self.record.description,
             (
@@ -709,7 +756,7 @@ class RecordModelTests(SimpleTestCase):
             },
         ]
 
-        self.assertEqual(len(self.record.hierarchy), 4)
+        self.assertEqual(len(self.record.hierarchy), 3)
 
         for i, r in enumerate(
             zip(

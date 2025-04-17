@@ -23,6 +23,7 @@ services:
       - COOKIE_DOMAIN=localhost
       - CSP_STYLE_SRC_ELEM='self',fonts.googleapis.com,p.typekit.net,use.typekit.net
       - CSP_FONT_SRC='self',fonts.gstatic.com,use.typekit.net
+      - CSP_FRAME_SRC='self',www.youtube.com
       - FEATURE_PHASE_BANNER=False
     ports:
       - 65533:8080

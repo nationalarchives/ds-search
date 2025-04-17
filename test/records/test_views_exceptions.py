@@ -27,9 +27,7 @@ class TestRecordViewExceptions(TestCase):
         response = self.client.get("/catalogue/id/C123456/")
 
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(
-            response.resolver_match.view_name, "details-page-machine-readable"
-        )
+        self.assertEqual(response.resolver_match.view_name, "records:details")
 
     @prevent_request_warnings
     @responses.activate
@@ -40,6 +38,7 @@ class TestRecordViewExceptions(TestCase):
             body=Exception("THIS IS AN UNKNOWN API EXCEPTION"),
         )
 
+        # TODO: This test still outputs the error message "Bad Gateway: /catalogue/id/C123456/" to the console
         with self.assertLogs(
             "app.lib.api", level="ERROR"
         ):  # assertLogs to suppress test console logging

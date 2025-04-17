@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 
+{% from 'components/accordion/macro.html' import tnaAccordion %}
+{% from 'records/macros/information_boxes.html' import information_boxes %}
+{% from 'records/macros/detail_fields.html' import detail_fields %}
+{% from 'records/macros/hierarchy.html' import hierarchy %}
+{% from 'records/macros/how_to_order.html' import how_to_order %}
+{% from 'records/macros/series_information.html' import series_information %}
+{% from 'records/macros/top_navigation.html' import top_navigation %}
+{% from 'records/macros/related_records_block.html' import related_records_block %}
+
 {%- set pageTitle = (record.summary_title or '[No title]') | striptags -%}
 
 {% block stylesheets %}
@@ -7,98 +16,58 @@
     <link rel="stylesheet" href="{{ static('record-details.css') }}?v={{ app_config.BUILD_VERSION }}" media="screen,print">
 {% endblock %}
 
+{% block beforeContent %}
+{{ top_navigation(record, request) }}
+{% endblock %}
+
 {% block content %}
 <div class="tna-section">
   <div class="tna-container">
     <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
-      <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
+      <hgroup class="tna-hgroup-xl">
+        <p class="tna-hgroup__supertitle">{{ record.level }}</p>
+        <h1 class="tna-hgroup__title">{{ pageTitle }}</h1>
+      </hgroup>
 
-      <p>{{ record.custom_record_type }}</p>
+      <p>Catalogue reference: <strong class="reference">{{ record.reference_number }}</strong></p>
 
       {% if canonical %}
       <p>Canonical: {{ canonical }}</p>
       {% endif %}
+    </div>
+  </div>
 
-      <ol class="tna-ol">
-        <li>
-          Held at:
-          <a href="{{ record.held_by_url }}">{{ record.held_by | safe }}</a>
-        </li>
-        {% for hierarchy_record in record.hierarchy %}
-        <li>
-          {{ hierarchy_record.level }}:
-          <a href="{{ hierarchy_record.url }}">{{ hierarchy_record.summary_title }}</a>
-        </li>
-        {% endfor %}
-      </ol>
+  {{ information_boxes(record) }}
 
-      <ul class="tna-ul">
-      {% if record.previous %}
-        <li>
-          Previous {{ record.previous.level }}: <a href="{{ record.previous.url }}">{{ record.previous.reference_number }}</a>
-        </li>
+  {{ detail_fields(record, field_labels, request) }}
+
+  <div class="tna-container tna-!--margin-top-m">
+    <div class="tna-column tna-column--full tna-margin-top-m">
+      {% set accordion_items = [] %}
+
+      {% set accordion_items = accordion_items + [{
+        'title': 'How to order this record',
+        'body': how_to_order()
+      }] %}
+
+      {% if record.hierarchy_series %}
+        {% set accordion_items = accordion_items + [{
+          'title': 'Series information',
+          'body': series_information(record)
+        }] %}
       {% endif %}
-      {% if record.next %}
-        <li>
-          Next {{ record.next.level }} : <a href="{{ record.next.url }}">{{ record.next.reference_number }}</a>
-        </li>
-      {% endif %}
-      </ul>
 
-      <ul class="tna-ul">
-      Legacy Breadcrumb Items for short hierarchy items:
-      {%- set bci = record.breadcrumb_items -%}  
-      {% for bc_item in bci %}
-        {% if bc_item.url %}
-          {% if bc_item.iaid == record.iaid %}
-              {%- set is_current_item = True -%}
-          {% else %}
-              {%- set is_current_item = False -%}
-          {% endif %}
-          {# is_current_item = {{ is_current_item }} #}
-          <li>
-          <a href="{{ bc_item.url }}">{{ bc_item.level }}</a>
-          </li>
-        {% endif %}
-      {% endfor %}
-      </ul>
-
-      <h2 class="tna-heading-l">Record details</h2>
-      {% set fields = [
-        'title',
-        'reference_number',
-        'closure_status',
-        'date_covering',
-        'description',
-        'held_by',
-        'legal_status',
-        'closure_status',
-        'dimensions',
-        'creator'
-      ] %}
-      <dl class="tna-dl">
-        {% for field in fields %}
-        {% if record[field] %}
-        <dt>
-          <span class="record-details__label">{{ field_labels[field] }}</span>
-        </dt>
-        <dd>
-          {% if field == 'held_by' %}
-          <a href="{{ record.held_by_url }}">{{ record[field] | safe }}</a>
-          {% elif field in ['creator'] %}
-          {# Show a list of items #}
-          <ul class="tna-ul">
-            {% for item in record[field] %}
-            <li>{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          {{ record[field] | safe }}
-          {% endif %}
-        </dd>
-        {% endif %}
-        {% endfor %}
-      </dl>
+      {% set accordion_items = accordion_items + [{
+        'title': 'Catalogue hierarchy',
+        'body': hierarchy(record)
+      }] %}
+      
+      {{ tnaAccordion({
+        'itemHeadingLevel': 3,
+        'items': accordion_items,
+        'id': 'record-extended-details',
+        'openMultipleItems': True
+      }) }}
     </div>
 
     {# This template will be replaced by a hierarchical set of templates, one per DO #}
@@ -106,4 +75,13 @@
 
   </div>
 </div>
+
+{{ related_records_block(record) }}
+
+</div>
+{% endblock %}
+
+{% block bodyEnd %}
+{{ super() }}
+    <script src="{{ static('record-details.min.js') }}?v={{ app_config.BUILD_VERSION }}" defer></script>
 {% endblock %}
