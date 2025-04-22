@@ -98,7 +98,7 @@
 
     > dt:last-of-type {
       &,
-      & ~ dd {
+      & ~ dd:last-child {
         padding-bottom: 0;
       }
     }
