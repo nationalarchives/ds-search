@@ -77,3 +77,7 @@ def apply_series_xsl(source: str, division: str) -> str:
     if schema := SERIES_TRANSFORMATIONS.get(division):
         return xsl_transformation(source, schema)
     return source
+
+
+def apply_generic_xsl(source: str) -> str:
+    return xsl_transformation(source, "Generic.xsl")

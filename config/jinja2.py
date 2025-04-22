@@ -3,6 +3,7 @@ import json
 import re
 from datetime import datetime
 
+from app.lib.xslt_transformations import apply_generic_xsl
 from django.conf import settings
 from django.http import QueryDict
 from django.templatetags.static import static
@@ -165,6 +166,7 @@ def environment(**options):
             "base64_encode": base64_encode,
             "base64_decode": base64_decode,
             "sanitise_record_description": sanitise_record_description,
+            "apply_generic_xsl": apply_generic_xsl,
         }
     )
     return env
