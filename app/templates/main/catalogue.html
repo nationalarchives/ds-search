@@ -2,6 +2,8 @@
 
 {% from 'components/breadcrumbs/macro.html' import tnaBreadcrumbs %}
 {% from 'components/search-field/macro.html' import tnaSearchField %}
+{% from 'records/macros/explore_discover.html' import explore_discover %}
+
 
 {%- set pageTitle = 'Welcome to the catalogue' -%}
 
@@ -56,7 +58,19 @@
     </div>
   </div>
 </div>
+<div class="tna-container">
+  <h2>Other ways to explore our collection</h2>
+</div>
 
+<div class="tna-section">
+  <div class="tna-container">
+    <div class="tna-column tna-column--width-3-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
+
+      {{ explore_discover(record) }}
+
+    </div>
+  </div>
+</div>
 
 
 {% endblock %}
