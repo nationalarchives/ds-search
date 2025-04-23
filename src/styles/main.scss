@@ -21,16 +21,24 @@
 }
 
 .a-z ul {
-  font-family: Bitter, serif;
   list-style-type: none;
   padding: 0;
   margin-bottom: .2em;
+  margin-top: 1em;
 }
 
 .a-z li {
   text-align: center;
   list-style-type: none;
   display: inline-block;
-  margin: 0 4px 4px 0;
-  padding: 0;
+  margin: 0 10px 10px 0;
+  padding: 1em;
+  border: solid 1px black;
+  background-color: antiquewhite;
+  width: 16px;
+
+  a {
+    text-decoration: none;
+  }
+
 }
