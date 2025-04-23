@@ -1,7 +1,6 @@
 import copy
 from dataclasses import dataclass
 from enum import StrEnum
-from typing import List
 
 from django.contrib.humanize.templatetags.humanize import intcomma
 
@@ -22,13 +21,13 @@ class Bucket:
     is_current: bool = False
 
     @property
-    def label_with_count(self):
+    def label_with_count(self) -> str:
         if self.record_count is None:
             return self.label
         return self.label + f" ({intcomma(self.record_count)})"
 
     @property
-    def for_display(self):
+    def for_display(self) -> dict[str, str | bool]:
         """
         Returns data formatted for front-end component Ex: tnaSecondaryNavigation()
         """
@@ -71,7 +70,7 @@ CATALOGUE_BUCKETS = [
 
 def get_buckets_for_display(
     query: str, buckets: dict, current_bucket_key: str
-) -> list:
+) -> list[dict[str, str | bool]]:
     """
     Returns modified buckets data to be used in the template
     by front-end component Ex: tnaSecondaryNavigation()

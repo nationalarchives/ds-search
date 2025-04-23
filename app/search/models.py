@@ -16,7 +16,7 @@ class APISearchResponse(APIResponse):
                 if "@template" in record and "details" in record["@template"]
             ]
         return records
-    
+
     @cached_property
     def buckets(self) -> dict:
         """
