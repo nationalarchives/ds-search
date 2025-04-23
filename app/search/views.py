@@ -26,9 +26,11 @@ def catalogue_search_view(request):
     # filter records for a bucket
     params = {"filter": f"group:{current_bucket_key}"}
 
+    query = request.GET.get("q", "")
+
     try:
         results = search_records(
-            query=request.GET.get("q", None),
+            query=query,
             results_per_page=results_per_page,
             page=page,
             sort=sort,
@@ -53,7 +55,7 @@ def catalogue_search_view(request):
     }
     selected_filters = build_selected_filters_list(request)
     buckets = get_buckets_for_display(
-        query=request.GET.get("q", ""),
+        query=query,
         buckets=results.buckets,
         current_bucket_key=current_bucket_key,
     )
