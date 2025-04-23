@@ -23,6 +23,14 @@ class CatalogueSearchViewTests(TestCase):
                         }
                     }
                 ],
+                "buckets": [
+                    {
+                        "name": "group",
+                        "entries": [
+                            {"value": "tna", "count": 1},
+                        ],
+                    }
+                ],
                 "stats": {
                     "total": 26008838,
                     "results": 20,
@@ -57,4 +65,24 @@ class CatalogueSearchViewTests(TestCase):
                 ],
                 "next": {"href": "?page=2", "title": "Next page of results"},
             },
+        )
+        self.assertEqual(
+            response.context_data.get("buckets"),
+            [
+                {
+                    "name": "Records at the National Archives (1)",
+                    "href": "?group=tna",
+                    "current": True,
+                },
+                {
+                    "name": "Online records at The National Archives (0)",
+                    "href": "?group=digitised",
+                    "current": False,
+                },
+                {
+                    "name": "Records at other UK archives (0)",
+                    "href": "?group=nonTna",
+                    "current": False,
+                },
+            ],
         )
