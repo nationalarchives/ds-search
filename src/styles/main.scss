@@ -6,9 +6,31 @@
 
 .tna-error-summary {
   padding: 8px;
-
   background-color: var(--background, #f4f4f4);
-
   border: 0.2em var(--form-error-border, #937ef1) solid;
   border-radius: 6px;
+}
+
+.taglist ul.a-z {
+  font-family: "Open Sans", sans-serif;
+}
+
+.taglist ul {
+  padding-left: 0;
+  list-style-image: none;
+}
+
+.a-z ul {
+  font-family: Bitter, serif;
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: .2em;
+}
+
+.a-z li {
+  text-align: center;
+  list-style-type: none;
+  display: inline-block;
+  margin: 0 4px 4px 0;
+  padding: 0;
 }
