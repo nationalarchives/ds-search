@@ -6,27 +6,33 @@
 
 .tna-error-summary {
   padding: 8px;
+
   background-color: var(--background, #f4f4f4);
+
   border: 0.2em var(--form-error-border, #937ef1) solid;
   border-radius: 6px;
 }
 
 .a-z ul {
-  list-style-type: none;
-  padding: 0;
-  margin-bottom: .2em;
   margin-top: 1em;
+  margin-bottom: 0.2em;
+  padding: 0;
+  list-style-type: none;
 }
 
 .a-z li {
-  text-align: center;
-  list-style-type: none;
-  display: inline-block;
+  width: 20px;
   margin: 0 10px 10px 0;
   padding: 1em;
-  border: solid 1px black;
+
+  display: inline-block;
+
+  text-align: center;
+
   background-color: antiquewhite;
-  width: 20px;
+
+  border: solid 1px black;
+  list-style-type: none;
 
   a {
     text-decoration: none;
