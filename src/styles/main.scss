@@ -17,6 +17,13 @@
   background-color: #dde5d5;
 }
 
+.tna-accordion__details,
+.tna-accordion__details:first-child {
+  width: 100%;
+
+  border: 0;
+}
+
 .a-z ul {
   margin-top: 1em;
   margin-bottom: 0.2em;
