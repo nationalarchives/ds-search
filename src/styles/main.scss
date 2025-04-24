@@ -38,3 +38,29 @@
     text-decoration: none;
   }
 }
+
+.subjects ul {
+  margin-top: 1em;
+  margin-bottom: 0.2em;
+  padding: 0;
+  list-style-type: none;
+}
+
+.subjects li {
+
+  margin: 0 10px 10px 0;
+  padding: 1em;
+
+  display: inline-block;
+
+  text-align: center;
+
+  background-color: antiquewhite;
+
+  border: solid 1px black;
+  list-style-type: none;
+
+  a {
+    text-decoration: none;
+  }
+}
