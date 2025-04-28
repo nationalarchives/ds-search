@@ -12,8 +12,6 @@ permissions:
 jobs:
   test-node:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Run tests
@@ -21,8 +19,6 @@ jobs:
 
   test-python:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Run tests
