@@ -82,10 +82,9 @@ def get_buckets_for_display(
     for bucket in bucket_list:
         bucket.record_count = buckets.get(bucket.key, 0)
         bucket.is_current = bucket.key == current_bucket_key
-        if bucket.href == "#":
-            bucket.href = f"?group={bucket.key}"
-            if query:
-                bucket.href += f"&q={query}"
+        bucket.href = f"?group={bucket.key}"
+        if query:
+            bucket.href += f"&q={query}"
 
     # return data for display
     return [bucket.for_display for bucket in bucket_list]
