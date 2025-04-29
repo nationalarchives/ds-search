@@ -69,7 +69,7 @@ def xsl_transformation(source: str, schema_file: str) -> str:
 
 
 def apply_schema_xsl(source: str, schema: str) -> str:
-    schema_xslt = SCHEMAS.get(schema, "Miscellaneous.xsl")
+    schema_xslt = SCHEMAS.get(schema, "Generic.xsl")
     return xsl_transformation(source, schema_xslt)
 
 

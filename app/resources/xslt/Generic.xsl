@@ -7,6 +7,11 @@
   <!--
   Top level definitions
   -->
+  <xsl:template match="emph[@altrender='doctype']">
+	</xsl:template>
+  <xsl:template match="emph[@altrender='scope']">
+    <xsl:value-of select="text()"/>
+  </xsl:template>
   <xsl:template match="scopecontent">
     <xsl:apply-templates/>
   </xsl:template>
@@ -27,9 +32,15 @@
       <xsl:when test="@href!=''">
         <xsl:element name="a">
           <xsl:attribute name="href">
-            <xsl:value-of select="@href"/>
+            <xsl:choose>
+              <xsl:when test="contains (@href,'&quot;')">
+                <xsl:value-of select="substring-before(substring-after(@href,'&quot;'),'&quot;')"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="@href"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:attribute>
-          <xsl:attribute name="class">external-link</xsl:attribute>
           <xsl:attribute name="title">Opens in a new tab</xsl:attribute>
           <xsl:if test="not ( contains (@href,'www.nationalarchives.gov.uk') )">
             <xsl:attribute name="target">_blank</xsl:attribute>
@@ -47,9 +58,15 @@
       <xsl:when test="@href!=''">
         <xsl:element name="a">
           <xsl:attribute name="href">
-            <xsl:value-of select="@href"/>
+            <xsl:choose>
+              <xsl:when test="contains (@href,'&quot;')">
+                <xsl:value-of select="substring-before(substring-after(@href,'&quot;'),'&quot;')"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="@href"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:attribute>
-          <xsl:attribute name="class">external-link</xsl:attribute>
           <xsl:attribute name="title">Opens in a new tab</xsl:attribute>
           <xsl:if test="not ( contains (@href,'www.nationalarchives.gov.uk') )">
             <xsl:attribute name="target">_blank</xsl:attribute>
@@ -69,7 +86,6 @@
           <xsl:attribute name="href">
             /catalogue/search/?_q=<xsl:value-of select="."/>&amp;_hb=tna
           </xsl:attribute>
-          <xsl:attribute name="class">external-link</xsl:attribute>
           <xsl:attribute name="title">Opens in a new tab</xsl:attribute>
           <xsl:apply-templates/>
         </xsl:element>
