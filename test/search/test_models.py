@@ -16,11 +16,13 @@ class APISearchResponseTests(SimpleTestCase):
         self.assertEqual(len(self.api_search_response.records), 0)
         self.assertEqual(self.api_search_response.stats_total, 0)
         self.assertEqual(self.api_search_response.stats_results, 0)
+        self.assertEqual(self.api_search_response.buckets, {})
 
     def test_api_search_response_attributes_with_empty_results_from_api(self):
 
         self.api_results = {
             "data": [],
+            "buckets": [{"name": "group", "total": 0, "other": 0}],
             "stats": {
                 "total": 0,
                 "results": 0,
@@ -33,6 +35,7 @@ class APISearchResponseTests(SimpleTestCase):
         self.assertEqual(len(self.api_search_response.records), 0)
         self.assertEqual(self.api_search_response.stats_total, 0)
         self.assertEqual(self.api_search_response.stats_results, 0)
+        self.assertEqual(self.api_search_response.buckets, {})
 
     def test_api_search_response_attributes_with_results_from_api(self):
 
@@ -44,6 +47,14 @@ class APISearchResponseTests(SimpleTestCase):
                             "iaid": "C11175621",
                         }
                     }
+                }
+            ],
+            "buckets": [
+                {
+                    "name": "group",
+                    "entries": [
+                        {"value": "tna", "count": 1},
+                    ],
                 }
             ],
             "stats": {
@@ -62,3 +73,5 @@ class APISearchResponseTests(SimpleTestCase):
         self.assertEqual(self.api_search_response.stats_total, 26008838)
 
         self.assertEqual(self.api_search_response.stats_results, 20)
+
+        self.assertEqual(self.api_search_response.buckets, {"tna": 1})

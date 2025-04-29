@@ -10,6 +10,8 @@ concurrency:
 jobs:
   test-node:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Run tests
@@ -17,6 +19,8 @@ jobs:
 
   test-python:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Run tests
@@ -24,6 +28,8 @@ jobs:
 
   version:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Get tag
@@ -67,6 +73,8 @@ jobs:
 
   update-ds-infrastructure-web:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs:
       - build
       - version
@@ -94,6 +102,8 @@ jobs:
 
   update-dblclk:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs:
       - build
       - version
