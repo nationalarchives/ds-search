@@ -18,6 +18,14 @@ class SearchRecordsTests(SimpleTestCase):
             f"{settings.ROSETTA_API_URL}/search",
             json={
                 "data": [{"@template": {"details": {"iaid": "C198022"}}}],
+                "buckets": [
+                    {
+                        "name": "group",
+                        "entries": [
+                            {"value": "tna", "count": 1},
+                        ],
+                    }
+                ],
                 "stats": {
                     "total": 1,
                     "results": 1,
@@ -34,6 +42,7 @@ class SearchRecordsTests(SimpleTestCase):
         self.assertIsInstance(api_results.records[0], Record)
         self.assertEqual(api_results.stats_total, 1)
         self.assertEqual(api_results.stats_results, 1)
+        self.assertEqual(api_results.buckets, {"tna": 1})
 
     @responses.activate
     def test_no_data_returned(self):
@@ -45,4 +54,22 @@ class SearchRecordsTests(SimpleTestCase):
         )
 
         with self.assertRaisesMessage(Exception, "No data returned"):
+            _ = search_records(query="")
+
+    @responses.activate
+    def test_no_buckets_returned(self):
+        responses.add(
+            responses.GET,
+            f"{settings.ROSETTA_API_URL}/search",
+            json={
+                "data": [{"@template": {"details": {"iaid": "C198022"}}}],
+                "stats": {
+                    "total": 1,
+                    "results": 1,
+                },
+            },
+            status=200,
+        )
+
+        with self.assertRaisesMessage(Exception, "No 'buckets' returned"):
             _ = search_records(query="")
