@@ -3,6 +3,7 @@
 {% from 'components/breadcrumbs/macro.html' import tnaBreadcrumbs %}
 {% from 'components/search-field/macro.html' import tnaSearchField %}
 {% from 'records/macros/explore_discover.html' import explore_discover %}
+{%- from 'components/card/macro.html' import tnaCard -%}
 
 
 {%- set pageTitle = 'Search our catalogue' -%}
@@ -106,6 +107,8 @@
     
   </div>
   {{ explore_discover(record) }}
+
+  
 </div>
 
 
