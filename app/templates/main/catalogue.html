@@ -2,7 +2,9 @@
 
 {% from 'components/breadcrumbs/macro.html' import tnaBreadcrumbs %}
 {% from 'components/search-field/macro.html' import tnaSearchField %}
-{% from 'records/macros/explore_discover.html' import explore_discover %}
+
+
+
 {%- from 'components/card/macro.html' import tnaCard -%}
 
 
@@ -106,10 +108,71 @@
     </div>
     
   </div>
-  {{ explore_discover(record) }}
 
   
 </div>
 
 
+
+
+
+<div class="tna-!--margin-top-xs">
+  <div class="tna-container">
+    <h3 class="tna-heading-l">Other ways to explore our collection</h3>
+  </div>
+  <div>
+    
+    <ul class="tna-container tna-container--nested">
+      {% for page in top_pages %}
+        <li class="tna-column tna-column--width-1-3 tna-column--full-tiny tna-!--margin-top-l">
+          {{ tnaCard({
+            'title': page.title,
+            'headingLevel': 3,
+            'headingSize': 's',
+            'href': page.full_url,
+            'imageAlt': '',
+            'imageSrc': page.teaser_image.jpeg.full_url,
+            'imageWidth': page.teaser_image.jpeg.width,
+            'imageHeight': page.teaser_image.jpeg.height,
+            'meta': [
+              {
+                'title': 'Type',
+                'text': 'Explore the collection'
+              }
+            ],
+            'body': page.teaser_text | safe,
+            'fullAreaClick': True
+          }) }}
+        </li>
+      {% endfor %}
+    </ul>
+    <div class="tna-container">
+      <h3 class="tna-heading-l">Discover something new</h3>
+    </div>
+    <ul class="tna-container tna-container--nested">
+    {% for page in pages %}
+      <li class="tna-column tna-column--width-1-3 tna-column--full-tiny tna-!--margin-top-l">
+        {{ tnaCard({
+          'title': page.title,
+          'headingLevel': 3,
+          'headingSize': 's',
+          'href': page.full_url,
+          'imageAlt': '',
+          'imageSrc': page.teaser_image.jpeg.full_url,
+          'imageWidth': page.teaser_image.jpeg.width,
+          'imageHeight': page.teaser_image.jpeg.height,
+          'meta': [
+            {
+              'title': 'Type',
+              'text': page.type_label
+            }
+          ],
+          'body': page.teaser_text | safe,
+          'fullAreaClick': True
+        }) }}
+      </li>
+    {% endfor %}
+  </ul>
+  </div>
+</div>
 {% endblock %}
