@@ -145,7 +145,9 @@ try:
 except FileNotFoundError:
     pass
 
-WAGTAIL_API_URL = os.getenv("WAGTAIL_API_URL", "")
+WAGTAIL_API_URL: str = os.getenv("WAGTAIL_API_URL", "")
+WAGTAIL_HOME_PAGE_ID: int = 5
+WAGTAIL_EXPLORE_THE_COLLECTION_PAGE_ID: int = 55
 
 SECRET_KEY: str = os.environ.get("SECRET_KEY", "")
 

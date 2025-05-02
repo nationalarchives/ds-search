@@ -16,13 +16,21 @@ def catalogue(request):
 
     client = JSONAPIClient(settings.WAGTAIL_API_URL)
     client.add_parameters(
-        {"child_of": 55, "limit": 3, "order": "-first_published_at"}
+        {
+            "child_of": settings.WAGTAIL_EXPLORE_THE_COLLECTION_PAGE_ID,
+            "limit": 3,
+            "order": "-first_published_at",
+        }
     )
     response_data = client.get("/pages/")
     context["pages"] = response_data.get("items", [])
 
     client.add_parameters(
-        {"child_of": 5, "limit": 3, "order": "-first_published_at"}
+        {
+            "child_of": settings.WAGTAIL_HOME_PAGE_ID,
+            "limit": 3,
+            "order": "-first_published_at",
+        }
     )
     response_data = client.get("/pages/")
     context["top_pages"] = response_data.get("items", [])
