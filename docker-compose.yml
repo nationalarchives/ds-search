@@ -25,6 +25,7 @@ services:
       - CSP_FONT_SRC='self',fonts.gstatic.com,use.typekit.net
       - CSP_FRAME_SRC='self',www.youtube.com
       - FEATURE_PHASE_BANNER=False
+      - WAGTAIL_API_URL=https://beta.nationalarchives.gov.uk/api/v2
     ports:
       - 65533:8080
     depends_on:
