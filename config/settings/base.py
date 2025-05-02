@@ -174,10 +174,6 @@ CONTENT_SECURITY_POLICY = {
         "frame-src": os.environ.get("CSP_FRAME_SRC", SELF).split(","),
     }
 }
-if WAGTAIL_API_URL:
-    CONTENT_SECURITY_POLICY["DIRECTIVES"]["img-src"].append(
-        WAGTAIL_API_URL.replace("/api/v2", "")
-    )
 
 GA4_ID = os.environ.get("GA4_ID", "")
 
