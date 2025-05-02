@@ -145,8 +145,7 @@ try:
 except FileNotFoundError:
     pass
 
-ETNA_URL = os.getenv("ETNA_URL")
-ETNA_API_URL = f"{ETNA_URL}/api/v2"
+WAGTAIL_API_URL = os.getenv("WAGTAIL_API_URL", "")
 
 SECRET_KEY: str = os.environ.get("SECRET_KEY", "")
 
@@ -154,7 +153,10 @@ DEBUG: bool = strtobool(os.getenv("DEBUG", "False"))
 
 COOKIE_DOMAIN: str = os.environ.get("COOKIE_DOMAIN", "")
 
-CSP_IMG_SRC: list[str] = os.environ.get("CSP_IMG_SRC", f"'self', {ETNA_URL}").split(",")
+CSP_IMG_SRC: list[str] = os.environ.get("CSP_IMG_SRC", "'self'").split(",")
+if WAGTAIL_API_URL:
+    CSP_IMG_SRC.append(WAGTAIL_API_URL.replace("/api/v2", ""))
+
 CSP_SCRIPT_SRC: list[str] = os.environ.get("CSP_SCRIPT_SRC", "'self'").split(
     ","
 )
