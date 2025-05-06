@@ -46,8 +46,8 @@
       {% set accordion_items = [] %}
 
       {% set accordion_items = accordion_items + [{
-        'title': 'How to order this record',
-        'body': how_to_order()
+        'title': do_heading,
+        'body': how_to_order(do_description, do_orderbuttons)
       }] %}
 
       {% if record.hierarchy_series %}
