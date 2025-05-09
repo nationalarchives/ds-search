@@ -67,34 +67,3 @@
     }
   }
 }
-
-.subjects ul {
-  margin-top: 1em;
-  margin-bottom: 0.2em;
-  padding: 0;
-  list-style-type: none;
-}
-
-.subjects li {
-  margin: 0 10px 10px 0;
-  padding: 8px;
-
-  display: inline-block;
-
-  text-align: left;
-
-  background-color: white;
-
-  border: solid 1px black;
-  list-style-type: none;
-
-  :hover {
-    color: white;
-
-    background: green;
-  }
-
-  a {
-    text-decoration: none;
-  }
-}
