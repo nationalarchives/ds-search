@@ -41,6 +41,18 @@
   border: solid 1px black;
   list-style-type: none;
 
+  :hover {
+    width: 100%;
+    padding: 15px;
+
+    position: relative;
+    left: -10px;
+
+    color: white;
+
+    background: green;
+  }
+
   a {
     text-decoration: none;
   }
@@ -65,6 +77,12 @@
 
   border: solid 1px black;
   list-style-type: none;
+
+  :hover {
+    color: white;
+
+    background: green;
+  }
 
   a {
     text-decoration: none;
