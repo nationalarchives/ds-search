@@ -3,12 +3,10 @@
 @use "@nationalarchives/frontend/nationalarchives/tools/spacing";
 
 .development-notice {
-  padding: 8px;
+  padding: spacing.space(1);
 
-  background-color: var(--background, #f4f4f4);
-
-  border: 0.2em var(--form-error-border, #937ef1) solid;
-  border-radius: 6px;
+  border: 0.2em #937ef1 solid;
+  @include borders.rounded-border;
 }
 
 .choose-section {
