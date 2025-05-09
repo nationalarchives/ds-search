@@ -1,0 +1,67 @@
+@use "@nationalarchives/frontend/nationalarchives/tools/colour";
+@use "@nationalarchives/frontend/nationalarchives/tools/borders";
+@use "@nationalarchives/frontend/nationalarchives/tools/spacing";
+
+.development-notice {
+  padding: spacing.space(1);
+
+  border: 0.2em #937ef1 solid;
+  @include borders.rounded-border;
+}
+
+.choose-section {
+  background-color: #dde5d5;
+}
+
+.tna-accordion {
+  &__summary {
+    padding-left: 0;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+
+  &__details:first-child {
+    border: 0;
+  }
+
+  &__content {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.filter-list {
+  padding: 0;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: spacing.space(0.75);
+
+  list-style: none;
+
+  &__item {
+    display: inline-block;
+
+    text-align: center;
+
+    @include colour.base;
+
+    a {
+      min-width: 1.2em;
+      padding: spacing.space(0.5);
+
+      display: block;
+
+      text-decoration: none;
+
+      @include colour.colour-border("keyline-dark", 1px);
+      @include borders.rounded-border;
+
+      &:hover {
+        @include colour.accent;
+      }
+    }
+  }
+}

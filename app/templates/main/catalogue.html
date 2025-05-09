@@ -2,42 +2,249 @@
 
 {% from 'components/breadcrumbs/macro.html' import tnaBreadcrumbs %}
 {% from 'components/search-field/macro.html' import tnaSearchField %}
+{%- from 'components/card/macro.html' import tnaCard -%}
 
-{%- set pageTitle = 'Welcome to the catalogue' -%}
+{%- set pageTitle = 'Search our catalogue' -%}
 
-{% block beforeContent %}
-  <div class="tna-container">
-    <div class="tna-column tna-column--full">
-      {{ tnaBreadcrumbs({
-        'items': [
-          {
-            'text': 'Home',
-            'href': '/'
-          }
-        ],
-        'structuredData': True,
-        'classes': 'tna-!--padding-vertical-s'
-      }) }}
-    </div>
-  </div>
+{% block stylesheets %}
+{{ super() }}
+    <link rel="stylesheet" href="{{ static('landing.css') }}?v={{ app_config.BUILD_VERSION }}" media="screen,print">
 {% endblock %}
 
 {% block content %}
-<div class="tna-section">
+<div class="tna-background-accent tna-!--padding-top-s">
   <div class="tna-container">
-    <div class="tna-column tna-column--width-2-3 tna-column--width-5-6-medium tna-column--full-small tna-column--full-tiny">
-      <form action="{{ url('search:catalogue') }}" method="get">
-        <h1 class="tna-heading-xl">{{ pageTitle }}</h1>
-        {{ tnaSearchField({
-          'label': 'Search the catalogue',
-          'headingLevel': 2,
-          'headingSize': 'm',
-          'id': 'search',
-          'name': 'q',
-          'value': request.GET.get('q') or ''
-        }) }}
-      </form>
+    <form id="search-form" method="get" class="tna-column tna-column--full tna-!--margin-bottom-m">
+      <div class="tna-search-field">
+        <div class="tna-form__group ">
+          <div class="tna-form__group-contents">
+            <h1 class="tna-form__heading tna-form__heading--l">
+              <label class="tna-form__label" for="search">
+                Search our catalogue
+              </label>
+            </h1>
+            <p>Search by keyword, place, person, or catalogue reference</p>
+          </div>
+          <div class="tna-search-field__fields">
+            <input type="search" id="search" class="tna-search-field__input " name="q" value="tall" spellcheck="false">
+            <button type="submit" class="tna-button tna-search-field__button">
+              Search
+              <i class="fa-solid fa-fw fa-arrow-right tna-!--hide-on-tiny" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>  
+  </div>
+</div>
+
+<div class="tna-block-accent-light tna-!--padding-vertical-s">
+  <div class="tna-container">
+    <div class="tna-column tna-column--full">
+      <div class="tna-accordion" data-module="tna-accordion">
+        <div class="tna-accordion__item" data-isopen="true">
+          <h2 class="tna-accordion__heading tna-heading-s">
+            Find records by subject
+          </h2>
+          <div class="tna-accordion__body" id="accordion-demo-content-1">
+            <div class="tna-container tna-container--nested">
+              <div class="tna-column tna-column--width-1-3 tna-column--width-1-2-small tna-column--full-tiny">
+                <h3 class="tna-heading-s">Select a letter</h3>
+                <ul class="filter-list tna-!--margin-top-s">
+                  <li class="filter-list__item">
+                    <a href="#">A</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">B</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">C</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">D</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">E</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">F</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">G</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">H</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">I</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">J</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">K</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">L</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">M</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">N</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">O</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">P</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Q</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">R</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">S</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">T</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">U</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">V</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">W</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">X</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Y</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Z</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="tna-column tna-column--width-2-3 tna-column--width-1-2-small tna-column--full-tiny">
+                <h3 class="tna-heading-s">Select a subject</h3>
+                <ul class="filter-list tna-!--margin-top-s">
+                  <li class="filter-list__item">
+                    <a href="#">Africa</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Aid and development</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Air force</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Air transport</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Ancient Monuments and Historical Buildings</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Archives and libraries</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Armed Forces (General Administration)</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Army</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Art, architecture and design</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Asia</a>
+                  </li>
+                  <li class="filter-list__item">
+                    <a href="#">Australia and Pacific</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+</div>
+
+
+<div class="tna-section">
+  <div class="tna-container">
+    <div class="tna-column tna-column--full">
+
+      <div class="development-notice">
+        
+          <h2 class="tna-heading-m">
+            This site is still under development
+          </h2>
+          <p>Read our <a href="">blog post</a> for more information and help us out by providing <a href="">feedback</a>.</p>
+        
+      </div>
+
+    </div>
+    
+  </div>
+
+</div>
+
+<div class="tna-!--margin-top-xs">
+  <div class="tna-container">
+    <div class="tna-column tna-column--full">
+      <h3 class="tna-heading-l">Other ways to explore our collection</h3>
+    </div>
+  </div>
+  <ul class="tna-container">
+    {% for page in top_pages %}
+    <li class="tna-column tna-column--width-1-3 tna-column--full-tiny tna-!--margin-top-l">
+      {{ tnaCard({
+        'supertitle': 'Explore the collection',
+        'title': page.title,
+        'headingLevel': 3,
+        'headingSize': 's',
+        'href': page.full_url,
+        'imageAlt': '',
+        'imageSrc': page.teaser_image.jpeg.full_url,
+        'imageWidth': page.teaser_image.jpeg.width,
+        'imageHeight': page.teaser_image.jpeg.height,
+        'body': page.teaser_text | safe,
+        'fullAreaClick': True
+      }) }}
+    </li>
+    {% endfor %}
+  </ul>
+  <div class="tna-container tna-!--margin-top-l">
+    <div class="tna-column tna-column--full">
+      <h3 class="tna-heading-l">Discover something new</h3>
+    </div>
+  </div>
+  <ul class="tna-container tna-container--nested">
+    {% for page in pages %}
+    <li class="tna-column tna-column--width-1-3 tna-column--full-tiny tna-!--margin-top-l">
+      {{ tnaCard({
+        'supertitle': page.type_label,
+        'title': page.title,
+        'headingLevel': 3,
+        'headingSize': 's',
+        'href': page.full_url,
+        'imageAlt': '',
+        'imageSrc': page.teaser_image.jpeg.full_url,
+        'imageWidth': page.teaser_image.jpeg.width,
+        'imageHeight': page.teaser_image.jpeg.height,
+        'body': page.teaser_text | safe,
+        'fullAreaClick': True
+      }) }}
+    </li>
+    {% endfor %}
+  </ul>
 </div>
 {% endblock %}
