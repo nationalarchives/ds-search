@@ -183,6 +183,22 @@ DJANGO_SERVE_STATIC = False
 
 ROSETTA_API_URL = os.getenv("ROSETTA_API_URL")
 
+# DORIS is TNA's Document Ordering System that contains Delivery Options data
+DELIVERY_OPTIONS_API_URL = os.getenv("DELIVERY_OPTIONS_API_URL")
+
+# List of IP address for identifying staff members within the organisation
+STAFFIN_IP_ADDRESSES = list(
+    filter(None, os.getenv("STAFFIN_IP_ADDRESSES", "").split(","))
+)
+
+# List of IP address for identifying on-site public users
+ONSITE_IP_ADDRESSES = list(
+    filter(None, os.getenv("ONSITE_IP_ADDRESSES", "").split(","))
+)
+
+# List of Distressing content prefixes
+DCS_PREFIXES = list(filter(None, os.getenv("DCS_PREFIXES", "").split(",")))
+
 # Should always be True in production
 CLIENT_VERIFY_CERTIFICATES = strtobool(
     os.getenv("ROSETTA_CLIENT_VERIFY_CERTIFICATES", "True")
@@ -206,6 +222,16 @@ LOGGING = {
 SENTRY_DSN = os.getenv("SENTRY_DSN", "")
 ENVIRONMENT_NAME = os.getenv("ENVIRONMENT_NAME", "production")
 SENTRY_SAMPLE_RATE = float(os.getenv("SENTRY_SAMPLE_RATE", "0.1"))
+
+ADVANCED_DOCUMENT_ORDER_EMAIL = os.getenv(
+    "ADVANCED_DOCUMENT_ORDER_EMAIL",
+    "advanceddocumentorder@nationalarchives.gov.uk",
+)
+
+# Image library URL
+IMAGE_LIBRARY_URL = os.getenv(
+    "IMAGE_LIBRARY_URL", "https://images.nationalarchives.gov.uk/"
+)
 
 # Generated in the CI/CD process
 BUILD_VERSION = os.getenv("BUILD_VERSION", "")
