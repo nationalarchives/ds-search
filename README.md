@@ -84,6 +84,12 @@ See [Sentry's official guide](https://docs.sentry.io/platforms/python/guides/dja
 
 `.env` variables:
 
-| Variable          | Purpose                                                          |
-| ----------------- | ---------------------------------------------------------------- |
-| `ROSETTA_API_URL` | The base API URL for Rosetta, including the `/rosetta/data` path |
+| Variable                   | Purpose                                                                    |
+| -------------------------- | -------------------------------------------------------------------------- |
+| `ROSETTA_API_URL`          | The base API URL for Rosetta, including the `/rosetta/data` path           |
+| `DELIVERY_OPTIONS_API_URL` | Api for Delivery options                                                   |
+| `DCS_PREFIXES`             | Comma separated list of document prefixes for distressing content          |
+| `STAFFIN_IP_ADDRESSES`     | Comma separated list of CIDR format IP addresses identifying staff access  |
+| `ONSITE_IP_ADDRESSES`      | Comma separated list of CIDR format IP addresses identifying onsite access |
+
+TODO: Find where the IP_ADDRESSES are documented and link to document here
