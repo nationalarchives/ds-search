@@ -95,10 +95,16 @@
                 'unpublished_finding_aids',
                 'publication_note'
               ] %}
-                {# Output multiple paragraphs #}
-                {% for item in record[field] %}
-                  <p>{{ item }}</p>
-                {% endfor %}
+                {# Output list (if more than one item) #}
+                {% if record[field] | length > 1 %}
+                  <ul class="tna-ul">
+                  {% for item in record[field] %}
+                    <li>{{ item }}</li>
+                  {% endfor %}
+                  </ul>
+                {% else %}
+                  {{ record[field][0] }}
+                {% endif %}
 
               {% elif field in [
                 'related_materials',
@@ -134,7 +140,7 @@
 
               {% else %}
                 {# Just output the field value #}
-                {{ record[field] | safe }}
+                {{ record[field] | apply_generic_xsl | safe }}
               {% endif %}
             </dd>
           {% endif %}

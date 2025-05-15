@@ -619,7 +619,7 @@ class RecordModelTests(SimpleTestCase):
             ),
         }
         self.assertEqual(
-            self.record.description,
+            self.record.raw_description,
             (
                 """C16248: Online descriptions of individual records can be viewed """
                 """on Discovery, see <a class=\"extref\" """
