@@ -16,6 +16,7 @@
 {% from 'search/macros/filters/search_within.html' import search_within %}
 {% from 'search/macros/filters/date_range.html' import date_range %}
 {% from 'search/macros/filters/levels_tna.html' import levels_tna %}
+{% from 'search/macros/filters/closure_statuses_tna.html' import closure_statuses_tna %}
 
 {%- set pageTitle = 'Catalogue search results' -%}
 {%- set encodedQuery = request.GET.urlencode() | base64_encode -%}
@@ -106,6 +107,7 @@
     {{ search_within(request) }}
     {{ date_range(request, 'date', 'date', 'Filter by record date') }}
     {{ levels_tna(request, levels) }}
+    {{ closure_statuses_tna(request, closure_statuses) }}
   </div>
   {% if results %}
   <div id="results" class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
