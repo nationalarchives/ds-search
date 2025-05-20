@@ -23,7 +23,8 @@
 
   text-decoration: none;
 
-  &__icon {}
+  &__icon {
+  }
 
   &__text {
     text-decoration: underline;
@@ -72,8 +73,8 @@
 .tna-dl--dotted {
   @include colour.colour-border("keyline", 1px, solid, bottom);
 
-  >dt,
-  >dd {
+  > dt,
+  > dd {
     padding-top: spacing.space(0.5);
     padding-bottom: spacing.space(0.5);
 
@@ -87,18 +88,17 @@
 
     // @include typography.font-size(16);
 
-    >dt,
-    >dd {
+    > dt,
+    > dd {
       &:first-of-type {
         padding-top: 0;
         border-top: none;
       }
     }
 
-    >dt:last-of-type {
-
+    > dt:last-of-type {
       &,
-      &~dd:last-child {
+      & ~ dd:last-child {
         padding-bottom: 0;
       }
     }
@@ -116,7 +116,7 @@
   }
 
   @include media.on-tiny {
-    >dd {
+    > dd {
       border-top: none;
     }
   }
@@ -170,7 +170,7 @@
   .tna-column:has(&) {
     flex: 1;
 
-    +.tna-column {
+    + .tna-column {
       flex: 6;
     }
   }
@@ -216,7 +216,8 @@
   }
 }
 
-#youtube-link {}
+#youtube-link {
+}
 
 #youtube-embeded-player {
   height: auto;
