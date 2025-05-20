@@ -42,7 +42,7 @@ def format_extref_links(html: str) -> str:
 
 def change_discovery_record_details_links(html: str) -> str:
     regex = re.compile(
-        f'href="https?://discovery.nationalarchives.gov.uk/(details/r/|SearchUI/details\?Uri=){IDConverter.regex}/?"( title="Opens in a new tab")?( target="_blank")?'
+        f'href="https?://discovery.nationalarchives.gov.uk/(details/r/|SearchUI/details\?Uri=){IDConverter.regex}/?"( title="Opens in a new tab")?( target="_blank")?'  # noqa: W605
     )
     html = re.sub(
         regex,

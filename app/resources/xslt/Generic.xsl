@@ -108,6 +108,16 @@
   <!--
   List definitions
   -->
+  <xsl:template match="ul" name="ul">
+    <ul class="tna-ul">
+      <xsl:apply-templates />
+    </ul>
+  </xsl:template>
+  <xsl:template match="li" name="li">
+    <li>
+      <xsl:apply-templates />
+    </li>
+  </xsl:template>
   <xsl:template match="chronlist">
     <table class="tna-table">
       <xsl:for-each select="chronitem">
