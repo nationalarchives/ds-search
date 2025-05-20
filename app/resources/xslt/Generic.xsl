@@ -242,13 +242,11 @@
   <xsl:template match="lb">
     <br/>
   </xsl:template>
-  <!--
   <xsl:template match="p" name="p">
     <p>
       <xsl:apply-templates />
     </p>
   </xsl:template>
-  -->
   <xsl:template match="note">
     <small>
       <xsl:apply-templates/>
