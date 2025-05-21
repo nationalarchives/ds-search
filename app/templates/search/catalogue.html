@@ -18,6 +18,7 @@
 {% from 'search/macros/filters/levels_tna.html' import levels_tna %}
 {% from 'search/macros/filters/closure_statuses_tna.html' import closure_statuses_tna %}
 {% from 'search/macros/filters/opening_date.html' import opening_date %}
+{% from 'search/macros/filters/collections_tna.html' import collections_tna %}
 
 {%- set pageTitle = 'Catalogue search results' -%}
 {%- set encodedQuery = request.GET.urlencode() | base64_encode -%}
@@ -114,6 +115,7 @@
     {{ levels_tna(request, levels) }}
     {{ closure_statuses_tna(request, closure_statuses) }}
     {{ date_range(request, 'date', 'date', 'Filter by record opening date') }}
+    {{ collections_tna(request, collections) }}
   </div>
   {% if results %}
   <div id="results" class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">

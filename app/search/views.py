@@ -3,7 +3,7 @@ import math
 from app.errors import views as errors_view
 from app.lib.api import ResourceNotFound
 from app.lib.pagination import pagination_object
-from app.records.constants import CLOSURE_STATUSES, TNA_LEVELS
+from app.records.constants import TNA_LEVELS, CLOSURE_STATUSES, COLLECTIONS
 from app.search.api import search_records
 from config.jinja2 import qs_remove_value, qs_toggle_value
 from django.template.response import TemplateResponse
@@ -16,6 +16,7 @@ def catalogue_search_view(request):
     context: dict = {
         "levels": TNA_LEVELS,
         "closure_statuses": CLOSURE_STATUSES,
+        "collections": COLLECTIONS,
     }
     results_per_page = 20
     page = int(request.GET.get("page", 1))
@@ -127,6 +128,15 @@ def build_selected_filters_list(request):
                     "label": f"Closure status: {CLOSURE_STATUSES.get(closure_status)}",
                     "href": f"?{qs_toggle_value(request.GET, 'closure_status', closure_status)}",
                     "title": f"Remove {CLOSURE_STATUSES.get(closure_status)} closure status",
+                }
+            )
+    if collections := request.GET.getlist("collections", None):
+        for collection in collections:
+            selected_filters.append(
+                {
+                    "label": f"Collection: {COLLECTIONS.get(collection)}",
+                    "href": f"?{qs_toggle_value(request.GET, 'collections', collection)}",
+                    "title": f"Remove {COLLECTIONS.get(collection)} collection",
                 }
             )
     return selected_filters
