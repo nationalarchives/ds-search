@@ -84,7 +84,7 @@
       <xsl:when test="@href!='' and not(@target)">
         <xsl:element name="a">
           <xsl:attribute name="href">
-            /catalogue/search/?_q=<xsl:value-of select="."/>&amp;_hb=tna
+            /catalogue/search/?q=<xsl:value-of select="."/>
           </xsl:attribute>
           <xsl:attribute name="title">Opens in a new tab</xsl:attribute>
           <xsl:apply-templates/>
