@@ -125,7 +125,7 @@ def build_selected_filters_list(request):
             selected_filters.append(
                 {
                     "label": f"Closure status: {CLOSURE_STATUSES.get(closure_status)}",
-                    "href": f"?{qs_toggle_value(request.GET, 'status', closure_status)}",
+                    "href": f"?{qs_toggle_value(request.GET, 'closure_status', closure_status)}",
                     "title": f"Remove {CLOSURE_STATUSES.get(closure_status)} closure status",
                 }
             )
