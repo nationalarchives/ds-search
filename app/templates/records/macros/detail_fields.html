@@ -126,11 +126,11 @@
 
               {% elif field == 'description' %}
                 {# Output the field value and maybe the raw value #}
-                {{ record[field] | sanitise_record_description | safe }}
+                {{ record[field] | sanitise_record_field | safe }}
 
               {% else %}
                 {# Just output the field value #}
-                {{ record[field] | apply_generic_xsl | sanitise_record_description | safe }}
+                {{ record[field] | apply_generic_xsl | sanitise_record_field | safe }}
               {% endif %}
             </dd>
           {% endif %}
