@@ -1,7 +1,4 @@
 {% from 'components/checkboxes/macro.html' import tnaCheckboxes %}
-{% from 'components/details/macro.html' import tnaDetails %}
-
-{%- set show_raw_description = False -%}
 
 {% macro detail_fields(record, field_labels, request) %}
   <div class="tna-container tna-!--margin-top-m">
@@ -95,10 +92,16 @@
                 'unpublished_finding_aids',
                 'publication_note'
               ] %}
-                {# Output multiple paragraphs #}
-                {% for item in record[field] %}
-                  <p>{{ item }}</p>
-                {% endfor %}
+                {# Output list (if more than one item) #}
+                {% if record[field] | length > 1 %}
+                  <ul class="tna-ul">
+                  {% for item in record[field] %}
+                    <li>{{ item }}</li>
+                  {% endfor %}
+                  </ul>
+                {% else %}
+                  {{ record[field][0] }}
+                {% endif %}
 
               {% elif field in [
                 'related_materials',
@@ -123,25 +126,12 @@
 
               {% elif field == 'description' %}
                 {# Output the field value and maybe the raw value #}
-                {{ record[field] | sanitise_record_description | safe }}
-                {% if record.raw_description and show_raw_description %}
-                {{ tnaDetails({
-                  'title': 'Raw description',
-                  'body': '<textarea rows="8" readonly>' + record.raw_description + '</textarea>',
-                  'classes': 'tna-!--margin-top-xs',
-                }) }}
-                {% endif %}
+                {{ record[field] | sanitise_record_field | safe }}
 
               {% else %}
                 {# Just output the field value #}
-                {{ record[field] | safe }}
+                {{ record[field] | apply_generic_xsl | sanitise_record_field | safe }}
               {% endif %}
-            </dd>
-          {% endif %}
-          {% if field == 'description' and record.raw_description and show_raw_description %}
-            <dt>Raw description</dt>
-            <dd>
-              <textarea rows="8" readonly>{{ record.raw_description }}</textarea>
             </dd>
           {% endif %}
         {% endfor %}

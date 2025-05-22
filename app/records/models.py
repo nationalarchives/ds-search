@@ -6,7 +6,12 @@ from typing import Any
 
 from app.lib.xslt_transformations import apply_schema_xsl, apply_series_xsl
 from app.records.constants import NON_TNA_LEVELS, TNA_LEVELS
-from app.records.utils import extract, format_extref_links, format_link
+from app.records.utils import (
+    change_discovery_record_details_links,
+    extract,
+    format_extref_links,
+    format_link,
+)
 from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
 from lxml import etree
@@ -308,13 +313,14 @@ class Record(APIModel):
         """Returns the api value of the attr if found, empty str otherwise."""
         if description := self.raw_description:
             description = format_extref_links(description)
-            if description_schema := self.description_schema:
-                description = apply_schema_xsl(description, description_schema)
+            description = apply_schema_xsl(description, self.description_schema)
+            description = change_discovery_record_details_links(description)
             return description
         description = self.get("description.value", "")
         if series := self.hierarchy_series:
             description = apply_series_xsl(description, series.reference_number)
         description = format_extref_links(description)
+        description = change_discovery_record_details_links(description)
         return description
 
     @cached_property
