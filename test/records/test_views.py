@@ -18,6 +18,7 @@ class TestRecordView(TestCase):
                         "@template": {
                             "details": {
                                 "iaid": "C123456",
+                                "title": "Test Title",
                                 "source": "CAT",
                             }
                         }
@@ -47,6 +48,7 @@ class TestRecordView(TestCase):
                         "@template": {
                             "details": {
                                 "iaid": "A13530600",
+                                "title": "Test Title",
                                 "source": "ARCHON",
                             }
                         }

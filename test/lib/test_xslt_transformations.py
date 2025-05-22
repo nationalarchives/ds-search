@@ -688,6 +688,14 @@ class XsltTransformationsTestCase(unittest.TestCase):
             str(apply_schema_xsl(source, schema)),
         )
 
+    def test_no_source_content(self):
+        source = ""
+        schema = "Generic"
+        self.assertEqual(
+            "",
+            str(apply_schema_xsl(source, schema)),
+        )
+
     def test_series_ADM_240_xsl(self):
         # C16128233
         self.maxDiff = None
