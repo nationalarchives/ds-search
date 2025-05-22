@@ -3,6 +3,8 @@ import json
 import re
 from datetime import datetime
 
+from app.lib.xslt_transformations import apply_generic_xsl
+from app.records.utils import change_discovery_record_details_links
 from django.conf import settings
 from django.http import QueryDict
 from django.templatetags.static import static
@@ -18,9 +20,10 @@ def slugify(s):
     return s
 
 
-def sanitise_record_description(s):
+def sanitise_record_field(s):
     # Remove whitespace between <p> tags
     s = re.sub(r"(</p>)\s+(<p[ >])", r"\1\2", s).strip()
+    s = change_discovery_record_details_links(s)
     return s
 
 
@@ -164,7 +167,8 @@ def environment(**options):
             "format_number": format_number,
             "base64_encode": base64_encode,
             "base64_decode": base64_decode,
-            "sanitise_record_description": sanitise_record_description,
+            "sanitise_record_field": sanitise_record_field,
+            "apply_generic_xsl": apply_generic_xsl,
         }
     )
     return env
