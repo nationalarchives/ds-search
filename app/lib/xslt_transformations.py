@@ -55,6 +55,9 @@ logger = logging.getLogger(__name__)
 
 
 def xsl_transformation(source: str, schema_file: str) -> str:
+    if not source:
+        logger.warning("Empty source provided for XSLT transformation")
+        return ""
     dom = html.fromstring(source)
     try:
         xslt = etree.parse(f"app/resources/xslt/{schema_file}")
