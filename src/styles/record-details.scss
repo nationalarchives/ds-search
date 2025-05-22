@@ -166,14 +166,6 @@
   box-sizing: border-box;
 
   text-align: center;
-
-  .tna-column:has(&) {
-    flex: 1;
-
-    + .tna-column {
-      flex: 6;
-    }
-  }
 }
 
 .copy-url {
@@ -222,8 +214,4 @@
 #youtube-embeded-player {
   height: auto;
   aspect-ratio: 16 / 9;
-}
-
-.square-block {
-  background: black;
 }

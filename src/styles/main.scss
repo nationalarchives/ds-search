@@ -1,1 +1,7 @@
+@use "@nationalarchives/frontend/nationalarchives/tools/borders";
+
 @use "@nationalarchives/frontend/nationalarchives/all";
+
+.etna-rounded-corners {
+  @include borders.rounded-border;
+}
