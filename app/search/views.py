@@ -23,7 +23,7 @@ def catalogue_search_view(request):
     sort = sort_order[0] if sort_order else ""
     order = sort_order[1] if len(sort_order) > 1 else ""
 
-    current_bucket_key = request.GET.get("group", BucketKeys.TNA)
+    current_bucket_key = request.GET.get("group") or BucketKeys.TNA
     # filter records for a bucket
     params = {"filter": f"group:{current_bucket_key}"}
 
