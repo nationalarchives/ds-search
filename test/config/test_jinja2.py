@@ -6,7 +6,7 @@ from config.jinja2 import (
     qs_remove_value,
     qs_replace_value,
     qs_toggle_value,
-    sanitise_record_description,
+    sanitise_record_field,
     slugify,
 )
 from django.http import QueryDict
@@ -14,10 +14,10 @@ from django.test import TestCase
 
 
 class Jinja2TestCase(TestCase):
-    def test_sanitise_record_description(self):
+    def test_sanitise_record_field(self):
         source = """  <p>Test</p> <p>Test</p>     <p>Test</p> """
         self.assertEqual(
-            sanitise_record_description(source),
+            sanitise_record_field(source),
             "<p>Test</p><p>Test</p><p>Test</p>",
         )
 

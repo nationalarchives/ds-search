@@ -40,6 +40,19 @@ def format_extref_links(html: str) -> str:
     return html
 
 
+def change_discovery_record_details_links(html: str) -> str:
+    regex = re.compile(
+        f'href="https?://discovery.nationalarchives.gov.uk/(details/r/|SearchUI/details\?Uri=){IDConverter.regex}/?"( title="Opens in a new tab")?( target="_blank")?',  # noqa: W605
+        re.IGNORECASE,
+    )
+    html = re.sub(
+        regex,
+        lambda m: f'href="{reverse("records:details", kwargs={"id": m.group(2)})}"',
+        html,
+    )
+    return html
+
+
 def extract(source: Dict[str, Any], key: str, default: Any = None) -> Any:
     """
     Attempts to extract `key` (a string with multiple '.' to indicate
