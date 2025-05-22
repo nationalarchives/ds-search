@@ -54,7 +54,7 @@
                     </h3>
                   </hgroup> -->
                   <h3 class="tna-heading-s">Within the {{ hierarchy_record.level | lower }}: <a href="{{ hierarchy_record.url }}">{{ hierarchy_record.reference_number }}</a></h3>
-                  <p class="tna-!--no-margin-top">{{ hierarchy_record.title | apply_generic_xsl | safe }}</p>
+                  <p class="tna-!--no-margin-top">{{ (hierarchy_record.title or hierarchy_record.summary_title) | striptags }}</p>
                 </div>
               </div>
             </div>
@@ -69,7 +69,7 @@
             </div>
             <div class="tna-column tna-column--flex-1 tna-column--align-centre">
               <h3 class="tna-heading-s">You are currently looking at the {{ record.level | lower }}: {{ record.reference_number }}</h3>
-              <p class="tna-!--no-margin-top">{{ record.title | apply_generic_xsl | safe }}</p>
+              <p class="tna-!--no-margin-top">{{ (record.title or record.summary_title) | striptags }}</p>
             </div>
           </div>
         </div>
