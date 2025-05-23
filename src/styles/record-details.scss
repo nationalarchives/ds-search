@@ -177,14 +177,6 @@
   box-sizing: border-box;
 
   text-align: center;
-
-  .tna-column:has(&) {
-    flex: 1;
-
-    + .tna-column {
-      flex: 6;
-    }
-  }
 }
 
 .copy-url {

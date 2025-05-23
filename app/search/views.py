@@ -3,7 +3,7 @@ import math
 from app.errors import views as errors_view
 from app.lib.api import ResourceNotFound
 from app.lib.pagination import pagination_object
-from app.records.constants import TNA_LEVELS, CLOSURE_STATUSES
+from app.records.constants import CLOSURE_STATUSES, TNA_LEVELS
 from app.search.api import search_records
 from config.jinja2 import qs_remove_value, qs_toggle_value
 from django.template.response import TemplateResponse
@@ -23,7 +23,7 @@ def catalogue_search_view(request):
     sort = sort_order[0] if sort_order else ""
     order = sort_order[1] if len(sort_order) > 1 else ""
 
-    current_bucket_key = request.GET.get("group", BucketKeys.TNA)
+    current_bucket_key = request.GET.get("group") or BucketKeys.TNA
     # filter records for a bucket
     params = {"filter": f"group:{current_bucket_key}"}
 
