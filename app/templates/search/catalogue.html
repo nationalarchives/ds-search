@@ -99,7 +99,7 @@
     <h2 class="tna-heading-l">Filters</h2>
     {% if selected_filters %}
         <div class="tna-aside tna-aside--tight tna-background-accent-light tna-!--margin-top-s">
-            <h3 class="tna-form__heading tna-form__heading--m">Active filters {% if selected_filters %} ({{ selected_filters | length }}){% endif %}:</h3>
+            <h3 class="tna-heading-m">Active filters {% if selected_filters %} ({{ selected_filters | length }}){% endif %}:</h3>
             {{ tnaCompoundFilters({
               'items': selected_filters,
               'removeAllHref': url('search:catalogue') + '?q=' + request.GET.get('q') + '&display=' + (request.GET.get('display') or ''),
