@@ -27,3 +27,8 @@ CLOSURE_STATUSES = {
     "2": "Closed Or Retained Document, Open Description",
     "3": "Open Document, Open Description",
 }
+
+COLLECTIONS = {
+    "1": "WO - War Office, Armed Forces, Judge Advocate General, and related bodies",
+    "2": "BT - Board of Trade and successors",
+}
