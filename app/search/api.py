@@ -15,6 +15,8 @@ def search_records(
             "sort": sort,
         }
     )
+    # remove params having no values
+    params = {param: value for param, value in params.items() if value}
     results = rosetta_request_handler(uri, params)
     if "data" not in results:
         raise Exception("No data returned")
