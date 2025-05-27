@@ -22,9 +22,7 @@ def catalogue_search_view(request):
     }
     results_per_page = 20
     page = int(request.GET.get("page", 1))
-    sort_order = request.GET.get("sort", "").split(":")
-    sort = sort_order[0] if sort_order else ""
-    order = sort_order[1] if len(sort_order) > 1 else ""
+    sort = request.GET.get("sort", "")
 
     current_bucket_key = request.GET.get("group") or BucketKeys.TNA
     # filter records for a bucket
@@ -38,7 +36,6 @@ def catalogue_search_view(request):
             results_per_page=results_per_page,
             page=page,
             sort=sort,
-            order=order,
             params=params,
         )
     except ResourceNotFound:
