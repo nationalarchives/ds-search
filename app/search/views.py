@@ -10,30 +10,36 @@ from config.jinja2 import qs_remove_value, qs_toggle_value
 from django.template.response import TemplateResponse
 
 from .buckets import CATALOGUE_BUCKETS, BucketKeys
+from .constants import Sort
 
 
 def catalogue_search_view(request):
     template = "search/catalogue.html"
     bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
+    default_group = BucketKeys.TNA.value
+    default_sort = Sort.RELEVANCE.value  # sort includes ordering
+    default_page = 1  # page number of the search results
+    RESULTS_PER_PAGE = 20  # max records to show per page
+    PAGE_LIMIT = 500  # max page number that can be queried
+
     context: dict = {
         "levels": TNA_LEVELS,
         "closure_statuses": CLOSURE_STATUSES,
         "collections": COLLECTIONS,
     }
-    results_per_page = 20
-    page = int(request.GET.get("page", 1))
-    sort = request.GET.get("sort", "")
 
-    current_bucket_key = request.GET.get("group") or BucketKeys.TNA
+    page = int(request.GET.get("page", default_page))
+    sort = request.GET.get("sort", default_sort)
+    current_bucket_key = request.GET.get("group") or default_group
+    query = request.GET.get("q", "")
+
     # filter records for a bucket
     params = {"filter": f"group:{current_bucket_key}"}
-
-    query = request.GET.get("q", "")
 
     try:
         results = search_records(
             query=query,
-            results_per_page=results_per_page,
+            results_per_page=RESULTS_PER_PAGE,
             page=page,
             sort=sort,
             params=params,
@@ -45,14 +51,14 @@ def catalogue_search_view(request):
             context=context,
         )
 
-    pages = math.ceil(results.stats_total / results_per_page)
-    if pages > 500:
-        pages = 500
+    pages = math.ceil(results.stats_total / RESULTS_PER_PAGE)
+    if pages > PAGE_LIMIT:
+        pages = PAGE_LIMIT
     if page > pages:
         return errors_view.page_not_found_error_view(request=request)
     results_range = {
-        "from": ((page - 1) * results_per_page) + 1,
-        "to": ((page - 1) * results_per_page) + results.stats_results,
+        "from": ((page - 1) * RESULTS_PER_PAGE) + 1,
+        "to": ((page - 1) * RESULTS_PER_PAGE) + results.stats_results,
     }
     selected_filters = build_selected_filters_list(request)
     bucket_items = bucket_list.items(
