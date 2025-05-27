@@ -1,7 +1,8 @@
+import copy
+
 from app.search.buckets import (
     CATALOGUE_BUCKETS,
     BucketKeys,
-    get_buckets_for_display,
 )
 from app.search.models import APISearchResponse
 from django.test import TestCase
@@ -48,10 +49,12 @@ class TestBuckets(TestCase):
         }
 
         self.buckets = APISearchResponse(self.api_results).buckets
+        self.bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
 
-    def test_get_buckets_for_display_without_query(self):
+    def test_bucket_items_without_query(self):
 
         query = ""
+
         test_data = (
             (
                 # label
@@ -102,24 +105,24 @@ class TestBuckets(TestCase):
 
         for label, current_bucket_key, expected in test_data:
             with self.subTest(label):
-                buckets = get_buckets_for_display(
+                bucket_items = self.bucket_list.items(
                     query=query,
                     buckets=self.buckets,
                     current_bucket_key=current_bucket_key,
                 )
 
-                self.assertListEqual(buckets, expected)
+                self.assertListEqual(bucket_items, expected)
 
-    def test_get_buckets_for_display_with_query(self):
+    def test_bucket_items_with_query(self):
 
-        buckets = get_buckets_for_display(
+        bucket_items = self.bucket_list.items(
             query="ufo",
             buckets=self.buckets,
             current_bucket_key=BucketKeys.TNA,
         )
 
         self.assertListEqual(
-            buckets,
+            bucket_items,
             [
                 {
                     "name": "Records at the National Archives (26,008,838)",

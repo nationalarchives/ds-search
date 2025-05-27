@@ -1,3 +1,4 @@
+import copy
 import math
 
 from app.errors import views as errors_view
@@ -8,11 +9,12 @@ from app.search.api import search_records
 from config.jinja2 import qs_remove_value, qs_toggle_value
 from django.template.response import TemplateResponse
 
-from .buckets import BucketKeys, get_buckets_for_display
+from .buckets import CATALOGUE_BUCKETS, BucketKeys
 
 
 def catalogue_search_view(request):
     template = "search/catalogue.html"
+    bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
     context: dict = {
         "levels": TNA_LEVELS,
         "closure_statuses": CLOSURE_STATUSES,
@@ -56,7 +58,7 @@ def catalogue_search_view(request):
         "to": ((page - 1) * results_per_page) + results.stats_results,
     }
     selected_filters = build_selected_filters_list(request)
-    buckets = get_buckets_for_display(
+    bucket_items = bucket_list.items(
         query=query,
         buckets=results.buckets,
         current_bucket_key=current_bucket_key,
@@ -65,7 +67,7 @@ def catalogue_search_view(request):
     context.update(
         {
             "results": results.records,
-            "buckets": buckets,
+            "bucket_items": bucket_items,
             "results_range": results_range,
             "stats": {
                 "total": results.stats_total,
