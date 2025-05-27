@@ -231,6 +231,12 @@
     <h2 class="tna-heading-xl">No results found</h2>
     <p>No results were found for your query.</p>
     <p>Try widening your search.</p>
+    {%if errors %}
+        <p> Error in fields:
+        {% for field, error in errors.items() %}
+          <p>{{ field }}:{{ error }}</p>
+        {% endfor %}
+    {% endif %}
   </div>
   {% endif %}
 </div>
