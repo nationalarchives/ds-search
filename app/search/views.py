@@ -85,6 +85,7 @@ def catalogue_search_view(request):
             },
             "selected_filters": selected_filters,
             "pagination": pagination_object(page, pages, request.GET),
+            "bucket_keys": BucketKeys,
         }
     )
     return TemplateResponse(request=request, template=template, context=context)
