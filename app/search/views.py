@@ -3,6 +3,7 @@ import math
 
 from app.errors import views as errors_view
 from app.lib.api import ResourceNotFound
+from app.lib.fields import CharField, ChoiceField
 from app.lib.pagination import pagination_object
 from app.records.constants import CLOSURE_STATUSES, COLLECTIONS, TNA_LEVELS
 from app.search.api import search_records
@@ -21,6 +22,32 @@ def catalogue_search_view(request):
     default_page = 1  # page number of the search results
     RESULTS_PER_PAGE = 20  # max records to show per page
     PAGE_LIMIT = 500  # max page number that can be queried
+    errors = {}  # holds errors for each field
+
+    # fields
+    fields = {
+        "group": ChoiceField(
+            name="group", choices=CATALOGUE_BUCKETS.as_choices()
+        ),
+        "sort": ChoiceField(
+            name="sort",
+            choices=[
+                (Sort.RELEVANCE.value, "Relevance"),
+                (Sort.DATE_DESC.value, "Date (newest first)"),
+                (Sort.DATE_ASC.value, "Date (oldest first)"),
+                (Sort.TITLE_ASC.value, "Title (A–Z)"),
+                (Sort.TITLE_DESC.value, "Title (Z–A)"),
+            ],
+        ),
+        "q": CharField(name="q"),
+    }
+
+    # data
+    data_initial = {"group": default_group, "sort": default_sort}
+    data = request.GET.copy()  # hold request data, initial data for request
+    # Add any initial values
+    for k, v in data_initial.items():
+        data.setdefault(k, v)
 
     context: dict = {
         "levels": TNA_LEVELS,
@@ -28,6 +55,7 @@ def catalogue_search_view(request):
         "collections": COLLECTIONS,
     }
 
+    # validate page number
     try:
         page = int(request.GET.get("page", default_page))
         if page < 1:
@@ -36,56 +64,74 @@ def catalogue_search_view(request):
         # graceful degradation, fallback
         page = 1
 
-    sort = request.GET.get("sort", default_sort)
-    current_bucket_key = request.GET.get("group") or default_group
-    query = request.GET.get("q", "")
+    # bind fields
+    for field_name, field in fields.items():
+        field.bind(data.get(field_name))
+        if field.error:
+            errors[field_name] = field.error
 
-    # filter records for a bucket
-    params = {"filter": f"group:{current_bucket_key}"}
+    if not errors:
 
-    try:
-        results = search_records(
-            query=query,
-            results_per_page=RESULTS_PER_PAGE,
-            page=page,
-            sort=sort,
-            params=params,
+        current_bucket_key = fields["group"].value
+
+        # filter records for a bucket
+        params = {"filter": f"group:{current_bucket_key}"}
+
+        try:
+            results = search_records(
+                query=fields["q"].value,
+                results_per_page=RESULTS_PER_PAGE,
+                page=page,
+                sort=fields["sort"].value,
+                params=params,
+            )
+            records = results.records
+        except ResourceNotFound:
+            return TemplateResponse(
+                request=request,
+                template=template,
+                context=context,
+            )
+
+        pages = math.ceil(results.stats_total / RESULTS_PER_PAGE)
+        if pages > PAGE_LIMIT:
+            pages = PAGE_LIMIT
+        if page > pages:
+            return errors_view.page_not_found_error_view(request=request)
+        results_range = {
+            "from": ((page - 1) * RESULTS_PER_PAGE) + 1,
+            "to": ((page - 1) * RESULTS_PER_PAGE) + results.stats_results,
+        }
+        stats = {
+            "total": results.stats_total,
+            "results": results.stats_results,
+        }
+        bucket_items = bucket_list.items(
+            query=fields["q"].value,
+            buckets=results.buckets,
+            current_bucket_key=current_bucket_key,
         )
-    except ResourceNotFound:
-        return TemplateResponse(
-            request=request,
-            template=template,
-            context=context,
-        )
+    else:
+        records = None
+        results_range = {}
+        bucket_items = []
+        stats = {}
+        page = 1
+        pages = RESULTS_PER_PAGE
 
-    pages = math.ceil(results.stats_total / RESULTS_PER_PAGE)
-    if pages > PAGE_LIMIT:
-        pages = PAGE_LIMIT
-    if page > pages:
-        return errors_view.page_not_found_error_view(request=request)
-    results_range = {
-        "from": ((page - 1) * RESULTS_PER_PAGE) + 1,
-        "to": ((page - 1) * RESULTS_PER_PAGE) + results.stats_results,
-    }
     selected_filters = build_selected_filters_list(request)
-    bucket_items = bucket_list.items(
-        query=query,
-        buckets=results.buckets,
-        current_bucket_key=current_bucket_key,
-    )
 
     context.update(
         {
-            "results": results.records,
+            "results": records,
             "bucket_items": bucket_items,
             "results_range": results_range,
-            "stats": {
-                "total": results.stats_total,
-                "results": results.stats_results,
-            },
+            "stats": stats,
             "selected_filters": selected_filters,
             "pagination": pagination_object(page, pages, request.GET),
+            "sort": fields["sort"],
             "bucket_keys": BucketKeys,
+            "errors": errors,
         }
     )
     return TemplateResponse(request=request, template=template, context=context)

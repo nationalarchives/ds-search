@@ -55,7 +55,9 @@ class BucketList:
     def __iter__(self):
         yield from self.buckets
 
-    def items(self, query: str, buckets: dict, current_bucket_key: str):
+    def items(
+        self, query: str | None, buckets: dict, current_bucket_key: str | None
+    ):
         """Returns modified buckets data to be used in the template
         by front-end component Ex: tnaSecondaryNavigation()"""
 
@@ -68,6 +70,9 @@ class BucketList:
 
         # return data for display
         return [bucket.item for bucket in self.buckets]
+
+    def as_choices(self):
+        return [(bucket.key, bucket.label) for bucket in self.buckets]
 
 
 # Configure list of buckets to show in template, these values rarely change
