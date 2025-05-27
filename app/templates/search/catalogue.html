@@ -130,29 +130,8 @@
           'headingSize': 's',
           'id': 'sort',
           'name': 'sort',
-          'items': [
-            {
-              'text': 'Relevance',
-              'value': ''
-            },
-            {
-              'text': 'Date (newest first)',
-              'value': 'date:desc'
-            },
-            {
-              'text': 'Date (oldest first)',
-              'value': 'date:asc'
-            },
-            {
-              'text': 'Title (A-Z)',
-              'value': 'title:asc'
-            },
-            {
-              'text': 'Title (Z-A)',
-              'value': 'title:desc'
-            }
-          ],
-          'selected': request.GET.get('sort'),
+          'items': sort.items,
+          'selected': sort.value,
           'formGroupAttributes': {
             'id': 'sort-form-group'
           },
