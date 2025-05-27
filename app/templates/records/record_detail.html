@@ -9,7 +9,6 @@
 {% from 'records/macros/top_navigation.html' import top_navigation %}
 {% from 'records/macros/related_records_block.html' import related_records_block %}
 
-
 {%- set pageTitle = (record.summary_title or '[No title]') | striptags -%}
 
 {% block stylesheets %}
@@ -38,6 +37,32 @@
     </div>
   </div>
 
+  <!--single box for series pages-->
+  <div class="tna-container tna-!--margin-top-m">
+    <div class="tna-column tna-column--full">
+      <div class="tna-!--padding-vertical-m tna-background-accent etna-rounded-corners">
+        <div class="tna-container">
+          <div class="tna-column tna-column--full">
+            <h2 class="tna-heading-l">What's it about?</h2>
+          </div>
+          <div class="tna-column tna-column--align-centre tna-!--margin-top-xs">
+            <div class="square tna-background-contrast">
+              <p class="tna-heading-m">HMC 1</p>
+            </div>
+          </div>
+          <div class="tna-column tna-column--flex-1 tna-column--full-small tna-column--full-tiny tna-column--align-centre tna-!--margin-top-xs">
+            <p>This series contains the early records of the Royal Commission. Thy include registers of correspondence, draftsof reports, correspondence and papers for Commissioners' meetings and the files of the Commission's correspondence. It contains 374 files and volunmes.</p>
+            <p>
+              <strong><a href="#">View all records in this series</a></strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- end single box for series pages-->
+  
+
   {{ information_boxes(record) }}
 
   {{ detail_fields(record, field_labels, request) }}
@@ -47,8 +72,8 @@
       {% set accordion_items = [] %}
 
       {% set accordion_items = accordion_items + [{
-        'title': 'How to order this record',
-        'body': how_to_order()
+        'title': do_heading,
+        'body': how_to_order(do_description, do_orderbuttons)
       }] %}
 
       {% if record.hierarchy_series %}
@@ -72,8 +97,8 @@
     </div>
   </div>
 </div>
-  
-  {{ related_records_block(record) }}
+
+{{ related_records_block(record) }}
 
 </div>
 {% endblock %}

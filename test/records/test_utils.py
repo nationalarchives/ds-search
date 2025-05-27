@@ -1,6 +1,10 @@
 from datetime import date
 
-from app.records.utils import extract, format_link
+from app.records.utils import (
+    change_discovery_record_details_links,
+    extract,
+    format_link,
+)
 from django.test import SimpleTestCase
 
 TODAY = date.today()
@@ -71,9 +75,7 @@ class TestExtract(SimpleTestCase):
 
 
 class TestFormatLink(SimpleTestCase):
-
     def test_format_link(self):
-
         test_data = (
             (
                 "valid link",
@@ -92,7 +94,6 @@ class TestFormatLink(SimpleTestCase):
                 self.assertEqual(result, expected)
 
     def test_format_link_with_invalid_data(self):
-
         test_data = (
             (
                 "invalid id",
@@ -120,3 +121,44 @@ class TestFormatLink(SimpleTestCase):
                     result = format_link(value)
                 self.assertIn(expected[1], lc.output)
                 self.assertEqual(result, expected[0])
+
+
+class TestChangeDiscoveryRecordDetailsLinks(SimpleTestCase):
+    def test_change_discovery_record_details_links(self):
+        test_data = (
+            (
+                "valid link",
+                '<a href="https://discovery.nationalarchives.gov.uk/details/r/C361/">C361</a>',
+                '<a href="/catalogue/id/C361/">C361</a>',
+            ),
+            (
+                "valid link without https",
+                '<a href="http://discovery.nationalarchives.gov.uk/details/r/C361/">C361</a>',
+                '<a href="/catalogue/id/C361/">C361</a>',
+            ),
+            (
+                "valid link without trailing slash",
+                '<a href="https://discovery.nationalarchives.gov.uk/details/r/C361">C361</a>',
+                '<a href="/catalogue/id/C361/">C361</a>',
+            ),
+            (
+                "invalid ID",
+                '<a href="https://discovery.nationalarchives.gov.uk/details/r/notvalid/">C361</a>',
+                '<a href="https://discovery.nationalarchives.gov.uk/details/r/notvalid/">C361</a>',
+            ),
+            (
+                "valid link with blank target",
+                '<a href="https://discovery.nationalarchives.gov.uk/details/r/C361/" title="Opens in a new tab" target="_blank">C361</a>',
+                '<a href="/catalogue/id/C361/">C361</a>',
+            ),
+            (
+                "search UI link",
+                '<a href="http://discovery.nationalarchives.gov.uk/SearchUI/details?Uri=C5224">(otherwise in CO 1035)</a>',
+                '<a href="/catalogue/id/C5224/">(otherwise in CO 1035)</a>',
+            ),
+        )
+
+        for label, value, expected in test_data:
+            with self.subTest(label):
+                result = change_discovery_record_details_links(value)
+                self.assertEqual(result, expected)

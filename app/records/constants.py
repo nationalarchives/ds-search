@@ -21,3 +21,14 @@ NON_TNA_LEVELS = {
     "10": "Item",
     "11": "Sub-item",
 }
+
+CLOSURE_STATUSES = {
+    "1": "Closed Or Retained Document, Closed Description",
+    "2": "Closed Or Retained Document, Open Description",
+    "3": "Open Document, Open Description",
+}
+
+COLLECTIONS = {
+    "1": "WO - War Office, Armed Forces, Judge Advocate General, and related bodies",
+    "2": "BT - Board of Trade and successors",
+}

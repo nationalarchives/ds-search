@@ -18,7 +18,7 @@
           {
             'text': 'Hide field descriptions',
             'value': 'hide',
-            'checked': request.COOKIES['hide_record_detail_descriptions'] == 'true'
+            'checked': (request.COOKIES['hide_record_detail_descriptions'] | lower) == 'true'
           }
         ],
         'inline': True,
@@ -80,23 +80,34 @@
             </dt>
             <dd>
               {% if field == 'held_by' %}
+                {# Output the held by #}
                 {% if record.held_by_url %}
                   <a href="{{ record.held_by_url }}">{{ record[field] }}</a>
                 {% else %}
                   {{ record.held_by }}
                 {% endif %}
+
               {% elif field in [
                 'creator',
                 'unpublished_finding_aids',
-                'publication_note']
-                %}
+                'publication_note'
+              ] %}
+                {# Output list (if more than one item) #}
+                {% if record[field] | length > 1 %}
+                  <ul class="tna-ul">
                   {% for item in record[field] %}
-                    <p>{{ item }}</p>
+                    <li>{{ item }}</li>
                   {% endfor %}
+                  </ul>
+                {% else %}
+                  {{ record[field][0] }}
+                {% endif %}
+
               {% elif field in [
                 'related_materials',
-                'separated_materials'] 
-                %}
+                'separated_materials'
+              ] %}
+                {# Output details from other records #}
                 {% for item in record[field] %}
                   {% if item.description %}
                     <p>{{ item.description }}
@@ -112,16 +123,51 @@
                     </p>
                   {% endif %}
                 {% endfor %}
+
+              {% elif field == 'description' %}
+                {# Output the field value and maybe the raw value #}
+                {{ record[field] | sanitise_record_field | safe }}
+
               {% else %}
-                {{ record[field] | safe }}
+                {# Just output the field value #}
+                {{ record[field] | apply_generic_xsl | sanitise_record_field | safe }}
               {% endif %}
             </dd>
           {% endif %}
         {% endfor %}
         <dt>Subjects</dt>
-        <dd><span class="reference">ARTWORK</span><span class="reference">ART</span><span class="reference">ARTISTS</span><span class="reference">PUBLICITY</span><span class="reference">PROPAGANDA</span></dd>
+        <dd>
+          <dl class="tna-dl-chips">
+            <dt>Topics</dt>
+            <dd>
+              <a href="#" class="tna-dl-chips__item">
+                Artwork
+              </a>
+            </dd>
+            <dd>
+              <a href="#" class="tna-dl-chips__item">
+                Art
+              </a>
+            </dd>
+            <dd>
+              <a href="#" class="tna-dl-chips__item">
+                Artists
+              </a>
+            </dd>
+            <dd>
+              <a href="#" class="tna-dl-chips__item">
+                Publicity
+              </a>
+            </dd>
+            <dd>
+              <a href="#" class="tna-dl-chips__item">
+                Propaganda
+              </a>
+            </dd>
+          </dl>
+        </dd> 
         <dt>Record URL</dt>
-        <dd><span class="copy-url">{{ request.build_absolute_uri() }}</span></dd>
+        <dd><span class="copy-url">{{ request.build_absolute_uri(url('records:details', kwargs={'id': record.iaid})) }}</span></dd>
       </dl>
     </div>
   </div>

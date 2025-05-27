@@ -1,0 +1,38 @@
+{% from 'components/button/macro.html' import tnaButton %}
+{% from 'components/checkboxes/macro.html' import tnaCheckboxes %}
+
+{% macro collections_tna(request, collection) %}
+<div class="tna-aside tna-aside--tight tna-background-tint tna-!--margin-top-s">
+  {% set collections = [] %}
+  {% for collection_id, collection in collection.items() %}
+    {% set collections = collections.append({
+      'text': collection,
+      'value': collection_id,
+      'checked': qs_is_value_active(request.GET, 'collections', collection_id)
+    }) %}
+  {% endfor %}
+  {{ tnaCheckboxes({
+    'label': 'Collections',
+    'headingLevel': 3,
+    'headingSize': 'm',
+    'id': 'collections',
+    'name': 'collections',
+    'items': collections,
+    'small': True,
+    'attributes': {
+      'form': 'search-form'
+    }
+  }) }}
+  <div class="tna-button-group tna-!--margin-top-s">
+    {{ tnaButton({
+      'text': 'Update',
+      'buttonElement': True,
+      'buttonType': 'submit',
+      'small': True,
+      'attributes': {
+        'form': 'search-form'
+      }
+    }) }}
+  </div>
+</div>
+{% endmacro %}

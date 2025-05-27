@@ -3,6 +3,8 @@ import json
 import re
 from datetime import datetime
 
+from app.lib.xslt_transformations import apply_generic_xsl
+from app.records.utils import change_discovery_record_details_links
 from django.conf import settings
 from django.http import QueryDict
 from django.templatetags.static import static
@@ -15,6 +17,13 @@ def slugify(s):
     s = re.sub(r"[^\w\s-]", "", s)
     s = re.sub(r"[\s_-]+", "-", s)
     s = re.sub(r"^-+|-+$", "", s)
+    return s
+
+
+def sanitise_record_field(s):
+    # Remove whitespace between <p> tags
+    s = re.sub(r"(</p>)\s+(<p[ >])", r"\1\2", s).strip()
+    s = change_discovery_record_details_links(s)
     return s
 
 
@@ -43,7 +52,11 @@ def dump_json(obj):
 
 
 def format_number(num):
-    return format(num, ",")
+    try:
+        number = int(num)
+    except ValueError:
+        return num
+    return format(number, ",")
 
 
 def qs_is_value_active(existing_qs: QueryDict, filter: str, by: str):
@@ -96,8 +109,9 @@ def qs_append_value(
 ):
     # Don't change the currently rendering existing query string!
     rtn_qs = existing_qs.copy()
-    qs = {filter: by}
-    rtn_qs.update(qs)
+    if filter and not qs_is_value_active(existing_qs, filter, by):
+        qs = {filter: by}
+        rtn_qs.update(qs)
     return rtn_qs if return_object else rtn_qs.urlencode()
 
 
@@ -139,7 +153,10 @@ def environment(**options):
             "feature": {"PHASE_BANNER": settings.FEATURE_PHASE_BANNER},
             "url": reverse,
             "now_iso_8601": now_iso_8601,
+            "qs_append_value": qs_append_value,
             "qs_is_value_active": qs_is_value_active,
+            "qs_remove_value": qs_remove_value,
+            "qs_replace_value": qs_replace_value,
             "qs_toggle_value": qs_toggle_value,
         }
     )
@@ -150,6 +167,8 @@ def environment(**options):
             "format_number": format_number,
             "base64_encode": base64_encode,
             "base64_decode": base64_decode,
+            "sanitise_record_field": sanitise_record_field,
+            "apply_generic_xsl": apply_generic_xsl,
         }
     )
     return env

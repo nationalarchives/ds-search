@@ -10,6 +10,8 @@ concurrency:
 jobs:
   test-node:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Run tests
@@ -17,6 +19,8 @@ jobs:
 
   test-python:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Run tests
@@ -24,6 +28,8 @@ jobs:
 
   version:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Get tag
@@ -50,6 +56,9 @@ jobs:
           latest: ${{ github.ref == 'refs/heads/main' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           docker-image-name: ${{ vars.DOCKER_IMAGE_NAME }}
+          wiz-client-id: ${{ secrets.WIZ_CLIENT_ID }}
+          wiz-client-secret: ${{ secrets.WIZ_CLIENT_SECRET }}
+          wiz-project-id: ${{ secrets.WIZ_PROJECT_DIGITALSERVICES }}
       - name: Create tag
         if: github.ref == 'refs/heads/main'
         uses: actions/github-script@v5
@@ -64,6 +73,8 @@ jobs:
 
   update-ds-infrastructure-web:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs:
       - build
       - version
@@ -81,16 +92,18 @@ jobs:
       - name: Install jq
         run: sudo apt-get install jq
       - name: Update config
-        run: jq --indent 4 '(.services.search.version|="${{ needs.version.outputs.version }}")' config/develop.json > tmp.$$.json && mv tmp.$$.json config/develop.json
+        run: jq --indent 4 '(.services.catalogue.version|="${{ needs.version.outputs.version }}")' config/develop.json > tmp.$$.json && mv tmp.$$.json config/develop.json
       - name: Push new version
         run: |
           git add config/develop.json
           COMMIT_MESSAGE_HEADER=$(git log -1 --pretty=%B | head -n 1)
-          git commit -m "Update search to v${{ needs.version.outputs.version }}" -m "${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
+          git commit -m "Update catalogue to v${{ needs.version.outputs.version }}" -m "${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
           git push origin main
 
   update-dblclk:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs:
       - build
       - version

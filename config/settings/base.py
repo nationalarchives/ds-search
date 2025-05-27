@@ -1,9 +1,9 @@
 import json
 import os
-from pathlib import Path
 from sysconfig import get_path
 
 from config.util import strtobool
+from csp.constants import NONE, SELF
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -114,7 +114,7 @@ USE_TZ = True
 
 STATIC_URL = "catalogue/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "app/static")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "app", "static")]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
@@ -145,83 +145,35 @@ try:
 except FileNotFoundError:
     pass
 
+WAGTAIL_API_URL: str = os.getenv("WAGTAIL_API_URL", "")
+WAGTAIL_HOME_PAGE_ID: int = 5
+WAGTAIL_EXPLORE_THE_COLLECTION_PAGE_ID: int = 55
+
 SECRET_KEY: str = os.environ.get("SECRET_KEY", "")
 
 DEBUG: bool = strtobool(os.getenv("DEBUG", "False"))
 
 COOKIE_DOMAIN: str = os.environ.get("COOKIE_DOMAIN", "")
 
-CSP_IMG_SRC: list[str] = os.environ.get("CSP_IMG_SRC", "'self'").split(",")
-CSP_SCRIPT_SRC: list[str] = os.environ.get("CSP_SCRIPT_SRC", "'self'").split(
-    ","
-)
-CSP_SCRIPT_SRC_ELEM: list[str] = os.environ.get(
-    "CSP_SCRIPT_SRC_ELEM", "'self'"
-).split(",")
-CSP_STYLE_SRC: list[str] = os.environ.get("CSP_STYLE_SRC", "'self'").split(",")
-CSP_STYLE_SRC_ELEM: list[str] = os.environ.get(
-    "CSP_STYLE_SRC_ELEM", "'self'"
-).split(",")
-CSP_FONT_SRC: list[str] = os.environ.get("CSP_FONT_SRC", "'self'").split(",")
-CSP_CONNECT_SRC: list[str] = os.environ.get("CSP_CONNECT_SRC", "'self'").split(
-    ","
-)
-CSP_MEDIA_SRC: list[str] = os.environ.get("CSP_MEDIA_SRC", "'self'").split(",")
-CSP_WORKER_SRC: list[str] = os.environ.get("CSP_WORKER_SRC", "'self'").split(
-    ","
-)
-CSP_FRAME_SRC: list[str] = os.environ.get("CSP_FRAME_SRC", "'self'").split(",")
-
-CSP_SELF = "'self'"
-CSP_NONE = "'none'"
-CONTENT_SECURITY_POLICY = (
-    {
-        "DIRECTIVES": {
-            "default-src": CSP_SELF,
-            "base-uri": CSP_NONE,
-            "object-src": CSP_NONE,
-            **({"img-src": CSP_IMG_SRC} if CSP_IMG_SRC != [CSP_SELF] else {}),
-            **(
-                {"script-src": CSP_SCRIPT_SRC}
-                if CSP_SCRIPT_SRC != [CSP_SELF]
-                else {}
-            ),
-            **(
-                {"script-src-elem": CSP_SCRIPT_SRC_ELEM}
-                if CSP_SCRIPT_SRC_ELEM != [CSP_SELF]
-                else {}
-            ),
-            **(
-                {"style-src": CSP_STYLE_SRC}
-                if CSP_STYLE_SRC != [CSP_SELF]
-                else {}
-            ),
-            **(
-                {"font-src": CSP_FONT_SRC} if CSP_FONT_SRC != [CSP_SELF] else {}
-            ),
-            **(
-                {"connect-src": CSP_CONNECT_SRC}
-                if CSP_CONNECT_SRC != [CSP_SELF]
-                else {}
-            ),
-            **(
-                {"media-src": CSP_MEDIA_SRC}
-                if CSP_MEDIA_SRC != [CSP_SELF]
-                else {}
-            ),
-            **(
-                {"worker-src": CSP_WORKER_SRC}
-                if CSP_WORKER_SRC != [CSP_SELF]
-                else {}
-            ),
-            **(
-                {"frame-src": CSP_FRAME_SRC}
-                if CSP_FRAME_SRC != [CSP_SELF]
-                else {}
-            ),
-        }
-    },
-)
+CONTENT_SECURITY_POLICY = {
+    "DIRECTIVES": {
+        "default-src": [SELF],
+        "base-uri": [NONE],
+        "object-src": [NONE],
+        "img-src": os.environ.get("CSP_IMG_SRC", SELF).split(","),
+        "script-src": os.environ.get("CSP_SCRIPT_SRC", SELF).split(","),
+        "script-src-elem": os.environ.get("CSP_SCRIPT_SRC_ELEM", SELF).split(
+            ","
+        ),
+        "style-src": os.environ.get("CSP_STYLE_SRC", SELF).split(","),
+        "style-src-elem": os.environ.get("CSP_STYLE_SRC_ELEM", SELF).split(","),
+        "font-src": os.environ.get("CSP_FONT_SRC", SELF).split(","),
+        "connect-src": os.environ.get("CSP_CONNECT_SRC", SELF).split(","),
+        "media-src": os.environ.get("CSP_MEDIA_SRC", SELF).split(","),
+        "worker-src": os.environ.get("CSP_WORKER_SRC", SELF).split(","),
+        "frame-src": os.environ.get("CSP_FRAME_SRC", SELF).split(","),
+    }
+}
 
 GA4_ID = os.environ.get("GA4_ID", "")
 
@@ -232,6 +184,22 @@ DJANGO_SERVE_STATIC = False
 ROSETTA_API_URL = os.getenv("ROSETTA_API_URL")
 
 IIIF_API_URL = os.getenv("IIIF_API_URL")
+
+# DORIS is TNA's Document Ordering System that contains Delivery Options data
+DELIVERY_OPTIONS_API_URL = os.getenv("DELIVERY_OPTIONS_API_URL")
+
+# List of IP address for identifying staff members within the organisation
+STAFFIN_IP_ADDRESSES = list(
+    filter(None, os.getenv("STAFFIN_IP_ADDRESSES", "").split(","))
+)
+
+# List of IP address for identifying on-site public users
+ONSITE_IP_ADDRESSES = list(
+    filter(None, os.getenv("ONSITE_IP_ADDRESSES", "").split(","))
+)
+
+# List of Distressing content prefixes
+DCS_PREFIXES = list(filter(None, os.getenv("DCS_PREFIXES", "").split(",")))
 
 # Should always be True in production
 CLIENT_VERIFY_CERTIFICATES = strtobool(
@@ -256,6 +224,16 @@ LOGGING = {
 SENTRY_DSN = os.getenv("SENTRY_DSN", "")
 ENVIRONMENT_NAME = os.getenv("ENVIRONMENT_NAME", "production")
 SENTRY_SAMPLE_RATE = float(os.getenv("SENTRY_SAMPLE_RATE", "0.1"))
+
+ADVANCED_DOCUMENT_ORDER_EMAIL = os.getenv(
+    "ADVANCED_DOCUMENT_ORDER_EMAIL",
+    "advanceddocumentorder@nationalarchives.gov.uk",
+)
+
+# Image library URL
+IMAGE_LIBRARY_URL = os.getenv(
+    "IMAGE_LIBRARY_URL", "https://images.nationalarchives.gov.uk/"
+)
 
 # Generated in the CI/CD process
 BUILD_VERSION = os.getenv("BUILD_VERSION", "")

@@ -4,11 +4,18 @@ import logging
 import re
 from typing import Any, Self
 
+from app.lib.xslt_transformations import apply_schema_xsl, apply_series_xsl
 from app.records.constants import NON_TNA_LEVELS, TNA_LEVELS
-from app.records.utils import extract, format_extref_links, format_link
 from collections.abc import Mapping
+from app.records.utils import (
+    change_discovery_record_details_links,
+    extract,
+    format_extref_links,
+    format_link,
+)
 from django.urls import NoReverseMatch, reverse
 from django.utils.functional import cached_property
+from lxml import etree
 
 from .converters import IDConverter
 
@@ -47,27 +54,6 @@ class APIResponse(APIModel):
     @cached_property
     def manifest(self) -> IIIFManifest:
         return IIIFManifest.from_api_response(self._raw)
-
-
-class APISearchResponse(APIResponse):
-    @cached_property
-    def records(self) -> list[Record]:
-        records = []
-        if "data" in self._raw:
-            records = [
-                Record(record["@template"]["details"])
-                for record in self._raw["data"]
-                if "@template" in record and "details" in record["@template"]
-            ]
-        return records
-
-    @cached_property
-    def stats_total(self) -> int:
-        return int(self.get("stats.total", "0"))
-
-    @cached_property
-    def stats_results(self) -> int:
-        return int(self.get("stats.results", "0"))
 
 
 class Record(APIModel):
@@ -330,7 +316,30 @@ class Record(APIModel):
     @cached_property
     def description(self) -> str:
         """Returns the api value of the attr if found, empty str otherwise."""
-        return format_extref_links(self.get("description", ""))
+        if description := self.raw_description:
+            description = format_extref_links(description)
+            description = apply_schema_xsl(description, self.description_schema)
+            description = change_discovery_record_details_links(description)
+            return description
+        description = self.get("description.value", "")
+        if series := self.hierarchy_series:
+            description = apply_series_xsl(description, series.reference_number)
+        description = format_extref_links(description)
+        description = change_discovery_record_details_links(description)
+        return description
+
+    @cached_property
+    def raw_description(self) -> str:
+        """Returns the api value of the attr if found, empty str otherwise."""
+        return self.get("description.raw", "")
+
+    @cached_property
+    def description_schema(self) -> str:
+        if schema := self.get("description.schema", ""):
+            colltype = etree.fromstring(schema)
+            if colltype_id := colltype.get("id", ""):
+                return colltype_id
+        return ""
 
     @cached_property
     def separated_materials(self) -> tuple[dict[str, Any], ...]:

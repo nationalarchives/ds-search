@@ -1,5 +1,6 @@
 from app.lib.api import ResourceNotFound, rosetta_request_handler
-from app.records.models import APISearchResponse
+
+from .models import APISearchResponse
 
 
 def search_records(
@@ -18,6 +19,8 @@ def search_records(
     results = rosetta_request_handler(uri, params)
     if "data" not in results:
         raise Exception("No data returned")
+    if "buckets" not in results:
+        raise Exception("No 'buckets' returned")
     if not len(results["data"]) and page == 1:
         raise ResourceNotFound("No results found")
     return APISearchResponse(results)

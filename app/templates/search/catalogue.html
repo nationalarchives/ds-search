@@ -16,6 +16,9 @@
 {% from 'search/macros/filters/search_within.html' import search_within %}
 {% from 'search/macros/filters/date_range.html' import date_range %}
 {% from 'search/macros/filters/levels_tna.html' import levels_tna %}
+{% from 'search/macros/filters/closure_statuses_tna.html' import closure_statuses_tna %}
+{% from 'search/macros/filters/opening_date.html' import opening_date %}
+{% from 'search/macros/filters/collections_tna.html' import collections_tna %}
 
 {%- set pageTitle = 'Catalogue search results' -%}
 {%- set encodedQuery = request.GET.urlencode() | base64_encode -%}
@@ -79,26 +82,13 @@
         }) }}
       </div> -->
       <input type="hidden" name="display" value="{{ request.GET.get('display') or '' }}">
+      <input type="hidden" name="group" value="{{ request.GET.get('group') or '' }}">
     </form>
     <div class="tna-column tna-column--full">
       {{ tnaSecondaryNavigation({
         'title': 'Sections',
         'headingLevel': 2,
-        'items': [
-          {
-            'name': 'Records at The National Archives (24,521,292)',
-            'href': '#',
-            'current': True
-          },
-          {
-            'name': 'Online records at The National Archives (9,041,961)',
-            'href': '#'
-          },
-          {
-            'name': 'Records at other UK archives (10,758,426)',
-            'href': '#'
-          }
-        ],
+        'items': buckets,
         'noBottomBorder': True,
         'visuallyHideHeading': True,
         'classes': 'tna-!--margin-top-m'
@@ -108,17 +98,24 @@
 </div>
 <div class="tna-container">
   <div class="tna-column tna-column--width-1-4 tna-column--width-1-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
-    <h2 class="tna-heading-l">Filters{% if selected_filters %} ({{ selected_filters | length }}){% endif %}</h2>
+    <h2 class="tna-heading-l">Filters</h2>
     {% if selected_filters %}
-    {{ tnaCompoundFilters({
-      'items': selected_filters,
-      'removeAllHref': url('search:catalogue') + '?q=' + request.GET.get('q') + '&display=' + (request.GET.get('display') or ''),
-      'classes': 'tna-!--margin-top-s'
-    }) }}
+        <div class="tna-aside tna-aside--tight tna-background-accent-light tna-!--margin-top-s">
+            <h3 class="tna-heading-m">Active filters {% if selected_filters %} ({{ selected_filters | length }}){% endif %}:</h3>
+            {{ tnaCompoundFilters({
+              'items': selected_filters,
+              'removeAllHref': url('search:catalogue') + '?q=' + request.GET.get('q') + '&display=' + (request.GET.get('display') or ''),
+              'removeAllText': 'Reset filters',
+              'classes': 'tna-!--margin-top-s'
+            }) }}
+        </div>
     {% endif %}
     {{ search_within(request) }}
     {{ date_range(request, 'date', 'date', 'Filter by record date') }}
     {{ levels_tna(request, levels) }}
+    {{ closure_statuses_tna(request, closure_statuses) }}
+    {{ date_range(request, 'date', 'date', 'Filter by record opening date') }}
+    {{ collections_tna(request, collections) }}
   </div>
   {% if results %}
   <div id="results" class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
@@ -180,14 +177,14 @@
         <div class="tna-button-group tna-button-group--small tna-!--no-margin-top">
           {{ tnaButton({
             'text': 'List',
-            'href': '?' + qs_toggle_value(request.GET, 'display', 'list'),
+            'href': '?' + qs_replace_value(request.GET, 'display', 'list'),
             'small': True,
             'icon': 'list',
             'iconOnly': True
           }) }}
           {{ tnaButton({
             'text': 'Grid',
-            'href': '?' + qs_toggle_value(request.GET, 'display', 'grid'),
+            'href': '?' + qs_replace_value(request.GET, 'display', 'grid'),
             'small': True,
             'icon': 'grip',
             'iconOnly': True
@@ -208,15 +205,18 @@
               'meta': [
                 {
                   'title': 'Held by',
-                  'text': record.held_by
+                  'text': record.held_by,
+                  'icon': 'building'
                 },
                 {
                   'title': 'Date',
-                  'text': record.date_covering
+                  'text': record.date_covering,
+                  'icon': 'calendar'
                 },
                 {
                   'title': 'Reference',
-                  'text': record.reference_number
+                  'text': record.reference_number,
+                  'icon': 'hashtag'
                 }
               ],
               'body': record.description | safe,

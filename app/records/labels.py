@@ -12,7 +12,7 @@ FIELD_LABELS = {
         "description": "If the record is 'open' or 'closed' for public access",
     },
     "copies_information": {"title": "Copies information"},
-    "creator": {"title": "Creator"},
+    "creator": {"title": "Creator(s)"},
     "custodial_history": {"title": "Custodial history"},
     "date_covering": {
         "title": "Date",
@@ -51,7 +51,7 @@ FIELD_LABELS = {
     "physical_condition": {"title": "Physical condition"},
     "physical_description": {"title": "Physical description"},
     "previous": {"title": "Previous"},
-    "publication_note": {"title": "Publication note"},
+    "publication_note": {"title": "Publication note(s)"},
     "record_opening": {"title": "Record opening date"},
     "reference_number": {
         "title": "Reference",

@@ -10,14 +10,15 @@ package-mode = false
 [tool.poetry.dependencies]
 python = "^3.12"
 requests = "^2.31.0"
-tna-frontend-jinja = "0.15.0"
+tna-frontend-jinja = "0.18.0"
 django = "^5.0.7"
 psycopg2-binary = "^2.9.9"
-django-csp = "^3.8"
+django-csp = "4.0"
 whitenoise = "^6.7.0"
 responses = "^0.25.3"
 pyquery = "^2.0.1"
 sentry-sdk = "^2.20.0"
+lxml = "^5.3.1"
 
 [tool.poetry.group.dev]
 optional = true
