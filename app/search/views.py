@@ -28,7 +28,14 @@ def catalogue_search_view(request):
         "collections": COLLECTIONS,
     }
 
-    page = int(request.GET.get("page", default_page))
+    try:
+        page = int(request.GET.get("page", default_page))
+        if page < 1:
+            raise ValueError
+    except (ValueError, KeyError):
+        # graceful degradation, fallback
+        page = 1
+
     sort = request.GET.get("sort", default_sort)
     current_bucket_key = request.GET.get("group") or default_group
     query = request.GET.get("q", "")
