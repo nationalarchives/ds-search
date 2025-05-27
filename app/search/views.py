@@ -22,7 +22,7 @@ def catalogue_search_view(request):
     default_page = 1  # page number of the search results
     RESULTS_PER_PAGE = 20  # max records to show per page
     PAGE_LIMIT = 500  # max page number that can be queried
-    errors = {}  # holds errors for each field
+    errors = {}  # holds overall errors
 
     # fields
     fields = {
