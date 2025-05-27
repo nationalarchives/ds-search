@@ -23,10 +23,11 @@ def record_details_by_ref(reference, params={}):
 
 
 def iiif_manifest_by_id(id) -> IIIFManifest:
-    uri = "get"
-    params = {"id": id}
-    results = iiif_request_handler(uri, params)
-    # TODO: Run checks against returned manifest
+    results = iiif_request_handler(id)
+    # Get all images from the manifest - for HTML-only version?
+    for item in results.get("items", []):
+        if "items" in item:
+            print(item["items"][0]["items"][0]["body"]["id"])
     if len(results["data"]) == 1: # TODO: Check if this is the correct way to get a manifest when endpoint is created
         manifest_data = results["data"][0]
         response = APIResponse(manifest_data)
