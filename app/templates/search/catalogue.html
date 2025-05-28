@@ -81,6 +81,7 @@
           'small': True
         }) }}
       </div> -->
+      <input type="hidden" name="page" value="{{ request.GET.get('page') or '1' }}">
       <input type="hidden" name="display" value="{{ request.GET.get('display') or 'list' }}">
       <input type="hidden" name="group" value="{{ request.GET.get('group') or bucket_keys.TNA }}">
     </form>
