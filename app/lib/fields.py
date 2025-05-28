@@ -10,7 +10,7 @@ class BaseField:
         self.required = required
         self.hint = hint
         self.value = None
-        self.error = ""
+        self._error = None
 
     def clean(self, value):
         """Hook to clean and validate value. raise ValidationError accordingly"""
@@ -29,7 +29,7 @@ class BaseField:
             self.add_error(str(e))
 
     def add_error(self, message):
-        self.error = message
+        self._error = message
 
     @property
     def items(self):
@@ -37,6 +37,12 @@ class BaseField:
         Ex Checkboxes [{"text": "Alpha","value": "alpha"},{"text": "Beta","value": "beta","checked": true}]
         """
         raise NotImplementedError
+
+    @property
+    def error(self) -> dict | None:
+        if self._error:
+            return {"text": self._error}
+        return None
 
 
 class CharField(BaseField):

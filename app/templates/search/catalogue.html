@@ -235,7 +235,7 @@
     {%if errors %}
         <p> Error in fields:
         {% for field, error in errors.items() %}
-          <p>{{ field }}:{{ error }}</p>
+          <p>{{ field }}:{{ error.text }}</p>
         {% endfor %}
     {% endif %}
   </div>
