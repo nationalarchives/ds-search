@@ -33,6 +33,9 @@ class BaseField:
 
     @property
     def items(self):
+        """Return as required by FE.
+        Ex Checkboxes [{"text": "Alpha","value": "alpha"},{"text": "Beta","value": "beta","checked": true}]
+        """
         raise NotImplementedError
 
 
