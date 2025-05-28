@@ -70,8 +70,8 @@
         'headingLevel': 1,
         'headingSize': 'l',
         'id': 'search',
-        'name': 'q',
-        'value': request.GET.get('q') or ''
+        'name': fields.q.name,
+        'value': fields.q.value
       }) }}
       <!-- <div class="tna-button-group tna-!--margin-top-xs">
         {{ tnaButton({
