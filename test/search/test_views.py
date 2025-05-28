@@ -1,5 +1,6 @@
 import responses
 from app.records.models import Record
+from app.search.buckets import BucketKeys
 from django.conf import settings
 from django.test import TestCase
 
@@ -86,3 +87,4 @@ class CatalogueSearchViewTests(TestCase):
                 },
             ],
         )
+        self.assertEqual(response.context_data.get("bucket_keys"), BucketKeys)
