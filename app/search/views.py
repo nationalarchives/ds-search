@@ -130,8 +130,8 @@ def catalogue_search_view(request):
             "stats": stats,
             "selected_filters": selected_filters,
             "pagination": pagination_object(page, pages, request.GET),
-            "sort": fields["sort"],
             "bucket_keys": BucketKeys,
+            "fields": fields,
             "errors": errors,
         }
     )
