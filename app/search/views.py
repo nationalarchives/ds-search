@@ -115,7 +115,7 @@ def catalogue_search_view(request):
     else:
         records = None
         results_range = {}
-        bucket_items = []
+        bucket_list = []
         stats = {}
         page = 1
         pages = RESULTS_PER_PAGE
