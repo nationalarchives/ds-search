@@ -121,11 +121,6 @@ def catalogue_search_view(request):
         pages = RESULTS_PER_PAGE
 
     selected_filters = build_selected_filters_list(request)
-    bucket_list.update_buckets_for_display(
-        query=fields["q"].value,
-        buckets=results.buckets,
-        current_bucket_key=current_bucket_key,
-    )
 
     context.update(
         {
