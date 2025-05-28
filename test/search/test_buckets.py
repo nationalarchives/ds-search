@@ -105,24 +105,24 @@ class TestBuckets(TestCase):
 
         for label, current_bucket_key, expected in test_data:
             with self.subTest(label):
-                bucket_items = self.bucket_list.items(
+                self.bucket_list.update_buckets_for_display(
                     query=query,
                     buckets=self.buckets,
                     current_bucket_key=current_bucket_key,
                 )
 
-                self.assertListEqual(bucket_items, expected)
+                self.assertListEqual(self.bucket_list.items, expected)
 
     def test_bucket_items_with_query(self):
 
-        bucket_items = self.bucket_list.items(
+        self.bucket_list.update_buckets_for_display(
             query="ufo",
             buckets=self.buckets,
             current_bucket_key=BucketKeys.TNA,
         )
 
         self.assertListEqual(
-            bucket_items,
+            self.bucket_list.items,
             [
                 {
                     "name": "Records at the National Archives (26,008,838)",

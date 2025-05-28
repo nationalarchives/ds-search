@@ -67,7 +67,7 @@ class CatalogueSearchViewTests(TestCase):
             },
         )
         self.assertEqual(
-            response.context_data.get("bucket_items"),
+            response.context_data.get("bucket_list").items,
             [
                 {
                     "name": "Records at the National Archives (1)",

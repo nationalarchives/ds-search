@@ -52,6 +52,7 @@ def catalogue_search_view(request):
             params=params,
         )
     except ResourceNotFound:
+        context.update({"bucket_list": [{}], "bucket_keys": {}})
         return TemplateResponse(
             request=request,
             template=template,
@@ -68,7 +69,7 @@ def catalogue_search_view(request):
         "to": ((page - 1) * RESULTS_PER_PAGE) + results.stats_results,
     }
     selected_filters = build_selected_filters_list(request)
-    bucket_items = bucket_list.items(
+    bucket_list.update_buckets_for_display(
         query=query,
         buckets=results.buckets,
         current_bucket_key=current_bucket_key,
@@ -77,7 +78,7 @@ def catalogue_search_view(request):
     context.update(
         {
             "results": results.records,
-            "bucket_items": bucket_items,
+            "bucket_list": bucket_list,
             "results_range": results_range,
             "stats": {
                 "total": results.stats_total,

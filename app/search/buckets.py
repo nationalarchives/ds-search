@@ -55,9 +55,10 @@ class BucketList:
     def __iter__(self):
         yield from self.buckets
 
-    def items(self, query: str, buckets: dict, current_bucket_key: str):
-        """Returns modified buckets data to be used in the template
-        by front-end component Ex: tnaSecondaryNavigation()"""
+    def update_buckets_for_display(
+        self, query: str | None, buckets: dict, current_bucket_key: str | None
+    ):
+        """update buckets data used by bucket.item for the FE component"""
 
         for bucket in self.buckets:
             bucket.record_count = buckets.get(bucket.key, 0)
@@ -66,7 +67,11 @@ class BucketList:
             if query:
                 bucket.href += f"&q={query}"
 
-        # return data for display
+    @property
+    def items(self):
+        """Returns list of bucket items t to be used by
+        front-end component Ex: tnaSecondaryNavigation()"""
+
         return [bucket.item for bucket in self.buckets]
 
 
