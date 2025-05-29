@@ -49,11 +49,12 @@ def redirectToLiveSite(request):
         "/people/",
     ]
     if url_has_allowed_host_and_scheme(
-        "https://www.nationalarchives.gov.uk", allowed_hosts=["www.nationalarchives.gov.uk"]
+        "https://www.nationalarchives.gov.uk",
+        allowed_hosts=["www.nationalarchives.gov.uk"],
     ) and any(request.path.startswith(path) for path in allowed_paths):
         new_url = urljoin("https://www.nationalarchives.gov.uk", request.path)
         return HttpResponseRedirect(new_url)
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect("https://www.nationalarchives.gov.uk")
 
 
 old_beta_site_redirect_urls = [
