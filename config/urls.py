@@ -16,6 +16,7 @@ Including another URLconf
 """
 
 from urllib.parse import urljoin
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from app.errors import views as errors_view
 from app.records import converters
@@ -43,8 +44,12 @@ handler404 = "app.errors.views.page_not_found_error_view"
 # 6 months, at the start of December 2025.
 # ==========================================
 def redirectToLiveSite(request):
-    new_url = urljoin("https://www.nationalarchives.gov.uk", request.path)
-    return HttpResponseRedirect(new_url)
+    if url_has_allowed_host_and_scheme(
+        request.path, allowed_hosts=["www.nationalarchives.gov.uk"]
+    ):
+        new_url = urljoin("https://www.nationalarchives.gov.uk", request.path)
+        return HttpResponseRedirect(new_url)
+    return HttpResponseRedirect("/")
 
 
 old_beta_site_redirect_urls = [
