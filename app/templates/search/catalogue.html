@@ -70,8 +70,8 @@
         'headingLevel': 1,
         'headingSize': 'l',
         'id': 'search',
-        'name': 'q',
-        'value': request.GET.get('q') or ''
+        'name': fields.q.name,
+        'value': fields.q.value
       }) }}
       <!-- <div class="tna-button-group tna-!--margin-top-xs">
         {{ tnaButton({
@@ -130,30 +130,9 @@
           'headingLevel': 2,
           'headingSize': 's',
           'id': 'sort',
-          'name': 'sort',
-          'items': [
-            {
-              'text': 'Relevance',
-              'value': ''
-            },
-            {
-              'text': 'Date (newest first)',
-              'value': 'date:desc'
-            },
-            {
-              'text': 'Date (oldest first)',
-              'value': 'date:asc'
-            },
-            {
-              'text': 'Title (A-Z)',
-              'value': 'title:asc'
-            },
-            {
-              'text': 'Title (Z-A)',
-              'value': 'title:desc'
-            }
-          ],
-          'selected': request.GET.get('sort'),
+          'name': fields.sort.name,
+          'items': fields.sort.items,
+          'selected': fields.sort.value,
           'formGroupAttributes': {
             'id': 'sort-form-group'
           },
@@ -253,6 +232,12 @@
     <h2 class="tna-heading-xl">No results found</h2>
     <p>No results were found for your query.</p>
     <p>Try widening your search.</p>
+    {%if errors %}
+        <p> Error in fields:
+        {% for field, error in errors.items() %}
+          <p>{{ field }}:{{ error.text }}</p>
+        {% endfor %}
+    {% endif %}
   </div>
   {% endif %}
 </div>

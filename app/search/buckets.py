@@ -74,6 +74,9 @@ class BucketList:
 
         return [bucket.item for bucket in self.buckets]
 
+    def as_choices(self):
+        return [(bucket.key, bucket.label) for bucket in self.buckets]
+
 
 # Configure list of buckets to show in template, these values rarely change
 CATALOGUE_BUCKETS = BucketList(

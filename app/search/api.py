@@ -4,7 +4,11 @@ from .models import APISearchResponse
 
 
 def search_records(
-    query, results_per_page=12, page=1, sort="", params={}
+    query: str | None,
+    results_per_page=12,
+    page=1,
+    sort: str | None = "",
+    params={},
 ) -> APISearchResponse:
     uri = "search"
     params.update(
