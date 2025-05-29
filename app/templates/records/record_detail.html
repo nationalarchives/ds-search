@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% from 'components/accordion/macro.html' import tnaAccordion %}
+{% from 'records/macros/whats_it_about.html' import whats_it_about %}
 {% from 'records/macros/information_boxes.html' import information_boxes %}
 {% from 'records/macros/detail_fields.html' import detail_fields %}
 {% from 'records/macros/hierarchy.html' import hierarchy %}
@@ -37,31 +38,7 @@
     </div>
   </div>
 
-  <!--single box for series pages-->
-  <div class="tna-container tna-!--margin-top-m">
-    <div class="tna-column tna-column--full">
-      <div class="tna-!--padding-vertical-m tna-background-accent etna-rounded-corners">
-        <div class="tna-container">
-          <div class="tna-column tna-column--full">
-            <h2 class="tna-heading-l">What's it about?</h2>
-          </div>
-          <div class="tna-column tna-column--align-centre tna-!--margin-top-xs">
-            <div class="square tna-background-contrast">
-              <p class="tna-heading-m">HMC 1</p>
-            </div>
-          </div>
-          <div class="tna-column tna-column--flex-1 tna-column--full-small tna-column--full-tiny tna-column--align-centre tna-!--margin-top-xs">
-            <p>This series contains the early records of the Royal Commission. Thy include registers of correspondence, draftsof reports, correspondence and papers for Commissioners' meetings and the files of the Commission's correspondence. It contains 374 files and volunmes.</p>
-            <p>
-              <strong><a href="#">View all records in this series</a></strong>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-<!-- end single box for series pages-->
-  
+  {{ whats_it_about() }}
 
   {{ information_boxes(record) }}
 
