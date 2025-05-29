@@ -40,14 +40,6 @@ class CatalogueSearchView(TemplateView):
             }
         )
 
-        try:
-            page = int(self.request.GET.get("page", 1))
-            if page < 1:
-                raise ValueError
-        except (ValueError, KeyError):
-            # graceful degradation, fallback
-            page = 1
-
         sort = self.request.GET.get("sort", default_sort)
         current_bucket_key = self.request.GET.get("group") or default_group
         query = self.request.GET.get("q", "")
@@ -59,7 +51,7 @@ class CatalogueSearchView(TemplateView):
             results = search_records(
                 query=query,
                 results_per_page=RESULTS_PER_PAGE,
-                page=page,
+                page=self.page,
                 sort=sort,
                 params=params,
             )
@@ -74,11 +66,11 @@ class CatalogueSearchView(TemplateView):
         pages = math.ceil(results.stats_total / RESULTS_PER_PAGE)
         if pages > PAGE_LIMIT:
             pages = PAGE_LIMIT
-        if page > pages:
+        if self.page > pages:
             return errors_view.page_not_found_error_view(request=self.request)
         results_range = {
-            "from": ((page - 1) * RESULTS_PER_PAGE) + 1,
-            "to": ((page - 1) * RESULTS_PER_PAGE) + results.stats_results,
+            "from": ((self.page - 1) * RESULTS_PER_PAGE) + 1,
+            "to": ((self.page - 1) * RESULTS_PER_PAGE) + results.stats_results,
         }
         selected_filters = build_selected_filters_list(self.request)
         bucket_list.update_buckets_for_display(
@@ -97,11 +89,22 @@ class CatalogueSearchView(TemplateView):
                     "results": results.stats_results,
                 },
                 "selected_filters": selected_filters,
-                "pagination": pagination_object(page, pages, self.request.GET),
+                "pagination": pagination_object(self.page, pages, self.request.GET),
                 "bucket_keys": BucketKeys,
             }
         )
         return context
+
+    @property
+    def page(self) -> int:
+        try:
+            page = int(self.request.GET.get("page", 1))
+            if page < 1:
+                raise ValueError
+        except (ValueError, KeyError):
+            # graceful degradation, fallback
+            page = 1
+        return page
 
 
 def build_selected_filters_list(request):
