@@ -12,9 +12,9 @@ from django.http import HttpResponse
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
 
+from .api import APISearchResponse
 from .buckets import CATALOGUE_BUCKETS, BucketKeys
 from .constants import Sort
-from .api import APISearchResponse
 
 
 class CatalogueSearchView(TemplateView):
@@ -32,7 +32,6 @@ class CatalogueSearchView(TemplateView):
         self.context: dict = super().get_context_data(**kwargs)
 
         bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
-        
 
         self.context.update(
             {
@@ -43,21 +42,17 @@ class CatalogueSearchView(TemplateView):
         )
 
         self.sort = self.request.GET.get("sort", self.default_sort)
-        self.current_bucket_key = self.request.GET.get("group") or self.default_group
+        self.current_bucket_key = (
+            self.request.GET.get("group") or self.default_group
+        )
         self.query = self.request.GET.get("q", "")
 
         self.api_result = self.get_api_result()
 
-        pages = math.ceil(self.api_result.stats_total / self.RESULTS_PER_PAGE)
-        if pages > self.PAGE_LIMIT:
-            pages = self.PAGE_LIMIT
-        if self.page > pages:
-            return errors_view.page_not_found_error_view(request=self.request)
-        results_range = {
-            "from": ((self.page - 1) * self.RESULTS_PER_PAGE) + 1,
-            "to": ((self.page - 1) * self.RESULTS_PER_PAGE) + self.api_result.stats_results,
-        }
+        results_range, pagination = self.paginate_api_result()
+
         selected_filters = build_selected_filters_list(self.request)
+
         bucket_list.update_buckets_for_display(
             query=self.query,
             buckets=self.api_result.buckets,
@@ -74,7 +69,7 @@ class CatalogueSearchView(TemplateView):
                     "results": self.api_result.stats_results,
                 },
                 "selected_filters": selected_filters,
-                "pagination": pagination_object(self.page, pages, self.request.GET),
+                "pagination": pagination,
                 "bucket_keys": BucketKeys,
             }
         )
@@ -86,7 +81,7 @@ class CatalogueSearchView(TemplateView):
         params = {"filter": f"group:{self.current_bucket_key}"}
 
         return params
-    
+
     def get_api_result(self) -> APISearchResponse:
 
         try:
@@ -105,7 +100,6 @@ class CatalogueSearchView(TemplateView):
                 context=self.context,
             )
 
-
     @property
     def page(self) -> int:
         try:
@@ -116,6 +110,25 @@ class CatalogueSearchView(TemplateView):
             # graceful degradation, fallback
             page = 1
         return page
+
+    def paginate_api_result(self) -> tuple | HttpResponse:
+
+        pages = math.ceil(self.api_result.stats_total / self.RESULTS_PER_PAGE)
+        if pages > self.PAGE_LIMIT:
+            pages = self.PAGE_LIMIT
+
+        if self.page > pages:
+            return errors_view.page_not_found_error_view(request=self.request)
+
+        results_range = {
+            "from": ((self.page - 1) * self.RESULTS_PER_PAGE) + 1,
+            "to": ((self.page - 1) * self.RESULTS_PER_PAGE)
+            + self.api_result.stats_results,
+        }
+
+        pagination = pagination_object(self.page, pages, self.request.GET)
+
+        return (results_range, pagination)
 
 
 def build_selected_filters_list(request):
