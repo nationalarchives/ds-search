@@ -44,9 +44,13 @@ handler404 = "app.errors.views.page_not_found_error_view"
 # 6 months, at the start of December 2025.
 # ==========================================
 def redirectToLiveSite(request):
+    allowed_paths = [
+        "/explore-the-collection/",
+        "/people/",
+    ]
     if url_has_allowed_host_and_scheme(
-        request.path, allowed_hosts=["www.nationalarchives.gov.uk"]
-    ):
+        "https://www.nationalarchives.gov.uk", allowed_hosts=["www.nationalarchives.gov.uk"]
+    ) and any(request.path.startswith(path) for path in allowed_paths):
         new_url = urljoin("https://www.nationalarchives.gov.uk", request.path)
         return HttpResponseRedirect(new_url)
     return HttpResponseRedirect("/")
