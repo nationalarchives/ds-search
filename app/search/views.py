@@ -14,25 +14,27 @@ from django.views.generic import TemplateView
 
 from .buckets import CATALOGUE_BUCKETS, BucketKeys
 from .constants import Sort
+from .api import APISearchResponse
 
 
 class CatalogueSearchView(TemplateView):
 
     template_name = "search/catalogue.html"
+    default_group = BucketKeys.TNA.value
+    default_sort = Sort.RELEVANCE.value  # sort includes ordering
+    RESULTS_PER_PAGE = 20  # max records to show per page
+    PAGE_LIMIT = 500  # max page number that can be queried
 
     def get_context_data(
         self, **kwargs
     ) -> dict[str, Any] | TemplateResponse | HttpResponse:
 
-        context: dict = super().get_context_data(**kwargs)
+        self.context: dict = super().get_context_data(**kwargs)
 
         bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
-        default_group = BucketKeys.TNA.value
-        default_sort = Sort.RELEVANCE.value  # sort includes ordering
-        RESULTS_PER_PAGE = 20  # max records to show per page
-        PAGE_LIMIT = 500  # max page number that can be queried
+        
 
-        context.update(
+        self.context.update(
             {
                 "levels": TNA_LEVELS,
                 "closure_statuses": CLOSURE_STATUSES,
@@ -40,60 +42,69 @@ class CatalogueSearchView(TemplateView):
             }
         )
 
-        sort = self.request.GET.get("sort", default_sort)
-        current_bucket_key = self.request.GET.get("group") or default_group
-        query = self.request.GET.get("q", "")
+        self.sort = self.request.GET.get("sort", self.default_sort)
+        self.current_bucket_key = self.request.GET.get("group") or self.default_group
+        self.query = self.request.GET.get("q", "")
 
-        # filter records for a bucket
-        params = {"filter": f"group:{current_bucket_key}"}
+        self.api_result = self.get_api_result()
 
-        try:
-            results = search_records(
-                query=query,
-                results_per_page=RESULTS_PER_PAGE,
-                page=self.page,
-                sort=sort,
-                params=params,
-            )
-        except ResourceNotFound:
-            context.update({"bucket_list": [{}], "bucket_keys": {}})
-            return TemplateResponse(
-                request=self.request,
-                template=self.template_name,
-                context=context,
-            )
-
-        pages = math.ceil(results.stats_total / RESULTS_PER_PAGE)
-        if pages > PAGE_LIMIT:
-            pages = PAGE_LIMIT
+        pages = math.ceil(self.api_result.stats_total / self.RESULTS_PER_PAGE)
+        if pages > self.PAGE_LIMIT:
+            pages = self.PAGE_LIMIT
         if self.page > pages:
             return errors_view.page_not_found_error_view(request=self.request)
         results_range = {
-            "from": ((self.page - 1) * RESULTS_PER_PAGE) + 1,
-            "to": ((self.page - 1) * RESULTS_PER_PAGE) + results.stats_results,
+            "from": ((self.page - 1) * self.RESULTS_PER_PAGE) + 1,
+            "to": ((self.page - 1) * self.RESULTS_PER_PAGE) + self.api_result.stats_results,
         }
         selected_filters = build_selected_filters_list(self.request)
         bucket_list.update_buckets_for_display(
-            query=query,
-            buckets=results.buckets,
-            current_bucket_key=current_bucket_key,
+            query=self.query,
+            buckets=self.api_result.buckets,
+            current_bucket_key=self.current_bucket_key,
         )
 
-        context.update(
+        self.context.update(
             {
-                "results": results.records,
+                "results": self.api_result.records,
                 "bucket_list": bucket_list,
                 "results_range": results_range,
                 "stats": {
-                    "total": results.stats_total,
-                    "results": results.stats_results,
+                    "total": self.api_result.stats_total,
+                    "results": self.api_result.stats_results,
                 },
                 "selected_filters": selected_filters,
                 "pagination": pagination_object(self.page, pages, self.request.GET),
                 "bucket_keys": BucketKeys,
             }
         )
-        return context
+        return self.context
+
+    def get_api_params(self) -> dict:
+
+        # filter records for a bucket
+        params = {"filter": f"group:{self.current_bucket_key}"}
+
+        return params
+    
+    def get_api_result(self) -> APISearchResponse:
+
+        try:
+            return search_records(
+                query=self.query,
+                results_per_page=self.RESULTS_PER_PAGE,
+                page=self.page,
+                sort=self.sort,
+                params=self.get_api_params(),
+            )
+        except ResourceNotFound:
+            self.context.update({"bucket_list": [{}], "bucket_keys": {}})
+            return TemplateResponse(
+                request=self.request,
+                template=self.template_name,
+                context=self.context,
+            )
+
 
     @property
     def page(self) -> int:
