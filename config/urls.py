@@ -16,7 +16,6 @@ Including another URLconf
 """
 
 from urllib.parse import urljoin
-from django.utils.http import url_has_allowed_host_and_scheme
 
 from app.errors import views as errors_view
 from app.records import converters
@@ -26,6 +25,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.urls import include, path, re_path, register_converter
+from django.utils.http import url_has_allowed_host_and_scheme
 
 register_converter(converters.IDConverter, "id")
 
