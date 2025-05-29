@@ -18,7 +18,6 @@ def catalogue_search_view(request):
     bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
     default_group = BucketKeys.TNA.value
     default_sort = Sort.RELEVANCE.value  # sort includes ordering
-    default_page = 1  # page number of the search results
     RESULTS_PER_PAGE = 20  # max records to show per page
     PAGE_LIMIT = 500  # max page number that can be queried
 
@@ -29,7 +28,7 @@ def catalogue_search_view(request):
     }
 
     try:
-        page = int(request.GET.get("page", default_page))
+        page = int(request.GET.get("page", 1))
         if page < 1:
             raise ValueError
     except (ValueError, KeyError):
