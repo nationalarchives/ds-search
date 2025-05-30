@@ -4,7 +4,7 @@ from .models import APISearchResponse
 
 
 def search_records(
-    query, results_per_page=12, page=1, sort="", params={}
+    query, results_per_page=12, page=1, sort="", order="asc", params={}
 ) -> APISearchResponse:
     """
     Prepares the api url for the requested data and calls the handler.
@@ -20,6 +20,7 @@ def search_records(
             "size": results_per_page,
             "from": (page - 1) * results_per_page,
             "sort": sort,
+            "sortOrder": order,
         }
     )
     # remove params having no values
