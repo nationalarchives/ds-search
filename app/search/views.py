@@ -101,14 +101,13 @@ class CatalogueSearchView(TemplateView):
             )
 
     @property
-    def page(self) -> int:
+    def page(self) -> int | HttpResponse:
         try:
             page = int(self.request.GET.get("page", 1))
             if page < 1:
                 raise ValueError
         except (ValueError, KeyError):
-            # graceful degradation, fallback
-            page = 1
+            return errors_view.page_not_found_error_view(request=self.request)
         return page
 
     def paginate_api_result(self) -> tuple | HttpResponse:
