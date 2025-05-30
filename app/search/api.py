@@ -8,7 +8,7 @@ def search_records(
 ) -> APISearchResponse:
     """
     Prepares the api url for the requested data and calls the handler.
-    Raises error on invalid response or invalud result.
+    Raises error on invalid response or invalid result.
 
     sort: date:[asc|desc]; title:[asc|desc]
     params: filter, aggregation, etc
