@@ -6,6 +6,13 @@ from .models import APISearchResponse
 def search_records(
     query, results_per_page=12, page=1, sort="", params={}
 ) -> APISearchResponse:
+    """
+    Prepares the api url for the requested data and calls the handler.
+    Raises error on invalid response or invalud result.
+
+    sort: date:[asc|desc]; title:[asc|desc]
+    params: filter, aggregation, etc
+    """
     uri = "search"
     params.update(
         {
