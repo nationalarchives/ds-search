@@ -32,8 +32,7 @@ def catalogue_search_view(request):
         if page < 1:
             raise ValueError
     except (ValueError, KeyError):
-        # graceful degradation, fallback
-        page = 1
+        return errors_view.page_not_found_error_view(request=request)
 
     sort = request.GET.get("sort", default_sort)
     current_bucket_key = request.GET.get("group") or default_group
