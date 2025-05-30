@@ -6,6 +6,13 @@ from .models import APISearchResponse
 def search_records(
     query, results_per_page=12, page=1, sort="", order="asc", params={}
 ) -> APISearchResponse:
+    """
+    Prepares the api url for the requested data and calls the handler.
+    Raises error on invalid response or invalid result.
+
+    sort: date:[asc|desc]; title:[asc|desc]
+    params: filter, aggregation, etc
+    """
     uri = "search"
     params.update(
         {
@@ -16,6 +23,8 @@ def search_records(
             "sortOrder": order,
         }
     )
+    # remove params having no values
+    params = {param: value for param, value in params.items() if value}
     results = rosetta_request_handler(uri, params)
     if "data" not in results:
         raise Exception("No data returned")
