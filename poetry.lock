@@ -157,7 +157,6 @@ files = [
 [[package]]
 name = "django"
 version = "5.2.1"
-version = "5.2.1"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
 python-versions = ">=3.10"
