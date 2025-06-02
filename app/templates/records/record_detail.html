@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% from 'components/accordion/macro.html' import tnaAccordion %}
+{% from 'records/macros/whats_it_about.html' import whats_it_about %}
 {% from 'records/macros/information_boxes.html' import information_boxes %}
 {% from 'records/macros/detail_fields.html' import detail_fields %}
 {% from 'records/macros/hierarchy.html' import hierarchy %}
@@ -36,6 +37,8 @@
       {% endif %}
     </div>
   </div>
+
+  {{ whats_it_about(record) }}
 
   {{ information_boxes(record) }}
 

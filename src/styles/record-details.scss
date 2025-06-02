@@ -138,20 +138,31 @@
     @include colour.colour-font("font-light");
   }
 
-  textarea {
-    width: 100%;
-    padding: spacing.space(0.125) spacing.space(0.25);
-
-    display: block;
-
-    resize: vertical;
-
-    @include typography.font-size(16);
-    @include typography.detail-font;
-
-    @include colour.colour-border("keyline", 1px);
-    @include borders.rounded-border;
+  ul,
+  li {
+    > br,
+    + br {
+      display: none;
+    }
   }
+
+  /* stylelint-disable no-descending-specificity */
+  dd p {
+    margin-top: spacing.space(1);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  p:empty {
+    display: none;
+
+    &:first-child + p {
+      margin-top: 0;
+    }
+  }
+  /* stylelint-enable no-descending-specificity */
 }
 
 .square {
@@ -166,14 +177,6 @@
   box-sizing: border-box;
 
   text-align: center;
-
-  .tna-column:has(&) {
-    flex: 1;
-
-    + .tna-column {
-      flex: 6;
-    }
-  }
 }
 
 .copy-url {
@@ -214,6 +217,11 @@
   @include media.on-larger-than-tiny {
     margin-left: spacing.space(1);
   }
+}
+
+.underline {
+  // Used in record detail fields to replace <u>
+  text-decoration: underline;
 }
 
 #youtube-link {

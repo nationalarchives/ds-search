@@ -157,11 +157,14 @@ files = [
 [[package]]
 name = "django"
 version = "5.2.1"
+version = "5.2.1"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
 python-versions = ">=3.10"
 groups = ["main", "root"]
 files = [
+    {file = "django-5.2.1-py3-none-any.whl", hash = "sha256:a9b680e84f9a0e71da83e399f1e922e1ab37b2173ced046b541c72e1589a5961"},
+    {file = "django-5.2.1.tar.gz", hash = "sha256:57fe1f1b59462caed092c80b3dd324fd92161b620d59a9ba9181c34746c97284"},
     {file = "django-5.2.1-py3-none-any.whl", hash = "sha256:a9b680e84f9a0e71da83e399f1e922e1ab37b2173ced046b541c72e1589a5961"},
     {file = "django-5.2.1.tar.gz", hash = "sha256:57fe1f1b59462caed092c80b3dd324fd92161b620d59a9ba9181c34746c97284"},
 ]
@@ -744,14 +747,14 @@ doc = ["sphinx"]
 
 [[package]]
 name = "tna-frontend-jinja"
-version = "0.17.0"
+version = "0.18.0"
 description = "TNA Frontend Jinja templates"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "tna_frontend_jinja-0.17.0-py3-none-any.whl", hash = "sha256:26e40ad902b9db369b4f0768b6bf24ce45ad2ef827c2459950d756dab7179660"},
-    {file = "tna_frontend_jinja-0.17.0.tar.gz", hash = "sha256:c840cc27df1312d2ee43682cb514378f2d793d097c1ddddc5b1a6e4866abb485"},
+    {file = "tna_frontend_jinja-0.18.0-py3-none-any.whl", hash = "sha256:39049b49db5ae69eb5a200270d48fa581cb4a8fa4a83bb3169d63e7d4f7dcd33"},
+    {file = "tna_frontend_jinja-0.18.0.tar.gz", hash = "sha256:f6c8f141ad2069ae85709963a5e6bd3c69b48ad35094d64391744b87434ca43b"},
 ]
 
 [package.dependencies]
