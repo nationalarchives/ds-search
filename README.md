@@ -59,11 +59,6 @@ In addition to the [base Docker image variables](https://github.com/nationalarch
 | `DJANGO_SETTINGS_MODULE`          | The configuration to use                                  | `config.settings.production`                                |
 | `DEBUG`                           | If true, allow debugging                                  | `False`                                                     |
 | `COOKIE_DOMAIN`                   | The domain to save cookie preferences against             | _none_                                                      |
-| `DATABASE_NAME`                   | The name of the Postgres database                         | _none_                                                      |
-| `DATABASE_USER`                   | The username needed to access the Postgres database       | _none_                                                      |
-| `DATABASE_PASSWORD`               | The password needed to access the Postgres database       | _none_                                                      |
-| `DATABASE_HOST`                   | The Postgres database host                                | _none_                                                      |
-| `DATABASE_PORT`                   | The Postgres database port                                | `5432`                                                      |
 | `CSP_IMG_SRC`                     | A comma separated list of CSP rules for `img-src`         | `'self'`                                                    |
 | `CSP_SCRIPT_SRC`                  | A comma separated list of CSP rules for `script-src`      | `'self'`                                                    |
 | `CSP_SCRIPT_SRC_ELEM`             | A comma separated list of CSP rules for `script-src-elem` | `'self'`                                                    |
