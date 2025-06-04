@@ -1,4 +1,6 @@
+import copy
 import math
+from typing import Any
 
 from app.errors import views as errors_view
 from app.lib.api import ResourceNotFound
@@ -6,76 +8,144 @@ from app.lib.pagination import pagination_object
 from app.records.constants import CLOSURE_STATUSES, COLLECTIONS, TNA_LEVELS
 from app.search.api import search_records
 from config.jinja2 import qs_remove_value, qs_toggle_value
+from django.http import HttpResponse
 from django.template.response import TemplateResponse
+from django.views.generic import TemplateView
 
-from .buckets import BucketKeys, get_buckets_for_display
+from .api import APISearchResponse
+from .buckets import CATALOGUE_BUCKETS, BucketKeys
+from .constants import Sort
 
 
-def catalogue_search_view(request):
-    template = "search/catalogue.html"
-    context: dict = {
-        "levels": TNA_LEVELS,
-        "closure_statuses": CLOSURE_STATUSES,
-        "collections": COLLECTIONS,
-    }
-    results_per_page = 20
-    page = int(request.GET.get("page", 1))
-    sort_order = request.GET.get("sort", "").split(":")
-    sort = sort_order[0] if sort_order else ""
-    order = sort_order[1] if len(sort_order) > 1 else ""
+class PageNotFound(Exception):
+    pass
 
-    current_bucket_key = request.GET.get("group") or BucketKeys.TNA
-    # filter records for a bucket
-    params = {"filter": f"group:{current_bucket_key}"}
 
-    query = request.GET.get("q", "")
+class CatalogueSearchView(TemplateView):
 
-    try:
-        results = search_records(
-            query=query,
-            results_per_page=results_per_page,
-            page=page,
-            sort=sort,
-            order=order,
-            params=params,
+    template_name = "search/catalogue.html"
+    default_group = BucketKeys.TNA.value
+    default_sort = Sort.RELEVANCE.value  # sort includes ordering
+    RESULTS_PER_PAGE = 20  # max records to show per page
+    PAGE_LIMIT = 500  # max page number that can be queried
+
+    def get(self, request, *args, **kwargs):
+        try:
+            self.context = self.get_context_data(**kwargs)
+        except PageNotFound:
+            return errors_view.page_not_found_error_view(request=request)
+        except Exception as e:
+            self.context.update(
+                {
+                    "bucket_list": self.bucket_list,
+                    "results": {},
+                    "results_range": None,
+                    "stats": {
+                        "total": 0,
+                        "results": 0,
+                    },
+                    "selected_filters": [],
+                    "pagination": None,
+                    "bucket_keys": BucketKeys,
+                }
+            )
+        return self.render_to_response(self.context)
+
+    def get_context_data(
+        self, **kwargs
+    ) -> dict[str, Any] | TemplateResponse | HttpResponse:
+
+        self.context: dict = super().get_context_data(**kwargs)
+
+        self.bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
+
+        self.context.update(
+            {
+                "levels": TNA_LEVELS,
+                "closure_statuses": CLOSURE_STATUSES,
+                "collections": COLLECTIONS,
+            }
         )
-    except ResourceNotFound:
-        return TemplateResponse(
-            request=request,
-            template=template,
-            context=context,
+
+        self.sort = self.request.GET.get("sort", self.default_sort)
+        self.current_bucket_key = (
+            self.request.GET.get("group") or self.default_group
+        )
+        self.query = self.request.GET.get("q", "")
+
+        self.api_result = self.get_api_result()
+
+        results_range, pagination = self.paginate_api_result()
+
+        selected_filters = build_selected_filters_list(self.request)
+
+        self.bucket_list.update_buckets_for_display(
+            query=self.query,
+            buckets=self.api_result.buckets,
+            current_bucket_key=self.current_bucket_key,
         )
 
-    pages = math.ceil(results.stats_total / results_per_page)
-    if pages > 500:
-        pages = 500
-    if page > pages:
-        return errors_view.page_not_found_error_view(request=request)
-    results_range = {
-        "from": ((page - 1) * results_per_page) + 1,
-        "to": ((page - 1) * results_per_page) + results.stats_results,
-    }
-    selected_filters = build_selected_filters_list(request)
-    buckets = get_buckets_for_display(
-        query=query,
-        buckets=results.buckets,
-        current_bucket_key=current_bucket_key,
-    )
+        self.context.update(
+            {
+                "results": self.api_result.records,
+                "bucket_list": self.bucket_list,
+                "results_range": results_range,
+                "stats": {
+                    "total": self.api_result.stats_total,
+                    "results": self.api_result.stats_results,
+                },
+                "selected_filters": selected_filters,
+                "pagination": pagination,
+                "bucket_keys": BucketKeys,
+            }
+        )
+        return self.context
 
-    context.update(
-        {
-            "results": results.records,
-            "buckets": buckets,
-            "results_range": results_range,
-            "stats": {
-                "total": results.stats_total,
-                "results": results.stats_results,
-            },
-            "selected_filters": selected_filters,
-            "pagination": pagination_object(page, pages, request.GET),
+    def get_api_params(self) -> dict:
+
+        # filter records for a bucket
+        params = {"filter": f"group:{self.current_bucket_key}"}
+
+        return params
+
+    def get_api_result(self) -> APISearchResponse:
+
+        return search_records(
+            query=self.query,
+            results_per_page=self.RESULTS_PER_PAGE,
+            page=self.page,
+            sort=self.sort,
+            params=self.get_api_params(),
+        )
+
+    @property
+    def page(self) -> int | HttpResponse:
+        try:
+            page = int(self.request.GET.get("page", 1))
+            if page < 1:
+                raise ValueError
+        except (ValueError, KeyError):
+            raise PageNotFound
+        return page
+
+    def paginate_api_result(self) -> tuple | HttpResponse:
+
+        pages = math.ceil(self.api_result.stats_total / self.RESULTS_PER_PAGE)
+        if pages > self.PAGE_LIMIT:
+            pages = self.PAGE_LIMIT
+
+        if self.page > pages:
+            raise PageNotFound
+
+        results_range = {
+            "from": ((self.page - 1) * self.RESULTS_PER_PAGE) + 1,
+            "to": ((self.page - 1) * self.RESULTS_PER_PAGE)
+            + self.api_result.stats_results,
         }
-    )
-    return TemplateResponse(request=request, template=template, context=context)
+
+        pagination = pagination_object(self.page, pages, self.request.GET)
+
+        return (results_range, pagination)
 
 
 def build_selected_filters_list(request):

@@ -81,14 +81,14 @@
           'small': True
         }) }}
       </div> -->
-      <input type="hidden" name="display" value="{{ request.GET.get('display') or '' }}">
-      <input type="hidden" name="group" value="{{ request.GET.get('group') or '' }}">
+      <input type="hidden" name="display" value="{{ request.GET.get('display') or 'list' }}">
+      <input type="hidden" name="group" value="{{ request.GET.get('group') or bucket_keys.TNA }}">
     </form>
     <div class="tna-column tna-column--full">
       {{ tnaSecondaryNavigation({
         'title': 'Sections',
         'headingLevel': 2,
-        'items': buckets,
+        'items': bucket_list.items,
         'noBottomBorder': True,
         'visuallyHideHeading': True,
         'classes': 'tna-!--margin-top-m'
