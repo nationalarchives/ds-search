@@ -17,6 +17,10 @@ from .buckets import CATALOGUE_BUCKETS, BucketKeys
 from .constants import Sort
 
 
+class PageNotFound(Exception):
+    pass
+
+
 class CatalogueSearchView(TemplateView):
 
     template_name = "search/catalogue.html"
@@ -25,13 +29,35 @@ class CatalogueSearchView(TemplateView):
     RESULTS_PER_PAGE = 20  # max records to show per page
     PAGE_LIMIT = 500  # max page number that can be queried
 
+    def get(self, request, *args, **kwargs):
+        try:
+            self.context = self.get_context_data(**kwargs)
+        except PageNotFound:
+            return errors_view.page_not_found_error_view(request=request)
+        except Exception as e:
+            self.context.update(
+                {
+                    "bucket_list": self.bucket_list,
+                    "results": {},
+                    "results_range": None,
+                    "stats": {
+                        "total": 0,
+                        "results": 0,
+                    },
+                    "selected_filters": [],
+                    "pagination": None,
+                    "bucket_keys": BucketKeys,
+                }
+            )
+        return self.render_to_response(self.context)
+
     def get_context_data(
         self, **kwargs
     ) -> dict[str, Any] | TemplateResponse | HttpResponse:
 
         self.context: dict = super().get_context_data(**kwargs)
 
-        bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
+        self.bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
 
         self.context.update(
             {
@@ -53,7 +79,7 @@ class CatalogueSearchView(TemplateView):
 
         selected_filters = build_selected_filters_list(self.request)
 
-        bucket_list.update_buckets_for_display(
+        self.bucket_list.update_buckets_for_display(
             query=self.query,
             buckets=self.api_result.buckets,
             current_bucket_key=self.current_bucket_key,
@@ -62,7 +88,7 @@ class CatalogueSearchView(TemplateView):
         self.context.update(
             {
                 "results": self.api_result.records,
-                "bucket_list": bucket_list,
+                "bucket_list": self.bucket_list,
                 "results_range": results_range,
                 "stats": {
                     "total": self.api_result.stats_total,
@@ -84,21 +110,13 @@ class CatalogueSearchView(TemplateView):
 
     def get_api_result(self) -> APISearchResponse:
 
-        try:
-            return search_records(
-                query=self.query,
-                results_per_page=self.RESULTS_PER_PAGE,
-                page=self.page,
-                sort=self.sort,
-                params=self.get_api_params(),
-            )
-        except ResourceNotFound:
-            self.context.update({"bucket_list": [{}], "bucket_keys": {}})
-            return TemplateResponse(
-                request=self.request,
-                template=self.template_name,
-                context=self.context,
-            )
+        return search_records(
+            query=self.query,
+            results_per_page=self.RESULTS_PER_PAGE,
+            page=self.page,
+            sort=self.sort,
+            params=self.get_api_params(),
+        )
 
     @property
     def page(self) -> int | HttpResponse:
@@ -107,7 +125,7 @@ class CatalogueSearchView(TemplateView):
             if page < 1:
                 raise ValueError
         except (ValueError, KeyError):
-            return errors_view.page_not_found_error_view(request=self.request)
+            raise PageNotFound
         return page
 
     def paginate_api_result(self) -> tuple | HttpResponse:
@@ -117,7 +135,7 @@ class CatalogueSearchView(TemplateView):
             pages = self.PAGE_LIMIT
 
         if self.page > pages:
-            return errors_view.page_not_found_error_view(request=self.request)
+            raise PageNotFound
 
         results_range = {
             "from": ((self.page - 1) * self.RESULTS_PER_PAGE) + 1,
