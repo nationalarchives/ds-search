@@ -75,11 +75,6 @@ class CatalogueSearchViewTests(TestCase):
                     "current": True,
                 },
                 {
-                    "name": "Online records at The National Archives (0)",
-                    "href": "?group=digitised",
-                    "current": False,
-                },
-                {
                     "name": "Records at other UK archives (0)",
                     "href": "?group=nonTna",
                     "current": False,

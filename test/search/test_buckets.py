@@ -28,7 +28,6 @@ class TestBuckets(TestCase):
                         {"value": "record", "count": 37470380},
                         {"value": "tna", "count": 26008838},
                         {"value": "nonTna", "count": 16454377},
-                        {"value": "digitised", "count": 9055592},
                         {"value": "medalCard", "count": 5481173},
                         {"value": "will", "count": 1016334},
                         {"value": "aggregation", "count": 763209},
@@ -66,32 +65,6 @@ class TestBuckets(TestCase):
                         "current": True,
                     },
                     {
-                        "name": "Online records at The National Archives (9,055,592)",
-                        "href": "?group=digitised",
-                        "current": False,
-                    },
-                    {
-                        "name": "Records at other UK archives (16,454,377)",
-                        "href": "?group=nonTna",
-                        "current": False,
-                    },
-                ],
-            ),
-            (
-                "DIGITISED",
-                BucketKeys.DIGITISED,
-                [
-                    {
-                        "name": "Records at the National Archives (26,008,838)",
-                        "href": "?group=tna",
-                        "current": False,
-                    },
-                    {
-                        "name": "Online records at The National Archives (9,055,592)",
-                        "href": "?group=digitised",
-                        "current": True,
-                    },
-                    {
                         "name": "Records at other UK archives (16,454,377)",
                         "href": "?group=nonTna",
                         "current": False,
@@ -125,11 +98,6 @@ class TestBuckets(TestCase):
                     "name": "Records at the National Archives (26,008,838)",
                     "href": "?group=tna&q=ufo",
                     "current": True,
-                },
-                {
-                    "name": "Online records at The National Archives (9,055,592)",
-                    "href": "?group=digitised&q=ufo",
-                    "current": False,
                 },
                 {
                     "name": "Records at other UK archives (16,454,377)",

@@ -19,6 +19,7 @@
 {% from 'search/macros/filters/closure_statuses_tna.html' import closure_statuses_tna %}
 {% from 'search/macros/filters/opening_date.html' import opening_date %}
 {% from 'search/macros/filters/collections_tna.html' import collections_tna %}
+{% from 'search/macros/filters/digitised_tna.html' import digitised_tna %}
 
 {%- set pageTitle = 'Catalogue search results' -%}
 {%- set encodedQuery = request.GET.urlencode() | base64_encode -%}
@@ -82,7 +83,6 @@
         }) }}
       </div> -->
       <input type="hidden" name="display" value="{{ request.GET.get('display') or '' }}">
-      <input type="hidden" name="group" value="{{ request.GET.get('group') or '' }}">
     </form>
     <div class="tna-column tna-column--full">
       {{ tnaSecondaryNavigation({
@@ -109,6 +109,9 @@
               'classes': 'tna-!--margin-top-s'
             }) }}
         </div>
+    {% endif %}
+    {% if request.GET.get('group') != 'nonTna' %}
+        {{ digitised_tna(request) }}
     {% endif %}
     {{ search_within(request) }}
     {{ date_range(request, 'date', 'date', 'Filter by record date') }}
