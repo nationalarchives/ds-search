@@ -1,4 +1,4 @@
-from django.utils.functional import cached_property
+"""Module for custom fields which interfaces with FE component attrs."""
 
 
 class ValidationError(Exception):
@@ -31,6 +31,7 @@ class BaseField:
 
     def validate(self, value):
         """Basic validation. For more validation, Subclass and raise ValidationError"""
+
         if self.required and not value:
             raise ValidationError("Value is required.")
 
@@ -64,6 +65,7 @@ class BaseField:
     @property
     def update_choices(self):
         """For choice fields"""
+
         raise NotImplementedError
 
     @property
@@ -71,6 +73,7 @@ class BaseField:
         """Return as required by FE.
         Ex Checkboxes [{"text": "Alpha","value": "alpha"},{"text": "Beta","value": "beta","checked": true}]
         """
+
         raise NotImplementedError
 
 
@@ -102,15 +105,12 @@ class ChoiceField(BaseField):
         self.choices = choices
 
     def _has_all_match(self, value, search_in):
-
         if isinstance(value, str):
             return value in search_in
-
         return all(item in search_in for item in value)
 
     def validate(self, value):
         super().validate(value)
-
         if self.validate_input and value:
             valid_choices = [value for value, _ in self.choices]
             if not self._has_all_match(value, valid_choices):
