@@ -44,7 +44,6 @@ class BucketKeys(StrEnum):
     """
 
     TNA = "tna"
-    DIGITISED = "digitised"
     NONTNA = "nonTna"
 
 
@@ -82,11 +81,6 @@ CATALOGUE_BUCKETS = BucketList(
             key=BucketKeys.TNA.value,
             label="Records at the National Archives",
             description="Results for records held at The National Archives that match your search term.",
-        ),
-        Bucket(
-            key=BucketKeys.DIGITISED.value,
-            label="Online records at The National Archives",
-            description="Results for records available to download and held at The National Archives that match your search term.",
         ),
         Bucket(
             key=BucketKeys.NONTNA.value,
