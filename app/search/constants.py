@@ -1,14 +1,6 @@
 from enum import StrEnum
 
 
-class Aggregation(StrEnum):
-    """Aggregated counts to include with response.
-
-    Supported by /search endpoints.
-    """
-
-    LEVEL = "level"
-
 class Sort(StrEnum):
     """Options for sorting /search results by a given field."""
 

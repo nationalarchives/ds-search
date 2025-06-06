@@ -1,22 +1,16 @@
 import copy
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 
 from django.contrib.humanize.templatetags.humanize import intcomma
-from .constants import Aggregation
+
 
 @dataclass
 class Bucket:
     """
     A structured model that holds information that is made available in the templates
     for the user to explore.
-    Ex TNA-Records at the National Archives   
-
-    aggregations: hold values for the aggs param. When queried by api they return 
-    data for checkboxes.
-
-    Ex A bucket with key "tna" is Records at the National Archives.
-       Aggregation value are "level", etc.
+    Ex TNA-Records at the National Archives
     """
 
     key: str
@@ -25,7 +19,6 @@ class Bucket:
     href: str = "#"
     record_count: int = 0
     is_current: bool = False
-    aggregations: list[str] = field(default_factory=lambda: [])
 
     @property
     def label_with_count(self) -> str:
@@ -77,12 +70,6 @@ class BucketList:
     def as_choices(self) -> list[tuple[str, str]]:
         return [(bucket.key, bucket.label) for bucket in self.buckets]
 
-    def get_bucket(self, key):
-        for bucket in self.buckets:
-            if bucket.key == key:
-                return bucket
-        # raise KeyError(f"Bucket matching the key '{key}' could not be found")
-
     @property
     def items(self):
         """Returns list of bucket items t to be used by
@@ -98,19 +85,16 @@ CATALOGUE_BUCKETS = BucketList(
             key=BucketKeys.TNA.value,
             label="Records at the National Archives",
             description="Results for records held at The National Archives that match your search term.",
-            aggregations=[]
         ),
         Bucket(
             key=BucketKeys.DIGITISED.value,
             label="Online records at The National Archives",
             description="Results for records available to download and held at The National Archives that match your search term.",
-            aggregations=[Aggregation.LEVEL]
         ),
         Bucket(
             key=BucketKeys.NONTNA.value,
             label="Records at other UK archives",
             description="Results for records held at other archives in the UK (and not at The National Archives) that match your search term.",
-            aggregations=[Aggregation.LEVEL]
         ),
     ]
 )
