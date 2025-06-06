@@ -236,10 +236,8 @@ def build_selected_filters_list(request):
         for level in levels:
             selected_filters.append(
                 {
-                    # "label": f"Level: {TNA_LEVELS.get(level)}",
                     "label": f"Level: {levels_lookup.get(level)}",
                     "href": f"?{qs_toggle_value(request.GET, 'level', level)}",
-                    # "title": f"Remove {TNA_LEVELS.get(level)} level",
                     "title": f"Remove {levels_lookup.get(level)} level",
                 }
             )

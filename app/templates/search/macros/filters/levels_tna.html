@@ -3,16 +3,6 @@
 
 {% macro levels_tna(request, levels) %}
 <div class="tna-aside tna-aside--tight tna-background-tint tna-!--margin-top-s">
-  {#
-  {% set level_items = [] %}
-  {% for level_id, level in levels.items_iter %}
-    {% set level_items = level_items.append({
-      'text': level,
-      'value': level_id,
-      'checked': qs_is_value_active(request.GET, 'level', level_id)
-    }) %}
-  {% endfor %}
-  #}
   {{ tnaCheckboxes({
     'label': levels.label,
     'headingLevel': 3,
