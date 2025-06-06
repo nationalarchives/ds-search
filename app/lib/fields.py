@@ -100,14 +100,13 @@ class ChoiceField(BaseField):
         )
         super().__init__(**kwargs)
         self.choices = choices
-    
+
     def _has_all_match(self, value, search_in):
 
         if isinstance(value, str):
             return value in search_in
-        
-        return all(item in search_in for item in value )
-        
+
+        return all(item in search_in for item in value)
 
     def validate(self, value):
         super().validate(value)
@@ -122,10 +121,14 @@ class ChoiceField(BaseField):
     @property
     def items(self):
         return [
-           {"text": display_value, "value": value, "checked": True} if self.value and self._has_all_match(value, self.value) else {"text": display_value, "value": value} 
+            (
+                {"text": display_value, "value": value, "checked": True}
+                if self.value and self._has_all_match(value, self.value)
+                else {"text": display_value, "value": value}
+            )
             for value, display_value in self.choices
         ]
-    
+
     @property
     def items_iter(self):
         for item in self.items:

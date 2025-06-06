@@ -88,5 +88,3 @@ class BaseForm:
     @property
     def errors(self) -> dict:
         return self._errors
-
-
