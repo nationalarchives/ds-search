@@ -1,14 +1,12 @@
-from app.lib.forms import BaseForm
-from app.records.constants import TNA_LEVELS
-from app.search.buckets import CATALOGUE_BUCKETS
-from app.search.constants import Sort
-
 from app.lib.fields import (
     CharField,
     ChoiceField,
     DynamicMultipleChoiceField,
 )
-
+from app.lib.forms import BaseForm
+from app.records.constants import TNA_LEVELS
+from app.search.buckets import CATALOGUE_BUCKETS
+from app.search.constants import Sort
 
 
 class CatalogueSearchForm(BaseForm):
