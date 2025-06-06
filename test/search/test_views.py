@@ -3,6 +3,7 @@ from app.records.models import Record
 from app.search.buckets import BucketKeys
 from django.conf import settings
 from django.test import TestCase
+from django.utils.encoding import force_str
 
 
 class CatalogueSearchViewTests(TestCase):
@@ -83,3 +84,17 @@ class CatalogueSearchViewTests(TestCase):
             ],
         )
         self.assertEqual(response.context_data.get("bucket_keys"), BucketKeys)
+
+        # Assert for presence of the unchecked online checkbox in the HTML response
+        html = force_str(response.content)
+        self.assertIn('name="online"', html)
+        self.assertNotIn('name="online" checked', html)
+
+        # Assert for presence of checked online checkbox where request parameter is set
+        response_checked = self.client.get("/catalogue/search/?online=true")
+        html_checked = force_str(response_checked.content)
+        self.assertIn('name="online" checked', html_checked)
+
+        # Assert the online checkbox is not included if group is set to 'nonTna'
+        non_tna_response = self.client.get("/catalogue/search/?group=nonTna")
+        self.assertNotIn('name="online"', non_tna_response.content.decode())
