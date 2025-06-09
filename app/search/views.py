@@ -3,7 +3,6 @@ import math
 from typing import Any
 
 from app.errors import views as errors_view
-from app.lib.api import ResourceNotFound
 from app.lib.pagination import pagination_object
 from app.records.constants import CLOSURE_STATUSES, COLLECTIONS, TNA_LEVELS
 from app.search.api import search_records
@@ -11,8 +10,8 @@ from config.jinja2 import qs_remove_value, qs_toggle_value
 from django.http import (
     HttpRequest,
     HttpResponse,
+    QueryDict,
 )
-from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
 
 from .api import APISearchResponse
@@ -80,7 +79,7 @@ class CatalogueSearchView(TemplateView):
         try:
             self.page  # checks valid page
             if self.form.is_valid():
-                self.query = self.form.fields["q"].value
+                self.query = self.form.cleaned_data.get("q")
                 return self.form_valid()
             else:
                 return self.form_invalid()
@@ -132,7 +131,7 @@ class CatalogueSearchView(TemplateView):
                 buckets=self.api_result.buckets,
                 current_bucket_key=self.current_bucket_key,
             )
-        selected_filters = build_selected_filters_list(self.request)
+        selected_filters = self.build_selected_filters_list()
         context.update(
             {
                 "results": results,
@@ -160,7 +159,7 @@ class CatalogueSearchView(TemplateView):
             query=self.query,
             results_per_page=self.RESULTS_PER_PAGE,
             page=self.page,
-            sort=self.form.fields["sort"].value,
+            sort=self.form.cleaned_data.get("sort"),
             params=self.get_api_params(),
         )
 
@@ -193,70 +192,82 @@ class CatalogueSearchView(TemplateView):
 
         return (results_range, pagination)
 
+    def build_selected_filters_list(self):
+        cleaned_query_string = "&".join(
+            [
+                (
+                    f"{key}={value}"
+                    if not isinstance(value, list)
+                    else "&".join(f"{key}={v}" for v in value)
+                )
+                for key, value in self.form.cleaned_data.items()
+                if value
+            ]
+        )
+        cleaned_query_dict = QueryDict(cleaned_query_string)
 
-def build_selected_filters_list(request):
-    selected_filters = []
-    # if request.GET.get("q", None):
-    #     selected_filters.append(
-    #         {
-    #             "label": f"\"{request.GET.get('q')}\"",
-    #             "href": f"?{qs_remove_value(request.GET, 'q')}",
-    #             "title": f"Remove query: \"{request.GET.get('q')}\"",
-    #         }
-    #     )
-    if request.GET.get("search_within", None):
-        selected_filters.append(
-            {
-                "label": f'Sub query "{request.GET.get("search_within")}"',
-                "href": f"?{qs_remove_value(request.GET, 'search_within')}",
-                "title": "Remove search within",
-            }
-        )
-    if request.GET.get("date_from", None):
-        selected_filters.append(
-            {
-                "label": f"Record date from: {request.GET.get("date_from")}",
-                "href": f"?{qs_remove_value(request.GET, 'date_from')}",
-                "title": "Remove record from date",
-            }
-        )
-    if request.GET.get("date_to", None):
-        selected_filters.append(
-            {
-                "label": f"Record date to: {request.GET.get("date_to")}",
-                "href": f"?{qs_remove_value(request.GET, 'date_to')}",
-                "title": "Remove record to date",
-            }
-        )
-    if levels := request.GET.getlist("level", None):
-        levels_lookup = {}
-        for _, v in TNA_LEVELS.items():
-            levels_lookup.update({v: v})
+        selected_filters = []
+        # if request.GET.get("q", None):
+        #     selected_filters.append(
+        #         {
+        #             "label": f"\"{request.GET.get('q')}\"",
+        #             "href": f"?{qs_remove_value(request.GET, 'q')}",
+        #             "title": f"Remove query: \"{request.GET.get('q')}\"",
+        #         }
+        #     )
+        if self.request.GET.get("search_within", None):
+            selected_filters.append(
+                {
+                    "label": f'Sub query "{self.request.GET.get("search_within")}"',
+                    "href": f"?{qs_remove_value(self.request.GET, 'search_within')}",
+                    "title": "Remove search within",
+                }
+            )
+        if self.request.GET.get("date_from", None):
+            selected_filters.append(
+                {
+                    "label": f"Record date from: {self.request.GET.get("date_from")}",
+                    "href": f"?{qs_remove_value(self.request.GET, 'date_from')}",
+                    "title": "Remove record from date",
+                }
+            )
+        if self.request.GET.get("date_to", None):
+            selected_filters.append(
+                {
+                    "label": f"Record date to: {self.request.GET.get("date_to")}",
+                    "href": f"?{qs_remove_value(self.request.GET, 'date_to')}",
+                    "title": "Remove record to date",
+                }
+            )
+        if levels := cleaned_query_dict.getlist("level"):
+            levels_lookup = {}
+            for _, v in TNA_LEVELS.items():
+                levels_lookup.update({v: v})
 
-        for level in levels:
-            selected_filters.append(
-                {
-                    "label": f"Level: {levels_lookup.get(level)}",
-                    "href": f"?{qs_toggle_value(request.GET, 'level', level)}",
-                    "title": f"Remove {levels_lookup.get(level)} level",
-                }
-            )
-    if closure_statuses := request.GET.getlist("closure_status", None):
-        for closure_status in closure_statuses:
-            selected_filters.append(
-                {
-                    "label": f"Closure status: {CLOSURE_STATUSES.get(closure_status)}",
-                    "href": f"?{qs_toggle_value(request.GET, 'closure_status', closure_status)}",
-                    "title": f"Remove {CLOSURE_STATUSES.get(closure_status)} closure status",
-                }
-            )
-    if collections := request.GET.getlist("collections", None):
-        for collection in collections:
-            selected_filters.append(
-                {
-                    "label": f"Collection: {COLLECTIONS.get(collection)}",
-                    "href": f"?{qs_toggle_value(request.GET, 'collections', collection)}",
-                    "title": f"Remove {COLLECTIONS.get(collection)} collection",
-                }
-            )
-    return selected_filters
+            for level in levels:
+                selected_filters.append(
+                    {
+                        "label": f"Level: {levels_lookup.get(level)}",
+                        "href": f"?{qs_toggle_value(cleaned_query_dict, 'level', level)}",
+                        "title": f"Remove {levels_lookup.get(level)} level",
+                    }
+                )
+        if closure_statuses := self.request.GET.getlist("closure_status", None):
+            for closure_status in closure_statuses:
+                selected_filters.append(
+                    {
+                        "label": f"Closure status: {CLOSURE_STATUSES.get(closure_status)}",
+                        "href": f"?{qs_toggle_value(self.request.GET, 'closure_status', closure_status)}",
+                        "title": f"Remove {CLOSURE_STATUSES.get(closure_status)} closure status",
+                    }
+                )
+        if collections := self.request.GET.getlist("collections", None):
+            for collection in collections:
+                selected_filters.append(
+                    {
+                        "label": f"Collection: {COLLECTIONS.get(collection)}",
+                        "href": f"?{qs_toggle_value(self.request.GET, 'collections', collection)}",
+                        "title": f"Remove {COLLECTIONS.get(collection)} collection",
+                    }
+                )
+        return selected_filters

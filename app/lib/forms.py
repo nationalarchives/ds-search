@@ -33,7 +33,7 @@ class BaseForm:
 
         values = data.getlist(key)
         if not values:
-            return None
+            return None or ""
         if len(values) == 1:
             return values[0]
         return values
