@@ -79,14 +79,23 @@
   'topNavigation': [
     {
       'text': 'Search',
-      'href': '/search/',
+      'href': 'http://localhost:65533/catalogue/search/',
       'icon': 'search'
     },
     {
-      'text': 'Shop',
-      'href': 'https://shop.nationalarchives.gov.uk/',
+      'text': 'Login',
+      'href': 'http://localhost:65521/auth/login/',
       'icon': 'shop'
     },
+    {
+      'text': 'Basket',
+      'href': 'http://localhost:65519/basket/',
+      'icon': 'shopping-basket',
+      'classes': 'basket-nav-item',
+      'attributes': {
+        'id': 'basket-nav-link'
+      }
+    }
   ],
   'navigation': [
     {
