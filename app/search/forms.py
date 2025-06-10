@@ -16,7 +16,8 @@ class CatalogueSearchForm(BaseForm):
         return {
             "group": ChoiceField(
                 choices=CATALOGUE_BUCKETS.as_choices(),
-                validate_input=True,
+                required=True,  # Required to query on a bucket
+                validate_input=True,  # True to validate against choices before querying the API
             ),
             "sort": ChoiceField(
                 choices=[
@@ -31,7 +32,7 @@ class CatalogueSearchForm(BaseForm):
             "q": CharField(),
             "level": DynamicMultipleChoiceField(
                 label="Filter by levels",
-                choices=tuple((level, level) for level in TNA_LEVELS.values()),
+                choices=list((level, level) for level in TNA_LEVELS.values()),
                 validate_input=True,
             ),
         }

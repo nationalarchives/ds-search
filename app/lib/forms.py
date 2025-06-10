@@ -28,22 +28,11 @@ class BaseForm:
 
         return {}
 
-    def _get_data_from_querydict(self, key, data):
-        "Returns appropriate value from a QueryDict"
-
-        values = data.getlist(key)
-        if not values:
-            return None or ""
-        if len(values) == 1:
-            return values[0]
-        return values
-
     def bind_fields(self):
         """Binds fields with data."""
 
         for name, field in self.fields.items():
-            value = self._get_data_from_querydict(name, self.data)
-            field.bind(name, value)
+            field.bind(name, self.data.getlist(name))
 
     def is_valid(self):
         """Returns True when fields are cleaned and validated without errors and stores cleaned data.

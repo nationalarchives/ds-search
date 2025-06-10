@@ -79,16 +79,14 @@ class BaseField:
 
 class CharField(BaseField):
 
-    def clean(self, value):
-        value = value if value is not None else ""
-        return super().clean(value)
-
-    def validate(self, value):
-        super().validate(value)
-        if not isinstance(value, str):
-            raise ValidationError(
-                f"{self.label} must be a string. Given value is {value} is invalid."
-            )
+    def bind(self, name, value) -> None:
+        if isinstance(value, list):
+            if not value:
+                value = ""
+            else:
+                # get last value (for more than one input value)
+                value = value[-1]
+        super().bind(name, value)
 
 
 class ChoiceField(BaseField):
@@ -98,7 +96,7 @@ class ChoiceField(BaseField):
 
         # field specific attr
         self.validate_input = bool(choices) and kwargs.pop(
-            "validate_input", True
+            "validate_input", False
         )
         super().__init__(**kwargs)
         self.choices = choices
@@ -106,21 +104,25 @@ class ChoiceField(BaseField):
     def _has_match(self, value, search_in):
         if isinstance(value, str):
             return value in search_in
-        return any(item in search_in for item in value)
 
-    def clean(self, value):
-        if value and isinstance(value, list):
+    def bind(self, name, value) -> None:
+        """Binds a empty string or last value from input."""
+
+        if not value:
+            value = ""
+        elif isinstance(value, list):
             value = value[-1]
-        return super().clean(value)
+        super().bind(name, value)
 
     def validate(self, value):
-        if self.validate_input and value:
+        if self.required or self.validate_input:
             super().validate(value)
-            valid_choices = [value for value, _ in self.choices]
-            if not self._has_match(value, valid_choices):
-                raise ValidationError(
-                    f"Enter a valid choice. {value} is not one of the available choices. Valid choices {', '.join(valid_choices)}"
-                )
+            if self.validate_input:
+                valid_choices = [value for value, _ in self.choices]
+                if not self._has_match(value, valid_choices):
+                    raise ValidationError(
+                        f"Enter a valid choice. {value or 'Empty param value'} is not one of the available choices. Valid choices {', '.join(valid_choices)}"
+                    )
 
     @property
     def items(self):
@@ -139,9 +141,38 @@ class ChoiceField(BaseField):
             yield (item["value"], item["text"])
 
 
-class DynamicMultipleChoiceField(ChoiceField):
+class DynamicMultipleChoiceField(BaseField):
 
-    def clean(self, value):
-        if self.validate_input and value:
-            self.validate(value)
-        return value
+    def __init__(self, choices: list[tuple[str, str]], **kwargs):
+        """choices: format [(field value, display value),]. Has field specific attributes."""
+
+        # field specific attr
+        self.validate_input = bool(choices) and kwargs.pop(
+            "validate_input", True
+        )
+        super().__init__(**kwargs)
+        self.choices = choices
+
+    def _has_match(self, value, search_in):
+        return all(item in search_in for item in value)
+
+    def validate(self, value):
+        if self.required or self.validate_input:
+            super().validate(value)
+            if self.validate_input:
+                valid_choices = [value for value, _ in self.choices]
+                if not self._has_match(value, valid_choices):
+                    raise ValidationError(
+                        f"Enter a valid choice. {', '.join(value)} not one of the available choices. Valid choices {', '.join(valid_choices)}"
+                    )
+
+    @property
+    def items(self):
+        return [
+            (
+                {"text": display_value, "value": value, "checked": True}
+                if self.value and self._has_match(value, self.value)
+                else {"text": display_value, "value": value}
+            )
+            for value, display_value in self.choices
+        ]
