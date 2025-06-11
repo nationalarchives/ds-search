@@ -87,11 +87,6 @@ CATALOGUE_BUCKETS = BucketList(
             description="Results for records held at The National Archives that match your search term.",
         ),
         Bucket(
-            key=BucketKeys.DIGITISED.value,
-            label="Online records at The National Archives",
-            description="Results for records available to download and held at The National Archives that match your search term.",
-        ),
-        Bucket(
             key=BucketKeys.NONTNA.value,
             label="Records at other UK archives",
             description="Results for records held at other archives in the UK (and not at The National Archives) that match your search term.",
