@@ -1,4 +1,5 @@
 import copy
+import logging
 import math
 from typing import Any
 
@@ -15,6 +16,8 @@ from django.views.generic import TemplateView
 from .api import APISearchResponse
 from .buckets import CATALOGUE_BUCKETS, BucketKeys
 from .constants import Sort
+
+logger = logging.getLogger(__name__)
 
 
 class PageNotFound(Exception):
@@ -34,7 +37,7 @@ class CatalogueSearchView(TemplateView):
             self.context = self.get_context_data(**kwargs)
         except PageNotFound:
             return errors_view.page_not_found_error_view(request=request)
-        except Exception as e:
+        except ResourceNotFound:
             self.context.update(
                 {
                     "bucket_list": self.bucket_list,
@@ -49,6 +52,16 @@ class CatalogueSearchView(TemplateView):
                     "bucket_keys": BucketKeys,
                 }
             )
+        except Exception as e:
+            context = {"exception_message": str(e)}
+            logger.error(str(e))
+            return TemplateResponse(
+                request=request,
+                template="errors/server_error.html",
+                context=context,
+                status=502,
+            )
+
         return self.render_to_response(self.context)
 
     def get_context_data(
@@ -73,7 +86,10 @@ class CatalogueSearchView(TemplateView):
         )
         self.query = self.request.GET.get("q", "")
 
-        self.api_result = self.get_api_result()
+        try:
+            self.api_result = self.get_api_result()
+        except ResourceNotFound:
+            raise  # re raise same error
 
         results_range, pagination = self.paginate_api_result()
 
