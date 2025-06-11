@@ -53,14 +53,9 @@ class CatalogueSearchView(TemplateView):
                 }
             )
         except Exception as e:
-            context = {"exception_message": str(e)}
             logger.error(str(e))
-            return TemplateResponse(
-                request=request,
-                template="errors/server_error.html",
-                context=context,
-                status=502,
-            )
+
+            return errors_view.server_error_view(request=request)
 
         return self.render_to_response(self.context)
 
