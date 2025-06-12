@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 import responses
 from app.records.models import Record
 from app.search.buckets import BucketKeys
@@ -9,7 +11,7 @@ from django.utils.encoding import force_str
 class CatalogueSearchViewTests(TestCase):
 
     @responses.activate
-    def test_catalogue_search_view(self):
+    def test_catalogue_search_context(self):
 
         responses.add(
             responses.GET,
@@ -38,12 +40,12 @@ class CatalogueSearchViewTests(TestCase):
                     "results": 20,
                 },
             },
-            status=200,
+            status=HTTPStatus.OK,
         )
 
         response = self.client.get("/catalogue/search/")
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
         self.assertIsInstance(response.context_data.get("results"), list)
         self.assertEqual(len(response.context_data.get("results")), 1)
@@ -85,6 +87,43 @@ class CatalogueSearchViewTests(TestCase):
         )
         self.assertEqual(response.context_data.get("bucket_keys"), BucketKeys)
 
+    @responses.activate
+    def test_catalogue_search_content(self):
+
+        responses.add(
+            responses.GET,
+            f"{settings.ROSETTA_API_URL}/search",
+            json={
+                "data": [
+                    {
+                        "@template": {
+                            "details": {
+                                "iaid": "C123456",
+                                "source": "CAT",
+                            }
+                        }
+                    }
+                ],
+                "buckets": [
+                    {
+                        "name": "group",
+                        "entries": [
+                            {"value": "tna", "count": 1},
+                        ],
+                    }
+                ],
+                "stats": {
+                    "total": 26008838,
+                    "results": 20,
+                },
+            },
+            status=HTTPStatus.OK,
+        )
+
+        response = self.client.get("/catalogue/search/")
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+
         # Assert for presence of the unchecked online checkbox where no group is set in request
         response_no_group = self.client.get("/catalogue/search/")
         html = force_str(response_no_group.content)
@@ -103,7 +142,9 @@ class CatalogueSearchViewTests(TestCase):
         self.assertNotIn('name="online" checked', html)
 
         # Assert for checked state where group is set to 'tna' and online is set to true in request
-        response_group_tna_online = self.client.get("/catalogue/search/?group=tna&online=true")
+        response_group_tna_online = self.client.get(
+            "/catalogue/search/?group=tna&online=true"
+        )
         html_checked = force_str(response_group_tna_online.content)
         self.assertIn('name="online" checked', html_checked)
 
