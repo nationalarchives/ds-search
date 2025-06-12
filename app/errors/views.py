@@ -7,10 +7,13 @@ from django.template import TemplateDoesNotExist, TemplateSyntaxError
 
 logger = logging.getLogger(__name__)
 
+PAGE_NOT_FOUND_TEMPLATE = "errors/page_not_found.html"
+SERVER_ERROR_TEMPLATE = "errors/server_error.html"
+
 
 def page_not_found_error_view(request, exception=None):
     try:
-        response = render(request, "errors/page_not_found.html")
+        response = render(request, PAGE_NOT_FOUND_TEMPLATE)
     except TemplateDoesNotExist as e:
         logger.error(f"Template missing: {e}")
         return HttpResponseServerError(
@@ -22,7 +25,7 @@ def page_not_found_error_view(request, exception=None):
 
 def server_error_view(request, exception=None):
     try:
-        response = render(request, "errors/server_error.html")
+        response = render(request, SERVER_ERROR_TEMPLATE)
     except TemplateDoesNotExist as e:
         logger.error(f"Template missing: {e}")
         return HttpResponseServerError(

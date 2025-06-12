@@ -1,7 +1,9 @@
+from http import HTTPStatus
+
 import responses
 from django.conf import settings
 from django.test import TestCase, override_settings
-from http import HTTPStatus
+
 
 class TestCatalogeSearchViewExceptions(TestCase):
 
