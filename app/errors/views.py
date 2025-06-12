@@ -3,12 +3,11 @@ from http import HTTPStatus
 
 from django.http import HttpResponseServerError
 from django.shortcuts import render
-from django.template import TemplateDoesNotExist, TemplateSyntaxError
+from django.template import TemplateDoesNotExist
+
+from .constants import PAGE_NOT_FOUND_TEMPLATE, SERVER_ERROR_TEMPLATE
 
 logger = logging.getLogger(__name__)
-
-PAGE_NOT_FOUND_TEMPLATE = "errors/page_not_found.html"
-SERVER_ERROR_TEMPLATE = "errors/server_error.html"
 
 
 def page_not_found_error_view(request, exception=None):
