@@ -5,7 +5,7 @@ from django.conf import settings
 from django.test import TestCase, override_settings
 
 
-class TestCatalogeSearchViewExceptions(TestCase):
+class TestCatalogueSearchViewExceptions(TestCase):
 
     @override_settings(
         ROSETTA_API_URL="",
