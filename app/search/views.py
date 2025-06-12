@@ -120,7 +120,6 @@ class CatalogueSearchView(TemplateView):
         context: dict = super().get_context_data(**kwargs)
         context.update(
             {
-                "levels": self.form.fields["level"],
                 "closure_statuses": CLOSURE_STATUSES,
                 "collections": COLLECTIONS,
             }

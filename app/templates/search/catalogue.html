@@ -114,7 +114,7 @@
     {{ online_tna(request) }}
     {{ search_within(request) }}
     {{ date_range(request, 'date', 'date', 'Filter by record date') }}
-    {{ levels_tna(request, levels) }}
+    {{ levels_tna(request, form.fields['level']) }}
     {{ closure_statuses_tna(request, closure_statuses) }}
     {{ date_range(request, 'date', 'date', 'Filter by record opening date') }}
     {{ collections_tna(request, collections) }}
