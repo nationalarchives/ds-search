@@ -1,4 +1,5 @@
 import logging
+from http import HTTPStatus
 
 from django.conf import settings
 from requests import (
@@ -64,13 +65,13 @@ class JSONAPIClient:
             except JSONDecodeError:
                 logger.error("JSON API provided non-JSON response")
                 raise Exception("Non-JSON response provided")
-        if response.status_code == 400:
+        if response.status_code == HTTPStatus.BAD_REQUEST:
             logger.error(f"Bad request: {response.url}")
             raise Exception("Bad request")
-        if response.status_code == 403:
+        if response.status_code == HTTPStatus.FORBIDDEN:
             logger.warning("Forbidden")
             raise Exception("Forbidden")
-        if response.status_code == 404:
+        if response.status_code == HTTPStatus.NOT_FOUND:
             logger.warning("Resource not found")
             raise ResourceNotFound("Resource not found")
         logger.error(f"JSON API responded with {response.status_code}")

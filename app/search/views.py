@@ -1,4 +1,5 @@
 import copy
+import logging
 import math
 from typing import Any
 
@@ -10,14 +11,16 @@ from config.jinja2 import qs_remove_value, qs_toggle_value
 from django.http import (
     HttpRequest,
     HttpResponse,
-    QueryDict,
 )
+from app.lib.api import ResourceNotFound
 from django.views.generic import TemplateView
 
 from .api import APISearchResponse
 from .buckets import CATALOGUE_BUCKETS, BucketKeys
 from .constants import Sort
 from .forms import CatalogueSearchForm
+
+logger = logging.getLogger(__name__)
 
 
 class PageNotFound(Exception):
@@ -85,11 +88,14 @@ class CatalogueSearchView(TemplateView):
                 return self.form_invalid()
         except PageNotFound:
             return errors_view.page_not_found_error_view(request=self.request)
-        except Exception as e:
-            # handle API, unknown errors
+        except ResourceNotFound:
+            # handle API response error
             exception_name = type(e).__name__
             self.form.add_error(exception_name, str(e))
             return self.form_invalid()
+        except Exception as e:
+            logger.error(str(e))
+            return errors_view.server_error_view(request=request)
 
     def form_invalid(self):
         """Renders invalid form, context."""

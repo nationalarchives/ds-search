@@ -1,5 +1,6 @@
 import logging
 import os
+from http import HTTPStatus
 
 from app.deliveryoptions.api import delivery_options_request_handler
 from app.deliveryoptions.delivery_options import (
@@ -71,7 +72,7 @@ def record_detail_view(request, id):
             request=request,
             template="errors/server_error.html",
             context=context,
-            status=502,
+            status=HTTPStatus.BAD_GATEWAY,
         )
 
     context.update(
@@ -146,7 +147,7 @@ def related_records_view(request, id):
             request=request,
             template="errors/server_error.html",
             context=context,
-            status=502,
+            status=HTTPStatus.BAD_GATEWAY,
         )
 
     context.update(
@@ -172,7 +173,7 @@ def records_help_view(request, id):
             request=request,
             template="errors/server_error.html",
             context=context,
-            status=502,
+            status=HTTPStatus.BAD_GATEWAY,
         )
 
     context.update(
