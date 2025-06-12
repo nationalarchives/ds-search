@@ -4,6 +4,7 @@ import math
 from typing import Any
 
 from app.errors import views as errors_view
+from app.lib.api import ResourceNotFound
 from app.lib.pagination import pagination_object
 from app.records.constants import CLOSURE_STATUSES, COLLECTIONS, TNA_LEVELS
 from app.search.api import search_records
@@ -12,7 +13,6 @@ from django.http import (
     HttpRequest,
     HttpResponse,
 )
-from app.lib.api import ResourceNotFound
 from django.views.generic import TemplateView
 
 from .api import APISearchResponse
@@ -88,7 +88,7 @@ class CatalogueSearchView(TemplateView):
                 return self.form_invalid()
         except PageNotFound:
             return errors_view.page_not_found_error_view(request=self.request)
-        except ResourceNotFound:
+        except ResourceNotFound as e:
             # handle API response error
             exception_name = type(e).__name__
             self.form.add_error(exception_name, str(e))

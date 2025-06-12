@@ -129,7 +129,7 @@ class ChoiceField(BaseField):
         return [
             (
                 {"text": display_value, "value": value, "checked": True}
-                if self.value and self._has_match(value, self.value)
+                if (value == self.value)
                 else {"text": display_value, "value": value}
             )
             for value, display_value in self.choices
@@ -153,7 +153,7 @@ class DynamicMultipleChoiceField(BaseField):
         super().__init__(**kwargs)
         self.choices = choices
 
-    def _has_match(self, value, search_in):
+    def _has_match_all(self, value, search_in):
         return all(item in search_in for item in value)
 
     def validate(self, value):
@@ -161,7 +161,7 @@ class DynamicMultipleChoiceField(BaseField):
             super().validate(value)
             if self.validate_input:
                 valid_choices = [value for value, _ in self.choices]
-                if not self._has_match(value, valid_choices):
+                if not self._has_match_all(value, valid_choices):
                     raise ValidationError(
                         f"Enter a valid choice. {', '.join(value)} not one of the available choices. Valid choices {', '.join(valid_choices)}"
                     )
@@ -171,7 +171,7 @@ class DynamicMultipleChoiceField(BaseField):
         return [
             (
                 {"text": display_value, "value": value, "checked": True}
-                if self.value and self._has_match(value, self.value)
+                if (value in self.value)
                 else {"text": display_value, "value": value}
             )
             for value, display_value in self.choices

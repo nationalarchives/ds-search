@@ -234,9 +234,10 @@
     <p>No results were found for your query.</p>
     <p>Try widening your search.</p>
     {% if form.errors %}
-      <h3>FORM ERRORS<h3>
+      <h3>These error messages here are temporary for Demo Only<h3>
+      <h4>Form Errors<h4>
       <dl class="tna-dl">
-        <dt>Param</dt>
+        <dt>Param/ErrorName</dt>
         <dd>Value</dd>
         {% for field, error in form.errors.items() %}
           <dt>{{ field }}</dt> <dd>{{ error.text }}</dd>
