@@ -2,25 +2,41 @@
 
 from typing import Any
 
-from .fields import (
-    BaseField,
-    ValidationError,
-)
+from django.http import QueryDict
+
+from .fields import BaseField
 
 
 class BaseForm:
+    """
+    Flow
+    -----
+    1. Create the form with fields and cross_validations
+    2. Instanitate and bind the form with request data
+    3. Clean and Validate the form via is_valid()
+    4. Access form and fields attributes
 
-    def __init__(self, data=None) -> None:
+    Form Attributes
+    ---------------
+    data         - request querydict data, mix default values here
+    cleaned_data - usually cleaned data from request to query the API
+    errors       - overall error forms and fields
+    is_valid()   - to clean and validate form fields
+    """
 
-        self.data = data or {}  # request data usually with defaults
-        self.cleaned_data: dict[str, Any] = {}  # usually from request for API
-        self._fields: dict[str, BaseField] = self.add_fields()
-        self._errors = {}  # overall error form and fields
+    NON_FIELD_ERRORS_KEY = "NONFIELDERRORS"
+
+    def __init__(self, data: QueryDict | None = None) -> None:
+
+        self.data: QueryDict = data or QueryDict("")
+        self.cleaned_data: dict[str, Any] = {}
+        self._fields = self.add_fields()
+        self._errors = {}
 
         self.bind_fields()
 
     @property
-    def fields(self):
+    def fields(self) -> dict[str, BaseField]:
         return self._fields
 
     def add_fields(self) -> dict[str, BaseField]:
@@ -34,7 +50,7 @@ class BaseForm:
         for name, field in self.fields.items():
             field.bind(name, self.data.getlist(name))
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         """Returns True when fields are cleaned and validated without errors and stores cleaned data.
         When False, adds overall errors for form and field."""
 
@@ -46,26 +62,40 @@ class BaseForm:
                 self.add_error(name, message=field.error.get("text"))
                 valid = False
             else:
-                self.cleaned_data[name] = field.get_cleaned_value()
+                self.cleaned_data[name] = field.cleaned
 
         # clean and validate fields at form level
-        if valid:
-            try:
-                self.cross_validate()
-            except ValidationError as e:
-                self.add_error(key="NONFIELDERROR", message={"text": str(e)})
-                valid = False
+        if crosss_validate_errors := self.cross_validate():
+            self.add_error(self.NON_FIELD_ERRORS_KEY, crosss_validate_errors)
+            valid = False
 
         return valid
 
-    def cross_validate(self):
-        """Subclass to validate between fields in cleaned data and raise Validation Error."""
+    def cross_validate(self) -> list[str]:
+        """Subclass to validate between fields in cleaned data
+        returns list of error messages ['error message 1', 'error message 2'].
+        """
 
-    def add_error(self, key, message):
-        """Key would be field name, or non field."""
+        return []
 
-        self._errors[key] = {"text": message}
+    def add_error(self, key, message: str | list = None):
+        """Sets field and non field errors
+        Field errors: dict[str, dict[str, str]]
+                      ex {"<field_name>", {"text: "<error message>"}}
+        Non Field errors: dict[str, list[dict[str, str]]]
+                          ex {"NONFIELDERRORS", [{"text: "<error message 1>"},
+                                                 {"text: "<error message 2>"}]}
+        """
+
+        if isinstance(message, list):
+            message_format = [{"text": item} for item in message]
+        else:
+            message_format = {"text": message}
+
+        self._errors[key] = message_format
 
     @property
-    def errors(self) -> dict:
+    def errors(
+        self,
+    ) -> dict[str, dict[str, str]] | dict[str, list[dict[str, str]]]:
         return self._errors

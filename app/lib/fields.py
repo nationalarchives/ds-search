@@ -13,7 +13,7 @@ class BaseField:
         self.hint = hint
         self._value = None  # usually the request data
         self._error = {}
-        self.choices = None
+        self.choices = None  # applicable to certain fields ex choice
 
     def bind(self, name, value) -> None:
         """Binds field name, value to the field. The value is usually from
@@ -22,6 +22,17 @@ class BaseField:
         self.name = name
         self.label = self.label or name.capitalize()
         self._value = value
+
+    def is_valid(self):
+        """Runs cleaning and validation. Handles ValidationError.
+        Stores cleaned value. Returns True if valid, False otherwise"""
+
+        try:
+            self._cleaned = self.clean(self.value)
+        except ValidationError as e:
+            self.add_error(str(e))
+
+        return not self._error
 
     def clean(self, value):
         """Subclass for cleaning and validating. Ex convert to date object"""
@@ -35,27 +46,17 @@ class BaseField:
         if self.required and not value:
             raise ValidationError("Value is required.")
 
-    def is_valid(self):
-        """Runs cleaning and validation. Handles ValidationError.
-        Stores cleaned value. Returns True if valid, False otherwise"""
-
-        try:
-            self._cleaned = self.clean(self.value)
-        except ValidationError as e:
-            self.add_error(str(e))
-
-        return not self._error
-
     def add_error(self, message):
         """Stores error message in the format of FE component"""
 
         self._error = {"text": message}
 
     @property
-    def error(self):
+    def error(self) -> dict[str, str]:
         return self._error
 
-    def get_cleaned_value(self):
+    @property
+    def cleaned(self):
         return self._cleaned if not self._error else None
 
     @property
@@ -121,7 +122,10 @@ class ChoiceField(BaseField):
                 valid_choices = [value for value, _ in self.choices]
                 if not self._has_match(value, valid_choices):
                     raise ValidationError(
-                        f"Enter a valid choice. {value or 'Empty param value'} is not one of the available choices. Valid choices {', '.join(valid_choices)}"
+                        (
+                            f"Enter a valid choice. {value or 'Empty param value'} is not one of the available choices. "
+                            f"Valid choices {', '.join(valid_choices)}"
+                        )
                     )
 
     @property
@@ -135,10 +139,10 @@ class ChoiceField(BaseField):
             for value, display_value in self.choices
         ]
 
-    @property
-    def items_iter(self):
-        for item in self.items:
-            yield (item["value"], item["text"])
+    # @property
+    # def items_iter(self):
+    #     for item in self.items:
+    #         yield (item["value"], item["text"])
 
 
 class DynamicMultipleChoiceField(BaseField):
@@ -163,7 +167,10 @@ class DynamicMultipleChoiceField(BaseField):
                 valid_choices = [value for value, _ in self.choices]
                 if not self._has_match_all(value, valid_choices):
                     raise ValidationError(
-                        f"Enter a valid choice. {', '.join(value)} not one of the available choices. Valid choices {', '.join(valid_choices)}"
+                        (
+                            f"Enter a valid choice. Value(s) [{', '.join(value)}] do not belong "
+                            f"to the available choices. Valid choices are [{', '.join(valid_choices)}]"
+                        )
                     )
 
     @property

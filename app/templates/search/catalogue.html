@@ -240,7 +240,15 @@
         <dt>Param/ErrorName</dt>
         <dd>Value</dd>
         {% for field, error in form.errors.items() %}
-          <dt>{{ field }}</dt> <dd>{{ error.text }}</dd>
+          {% if field == 'NONFIELDERRORS'%}
+            {% for message in error %}
+              <dt>{{ field }}</dt>
+              <dd>{{ message.text }}</dd>
+            {% endfor %}
+          {% else %}
+            <dt>{{ field }}</dt>
+            <dd>{{ error.text }}</dd>
+          {% endif %}
         {% endfor %}
       </dl>
     {% endif %}

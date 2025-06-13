@@ -89,7 +89,6 @@ class CatalogueSearchView(TemplateView):
         except PageNotFound:
             return errors_view.page_not_found_error_view(request=self.request)
         except ResourceNotFound as e:
-            # handle API response error
             exception_name = type(e).__name__
             self.form.add_error(exception_name, str(e))
             return self.form_invalid()
@@ -107,7 +106,13 @@ class CatalogueSearchView(TemplateView):
         """Gets the api result and processes it after the form and fields
         are cleaned and validated. Renders with form, context."""
 
-        self.api_result = self.get_api_result()
+        self.api_result = search_records(
+            query=self.query,
+            results_per_page=self.RESULTS_PER_PAGE,
+            page=self.page,
+            sort=self.form.cleaned_data.get("sort"),
+            params=self.get_api_params(),
+        )
         self.process_api_result()
         context = self.get_context_data(form=self.form)
         return self.render_to_response(context=context)
@@ -159,16 +164,6 @@ class CatalogueSearchView(TemplateView):
         # filter records for a bucket
         params = {"filter": f"group:{self.current_bucket_key}"}
         return params
-
-    def get_api_result(self) -> APISearchResponse:
-
-        return search_records(
-            query=self.query,
-            results_per_page=self.RESULTS_PER_PAGE,
-            page=self.page,
-            sort=self.form.cleaned_data.get("sort"),
-            params=self.get_api_params(),
-        )
 
     @property
     def page(self) -> int | HttpResponse:

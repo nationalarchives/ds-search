@@ -6,7 +6,6 @@ from app.search.buckets import BucketKeys
 from app.search.forms import CatalogueSearchForm
 from django.conf import settings
 from django.test import TestCase
-from django.utils.encoding import force_str
 
 
 class CatalogueSearchViewTests(TestCase):
