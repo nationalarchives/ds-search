@@ -15,7 +15,6 @@ from django.http import (
 )
 from django.views.generic import TemplateView
 
-from .api import APISearchResponse
 from .buckets import CATALOGUE_BUCKETS, BucketKeys
 from .constants import Sort
 from .forms import CatalogueSearchForm
@@ -27,25 +26,71 @@ class PageNotFound(Exception):
     pass
 
 
-class CatalogueSearchView(TemplateView):
+class APIMixin:
+    """A mixin to get the api result, processes api result, sets the context."""
 
-    template_name = "search/catalogue.html"
-    default_group = BucketKeys.TNA.value
-    default_sort = Sort.RELEVANCE.value  # sort includes ordering
     RESULTS_PER_PAGE = 20  # max records to show per page
     PAGE_LIMIT = 500  # max page number that can be queried
 
+    def get_api_result(
+        self, query, results_per_page, page, sort, current_bucket_key
+    ):
+        self.api_result = search_records(
+            query=query,
+            results_per_page=results_per_page,
+            page=page,
+            sort=sort,
+            params=self.get_api_params(current_bucket_key),
+        )
+        return self.api_result
+
+    def get_api_params(self, current_bucket_key) -> dict:
+        """The API params
+        filter: for buckets."""
+
+        # filter records for a bucket
+        params = {"filter": f"group:{current_bucket_key}"}
+        return params
+
+    def process_api_result(self, form, api_result):
+        """TODO: for API filter intergration."""
+        pass
+
+    def get_context_data(self, **kwargs):
+        context: dict = super().get_context_data(**kwargs)
+
+        results = None
+        stats = {"total": None, "results": None}
+        if self.api_result:
+            results = self.api_result.records
+            stats = {
+                "total": self.api_result.stats_total,
+                "results": self.api_result.stats_results,
+            }
+
+        context.update(
+            {
+                "results": results,
+                "stats": stats,
+            }
+        )
+
+        return context
+
+
+class CatalogueSearchFormMixin(APIMixin, TemplateView):
+    """A mixin that supports form operations"""
+
+    default_group = BucketKeys.TNA.value
+    default_sort = Sort.RELEVANCE.value  # sort includes ordering
+
     def setup(self, request: HttpRequest, *args, **kwargs) -> None:
-        """Create a form instance and some attributes."""
+        """Creates the form instance and some attributes"""
 
         super().setup(request, *args, **kwargs)
-
         self.form = CatalogueSearchForm(**self.get_form_kwargs())
-        self.api_result = None
         self.bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
-        self.current_bucket_key = (
-            self.request.GET.get("group") or self.default_group
-        )
+        self.current_bucket_key = self.form.fields["group"].value
 
     def get_form_kwargs(self) -> dict[str, Any]:
         """Returns request data with default values if not given."""
@@ -79,6 +124,7 @@ class CatalogueSearchView(TemplateView):
         For an invalid page renders page not found, otherwise renders the template
         with the form.
         """
+
         try:
             self.page  # checks valid page
             if self.form.is_valid():
@@ -87,8 +133,10 @@ class CatalogueSearchView(TemplateView):
             else:
                 return self.form_invalid()
         except PageNotFound:
+            # for page=<invalid page number>, page > page limit
             return errors_view.page_not_found_error_view(request=self.request)
         except ResourceNotFound as e:
+            # no results
             exception_name = type(e).__name__
             self.form.add_error(exception_name, str(e))
             return self.form_invalid()
@@ -96,77 +144,8 @@ class CatalogueSearchView(TemplateView):
             logger.error(str(e))
             return errors_view.server_error_view(request=request)
 
-    def form_invalid(self):
-        """Renders invalid form, context."""
-
-        context = self.get_context_data(form=self.form)
-        return self.render_to_response(context=context)
-
-    def form_valid(self):
-        """Gets the api result and processes it after the form and fields
-        are cleaned and validated. Renders with form, context."""
-
-        self.api_result = search_records(
-            query=self.query,
-            results_per_page=self.RESULTS_PER_PAGE,
-            page=self.page,
-            sort=self.form.cleaned_data.get("sort"),
-            params=self.get_api_params(),
-        )
-        self.process_api_result()
-        context = self.get_context_data(form=self.form)
-        return self.render_to_response(context=context)
-
-    def process_api_result(self):
-        """TODO: for API filter intergration."""
-        pass
-
-    def get_context_data(self, **kwargs):
-        context: dict = super().get_context_data(**kwargs)
-        context.update(
-            {
-                "closure_statuses": CLOSURE_STATUSES,
-                "collections": COLLECTIONS,
-            }
-        )
-        results = results_range = pagination = None
-        stats = {"total": None, "results": None}
-        if self.api_result:
-            results = self.api_result.records
-            stats = {
-                "total": self.api_result.stats_total,
-                "results": self.api_result.stats_results,
-            }
-            results_range, pagination = self.paginate_api_result()
-            self.bucket_list.update_buckets_for_display(
-                query=self.query,
-                buckets=self.api_result.buckets,
-                current_bucket_key=self.current_bucket_key,
-            )
-        selected_filters = build_selected_filters_list(self.request)
-        context.update(
-            {
-                "results": results,
-                "bucket_list": self.bucket_list,
-                "results_range": results_range,
-                "stats": stats,
-                "selected_filters": selected_filters,
-                "pagination": pagination,
-                "bucket_keys": BucketKeys,
-            }
-        )
-        return context
-
-    def get_api_params(self) -> dict:
-        """The API params
-        filter: for buckets."""
-
-        # filter records for a bucket
-        params = {"filter": f"group:{self.current_bucket_key}"}
-        return params
-
     @property
-    def page(self) -> int | HttpResponse:
+    def page(self) -> int:
         try:
             page = int(self.request.GET.get("page", 1))
             if page < 1:
@@ -174,6 +153,47 @@ class CatalogueSearchView(TemplateView):
         except (ValueError, KeyError):
             raise PageNotFound
         return page
+
+    def form_valid(self):
+        """Gets the api result and processes it after the form and fields
+        are cleaned and validated. Renders with form, context."""
+
+        self.api_result = self.get_api_result(
+            query=self.query,
+            results_per_page=self.RESULTS_PER_PAGE,
+            page=self.page,
+            sort=self.form.cleaned_data.get("sort"),
+            current_bucket_key=self.current_bucket_key,
+        )
+        self.process_api_result(self.form, self.api_result)
+        context = self.get_context_data(form=self.form)
+        return self.render_to_response(context=context)
+
+    def form_invalid(self):
+        """Renders invalid form, context."""
+
+        context = self.get_context_data(form=self.form)
+        return self.render_to_response(context=context)
+
+    def get_context_data(self, **kwargs):
+        context: dict = super().get_context_data(**kwargs)
+
+        results_range = pagination = None
+        if self.api_result:
+            results_range, pagination = self.paginate_api_result()
+            self.bucket_list.update_buckets_for_display(
+                query=self.query,
+                buckets=self.api_result.buckets,
+                current_bucket_key=self.current_bucket_key,
+            )
+        context.update(
+            {
+                "bucket_list": self.bucket_list,
+                "results_range": results_range,
+                "pagination": pagination,
+            }
+        )
+        return context
 
     def paginate_api_result(self) -> tuple | HttpResponse:
 
@@ -195,6 +215,40 @@ class CatalogueSearchView(TemplateView):
         return (results_range, pagination)
 
 
+class CatalogueSearchView(CatalogueSearchFormMixin):
+
+    template_name = "search/catalogue.html"
+
+    def get_context_data(self, **kwargs):
+        context: dict = super().get_context_data(**kwargs)
+
+        context.update(
+            {
+                "closure_statuses": CLOSURE_STATUSES,
+                "collections": COLLECTIONS,
+            }
+        )
+
+        if self.api_result:
+            self.bucket_list.update_buckets_for_display(
+                query=self.query,
+                buckets=self.api_result.buckets,
+                current_bucket_key=self.current_bucket_key,
+            )
+
+        selected_filters = build_selected_filters_list(self.request)
+
+        context.update(
+            {
+                "bucket_list": self.bucket_list,
+                "selected_filters": selected_filters,
+                "bucket_keys": BucketKeys,
+            }
+        )
+        return context
+
+
+# TODO: move into Catalogue Search View when integrating with API
 def build_selected_filters_list(request):
     selected_filters = []
     # if request.GET.get("q", None):
