@@ -174,8 +174,8 @@ class BaseFormWithChoiceFieldTest(TestCase):
                 "choice_field": {
                     "text": (
                         "Enter a valid choice. "
-                        "12345 is not one of the available choices. "
-                        "Valid choices yes, no"
+                        "[12345] is not one of the available choices. "
+                        "Valid choices are [yes, no]"
                     )
                 }
             },
@@ -188,8 +188,8 @@ class BaseFormWithChoiceFieldTest(TestCase):
             {
                 "text": (
                     "Enter a valid choice. "
-                    "12345 is not one of the available choices. "
-                    "Valid choices yes, no"
+                    "[12345] is not one of the available choices. "
+                    "Valid choices are [yes, no]"
                 )
             },
         )

@@ -123,8 +123,8 @@ class ChoiceField(BaseField):
                 if not self._has_match(value, valid_choices):
                     raise ValidationError(
                         (
-                            f"Enter a valid choice. {value or 'Empty param value'} is not one of the available choices. "
-                            f"Valid choices {', '.join(valid_choices)}"
+                            f"Enter a valid choice. [{value or 'Empty param value'}] is not one of the available choices. "
+                            f"Valid choices are [{', '.join(valid_choices)}]"
                         )
                     )
 
@@ -138,11 +138,6 @@ class ChoiceField(BaseField):
             )
             for value, display_value in self.choices
         ]
-
-    # @property
-    # def items_iter(self):
-    #     for item in self.items:
-    #         yield (item["value"], item["text"])
 
 
 class DynamicMultipleChoiceField(BaseField):
