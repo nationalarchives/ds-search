@@ -233,8 +233,9 @@
     <h2 class="tna-heading-xl">No results found</h2>
     <p>No results were found for your query.</p>
     <p>Try widening your search.</p>
+    
+    {# TODO: Error logging is temporary for demo and must be formalised #}
     {% if form.errors %}
-      <h3>These error messages here are temporary for Demo Only<h3>
       <h4>Form Errors<h4>
       <dl class="tna-dl">
         <dt>Param/ErrorName</dt>
