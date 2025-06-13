@@ -91,6 +91,7 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
         self.form = CatalogueSearchForm(**self.get_form_kwargs())
         self.bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
         self.current_bucket_key = self.form.fields["group"].value
+        self.api_result = None
 
     def get_form_kwargs(self) -> dict[str, Any]:
         """Returns request data with default values if not given."""
