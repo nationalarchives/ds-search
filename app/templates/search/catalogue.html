@@ -111,7 +111,7 @@
             }) }}
         </div>
     {% endif %}
-    {{ online_tna(request) }}
+    {{ online_tna(request, form, bucket_keys.TNA) }}
     {{ search_within(request) }}
     {{ date_range(request, 'date', 'date', 'Filter by record date') }}
     {{ levels_tna(request, form.fields['level']) }}
