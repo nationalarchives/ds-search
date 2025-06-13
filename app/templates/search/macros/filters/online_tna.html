@@ -1,8 +1,7 @@
 {% from 'components/button/macro.html' import tnaButton %}
 {% from 'components/checkboxes/macro.html' import tnaCheckboxesElement %}
 
-{% macro online_tna(request, form, tna_group_value) %}
-  {% set is_tna_results_page = form.fields.group.value == tna_group_value %}
+{% macro online_tna(request, is_tna_results_page) %}
   {% if is_tna_results_page %}
     <div class="tna-aside tna-aside--tight tna-background-accent-light tna-!--margin-top-s">
       {{ tnaCheckboxesElement({
