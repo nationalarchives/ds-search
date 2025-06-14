@@ -129,7 +129,8 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
         try:
             self.page  # checks valid page
             if self.form.is_valid():
-                self.query = self.form.cleaned_data.get("q")
+                self.query = self.form.fields["q"].cleaned
+                self.sort = self.form.fields["sort"].cleaned
                 return self.form_valid()
             else:
                 return self.form_invalid()
@@ -163,7 +164,7 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
             query=self.query,
             results_per_page=self.RESULTS_PER_PAGE,
             page=self.page,
-            sort=self.form.cleaned_data.get("sort"),
+            sort=self.sort,
             current_bucket_key=self.current_bucket_key,
         )
         self.process_api_result(self.form, self.api_result)

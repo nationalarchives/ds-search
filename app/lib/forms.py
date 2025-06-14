@@ -14,12 +14,12 @@ class BaseForm:
     1. Create the form with fields and cross_validations
     2. Instanitate and bind the form with request data
     3. Clean and Validate the form via is_valid()
-    4. Access form and fields attributes
+    4. On failure in cross validatiom, field errors assign to form errors
+    5. Access form and fields attributes
 
     Form Attributes
     ---------------
     data         - request querydict data, mix default values here
-    cleaned_data - usually cleaned data from request to query the API
     errors       - overall error forms and fields
     is_valid()   - to clean and validate form fields
     """
@@ -29,7 +29,6 @@ class BaseForm:
     def __init__(self, data: QueryDict | None = None) -> None:
 
         self.data: QueryDict = data or QueryDict("")
-        self.cleaned_data: dict[str, Any] = {}
         self._fields = self.add_fields()
         self._errors = {}
 
@@ -61,8 +60,6 @@ class BaseForm:
             if not field.is_valid():
                 self.add_error(name, message=field.error.get("text"))
                 valid = False
-            else:
-                self.cleaned_data[name] = field.cleaned
 
         # clean and validate fields at form level
         if crosss_validate_errors := self.cross_validate():
@@ -72,7 +69,7 @@ class BaseForm:
         return valid
 
     def cross_validate(self) -> list[str]:
-        """Subclass to validate between fields in cleaned data
+        """Subclass to validate between fields cleaned values
         returns list of error messages ['error message 1', 'error message 2'].
         """
 

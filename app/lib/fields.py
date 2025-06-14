@@ -6,6 +6,15 @@ class ValidationError(Exception):
 
 
 class BaseField:
+    """
+    Flow
+    -----
+    1. Instantiate the field
+    2. Bind the request value
+    3. Clean and Validate the value. Assign clean value.
+    4. Assign error on failure
+    5. Access field attributes
+    """
 
     def __init__(self, label=None, required=False, hint=""):
         self.label = label
@@ -35,7 +44,7 @@ class BaseField:
         return not self._error
 
     def clean(self, value):
-        """Subclass for cleaning and validating. Ex convert to date object"""
+        """Subclass for cleaning and validating. Ex strip str, convert to date object"""
 
         self.validate(value)
         return value
@@ -65,7 +74,7 @@ class BaseField:
 
     @property
     def update_choices(self):
-        """For choice fields"""
+        """Inplement for multiple choice fields"""
 
         raise NotImplementedError
 
@@ -89,16 +98,16 @@ class CharField(BaseField):
                 value = value[-1]
         super().bind(name, value)
 
+    def clean(self, value):
+        value = super().clean(value)
+        return str(value).strip() if value else ""
+
 
 class ChoiceField(BaseField):
 
     def __init__(self, choices: list[tuple[str, str]], **kwargs):
-        """choices: format [(field value, display value),]. Has field specific attributes."""
+        """choices: format [(field value, display value),]."""
 
-        # field specific attr
-        self.validate_input = bool(choices) and kwargs.pop(
-            "validate_input", False
-        )
         super().__init__(**kwargs)
         self.choices = choices
 
@@ -116,17 +125,17 @@ class ChoiceField(BaseField):
         super().bind(name, value)
 
     def validate(self, value):
-        if self.required or self.validate_input:
+        if self.required:
             super().validate(value)
-            if self.validate_input:
-                valid_choices = [value for value, _ in self.choices]
-                if not self._has_match(value, valid_choices):
-                    raise ValidationError(
-                        (
-                            f"Enter a valid choice. [{value or 'Empty param value'}] is not one of the available choices. "
-                            f"Valid choices are [{', '.join(valid_choices)}]"
-                        )
-                    )
+
+        valid_choices = [value for value, _ in self.choices]
+        if not self._has_match(value, valid_choices):
+            raise ValidationError(
+                (
+                    f"Enter a valid choice. [{value or 'Empty param value'}] is not one of the available choices. "
+                    f"Valid choices are [{', '.join(valid_choices)}]"
+                )
+            )
 
     @property
     def items(self):
@@ -145,7 +154,7 @@ class DynamicMultipleChoiceField(BaseField):
     def __init__(self, choices: list[tuple[str, str]], **kwargs):
         """choices: format [(field value, display value),]. Has field specific attributes."""
 
-        # field specific attr
+        # field specific attr, validate input choices before querying the api
         self.validate_input = bool(choices) and kwargs.pop(
             "validate_input", True
         )
