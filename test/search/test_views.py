@@ -100,10 +100,6 @@ class CatalogueSearchViewTests(TestCase):
             self.response.context_data.get("form"), CatalogueSearchForm
         )
         self.assertEqual(self.response.context_data.get("form").errors, {})
-        self.assertEqual(
-            self.response.context_data.get("form").cleaned_data,
-            {"group": "tna", "sort": "", "q": "", "level": []},
-        )
         self.assertEqual(len(self.response.context_data.get("form").fields), 4)
 
         # ### form fields ###
@@ -114,12 +110,19 @@ class CatalogueSearchViewTests(TestCase):
         self.assertEqual(
             self.response.context_data.get("form").fields["q"].value, ""
         )
+        self.assertEqual(
+            self.response.context_data.get("form").fields["q"].cleaned, ""
+        )
 
         self.assertEqual(
             self.response.context_data.get("form").fields["group"].name, "group"
         )
         self.assertEqual(
             self.response.context_data.get("form").fields["group"].value, "tna"
+        )
+        self.assertEqual(
+            self.response.context_data.get("form").fields["group"].cleaned,
+            "tna",
         )
         self.assertEqual(
             self.response.context_data.get("form").fields["group"].items,
@@ -138,6 +141,9 @@ class CatalogueSearchViewTests(TestCase):
         )
         self.assertEqual(
             self.response.context_data.get("form").fields["sort"].value, ""
+        )
+        self.assertEqual(
+            self.response.context_data.get("form").fields["sort"].cleaned, ""
         )
         self.assertEqual(
             self.response.context_data.get("form").fields["sort"].items,
@@ -159,6 +165,9 @@ class CatalogueSearchViewTests(TestCase):
         )
         self.assertEqual(
             self.response.context_data.get("form").fields["level"].value, []
+        )
+        self.assertEqual(
+            self.response.context_data.get("form").fields["level"].cleaned, []
         )
         self.assertEqual(
             self.response.context_data.get("form").fields["level"].items,
@@ -259,6 +268,10 @@ class CatalogueSearchViewTests(TestCase):
             "title:asc",
         )
         self.assertEqual(
+            self.response.context_data.get("form").fields["sort"].cleaned,
+            "title:asc",
+        )
+        self.assertEqual(
             self.response.context_data.get("form").fields["sort"].items,
             [
                 {
@@ -317,6 +330,10 @@ class CatalogueSearchViewTests(TestCase):
             self.response.context_data.get("form").fields["group"].value,
             "nonTna",
         )
+        self.assertEqual(
+            self.response.context_data.get("form").fields["group"].cleaned,
+            "nonTna",
+        )
 
         self.assertEqual(
             self.response.context_data.get("form").fields["group"].items,
@@ -372,6 +389,10 @@ class CatalogueSearchViewTests(TestCase):
 
         self.assertEqual(
             self.response.context_data.get("form").fields["level"].value,
+            ["Item", "Division"],
+        )
+        self.assertEqual(
+            self.response.context_data.get("form").fields["level"].cleaned,
             ["Item", "Division"],
         )
         self.assertEqual(

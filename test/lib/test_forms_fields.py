@@ -10,13 +10,15 @@ from django.test import TestCase
 
 class BaseFormWithCharFieldTest(TestCase):
 
-    def get_form_with_char_field(self, data=None):
+    def get_form_with_char_field(self, data=None, required=False):
 
         class MyTestForm(BaseForm):
             def add_fields(self):
                 return {
                     "char_field": CharField(
-                        required=True, hint="Enter a value", label="Char Field:"
+                        required=required,
+                        hint="Enter a value",
+                        label="Char Field:",
                     )
                 }
 
@@ -30,20 +32,30 @@ class BaseFormWithCharFieldTest(TestCase):
         self.assertEqual(form.fields["char_field"].label, "Char Field:")
         self.assertEqual(form.fields["char_field"].hint, "Enter a value")
 
-    def test_form_with_char_field_with_no_params(self):
+    def test_form_with_char_field_with_no_params_required_true(self):
 
         data = QueryDict("")
-        form = self.get_form_with_char_field(data)
+        form = self.get_form_with_char_field(data, required=True)
         valid_status = form.is_valid()
         self.assertEqual(valid_status, False)
         self.assertEqual(
             form.errors, {"char_field": {"text": "Value is required."}}
         )
-        self.assertEqual(form.cleaned_data, {})
         self.assertEqual(form.fields["char_field"].value, "")
+        self.assertEqual(form.fields["char_field"].cleaned, None)
         self.assertEqual(
             form.fields["char_field"].error, {"text": "Value is required."}
         )
+
+    def test_form_with_char_field_with_no_params(self):
+        data = QueryDict("")
+        form = self.get_form_with_char_field(data)
+        valid_status = form.is_valid()
+        self.assertEqual(valid_status, True)
+        self.assertEqual(form.errors, {})
+        self.assertEqual(form.fields["char_field"].value, "")
+        self.assertEqual(form.fields["char_field"].cleaned, "")
+        self.assertEqual(form.fields["char_field"].error, {})
 
     def test_form_with_char_field_with_param(self):
 
@@ -52,8 +64,18 @@ class BaseFormWithCharFieldTest(TestCase):
         valid_status = form.is_valid()
         self.assertEqual(valid_status, True)
         self.assertEqual(form.errors, {})
-        self.assertEqual(form.cleaned_data, {"char_field": "12345"})
         self.assertEqual(form.fields["char_field"].value, "12345")
+        self.assertEqual(form.fields["char_field"].cleaned, "12345")
+        self.assertEqual(form.fields["char_field"].error, {})
+
+        # data contains whitespace
+        data = QueryDict("char_field= 12345 ")
+        form = self.get_form_with_char_field(data)
+        valid_status = form.is_valid()
+        self.assertEqual(valid_status, True)
+        self.assertEqual(form.errors, {})
+        self.assertEqual(form.fields["char_field"].value, " 12345 ")
+        self.assertEqual(form.fields["char_field"].cleaned, "12345")
         self.assertEqual(form.fields["char_field"].error, {})
 
     def test_form_with_char_field_with_multiple_param_takes_last_value(self):
@@ -63,14 +85,14 @@ class BaseFormWithCharFieldTest(TestCase):
         valid_status = form.is_valid()
         self.assertEqual(valid_status, True)
         self.assertEqual(form.errors, {})
-        self.assertEqual(form.cleaned_data, {"char_field": "12345"})
         self.assertEqual(form.fields["char_field"].value, "12345")
+        self.assertEqual(form.fields["char_field"].cleaned, "12345")
         self.assertEqual(form.fields["char_field"].error, {})
 
 
 class BaseFormWithChoiceFieldTest(TestCase):
 
-    def get_form_with_choice_field(self, data=None):
+    def get_form_with_choice_field(self, data=None, required=False):
 
         class MyTestForm(BaseForm):
             def add_fields(self):
@@ -78,8 +100,7 @@ class BaseFormWithChoiceFieldTest(TestCase):
                     "choice_field": ChoiceField(
                         label="Yes/No",
                         choices=[("yes", "Yes"), ("no", "No")],
-                        required=True,
-                        validate_input=True,
+                        required=required,
                     )
                 }
 
@@ -93,23 +114,54 @@ class BaseFormWithChoiceFieldTest(TestCase):
         self.assertEqual(form.fields["choice_field"].label, "Yes/No")
         self.assertEqual(form.fields["choice_field"].hint, "")
 
-    def test_form_with_choice_field_with_no_params(self):
+    def test_form_with_choice_field_with_no_params_required_true(self):
 
         data = QueryDict("")
-        form = self.get_form_with_choice_field(data)
+        form = self.get_form_with_choice_field(data, required=True)
         valid_status = form.is_valid()
         self.assertEqual(valid_status, False)
         self.assertEqual(
             form.errors, {"choice_field": {"text": "Value is required."}}
         )
-        self.assertEqual(form.cleaned_data, {})
         self.assertEqual(form.fields["choice_field"].value, "")
+        self.assertEqual(form.fields["choice_field"].cleaned, None)
         self.assertEqual(
             form.fields["choice_field"].items,
             [{"text": "Yes", "value": "yes"}, {"text": "No", "value": "no"}],
         )
         self.assertEqual(
             form.fields["choice_field"].error, {"text": "Value is required."}
+        )
+
+    def test_form_with_choice_field_with_no_params(self):
+
+        data = QueryDict("")
+        form = self.get_form_with_choice_field(data, required=False)
+        valid_status = form.is_valid()
+        self.assertEqual(valid_status, False)
+        self.assertEqual(
+            form.errors,
+            {
+                "choice_field": {
+                    "text": "Enter a valid choice. [Empty param value] is not "
+                    "one of the available choices. Valid choices are "
+                    "[yes, no]"
+                }
+            },
+        )
+        self.assertEqual(form.fields["choice_field"].value, "")
+        self.assertEqual(form.fields["choice_field"].cleaned, None)
+        self.assertEqual(
+            form.fields["choice_field"].items,
+            [{"text": "Yes", "value": "yes"}, {"text": "No", "value": "no"}],
+        )
+        self.assertEqual(
+            form.fields["choice_field"].error,
+            {
+                "text": "Enter a valid choice. [Empty param value] is not "
+                "one of the available choices. Valid choices are "
+                "[yes, no]"
+            },
         )
 
     def test_form_with_choice_field_with_param_with_valid_value(self):
@@ -122,9 +174,8 @@ class BaseFormWithChoiceFieldTest(TestCase):
             form.errors,
             {},
         )
-        self.assertEqual(form.cleaned_data, {"choice_field": "yes"})
-        self.assertEqual(form.fields["choice_field"].name, "choice_field")
         self.assertEqual(form.fields["choice_field"].value, "yes")
+        self.assertEqual(form.fields["choice_field"].cleaned, "yes")
         self.assertEqual(
             form.fields["choice_field"].items,
             [
@@ -147,9 +198,8 @@ class BaseFormWithChoiceFieldTest(TestCase):
             form.errors,
             {},
         )
-        self.assertEqual(form.cleaned_data, {"choice_field": "no"})
-        self.assertEqual(form.fields["choice_field"].name, "choice_field")
         self.assertEqual(form.fields["choice_field"].value, "no")
+        self.assertEqual(form.fields["choice_field"].cleaned, "no")
         self.assertEqual(
             form.fields["choice_field"].items,
             [
@@ -164,7 +214,7 @@ class BaseFormWithChoiceFieldTest(TestCase):
 
     def test_form_with_choice_field_with_param_with_invalid_value(self):
 
-        data = QueryDict("choice_field=12345")
+        data = QueryDict("choice_field=yes ")
         form = self.get_form_with_choice_field(data)
         valid_status = form.is_valid()
         self.assertEqual(valid_status, False)
@@ -174,21 +224,20 @@ class BaseFormWithChoiceFieldTest(TestCase):
                 "choice_field": {
                     "text": (
                         "Enter a valid choice. "
-                        "[12345] is not one of the available choices. "
+                        "[yes ] is not one of the available choices. "
                         "Valid choices are [yes, no]"
                     )
                 }
             },
         )
-        self.assertEqual(form.cleaned_data, {})
-        self.assertEqual(form.fields["choice_field"].name, "choice_field")
-        self.assertEqual(form.fields["choice_field"].value, "12345")
+        self.assertEqual(form.fields["choice_field"].value, "yes ")
+        self.assertEqual(form.fields["choice_field"].cleaned, None)
         self.assertEqual(
             form.fields["choice_field"].error,
             {
                 "text": (
                     "Enter a valid choice. "
-                    "[12345] is not one of the available choices. "
+                    "[yes ] is not one of the available choices. "
                     "Valid choices are [yes, no]"
                 )
             },
@@ -232,8 +281,8 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
         self.assertEqual(
             form.errors, {"dmc_field": {"text": "Value is required."}}
         )
-        self.assertEqual(form.cleaned_data, {})
         self.assertEqual(form.fields["dmc_field"].value, [])
+        self.assertEqual(form.fields["dmc_field"].cleaned, None)
         self.assertEqual(
             form.fields["dmc_field"].items,
             [
@@ -254,8 +303,8 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
         valid_status = form.is_valid()
         self.assertEqual(valid_status, True)
         self.assertEqual(form.errors, {})
-        self.assertEqual(form.cleaned_data, {"dmc_field": ["london"]})
         self.assertEqual(form.fields["dmc_field"].value, ["london"])
+        self.assertEqual(form.fields["dmc_field"].cleaned, ["london"])
         self.assertEqual(
             form.fields["dmc_field"].items,
             [
@@ -278,9 +327,9 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
         valid_status = form.is_valid()
         self.assertEqual(valid_status, True)
         self.assertEqual(form.errors, {})
-        self.assertEqual(form.cleaned_data, {"dmc_field": ["london", "leeds"]})
         self.assertEqual(form.fields["dmc_field"].name, "dmc_field")
         self.assertEqual(form.fields["dmc_field"].value, ["london", "leeds"])
+        self.assertEqual(form.fields["dmc_field"].cleaned, ["london", "leeds"])
         self.assertEqual(
             form.fields["dmc_field"].items,
             [
@@ -317,7 +366,6 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
                 }
             },
         )
-        self.assertEqual(form.cleaned_data, {})
         self.assertEqual(
             form.fields["dmc_field"].value, ["london", "manchester"]
         )
