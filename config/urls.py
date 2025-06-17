@@ -26,6 +26,7 @@ from django.urls import include, path, register_converter
 register_converter(converters.IDConverter, "id")
 
 handler404 = "app.errors.views.page_not_found_error_view"
+handler500 = "app.errors.views.server_error_view"
 
 urlpatterns = [
     path("", include(("app.main.urls", "main"), namespace="main")),
