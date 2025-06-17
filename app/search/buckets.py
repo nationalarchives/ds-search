@@ -67,6 +67,9 @@ class BucketList:
             if query:
                 bucket.href += f"&q={query}"
 
+    def as_choices(self) -> list[tuple[str, str]]:
+        return [(bucket.key, bucket.label) for bucket in self.buckets]
+
     @property
     def items(self):
         """Returns list of bucket items t to be used by
