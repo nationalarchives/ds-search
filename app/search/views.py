@@ -6,12 +6,13 @@ from typing import Any
 from app.errors import views as errors_view
 from app.lib.api import ResourceNotFound
 from app.lib.pagination import pagination_object
-from app.records.constants import CLOSURE_STATUSES, COLLECTIONS, TNA_LEVELS
+from app.records.constants import CLOSURE_STATUSES, COLLECTIONS, TNA_LEVELS, TNA_SUBJECTS
 from app.search.api import search_records
 from config.jinja2 import qs_remove_value, qs_toggle_value
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
+from django.urls import reverse
 
 from .api import APISearchResponse
 from .buckets import CATALOGUE_BUCKETS, BucketKeys
@@ -35,6 +36,7 @@ class CatalogueSearchView(TemplateView):
     def get(self, request, *args, **kwargs):
         try:
             self.context = self.get_context_data(**kwargs)
+            self.context["long_filters_path_and_param"] = f"{reverse('search:catalogue')}?filter_list="
         except PageNotFound:
             return errors_view.page_not_found_error_view(request=request)
         except ResourceNotFound:
@@ -72,6 +74,7 @@ class CatalogueSearchView(TemplateView):
                 "levels": TNA_LEVELS,
                 "closure_statuses": CLOSURE_STATUSES,
                 "collections": COLLECTIONS,
+                "subjects": TNA_SUBJECTS,
             }
         )
 
