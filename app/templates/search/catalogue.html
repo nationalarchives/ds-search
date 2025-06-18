@@ -20,6 +20,7 @@
 {% from 'search/macros/filters/opening_date.html' import opening_date %}
 {% from 'search/macros/filters/collections_tna.html' import collections_tna %}
 {% from 'search/macros/filters/online_tna.html' import online_tna %}
+{% from 'search/macros/filters/subjects_tna.html' import subjects_tna %}
 
 {%- set pageTitle = 'Catalogue search results' -%}
 {%- set encodedQuery = request.GET.urlencode() | base64_encode -%}
@@ -118,6 +119,7 @@
     {{ closure_statuses_tna(request, closure_statuses) }}
     {{ date_range(request, 'date', 'date', 'Filter by record opening date') }}
     {{ collections_tna(request, collections) }}
+    {{ subjects_tna(request, subjects) }}
   </div>
   {% if results %}
   <div id="results" class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
