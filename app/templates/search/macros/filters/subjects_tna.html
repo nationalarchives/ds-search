@@ -1,7 +1,7 @@
 {% from 'components/button/macro.html' import tnaButton %}
 {% from 'components/checkboxes/macro.html' import tnaCheckboxes %}
 
-{% macro subjects_tna(request, subjects_tna, long_filters_path_and_param, number_of_subjects_to_show=10) %}
+{% macro subjects_tna(request, subjects_tna, number_of_subjects_to_show=10) %}
   {% set is_tna_results_page = request.GET.get('group') in [None, 'tna'] %}
   {% if is_tna_results_page %}
     <div class="tna-aside tna-aside--tight tna-background-tint tna-!--margin-top-s">
@@ -40,12 +40,10 @@
               }
             }) }}
 
-        {% set query_params = request.GET.copy().urlencode() %}
-
         {% if show_more_link is true %}
           {{ tnaButton({
-            'text': "See more",
-            'href': long_filters_path_and_param + "subjects&" + query_params,
+            'text': 'See more',
+            'href': '?' + qs_replace_value(request.GET, 'filter_list', 'subjects'),
             'plain': True,
             'small': True
           }) }}

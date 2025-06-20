@@ -119,7 +119,7 @@
     {{ closure_statuses_tna(request, closure_statuses) }}
     {{ date_range(request, 'date', 'date', 'Filter by record opening date') }}
     {{ collections_tna(request, collections) }}
-    {{ subjects_tna(request, subjects, long_filters_path_and_param) }}
+    {{ subjects_tna(request, subjects) }}
   </div>
   {% if results %}
   <div id="results" class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">

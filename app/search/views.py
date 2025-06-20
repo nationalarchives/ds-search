@@ -36,7 +36,6 @@ class CatalogueSearchView(TemplateView):
     def get(self, request, *args, **kwargs):
         try:
             self.context = self.get_context_data(**kwargs)
-            self.context["long_filters_path_and_param"] = f"{reverse('search:catalogue')}?filter_list="
         except PageNotFound:
             return errors_view.page_not_found_error_view(request=request)
         except ResourceNotFound:
