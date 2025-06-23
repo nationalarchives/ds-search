@@ -63,8 +63,8 @@ class BaseForm:
                 valid = False
 
         # clean and validate fields at form level
-        if crosss_validate_errors := self.cross_validate():
-            self.add_error(self.NON_FIELD_ERRORS_KEY, crosss_validate_errors)
+        if cross_validate_errors := self.cross_validate():
+            self.add_error(self.NON_FIELD_ERRORS_KEY, cross_validate_errors)
             valid = False
 
         return valid
