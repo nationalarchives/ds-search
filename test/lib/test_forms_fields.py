@@ -424,20 +424,18 @@ class BaseFormWithCrossValidationTest(TestCase):
         form = MyTestForm(data)
         return form
 
-    def test_form_(self):
+    def test_form_cross_validation(self):
 
         data = QueryDict("low_value_field=zebra&high_value_field=fox")
         form = self.get_form(data)
         valid_status = form.is_valid()
         self.assertEqual(valid_status, False)
         self.assertEqual(
-            form.errors,
-            {
-                "NONFIELDERRORS": [
-                    {"text": "Low value [zebra] must be <= High value[fox]."},
-                    {
-                        "text": "Alternatively supply only one value either [zebra] or [fox]."
-                    },
-                ]
-            },
+            form.non_field_errors,
+            [
+                {"text": "Low value [zebra] must be <= High value[fox]."},
+                {
+                    "text": "Alternatively supply only one value either [zebra] or [fox]."
+                },
+            ],
         )

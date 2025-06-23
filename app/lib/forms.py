@@ -19,18 +19,17 @@ class BaseForm:
 
     Form Attributes
     ---------------
-    data         - request querydict data, mix default values here
-    errors       - overall error forms and fields
-    is_valid()   - to clean and validate form fields
+    data             - request querydict data, mix default values here
+    errors           - field errors
+    non_field_errors - non field errors
+    is_valid()       - to clean and validate form fields
     """
-
-    NON_FIELD_ERRORS_KEY = "NONFIELDERRORS"
 
     def __init__(self, data: QueryDict | None = None) -> None:
 
         self.data: QueryDict = data or QueryDict("")
         self._fields = self.add_fields()
-        self._errors = {}
+        self._non_field_errors = None
 
         self.bind_fields()
 
@@ -52,19 +51,18 @@ class BaseForm:
 
     def is_valid(self) -> bool:
         """Returns True when fields are cleaned and validated without errors and stores cleaned data.
-        When False, adds overall errors for form and field."""
+        When False, adds non field errors"""
 
         valid = True
 
         # clean and validate fields
-        for name, field in self.fields.items():
+        for field in self.fields.values():
             if not field.is_valid():
-                self.add_error(name, message=field.error.get("text"))
                 valid = False
 
         # clean and validate fields at form level
         if cross_validate_errors := self.cross_validate():
-            self.add_error(self.NON_FIELD_ERRORS_KEY, cross_validate_errors)
+            self.add_non_field_error(cross_validate_errors)
             valid = False
 
         return valid
@@ -76,24 +74,30 @@ class BaseForm:
 
         return []
 
-    def add_error(self, key, message: str | list = None):
-        """Sets field and non field errors
-        Field errors: dict[str, dict[str, str]]
-                      ex {"<field_name>", {"text: "<error message>"}}
-        Non Field errors: dict[str, list[dict[str, str]]]
-                          ex {"NONFIELDERRORS", [{"text: "<error message 1>"},
-                                                 {"text: "<error message 2>"}]}
+    def add_non_field_error(self, message: list):
+        """Sets errors defined by key
+        Ex:
+        Non Field errors: list[dict[str, str]]]
+                          ex [{"text: "<error message 1>"},
+                              {"text: "<error message 2>"}]
         """
-
-        if isinstance(message, list):
-            message_format = [{"text": item} for item in message]
-        else:
-            message_format = {"text": message}
-
-        self._errors[key] = message_format
+        self._non_field_errors = [{"text": item} for item in message]
 
     @property
     def errors(
         self,
-    ) -> dict[str, dict[str, str]] | dict[str, list[dict[str, str]]]:
-        return self._errors
+    ) -> dict[str, dict[str, str]]:
+        """Returns field errors."""
+
+        errors = {
+            field.name: field.error
+            for field in self.fields.values()
+            if field.error
+        }
+        return errors
+
+    @property
+    def non_field_errors(self):
+        """Returns non field errors."""
+
+        return self._non_field_errors

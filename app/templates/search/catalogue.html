@@ -241,15 +241,12 @@
         <dt>Param/ErrorName</dt>
         <dd>Value</dd>
         {% for field, error in form.errors.items() %}
-          {% if field == 'NONFIELDERRORS'%}
-            {% for message in error %}
-              <dt>{{ field }}</dt>
-              <dd>{{ message.text }}</dd>
-            {% endfor %}
-          {% else %}
-            <dt>{{ field }}</dt>
-            <dd>{{ error.text }}</dd>
-          {% endif %}
+          <dt>{{ field }}</dt>
+          <dd>{{ error.text }}</dd>
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <dt>NONFIELDERROR</dt>
+          <dd>{{ error.text }}</dd>
         {% endfor %}
       </dl>
     {% endif %}
