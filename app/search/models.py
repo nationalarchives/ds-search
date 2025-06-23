@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from app.records.models import APIResponse, Record
 from django.utils.functional import cached_property
 
@@ -35,6 +37,12 @@ class APISearchResponse(APIResponse):
             }
 
         return bucket_counts_by_key
+
+    @cached_property
+    def aggregations(self) -> list[dict[str, Any]]:
+        if "aggregations" in self._raw:
+            return self._raw["aggregations"]
+        return []
 
     @cached_property
     def stats_total(self) -> int:
