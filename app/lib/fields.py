@@ -112,8 +112,7 @@ class ChoiceField(BaseField):
         self.choices = choices
 
     def _has_match(self, value, search_in):
-        if isinstance(value, str):
-            return value in search_in
+        return value in search_in
 
     def bind(self, name, value) -> None:
         """Binds a empty string or last value from input."""
