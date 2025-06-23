@@ -90,12 +90,10 @@ class BaseField:
 class CharField(BaseField):
 
     def bind(self, name, value) -> None:
-        if isinstance(value, list):
-            if not value:
-                value = ""
-            else:
-                # get last value (for more than one input value)
-                value = value[-1]
+        if not value:
+            value = [""]
+        # get last value (for more than one input value)
+        value = value[-1]
         super().bind(name, value)
 
     def clean(self, value):
@@ -118,9 +116,9 @@ class ChoiceField(BaseField):
         """Binds a empty string or last value from input."""
 
         if not value:
-            value = ""
-        elif isinstance(value, list):
-            value = value[-1]
+            value = [""]
+        # get last value (for more than one input value)
+        value = value[-1]
         super().bind(name, value)
 
     def validate(self, value):
