@@ -97,7 +97,7 @@ class BaseForm:
         return errors
 
     @property
-    def non_field_errors(self):
+    def non_field_errors(self) -> list[dict[str, str]]:
         """Returns non field errors."""
 
         return self._non_field_errors
