@@ -1,23 +1,15 @@
 {% from 'components/button/macro.html' import tnaButton %}
 {% from 'components/checkboxes/macro.html' import tnaCheckboxes %}
 
-{% macro levels_tna(request, levels) %}
+{% macro levels_tna(request, level) %}
 <div class="tna-aside tna-aside--tight tna-background-tint tna-!--margin-top-s">
-  {% set level_items = [] %}
-  {% for level_id, level in levels.items() %}
-    {% set level_items = level_items.append({
-      'text': level,
-      'value': level_id,
-      'checked': qs_is_value_active(request.GET, 'level', level_id)
-    }) %}
-  {% endfor %}
   {{ tnaCheckboxes({
-    'label': 'Filter by level',
+    'label': level.label,
     'headingLevel': 3,
     'headingSize': 'm',
     'id': 'level',
-    'name': 'level',
-    'items': level_items,
+    'name': level.name,
+    'items': level.items,
     'small': True,
     'attributes': {
       'form': 'search-form'

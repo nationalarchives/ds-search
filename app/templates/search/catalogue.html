@@ -71,8 +71,8 @@
         'headingLevel': 1,
         'headingSize': 'l',
         'id': 'search',
-        'name': 'q',
-        'value': request.GET.get('q') or ''
+        'name':  form.fields.q.name,
+        'value': form.fields.q.value
       }) }}
       <!-- <div class="tna-button-group tna-!--margin-top-xs">
         {{ tnaButton({
@@ -105,16 +105,16 @@
             <h3 class="tna-heading-m">Active filters {% if selected_filters %} ({{ selected_filters | length }}){% endif %}:</h3>
             {{ tnaCompoundFilters({
               'items': selected_filters,
-              'removeAllHref': url('search:catalogue') + '?q=' + request.GET.get('q') + '&display=' + (request.GET.get('display') or ''),
+              'removeAllHref': url('search:catalogue') + '?q=' + form.fields.q.value + '&display=' + (request.GET.get('display') or ''),
               'removeAllText': 'Reset filters',
               'classes': 'tna-!--margin-top-s'
             }) }}
         </div>
     {% endif %}
-    {{ online_tna(request) }}
+    {{ online_tna(request, is_tna_results_page=(form.fields.group.value==bucket_keys.TNA)) }}
     {{ search_within(request) }}
     {{ date_range(request, 'date', 'date', 'Filter by record date') }}
-    {{ levels_tna(request, levels) }}
+    {{ levels_tna(request, form.fields['level']) }}
     {{ closure_statuses_tna(request, closure_statuses) }}
     {{ date_range(request, 'date', 'date', 'Filter by record opening date') }}
     {{ collections_tna(request, collections) }}
@@ -131,30 +131,9 @@
           'headingLevel': 2,
           'headingSize': 's',
           'id': 'sort',
-          'name': 'sort',
-          'items': [
-            {
-              'text': 'Relevance',
-              'value': ''
-            },
-            {
-              'text': 'Date (newest first)',
-              'value': 'date:desc'
-            },
-            {
-              'text': 'Date (oldest first)',
-              'value': 'date:asc'
-            },
-            {
-              'text': 'Title (A-Z)',
-              'value': 'title:asc'
-            },
-            {
-              'text': 'Title (Z-A)',
-              'value': 'title:desc'
-            }
-          ],
-          'selected': request.GET.get('sort'),
+          'name': form.fields.sort.name,
+          'items': form.fields.sort.items,
+          'selected': form.fields.sort.value,
           'formGroupAttributes': {
             'id': 'sort-form-group'
           },
@@ -254,6 +233,23 @@
     <h2 class="tna-heading-xl">No results found</h2>
     <p>No results were found for your query.</p>
     <p>Try widening your search.</p>
+    
+    {# TODO: Error logging is temporary for demo and must be formalised #}
+    {% if form.errors %}
+      <h4>Form Errors</h4>
+      <dl class="tna-dl">
+        <dt>Param/ErrorName</dt>
+        <dd>Value</dd>
+        {% for field, error in form.errors.items() %}
+          <dt>{{ field }}</dt>
+          <dd>{{ error.text }}</dd>
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <dt>NONFIELDERROR</dt>
+          <dd>{{ error.text }}</dd>
+        {% endfor %}
+      </dl>
+    {% endif %}
   </div>
   {% endif %}
 </div>
