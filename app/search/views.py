@@ -15,7 +15,7 @@ from django.http import (
 )
 from django.views.generic import TemplateView
 
-from .buckets import CATALOGUE_BUCKETS, BucketKeys
+from .buckets import CATALOGUE_BUCKETS, Bucket, BucketKeys, BucketList
 from .constants import Sort
 from .forms import CatalogueSearchForm
 
@@ -33,23 +33,27 @@ class APIMixin:
     PAGE_LIMIT = 500  # max page number that can be queried
 
     def get_api_result(
-        self, query, results_per_page, page, sort, current_bucket_key
+        self, query, results_per_page, page, sort, current_bucket
     ):
         self.api_result = search_records(
             query=query,
             results_per_page=results_per_page,
             page=page,
             sort=sort,
-            params=self.get_api_params(current_bucket_key),
+            params=self.get_api_params(current_bucket),
         )
         return self.api_result
 
-    def get_api_params(self, current_bucket_key) -> dict:
+    def get_api_params(self, current_bucket: Bucket) -> dict:
         """The API params
-        filter: for buckets."""
+        filter: for buckets
+        aggs: for checkbox items with counts."""
 
+        params = {}
         # filter records for a bucket
-        params = {"filter": f"group:{current_bucket_key}"}
+        params.update({"filter": f"group:{current_bucket.key}"})
+        # aggregationsAdd commentMore actions
+        params.update({"aggs": current_bucket.aggregations})
         return params
 
     def process_api_result(self, form, api_result):
@@ -89,7 +93,7 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
 
         super().setup(request, *args, **kwargs)
         self.form = CatalogueSearchForm(**self.get_form_kwargs())
-        self.bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
+        self.bucket_list: BucketList = copy.deepcopy(CATALOGUE_BUCKETS)
         self.current_bucket_key = self.form.fields["group"].value
         self.api_result = None
 
@@ -131,6 +135,9 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
             if self.form.is_valid():
                 self.query = self.form.fields["q"].cleaned
                 self.sort = self.form.fields["sort"].cleaned
+                self.current_bucket = self.bucket_list.get_bucket(
+                    self.form.fields["group"].cleaned
+                )
                 return self.form_valid()
             else:
                 return self.form_invalid()
@@ -163,7 +170,7 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
             results_per_page=self.RESULTS_PER_PAGE,
             page=self.page,
             sort=self.sort,
-            current_bucket_key=self.current_bucket_key,
+            current_bucket=self.current_bucket,
         )
         self.process_api_result(self.form, self.api_result)
         context = self.get_context_data(form=self.form)
