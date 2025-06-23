@@ -137,7 +137,7 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
         except PageNotFound:
             # for page=<invalid page number>, page > page limit
             return errors_view.page_not_found_error_view(request=self.request)
-        except ResourceNotFound as e:
+        except ResourceNotFound:
             # no results
             return self.form_invalid()
         except Exception as e:
