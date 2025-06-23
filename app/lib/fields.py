@@ -75,7 +75,7 @@ class BaseField:
 
     @property
     def update_choices(self):
-        """Inplement for multiple choice fields"""
+        """Implement for multiple choice field."""
 
         raise NotImplementedError
 
