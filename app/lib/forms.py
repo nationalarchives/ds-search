@@ -44,7 +44,8 @@ class BaseForm:
         return {}
 
     def bind_fields(self):
-        """Binds fields with data."""
+        """Binds fields with data as list as inputs can be driven manually.
+        Binding list or string value is handled at the field."""
 
         for name, field in self.fields.items():
             field.bind(name, self.data.getlist(name))

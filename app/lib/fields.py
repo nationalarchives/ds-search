@@ -24,9 +24,10 @@ class BaseField:
         self._error = {}
         self.choices = None  # applicable to certain fields ex choice
 
-    def bind(self, name, value) -> None:
+    def bind(self, name, value: list | str) -> None:
         """Binds field name, value to the field. The value is usually from
-        user input. Binding happens through the form on initialisation."""
+        user input. Binding happens through the form on initialisation.
+        Override to bind to list or string."""
 
         self.name = name
         self.label = self.label or name.capitalize()
@@ -89,7 +90,9 @@ class BaseField:
 
 class CharField(BaseField):
 
-    def bind(self, name, value) -> None:
+    def bind(self, name, value: list | str) -> None:
+        """Binds a empty string or last value from input."""
+
         if not value:
             value = [""]
         # get last value (for more than one input value)
@@ -112,7 +115,7 @@ class ChoiceField(BaseField):
     def _has_match(self, value, search_in):
         return value in search_in
 
-    def bind(self, name, value) -> None:
+    def bind(self, name, value: list | str) -> None:
         """Binds a empty string or last value from input."""
 
         if not value:
