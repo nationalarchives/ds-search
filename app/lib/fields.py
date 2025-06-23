@@ -21,6 +21,7 @@ class BaseField:
         self.required = required
         self.hint = hint
         self._value = None  # usually the request data
+        self._cleaned = None
         self._error = {}
         self.choices = None  # applicable to certain fields ex choice
 
