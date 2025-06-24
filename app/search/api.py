@@ -20,7 +20,7 @@ def search_records(
             "size": results_per_page,
             "from": (page - 1) * results_per_page,
             "sort": sort,
-            "sortOrder": order,
+            # "sortOrder": order, # Unused for Rosetta
         }
     )
     # remove params having no values
