@@ -172,7 +172,7 @@ class CatalogueSearchViewTests(TestCase):
         self.assertEqual(
             self.response.context_data.get("form").fields["level"].items,
             [
-                {"text": "Department", "value": "Department"},
+                {"text": "Lettercode", "value": "Lettercode"},
                 {"text": "Division", "value": "Division"},
                 {"text": "Series", "value": "Series"},
                 {"text": "Sub-series", "value": "Sub-series"},
@@ -398,7 +398,7 @@ class CatalogueSearchViewTests(TestCase):
         self.assertEqual(
             self.response.context_data.get("form").fields["level"].items,
             [
-                {"text": "Department", "value": "Department"},
+                {"text": "Lettercode", "value": "Lettercode"},
                 {"text": "Division", "value": "Division", "checked": True},
                 {"text": "Series", "value": "Series"},
                 {"text": "Sub-series", "value": "Sub-series"},

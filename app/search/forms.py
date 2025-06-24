@@ -8,6 +8,12 @@ from app.records.constants import TNA_LEVELS
 from app.search.buckets import CATALOGUE_BUCKETS
 from app.search.constants import Sort
 
+# TODO: Temporary replace as API queries by Lettercode, untill its updated to Deparment
+TNA_LEVELS_BY_API = list(
+    ("Lettercode", "Lettercode") if level == "Department" else (level, level)
+    for level in TNA_LEVELS.values()
+)
+
 
 class CatalogueSearchForm(BaseForm):
 
@@ -29,7 +35,7 @@ class CatalogueSearchForm(BaseForm):
             "q": CharField(),
             "level": DynamicMultipleChoiceField(
                 label="Filter by levels",
-                choices=list((level, level) for level in TNA_LEVELS.values()),
+                choices=TNA_LEVELS_BY_API,
                 validate_input=True,  # validate input with choices before querying the API
             ),
         }
