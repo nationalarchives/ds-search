@@ -18,6 +18,7 @@ from django.views.generic import TemplateView
 from .buckets import CATALOGUE_BUCKETS, Bucket, BucketKeys, BucketList
 from .constants import Sort
 from .forms import CatalogueSearchForm
+from .models import APISearchResponse
 
 logger = logging.getLogger(__name__)
 
@@ -32,33 +33,59 @@ class APIMixin:
     RESULTS_PER_PAGE = 20  # max records to show per page
     PAGE_LIMIT = 500  # max page number that can be queried
 
-    def get_api_result(
-        self, query, results_per_page, page, sort, current_bucket
-    ):
+    # fields used to extract aggregation entries from the api result
+    dynamic_choice_fields = ["level"]
+
+    def get_api_result(self, query, results_per_page, page, sort, params):
         self.api_result = search_records(
             query=query,
             results_per_page=results_per_page,
             page=page,
             sort=sort,
-            params=self.get_api_params(current_bucket),
+            params=params,
         )
         return self.api_result
 
-    def get_api_params(self, current_bucket: Bucket) -> dict:
+    def get_api_params(self, form, current_bucket: Bucket) -> dict:
         """The API params
-        filter: for buckets
+        filter: for querying buckets, aggs
         aggs: for checkbox items with counts."""
 
+        def add_filter(params: dict, value):
+            if not isinstance(value, list):
+                value = [value]
+            return params.setdefault("filter", []).extend(value)
+
         params = {}
-        # filter records for a bucket
-        params.update({"filter": f"group:{current_bucket.key}"})
-        # aggregationsAdd commentMore actions
+
+        # aggregations
         params.update({"aggs": current_bucket.aggregations})
+
+        # filter records for a bucket
+        add_filter(params, f"group:{current_bucket.key}")
+
+        # filter aggregations for each field
+        filter_aggregations = []
+        for field_name in self.dynamic_choice_fields:
+            filter_name = field_name
+            value = form.fields[field_name].cleaned
+            filter_aggregations.extend((f"{filter_name}:{v}" for v in value))
+            if filter_aggregations:
+                add_filter(params, filter_aggregations)
+
         return params
 
-    def process_api_result(self, form, api_result):
-        """TODO: for API filter intergration."""
-        pass
+    def process_api_result(
+        self, form: CatalogueSearchForm, api_result: APISearchResponse
+    ):
+        """Update checkbox `choices` values on the form's `dynamic_choice_fields` to
+        reflect data included in the API's `aggs` response."""
+
+        for aggregation in api_result.aggregations:
+            field_name = aggregation.get("name")
+            if field_name in self.dynamic_choice_fields:
+                choice_api_data = aggregation.get("entries", ())
+                form.fields[field_name].update_choices(choice_api_data)
 
     def get_context_data(self, **kwargs):
         context: dict = super().get_context_data(**kwargs)
@@ -170,7 +197,7 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
             results_per_page=self.RESULTS_PER_PAGE,
             page=self.page,
             sort=self.sort,
-            current_bucket=self.current_bucket,
+            params=self.get_api_params(self.form, self.current_bucket),
         )
         self.process_api_result(self.form, self.api_result)
         context = self.get_context_data(form=self.form)
@@ -298,7 +325,7 @@ def build_selected_filters_list(request):
         for level in levels:
             selected_filters.append(
                 {
-                    "label": f"Level: {levels_lookup.get(level)}",
+                    "label": f"Level: {levels_lookup.get(level, level)}",
                     "href": f"?{qs_toggle_value(request.GET, 'level', level)}",
                     "title": f"Remove {levels_lookup.get(level)} level",
                 }

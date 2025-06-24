@@ -1,5 +1,7 @@
 """Module for custom fields which interfaces with FE component attrs."""
 
+from django.utils.functional import cached_property
+
 
 class ValidationError(Exception):
     pass
@@ -161,6 +163,7 @@ class DynamicMultipleChoiceField(BaseField):
         )
         super().__init__(**kwargs)
         self.choices = choices
+        self.configured_choices = self.choices
 
     def _has_match_all(self, value, search_in):
         return all(item in search_in for item in value)
@@ -188,3 +191,44 @@ class DynamicMultipleChoiceField(BaseField):
             )
             for value, display_value in self.choices
         ]
+
+    @cached_property
+    def configured_choice_labels(self):
+        return {value: label for value, label in self.configured_choices}
+
+    def choice_label_from_api_data(self, data: dict[str, str | int]) -> str:
+        count = f"{data['doc_count']:,}"
+        try:
+            # Use a label from the configured choice values, if available
+            return f"{self.configured_choice_labels[data['value']]} ({count})"
+        except KeyError:
+            # Fall back to using the key value (which is the same in most cases)
+            return f"{data['value']} ({count})"
+
+    def update_choices(
+        self,
+        choice_api_data: list[dict[str, str | int]],
+    ):
+        """
+        Updates this fields `choices` list using aggregation data from the most recent
+        API result.
+
+        Expected `choice_api_data` format:
+        [
+            {
+                "value": "Item",
+                "doc_count": 10
+            },
+            …
+        ]
+        """
+
+        # Generate a new list of choices
+        choices = []
+        for item in choice_api_data:
+            choices.append(
+                (item["value"], self.choice_label_from_api_data(item))
+            )
+
+        # Replace the field's attribute value
+        self.choices = choices
