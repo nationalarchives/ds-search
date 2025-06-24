@@ -100,4 +100,4 @@ class BaseForm:
     def non_field_errors(self) -> list[dict[str, str]]:
         """Returns non field errors."""
 
-        return self._non_field_errors
+        return self._non_field_errors or []
