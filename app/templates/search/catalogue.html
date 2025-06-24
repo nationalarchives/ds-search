@@ -235,7 +235,7 @@
     <p>Try widening your search.</p>
     
     {# TODO: Error logging is temporary for demo and must be formalised #}
-    {% if form.errors %}
+    {% if form.errors or form.non_field_errors %}
       <h4>Form Errors</h4>
       <dl class="tna-dl">
         <dt>Param/ErrorName</dt>
