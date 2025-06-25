@@ -6,7 +6,7 @@ from typing import Any
 from app.errors import views as errors_view
 from app.lib.api import ResourceNotFound
 from app.lib.pagination import pagination_object
-from app.records.constants import CLOSURE_STATUSES, COLLECTIONS, TNA_LEVELS
+from app.records.constants import CLOSURE_STATUSES, COLLECTIONS, TNA_LEVELS, TNA_SUBJECTS
 from app.search.api import search_records
 from config.jinja2 import qs_remove_value, qs_toggle_value
 from django.http import (
@@ -72,6 +72,7 @@ class APIMixin:
             {
                 "results": results,
                 "stats": stats,
+                "subjects": TNA_SUBJECTS,
             }
         )
 
