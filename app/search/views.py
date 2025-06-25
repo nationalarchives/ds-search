@@ -17,7 +17,7 @@ from django.views.generic import TemplateView
 
 from .buckets import CATALOGUE_BUCKETS, Bucket, BucketKeys, BucketList
 from .constants import Sort
-from .forms import CatalogueSearchForm
+from .forms import CatalogueSearchForm, FieldsConstant
 from .models import APISearchResponse
 
 logger = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ class APIMixin:
     PAGE_LIMIT = 500  # max page number that can be queried
 
     # fields used to extract aggregation entries from the api result
-    dynamic_choice_fields = ["level"]
+    dynamic_choice_fields = [FieldsConstant.LEVEL]
 
     def get_api_result(self, query, results_per_page, page, sort, params):
         self.api_result = search_records(
@@ -84,7 +84,7 @@ class APIMixin:
         """Updates user input/represented data for API querying."""
 
         # TODO: #LEVEL this is a temporary update until API data switches to Department
-        if field_name == "level":
+        if field_name == FieldsConstant.LEVEL:
             return [
                 "Lettercode" if level == "Department" else level
                 for level in selected_values
@@ -110,7 +110,7 @@ class APIMixin:
         """Update API data for representation purpose."""
 
         # TODO: #LEVEL this is a temporary update until API data switches to Department
-        if field_name == "level":
+        if field_name == FieldsConstant.LEVEL:
             for level_entry in entries_data:
                 if level_entry.get("value") == "Lettercode":
                     level_entry["value"] = "Department"
@@ -150,7 +150,7 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
         super().setup(request, *args, **kwargs)
         self.form = CatalogueSearchForm(**self.get_form_kwargs())
         self.bucket_list: BucketList = copy.deepcopy(CATALOGUE_BUCKETS)
-        self.current_bucket_key = self.form.fields["group"].value
+        self.current_bucket_key = self.form.fields[FieldsConstant.GROUP].value
         self.api_result = None
 
     def get_form_kwargs(self) -> dict[str, Any]:
@@ -175,8 +175,8 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
         """sets default for request"""
 
         return {
-            "group": self.default_group,
-            "sort": self.default_sort,
+            FieldsConstant.GROUP: self.default_group,
+            FieldsConstant.SORT: self.default_sort,
         }
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
@@ -189,10 +189,10 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
         try:
             self.page  # checks valid page
             if self.form.is_valid():
-                self.query = self.form.fields["q"].cleaned
-                self.sort = self.form.fields["sort"].cleaned
+                self.query = self.form.fields[FieldsConstant.Q].cleaned
+                self.sort = self.form.fields[FieldsConstant.SORT].cleaned
                 self.current_bucket = self.bucket_list.get_bucket(
-                    self.form.fields["group"].cleaned
+                    self.form.fields[FieldsConstant.GROUP].cleaned
                 )
                 return self.form_valid()
             else:
@@ -344,7 +344,7 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
                     "title": "Remove record to date",
                 }
             )
-        if levels := self.form.fields["level"].value:
+        if levels := self.form.fields[FieldsConstant.LEVEL].value:
             levels_lookup = {}
             for _, v in TNA_LEVELS.items():
                 levels_lookup.update({v: v})
