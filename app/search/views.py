@@ -68,12 +68,28 @@ class APIMixin:
         filter_aggregations = []
         for field_name in self.dynamic_choice_fields:
             filter_name = field_name
-            value = form.fields[field_name].cleaned
-            filter_aggregations.extend((f"{filter_name}:{v}" for v in value))
+            selected_values = form.fields[field_name].cleaned
+            selected_values = self.replace_input_data(
+                field_name, selected_values
+            )
+            filter_aggregations.extend(
+                (f"{filter_name}:{value}" for value in selected_values)
+            )
             if filter_aggregations:
                 add_filter(params, filter_aggregations)
 
         return params
+
+    def replace_input_data(self, field_name, selected_values: list[str]):
+        """Updates user input/represented data for API querying."""
+
+        # TODO: #LEVEL this is a temporary update until API data switches to Department
+        if field_name == "level":
+            return [
+                "Lettercode" if level == "Department" else level
+                for level in selected_values
+            ]
+        return selected_values
 
     def process_api_result(
         self, form: CatalogueSearchForm, api_result: APISearchResponse
@@ -85,7 +101,19 @@ class APIMixin:
             field_name = aggregation.get("name")
             if field_name in self.dynamic_choice_fields:
                 choice_api_data = aggregation.get("entries", ())
+                self.replace_api_data(field_name, choice_api_data)
                 form.fields[field_name].update_choices(choice_api_data)
+
+    def replace_api_data(
+        self, field_name, entries_data: list[dict[str, str | int]]
+    ):
+        """Update API data for representation purpose."""
+
+        # TODO: #LEVEL this is a temporary update until API data switches to Department
+        if field_name == "level":
+            for level_entry in entries_data:
+                if level_entry.get("value") == "Lettercode":
+                    level_entry["value"] = "Department"
 
     def get_context_data(self, **kwargs):
         context: dict = super().get_context_data(**kwargs)
