@@ -312,6 +312,7 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
 
     def build_selected_filters_list(self):
         selected_filters = []
+        # TODO: commented code is retained from previous code, want to have q in filter?
         # if request.GET.get("q", None):
         #     selected_filters.append(
         #         {
