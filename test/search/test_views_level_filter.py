@@ -67,7 +67,11 @@ class CatalogueSearchViewLevelFilterTests(TestCase):
         self.assertEqual(
             self.response.context_data.get("form").fields["level"].items,
             [
-                {"text": "Department (100)", "value": "Department", "checked": True},
+                {
+                    "text": "Department (100)",
+                    "value": "Department",
+                    "checked": True,
+                },
                 {"text": "Division (0)", "value": "Division", "checked": True},
             ],
         )
