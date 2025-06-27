@@ -102,7 +102,9 @@ class APIMixin:
             if field_name in self.dynamic_choice_fields:
                 choice_api_data = aggregation.get("entries", ())
                 self.replace_api_data(field_name, choice_api_data)
-                form.fields[field_name].update_choices(choice_api_data)
+                form.fields[field_name].update_choices(
+                    choice_api_data, form.fields[field_name].value
+                )
 
     def replace_api_data(
         self, field_name, entries_data: list[dict[str, str | int]]

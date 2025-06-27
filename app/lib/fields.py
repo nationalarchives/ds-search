@@ -164,6 +164,16 @@ class DynamicMultipleChoiceField(BaseField):
         super().__init__(**kwargs)
         self.choices = choices
         self.configured_choices = self.choices
+        # cache valid choices
+        if self.validate_input:
+            self.valid_choices = [value for value, _ in self.choices]
+        else:
+            self.valid_choices = []
+
+        # The self.choices_updated is used to at the time of render
+        # to coerce 0 counts on error or when choices
+        # have been updated to reflect options from the API.
+        self.choices_updated = False
 
     def _has_match_all(self, value, search_in):
         return all(item in search_in for item in value)
@@ -172,17 +182,35 @@ class DynamicMultipleChoiceField(BaseField):
         if self.required or self.validate_input:
             super().validate(value)
             if self.validate_input:
-                valid_choices = [value for value, _ in self.choices]
-                if not self._has_match_all(value, valid_choices):
+                if not self._has_match_all(value, self.valid_choices):
                     raise ValidationError(
                         (
                             f"Enter a valid choice. Value(s) [{', '.join(value)}] do not belong "
-                            f"to the available choices. Valid choices are [{', '.join(valid_choices)}]"
+                            f"to the available choices. Valid choices are [{', '.join(self.valid_choices)}]"
                         )
                     )
 
     @property
     def items(self):
+        if self.error:
+            # applied filter did not return results,
+            # so coerce api data to 0 counts for selected values
+            zero_count_data = []
+            partial_match = False
+            if not self._has_match_all(self.value, self.valid_choices):
+                for input_value in self.value:
+                    if input_value in self.valid_choices:
+                        partial_match = True
+                        zero_count_data.append(
+                            {"value": input_value, "doc_count": 0}
+                        )
+            if not partial_match:
+                for value in self.valid_choices:
+                    zero_count_data.append({"value": value, "doc_count": 0})
+
+            if zero_count_data:
+                self.update_choices(zero_count_data, self.value)
+
         return [
             (
                 {"text": display_value, "value": value, "checked": True}
@@ -208,10 +236,13 @@ class DynamicMultipleChoiceField(BaseField):
     def update_choices(
         self,
         choice_api_data: list[dict[str, str | int]],
+        selected_values,
     ):
         """
         Updates this fields `choices` list using aggregation data from the most recent
-        API result.
+        API result. If `selected_values` is provided, options with values matching items
+        in that list will be preserved in the new `choices` list, even if they are not
+        present in `choice_data`.
 
         Expected `choice_api_data` format:
         [
@@ -225,10 +256,31 @@ class DynamicMultipleChoiceField(BaseField):
 
         # Generate a new list of choices
         choices = []
+        choice_vals_with_hits = set()
         for item in choice_api_data:
             choices.append(
                 (item["value"], self.choice_label_from_api_data(item))
             )
+            choice_vals_with_hits.add(item["value"])
+
+        if self.validate_input:
+            check_values_from = [
+                v
+                for v in selected_values
+                if v not in choice_vals_with_hits and v in self.valid_choices
+            ]
+        else:
+            check_values_from = [
+                v for v in selected_values if v not in choice_vals_with_hits
+            ]
+
+        for missing_value in check_values_from:
+            try:
+                label_base = self.configured_choice_labels[missing_value]
+            except KeyError:
+                label_base = missing_value
+            choices.append((missing_value, f"{label_base} (0)"))
 
         # Replace the field's attribute value
         self.choices = choices
+        self.choices_updated = True
