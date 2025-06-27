@@ -141,9 +141,6 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
         except ResourceNotFound:
             # no results
             return self.form_invalid()
-        except Exception as e:
-            logger.error(str(e))
-            return errors_view.server_error_view(request=request)
 
     @property
     def page(self) -> int:

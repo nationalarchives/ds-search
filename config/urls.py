@@ -50,3 +50,11 @@ if apps.is_installed("debug_toolbar"):
     urlpatterns = [
         path("__debug__/", include("debug_toolbar.urls")),
     ] + urlpatterns
+
+if settings.DEBUG:
+    urlpatterns += [
+        path(
+            "500/",
+            errors_view.server_error_view,
+        )
+    ]
