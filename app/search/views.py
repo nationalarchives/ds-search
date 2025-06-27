@@ -75,8 +75,8 @@ class APIMixin:
             filter_aggregations.extend(
                 (f"{filter_name}:{value}" for value in selected_values)
             )
-            if filter_aggregations:
-                add_filter(params, filter_aggregations)
+        if filter_aggregations:
+            add_filter(params, filter_aggregations)
 
         return params
 
