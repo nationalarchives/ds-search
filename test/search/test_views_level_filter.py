@@ -170,7 +170,7 @@ class CatalogueSearchViewLevelFilterTests(TestCase):
                 {
                     "label": "Level: invalid",
                     "href": "?q=ufo&level=Item&level=Division",
-                    "title": "Remove None level",
+                    "title": "Remove invalid level",
                 },
             ],
         )

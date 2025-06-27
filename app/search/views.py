@@ -357,7 +357,7 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
                     {
                         "label": f"Level: {levels_lookup.get(level, level)}",
                         "href": f"?{qs_toggle_value(self.request.GET, 'level', level)}",
-                        "title": f"Remove {levels_lookup.get(level)} level",
+                        "title": f"Remove {levels_lookup.get(level, level)} level",
                     }
                 )
         if closure_statuses := self.request.GET.getlist("closure_status", None):
