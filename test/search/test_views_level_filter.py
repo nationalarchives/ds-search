@@ -29,7 +29,7 @@ class CatalogueSearchViewLevelFilterTests(TestCase):
                     {
                         "name": "level",
                         "entries": [
-                            {"value": "Item", "doc_count": 100},
+                            {"value": "Lettercode", "doc_count": 100},
                         ],
                     }
                 ],
@@ -49,24 +49,25 @@ class CatalogueSearchViewLevelFilterTests(TestCase):
             status=HTTPStatus.OK,
         )
 
-        # valid level params
+        # valid level params, Department->Lettercode replacement
         self.response = self.client.get(
-            "/catalogue/search/?q=ufo&level=Item&level=Division"
+            "/catalogue/search/?q=ufo&level=Department&level=Division"
         )
 
         self.assertEqual(
             self.response.context_data.get("form").fields["level"].value,
-            ["Item", "Division"],
+            ["Department", "Division"],
         )
         self.assertEqual(
             self.response.context_data.get("form").fields["level"].cleaned,
-            ["Item", "Division"],
+            ["Department", "Division"],
         )
         # queried valid values without their response get count 0
+        # shows Lettercode to Deparment replacement
         self.assertEqual(
             self.response.context_data.get("form").fields["level"].items,
             [
-                {"text": "Item (100)", "value": "Item", "checked": True},
+                {"text": "Department (100)", "value": "Department", "checked": True},
                 {"text": "Division (0)", "value": "Division", "checked": True},
             ],
         )
@@ -74,13 +75,13 @@ class CatalogueSearchViewLevelFilterTests(TestCase):
             self.response.context_data.get("selected_filters"),
             [
                 {
-                    "label": "Level: Item",
+                    "label": "Level: Department",
                     "href": "?q=ufo&level=Division",
-                    "title": "Remove Item level",
+                    "title": "Remove Department level",
                 },
                 {
                     "label": "Level: Division",
-                    "href": "?q=ufo&level=Item",
+                    "href": "?q=ufo&level=Department",
                     "title": "Remove Division level",
                 },
             ],
