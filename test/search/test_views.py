@@ -4,12 +4,12 @@ import responses
 from app.records.models import Record
 from app.search.buckets import BucketKeys
 from app.search.forms import CatalogueSearchForm
-from app.search.views import APIMixin
 from django.conf import settings
 from django.test import TestCase
 
 
 class CatalogueSearchViewTests(TestCase):
+    """Mainly tests the context."""
 
     @responses.activate
     def test_catalogue_search_context_without_params(self):
@@ -27,6 +27,15 @@ class CatalogueSearchViewTests(TestCase):
                             }
                         }
                     }
+                ],
+                "aggregations": [
+                    {
+                        "name": "level",
+                        "entries": [
+                            {"value": "Item", "doc_count": 100},
+                            {"value": "Division", "doc_count": 5},
+                        ],
+                    },
                 ],
                 "buckets": [
                     {
@@ -173,13 +182,8 @@ class CatalogueSearchViewTests(TestCase):
         self.assertEqual(
             self.response.context_data.get("form").fields["level"].items,
             [
-                {"text": "Department", "value": "Department"},
-                {"text": "Division", "value": "Division"},
-                {"text": "Series", "value": "Series"},
-                {"text": "Sub-series", "value": "Sub-series"},
-                {"text": "Sub-sub-series", "value": "Sub-sub-series"},
-                {"text": "Piece", "value": "Piece"},
-                {"text": "Item", "value": "Item"},
+                {"text": "Item (100)", "value": "Item"},
+                {"text": "Division (5)", "value": "Division"},
             ],
         )
 
@@ -225,6 +229,7 @@ class CatalogueSearchViewTests(TestCase):
             self.response.context_data.get("form").fields["q"].value,
             "ufo",
         )
+        self.assertEqual(self.response.context_data.get("selected_filters"), [])
 
     @responses.activate
     def test_catalogue_search_context_with_sort_param(self):
@@ -288,6 +293,7 @@ class CatalogueSearchViewTests(TestCase):
                 {"text": "Title (Z–A)", "value": "title:desc"},
             ],
         )
+        self.assertEqual(self.response.context_data.get("selected_filters"), [])
 
     @responses.activate
     def test_catalogue_search_context_with_group_param(self):
@@ -350,93 +356,4 @@ class CatalogueSearchViewTests(TestCase):
                 },
             ],
         )
-
-    @responses.activate
-    def test_catalogue_search_context_with_level_param(self):
-
-        responses.add(
-            responses.GET,
-            f"{settings.ROSETTA_API_URL}/search",
-            json={
-                "data": [
-                    {
-                        "@template": {
-                            "details": {
-                                "iaid": "C123456",
-                                "source": "CAT",
-                            }
-                        }
-                    }
-                ],
-                "buckets": [
-                    {
-                        "name": "group",
-                        "entries": [
-                            {"value": "nonTna", "count": 1},
-                        ],
-                    }
-                ],
-                "stats": {
-                    "total": 26008838,
-                    "results": 20,
-                },
-            },
-            status=HTTPStatus.OK,
-        )
-
-        self.response = self.client.get(
-            "/catalogue/search/?level=Item&level=Division"
-        )
-
-        self.assertEqual(
-            self.response.context_data.get("form").fields["level"].value,
-            ["Item", "Division"],
-        )
-        self.assertEqual(
-            self.response.context_data.get("form").fields["level"].cleaned,
-            ["Item", "Division"],
-        )
-        self.assertEqual(
-            self.response.context_data.get("form").fields["level"].items,
-            [
-                {"text": "Department", "value": "Department"},
-                {"text": "Division", "value": "Division", "checked": True},
-                {"text": "Series", "value": "Series"},
-                {"text": "Sub-series", "value": "Sub-series"},
-                {"text": "Sub-sub-series", "value": "Sub-sub-series"},
-                {"text": "Piece", "value": "Piece"},
-                {"text": "Item", "value": "Item", "checked": True},
-            ],
-        )
-
-
-class APIMixinReplaceMethodsTests(TestCase):
-
-    def setUp(self):
-        self.apimixin = APIMixin()
-
-    def test_replace_input_data_level_field_name(self):
-
-        self.field_name = "level"
-        self.selected_values = ["Division", "Department"]
-        self.selected_values = self.apimixin.replace_input_data(
-            self.field_name, self.selected_values
-        )
-        self.assertEqual(self.selected_values, ["Division", "Lettercode"])
-
-    def test_replace_api_data_level_field_name(self):
-
-        self.field_name = "level"
-        self.entries_data = [
-            {"value": "Division", "doc_count": 1215},
-            {"value": "Lettercode", "doc_count": 435},
-        ]
-
-        self.apimixin.replace_api_data(self.field_name, self.entries_data)
-        self.assertEqual(
-            self.entries_data,
-            [
-                {"value": "Division", "doc_count": 1215},
-                {"value": "Department", "doc_count": 435},
-            ],
-        )
+        self.assertEqual(self.response.context_data.get("selected_filters"), [])
