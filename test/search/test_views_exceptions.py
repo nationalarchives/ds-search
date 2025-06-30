@@ -1,5 +1,5 @@
-from django.conf import settings
 from django.test import TestCase, override_settings
+from http import HTTPStatus
 
 
 class TestCatalogueSearchViewExceptions(TestCase):
@@ -11,15 +11,15 @@ class TestCatalogueSearchViewExceptions(TestCase):
     @override_settings(
         ROSETTA_API_URL="",
     )
-    def test_missing_config_with_server_error(self):
+    def test_missing_config_responds_with_server_error_500(self):
 
         with self.assertLogs("django.request", level="ERROR") as log:
             response = self.client.get("/catalogue/search/")
 
         self.assertIn("ROSETTA_API_URL not set", "".join(log.output))
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
-        # check content as it does not allow to test template SERVER_ERROR_TEMPLATE
+        # check content as raising exception does not allow to test template
         self.assertIn(
             "There is a problem with the service",
             response.content.decode("utf-8"),

@@ -31,4 +31,4 @@ def server_error_view(request, exception=None):
             "Internal Server Error: Template not found."
         )
     response.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
-    return HttpResponseServerError(response)
+    return response
