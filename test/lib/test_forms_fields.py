@@ -1,7 +1,10 @@
+from datetime import datetime
+
 from app.lib.fields import (
     CharField,
     ChoiceField,
     DynamicMultipleChoiceField,
+    ValidationError,
 )
 from app.lib.forms import BaseForm
 from django.http import QueryDict
@@ -392,6 +395,52 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
                 ),
             },
         )
+
+
+class NewFieldWithRaiseValidationTest(TestCase):
+
+    def get_form_with_new_field(self, data=None):
+
+        class MyTestForm(BaseForm):
+
+            class TestNewField(CharField):
+
+                def validate(self, value):
+                    try:
+                        datetime.strptime(value, "%Y-%m-%d")
+                    except ValueError:
+                        raise ValidationError(
+                            "Value is not in format YYYY-MM-DD"
+                        )
+                    super().validate(value)
+
+            def add_fields(self):
+                return {"new_field": MyTestForm.TestNewField()}
+
+        form = MyTestForm(data)
+        return form
+
+    def test_validate_responds_with_no_exception(self):
+        """validate() no exception is raised."""
+
+        data = QueryDict("")
+        form = self.get_form_with_new_field(data)
+
+        try:
+            status = form.is_valid()
+            self.assertEqual(status, False)
+            self.assertEqual(
+                form.errors,
+                {"new_field": {"text": "Value is not in format YYYY-MM-DD"}},
+            )
+            self.assertEqual(
+                form.fields["new_field"].error,
+                {"text": "Value is not in format YYYY-MM-DD"},
+            )
+        except Exception as e:
+            self.fail(
+                f"form.is_valid() raised an exception unexpectedly. {str(e)}"
+            )
 
 
 class BaseFormWithCrossValidationTest(TestCase):
