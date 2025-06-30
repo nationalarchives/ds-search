@@ -66,14 +66,6 @@ def record_detail_view(request, id):
         record = record_details_by_id(id=id)
     except ResourceNotFound:
         raise Http404
-    except Exception as e:
-        context = {"exception_message": str(e)}
-        return TemplateResponse(
-            request=request,
-            template="errors/server_error.html",
-            context=context,
-            status=HTTPStatus.BAD_GATEWAY,
-        )
 
     context.update(
         record=record,
