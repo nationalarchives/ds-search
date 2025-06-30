@@ -1,5 +1,6 @@
-from django.test import TestCase, override_settings
 from http import HTTPStatus
+
+from django.test import TestCase, override_settings
 
 
 class TestCatalogueSearchViewExceptions(TestCase):
