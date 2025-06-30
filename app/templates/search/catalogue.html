@@ -19,6 +19,8 @@
 {% from 'search/macros/filters/closure_statuses_tna.html' import closure_statuses_tna %}
 {% from 'search/macros/filters/opening_date.html' import opening_date %}
 {% from 'search/macros/filters/collections_tna.html' import collections_tna %}
+{% from 'search/macros/filters/online_tna.html' import online_tna %}
+{% from 'search/macros/filters/subjects_tna.html' import subjects_tna %}
 
 {%- set pageTitle = 'Catalogue search results' -%}
 {%- set encodedQuery = request.GET.urlencode() | base64_encode -%}
@@ -31,8 +33,8 @@
 {% block skipLink %}
 {% if results %}
 {{ tnaSkipLink({
-  href: 'results',
-  text: 'Skip to results'
+  'href': 'results',
+  'text': 'Skip to results'
 }) }}
 {% endif %}
 {{ super() }}
@@ -70,8 +72,8 @@
         'headingLevel': 1,
         'headingSize': 'l',
         'id': 'search',
-        'name': 'q',
-        'value': request.GET.get('q') or ''
+        'name':  form.fields.q.name,
+        'value': form.fields.q.value
       }) }}
       <!-- <div class="tna-button-group tna-!--margin-top-xs">
         {{ tnaButton({
@@ -81,14 +83,14 @@
           'small': True
         }) }}
       </div> -->
-      <input type="hidden" name="display" value="{{ request.GET.get('display') or '' }}">
-      <input type="hidden" name="group" value="{{ request.GET.get('group') or '' }}">
+      <input type="hidden" name="display" value="{{ request.GET.get('display') or 'list' }}">
+      <input type="hidden" name="group" value="{{ request.GET.get('group') or bucket_keys.TNA }}">
     </form>
     <div class="tna-column tna-column--full">
       {{ tnaSecondaryNavigation({
         'title': 'Sections',
         'headingLevel': 2,
-        'items': buckets,
+        'items': bucket_list.items,
         'noBottomBorder': True,
         'visuallyHideHeading': True,
         'classes': 'tna-!--margin-top-m'
@@ -104,18 +106,20 @@
             <h3 class="tna-heading-m">Active filters {% if selected_filters %} ({{ selected_filters | length }}){% endif %}:</h3>
             {{ tnaCompoundFilters({
               'items': selected_filters,
-              'removeAllHref': url('search:catalogue') + '?q=' + request.GET.get('q') + '&display=' + (request.GET.get('display') or ''),
+              'removeAllHref': url('search:catalogue') + '?q=' + form.fields.q.value + '&display=' + (request.GET.get('display') or ''),
               'removeAllText': 'Reset filters',
               'classes': 'tna-!--margin-top-s'
             }) }}
         </div>
     {% endif %}
+    {{ online_tna(request, is_tna_results_page=(form.fields.group.value==bucket_keys.TNA)) }}
     {{ search_within(request) }}
     {{ date_range(request, 'date', 'date', 'Filter by record date') }}
-    {{ levels_tna(request, levels) }}
+    {{ levels_tna(request, form.fields['level']) }}
     {{ closure_statuses_tna(request, closure_statuses) }}
     {{ date_range(request, 'date', 'date', 'Filter by record opening date') }}
     {{ collections_tna(request, collections) }}
+    {{ subjects_tna(request, subjects) }}
   </div>
   {% if results %}
   <div id="results" class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">
@@ -129,30 +133,9 @@
           'headingLevel': 2,
           'headingSize': 's',
           'id': 'sort',
-          'name': 'sort',
-          'items': [
-            {
-              'text': 'Relevance',
-              'value': ''
-            },
-            {
-              'text': 'Date (newest first)',
-              'value': 'date:desc'
-            },
-            {
-              'text': 'Date (oldest first)',
-              'value': 'date:asc'
-            },
-            {
-              'text': 'Title (A-Z)',
-              'value': 'title:asc'
-            },
-            {
-              'text': 'Title (Z-A)',
-              'value': 'title:desc'
-            }
-          ],
-          'selected': request.GET.get('sort'),
+          'name': form.fields.sort.name,
+          'items': form.fields.sort.items,
+          'selected': form.fields.sort.value,
           'formGroupAttributes': {
             'id': 'sort-form-group'
           },
@@ -252,6 +235,23 @@
     <h2 class="tna-heading-xl">No results found</h2>
     <p>No results were found for your query.</p>
     <p>Try widening your search.</p>
+
+    {# TODO: Error logging is temporary for demo and must be formalised #}
+    {% if form.errors or form.non_field_errors %}
+      <h4>Form Errors</h4>
+      <dl class="tna-dl">
+        <dt>Param/ErrorName</dt>
+        <dd>Value</dd>
+        {% for field, error in form.errors.items() %}
+          <dt>{{ field }}</dt>
+          <dd>{{ error.text }}</dd>
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <dt>NONFIELDERROR</dt>
+          <dd>{{ error.text }}</dd>
+        {% endfor %}
+      </dl>
+    {% endif %}
   </div>
   {% endif %}
 </div>

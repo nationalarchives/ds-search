@@ -27,7 +27,7 @@ class Bucket:
         return self.label + f" ({intcomma(self.record_count)})"
 
     @property
-    def for_display(self) -> dict[str, str | bool]:
+    def item(self) -> dict[str, str | bool]:
         """
         Returns data formatted for front-end component Ex: tnaSecondaryNavigation()
         """
@@ -48,43 +48,48 @@ class BucketKeys(StrEnum):
     NONTNA = "nonTna"
 
 
+@dataclass
+class BucketList:
+    buckets: list[Bucket]
+
+    def __iter__(self):
+        yield from self.buckets
+
+    def update_buckets_for_display(
+        self, query: str | None, buckets: dict, current_bucket_key: str | None
+    ):
+        """update buckets data used by bucket.item for the FE component"""
+
+        for bucket in self.buckets:
+            bucket.record_count = buckets.get(bucket.key, 0)
+            bucket.is_current = bucket.key == current_bucket_key
+            bucket.href = f"?group={bucket.key}"
+            if query:
+                bucket.href += f"&q={query}"
+
+    def as_choices(self) -> list[tuple[str, str]]:
+        return [(bucket.key, bucket.label) for bucket in self.buckets]
+
+    @property
+    def items(self):
+        """Returns list of bucket items t to be used by
+        front-end component Ex: tnaSecondaryNavigation()"""
+
+        return [bucket.item for bucket in self.buckets]
+
+
 # Configure list of buckets to show in template, these values rarely change
-CATALOGUE_BUCKETS = [
-    Bucket(
-        key=BucketKeys.TNA,
-        label="Records at the National Archives",
-        description="Results for records held at The National Archives that match your search term.",
-    ),
-    Bucket(
-        key=BucketKeys.DIGITISED,
-        label="Online records at The National Archives",
-        description="Results for records available to download and held at The National Archives that match your search term.",
-    ),
-    Bucket(
-        key=BucketKeys.NONTNA,
-        label="Records at other UK archives",
-        description="Results for records held at other archives in the UK (and not at The National Archives) that match your search term.",
-    ),
-]
-
-
-def get_buckets_for_display(
-    query: str, buckets: dict, current_bucket_key: str
-) -> list[dict[str, str | bool]]:
-    """
-    Returns modified buckets data to be used in the template
-    by front-end component Ex: tnaSecondaryNavigation()
-    """
-    # new list that is modified
-    bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
-
-    # update buckets from params
-    for bucket in bucket_list:
-        bucket.record_count = buckets.get(bucket.key, 0)
-        bucket.is_current = bucket.key == current_bucket_key
-        bucket.href = f"?group={bucket.key}"
-        if query:
-            bucket.href += f"&q={query}"
-
-    # return data for display
-    return [bucket.for_display for bucket in bucket_list]
+CATALOGUE_BUCKETS = BucketList(
+    [
+        Bucket(
+            key=BucketKeys.TNA.value,
+            label="Records at the National Archives",
+            description="Results for records held at The National Archives that match your search term.",
+        ),
+        Bucket(
+            key=BucketKeys.NONTNA.value,
+            label="Records at other UK archives",
+            description="Results for records held at other archives in the UK (and not at The National Archives) that match your search term.",
+        ),
+    ]
+)

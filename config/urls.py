@@ -30,6 +30,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 register_converter(converters.IDConverter, "id")
 
 handler404 = "app.errors.views.page_not_found_error_view"
+handler500 = "app.errors.views.server_error_view"
 
 
 # ==========================================
