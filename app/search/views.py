@@ -328,7 +328,7 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
         if self.request.GET.get("search_within", None):
             selected_filters.append(
                 {
-                    "label": f'Sub query "{self.request.GET.get("search_within")}"',
+                    "label": f"Sub query {self.request.GET.get('search_within')}",
                     "href": f"?{qs_remove_value(self.request.GET, 'search_within')}",
                     "title": "Remove search within",
                 }
@@ -336,7 +336,7 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
         if self.request.GET.get("date_from", None):
             selected_filters.append(
                 {
-                    "label": f"Record date from: {self.request.GET.get("date_from")}",
+                    "label": f"Record date from: {self.request.GET.get('date_from')}",
                     "href": f"?{qs_remove_value(self.request.GET, 'date_from')}",
                     "title": "Remove record from date",
                 }
@@ -344,7 +344,7 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
         if self.request.GET.get("date_to", None):
             selected_filters.append(
                 {
-                    "label": f"Record date to: {self.request.GET.get("date_to")}",
+                    "label": f"Record date to: {self.request.GET.get('date_to')}",
                     "href": f"?{qs_remove_value(self.request.GET, 'date_to')}",
                     "title": "Remove record to date",
                 }
