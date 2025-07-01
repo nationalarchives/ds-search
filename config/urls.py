@@ -44,7 +44,7 @@ handler500 = "app.errors.views.server_error_view"
 # These routes should be removed after about
 # 6 months, at the start of December 2025.
 # ==========================================
-def redirectToLiveSite(request):
+def redirect_to_live_site(request):
     allowed_paths = [
         "/explore-the-collection/",
         "/people/",
@@ -59,8 +59,8 @@ def redirectToLiveSite(request):
 
 
 old_beta_site_redirect_urls = [
-    re_path(r"^explore-the-collection/.*$", redirectToLiveSite),
-    re_path(r"^people/.*$", redirectToLiveSite),
+    re_path(r"^explore-the-collection/.*$", redirect_to_live_site),
+    re_path(r"^people/.*$", redirect_to_live_site),
 ]
 # ==========================================
 # END beta.nationalarchives.gov.uk redirects
