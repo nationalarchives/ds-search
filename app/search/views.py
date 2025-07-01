@@ -21,7 +21,7 @@ from django.http import (
 from django.views.generic import TemplateView
 
 from .buckets import CATALOGUE_BUCKETS, Bucket, BucketKeys, BucketList
-from .constants import Sort
+from .constants import PAGE_LIMIT, RESULTS_PER_PAGE, Sort
 from .forms import CatalogueSearchForm, FieldsConstant
 from .models import APISearchResponse
 
@@ -34,9 +34,6 @@ class PageNotFound(Exception):
 
 class APIMixin:
     """A mixin to get the api result, processes api result, sets the context."""
-
-    RESULTS_PER_PAGE = 20  # max records to show per page
-    PAGE_LIMIT = 500  # max page number that can be queried
 
     # fields used to extract aggregation entries from the api result
     dynamic_choice_fields = [FieldsConstant.LEVEL]
@@ -230,7 +227,7 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
 
         self.api_result = self.get_api_result(
             query=self.query,
-            results_per_page=self.RESULTS_PER_PAGE,
+            results_per_page=RESULTS_PER_PAGE,
             page=self.page,
             sort=self.sort,
             params=self.get_api_params(self.form, self.current_bucket),
@@ -267,16 +264,16 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
 
     def paginate_api_result(self) -> tuple | HttpResponse:
 
-        pages = math.ceil(self.api_result.stats_total / self.RESULTS_PER_PAGE)
-        if pages > self.PAGE_LIMIT:
-            pages = self.PAGE_LIMIT
+        pages = math.ceil(self.api_result.stats_total / RESULTS_PER_PAGE)
+        if pages > PAGE_LIMIT:
+            pages = PAGE_LIMIT
 
         if self.page > pages:
             raise PageNotFound
 
         results_range = {
-            "from": ((self.page - 1) * self.RESULTS_PER_PAGE) + 1,
-            "to": ((self.page - 1) * self.RESULTS_PER_PAGE)
+            "from": ((self.page - 1) * RESULTS_PER_PAGE) + 1,
+            "to": ((self.page - 1) * RESULTS_PER_PAGE)
             + self.api_result.stats_results,
         }
 
