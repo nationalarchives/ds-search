@@ -1,5 +1,8 @@
 from enum import StrEnum
 
+RESULTS_PER_PAGE = 20  # max records to show per page
+PAGE_LIMIT = 500  # max page number that can be queried
+
 
 class Sort(StrEnum):
     """Options for sorting /search results by a given field."""
