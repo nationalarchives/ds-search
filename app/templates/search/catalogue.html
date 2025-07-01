@@ -115,11 +115,13 @@
     {{ online_tna(request, is_tna_results_page=(form.fields.group.value==bucket_keys.TNA)) }}
     {{ search_within(request) }}
     {{ date_range(request, 'date', 'date', 'Filter by record date') }}
-    {{ levels_tna(request, form.fields['level']) }}
-    {{ closure_statuses_tna(request, closure_statuses) }}
-    {{ date_range(request, 'date', 'date', 'Filter by record opening date') }}
     {{ collections_tna(request, collections) }}
     {{ subjects_tna(request, subjects) }}
+    {{ levels_tna(request, form.fields['level']) }}
+    {{ date_range(request, 'date', 'date', 'Filter by record opening date') }}
+    {{ closure_statuses_tna(request, closure_statuses) }}
+    
+    
   </div>
   {% if results %}
   <div id="results" class="tna-column tna-column--width-3-4 tna-column--width-2-3-medium tna-column--full-small tna-column--full-tiny tna-!--margin-top-l">

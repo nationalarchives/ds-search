@@ -257,8 +257,8 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
                     "dmc_field": DynamicMultipleChoiceField(
                         label="Location",
                         choices=[
-                            ("london", "London (100 recs)"),
-                            ("leeds", "Leeds (50 recs)"),
+                            ("london", "London"),
+                            ("leeds", "Leeds"),
                         ],
                         required=True,
                         validate_input=True,
@@ -289,8 +289,8 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
         self.assertEqual(
             form.fields["dmc_field"].items,
             [
-                {"text": "London (100 recs)", "value": "london"},
-                {"text": "Leeds (50 recs)", "value": "leeds"},
+                {"text": "London (0)", "value": "london"},
+                {"text": "Leeds (0)", "value": "leeds"},
             ],
         )
         self.assertEqual(
@@ -312,11 +312,11 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
             form.fields["dmc_field"].items,
             [
                 {
-                    "text": "London (100 recs)",
+                    "text": "London",
                     "value": "london",
                     "checked": True,
                 },
-                {"text": "Leeds (50 recs)", "value": "leeds"},
+                {"text": "Leeds", "value": "leeds"},
             ],
         )
         self.assertEqual(form.fields["dmc_field"].error, {})
@@ -337,12 +337,12 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
             form.fields["dmc_field"].items,
             [
                 {
-                    "text": "London (100 recs)",
+                    "text": "London",
                     "value": "london",
                     "checked": True,
                 },
                 {
-                    "text": "Leeds (50 recs)",
+                    "text": "Leeds",
                     "value": "leeds",
                     "checked": True,
                 },
@@ -376,13 +376,9 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
             form.fields["dmc_field"].items,
             [
                 {
-                    "text": "London (100 recs)",
+                    "text": "London (0)",
                     "value": "london",
                     "checked": True,
-                },
-                {
-                    "text": "Leeds (50 recs)",
-                    "value": "leeds",
                 },
             ],
         )

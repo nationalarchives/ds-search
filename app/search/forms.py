@@ -9,15 +9,23 @@ from app.search.buckets import CATALOGUE_BUCKETS
 from app.search.constants import Sort
 
 
+class FieldsConstant:
+
+    Q = "q"
+    SORT = "sort"
+    LEVEL = "level"
+    GROUP = "group"
+
+
 class CatalogueSearchForm(BaseForm):
 
     def add_fields(self):
 
         return {
-            "group": ChoiceField(
+            FieldsConstant.GROUP: ChoiceField(
                 choices=CATALOGUE_BUCKETS.as_choices(),
             ),
-            "sort": ChoiceField(
+            FieldsConstant.SORT: ChoiceField(
                 choices=[
                     (Sort.RELEVANCE.value, "Relevance"),
                     (Sort.DATE_DESC.value, "Date (newest first)"),
@@ -26,8 +34,8 @@ class CatalogueSearchForm(BaseForm):
                     (Sort.TITLE_DESC.value, "Title (Z–A)"),
                 ],
             ),
-            "q": CharField(),
-            "level": DynamicMultipleChoiceField(
+            FieldsConstant.Q: CharField(),
+            FieldsConstant.LEVEL: DynamicMultipleChoiceField(
                 label="Filter by levels",
                 choices=list((level, level) for level in TNA_LEVELS.values()),
                 validate_input=True,  # validate input with choices before querying the API

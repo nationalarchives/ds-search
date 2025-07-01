@@ -6,7 +6,12 @@ from typing import Any
 from app.errors import views as errors_view
 from app.lib.api import ResourceNotFound
 from app.lib.pagination import pagination_object
-from app.records.constants import CLOSURE_STATUSES, COLLECTIONS, TNA_LEVELS, TNA_SUBJECTS
+from app.records.constants import (
+    CLOSURE_STATUSES,
+    COLLECTIONS,
+    TNA_LEVELS,
+    TNA_SUBJECTS,
+)
 from app.search.api import search_records
 from config.jinja2 import qs_remove_value, qs_toggle_value
 from django.http import (
@@ -15,9 +20,10 @@ from django.http import (
 )
 from django.views.generic import TemplateView
 
-from .buckets import CATALOGUE_BUCKETS, BucketKeys
-from .constants import Sort
-from .forms import CatalogueSearchForm
+from .buckets import CATALOGUE_BUCKETS, Bucket, BucketKeys, BucketList
+from .constants import PAGE_LIMIT, RESULTS_PER_PAGE, Sort
+from .forms import CatalogueSearchForm, FieldsConstant
+from .models import APISearchResponse
 
 logger = logging.getLogger(__name__)
 
@@ -29,32 +35,89 @@ class PageNotFound(Exception):
 class APIMixin:
     """A mixin to get the api result, processes api result, sets the context."""
 
-    RESULTS_PER_PAGE = 20  # max records to show per page
-    PAGE_LIMIT = 500  # max page number that can be queried
+    # fields used to extract aggregation entries from the api result
+    dynamic_choice_fields = [FieldsConstant.LEVEL]
 
-    def get_api_result(
-        self, query, results_per_page, page, sort, current_bucket_key
-    ):
+    def get_api_result(self, query, results_per_page, page, sort, params):
         self.api_result = search_records(
             query=query,
             results_per_page=results_per_page,
             page=page,
             sort=sort,
-            params=self.get_api_params(current_bucket_key),
+            params=params,
         )
         return self.api_result
 
-    def get_api_params(self, current_bucket_key) -> dict:
+    def get_api_params(self, form, current_bucket: Bucket) -> dict:
         """The API params
-        filter: for buckets."""
+        filter: for querying buckets, aggs
+        aggs: for checkbox items with counts."""
+
+        def add_filter(params: dict, value):
+            if not isinstance(value, list):
+                value = [value]
+            return params.setdefault("filter", []).extend(value)
+
+        params = {}
+
+        # aggregations
+        params.update({"aggs": current_bucket.aggregations})
 
         # filter records for a bucket
-        params = {"filter": f"group:{current_bucket_key}"}
+        add_filter(params, f"group:{current_bucket.key}")
+
+        # filter aggregations for each field
+        filter_aggregations = []
+        for field_name in self.dynamic_choice_fields:
+            filter_name = field_name
+            selected_values = form.fields[field_name].cleaned
+            selected_values = self.replace_input_data(
+                field_name, selected_values
+            )
+            filter_aggregations.extend(
+                (f"{filter_name}:{value}" for value in selected_values)
+            )
+        if filter_aggregations:
+            add_filter(params, filter_aggregations)
+
         return params
 
-    def process_api_result(self, form, api_result):
-        """TODO: for API filter intergration."""
-        pass
+    def replace_input_data(self, field_name, selected_values: list[str]):
+        """Updates user input/represented data for API querying."""
+
+        # TODO: #LEVEL this is a temporary update until API data switches to Department
+        if field_name == FieldsConstant.LEVEL:
+            return [
+                "Lettercode" if level == "Department" else level
+                for level in selected_values
+            ]
+        return selected_values
+
+    def process_api_result(
+        self, form: CatalogueSearchForm, api_result: APISearchResponse
+    ):
+        """Update checkbox `choices` values on the form's `dynamic_choice_fields` to
+        reflect data included in the API's `aggs` response."""
+
+        for aggregation in api_result.aggregations:
+            field_name = aggregation.get("name")
+            if field_name in self.dynamic_choice_fields:
+                choice_api_data = aggregation.get("entries", ())
+                self.replace_api_data(field_name, choice_api_data)
+                form.fields[field_name].update_choices(
+                    choice_api_data, form.fields[field_name].value
+                )
+
+    def replace_api_data(
+        self, field_name, entries_data: list[dict[str, str | int]]
+    ):
+        """Update API data for representation purpose."""
+
+        # TODO: #LEVEL this is a temporary update until API data switches to Department
+        if field_name == FieldsConstant.LEVEL:
+            for level_entry in entries_data:
+                if level_entry.get("value") == "Lettercode":
+                    level_entry["value"] = "Department"
 
     def get_context_data(self, **kwargs):
         context: dict = super().get_context_data(**kwargs)
@@ -90,8 +153,8 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
 
         super().setup(request, *args, **kwargs)
         self.form = CatalogueSearchForm(**self.get_form_kwargs())
-        self.bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
-        self.current_bucket_key = self.form.fields["group"].value
+        self.bucket_list: BucketList = copy.deepcopy(CATALOGUE_BUCKETS)
+        self.current_bucket_key = self.form.fields[FieldsConstant.GROUP].value
         self.api_result = None
 
     def get_form_kwargs(self) -> dict[str, Any]:
@@ -116,8 +179,8 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
         """sets default for request"""
 
         return {
-            "group": self.default_group,
-            "sort": self.default_sort,
+            FieldsConstant.GROUP: self.default_group,
+            FieldsConstant.SORT: self.default_sort,
         }
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
@@ -130,8 +193,11 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
         try:
             self.page  # checks valid page
             if self.form.is_valid():
-                self.query = self.form.fields["q"].cleaned
-                self.sort = self.form.fields["sort"].cleaned
+                self.query = self.form.fields[FieldsConstant.Q].cleaned
+                self.sort = self.form.fields[FieldsConstant.SORT].cleaned
+                self.current_bucket = self.bucket_list.get_bucket(
+                    self.form.fields[FieldsConstant.GROUP].cleaned
+                )
                 return self.form_valid()
             else:
                 return self.form_invalid()
@@ -158,10 +224,10 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
 
         self.api_result = self.get_api_result(
             query=self.query,
-            results_per_page=self.RESULTS_PER_PAGE,
+            results_per_page=RESULTS_PER_PAGE,
             page=self.page,
             sort=self.sort,
-            current_bucket_key=self.current_bucket_key,
+            params=self.get_api_params(self.form, self.current_bucket),
         )
         self.process_api_result(self.form, self.api_result)
         context = self.get_context_data(form=self.form)
@@ -195,16 +261,16 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
 
     def paginate_api_result(self) -> tuple | HttpResponse:
 
-        pages = math.ceil(self.api_result.stats_total / self.RESULTS_PER_PAGE)
-        if pages > self.PAGE_LIMIT:
-            pages = self.PAGE_LIMIT
+        pages = math.ceil(self.api_result.stats_total / RESULTS_PER_PAGE)
+        if pages > PAGE_LIMIT:
+            pages = PAGE_LIMIT
 
         if self.page > pages:
             raise PageNotFound
 
         results_range = {
-            "from": ((self.page - 1) * self.RESULTS_PER_PAGE) + 1,
-            "to": ((self.page - 1) * self.RESULTS_PER_PAGE)
+            "from": ((self.page - 1) * RESULTS_PER_PAGE) + 1,
+            "to": ((self.page - 1) * RESULTS_PER_PAGE)
             + self.api_result.stats_results,
         }
 
@@ -234,7 +300,7 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
                 current_bucket_key=self.current_bucket_key,
             )
 
-        selected_filters = build_selected_filters_list(self.request)
+        selected_filters = self.build_selected_filters_list()
 
         context.update(
             {
@@ -245,71 +311,70 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
         )
         return context
 
+    def build_selected_filters_list(self):
+        selected_filters = []
+        # TODO: commented code is retained from previous code, want to have q in filter?
+        # if request.GET.get("q", None):
+        #     selected_filters.append(
+        #         {
+        #             "label": f"\"{request.GET.get('q')}\"",
+        #             "href": f"?{qs_remove_value(request.GET, 'q')}",
+        #             "title": f"Remove query: \"{request.GET.get('q')}\"",
+        #         }
+        #     )
+        if self.request.GET.get("search_within", None):
+            selected_filters.append(
+                {
+                    "label": f'Sub query "{self.request.GET.get("search_within")}"',
+                    "href": f"?{qs_remove_value(self.request.GET, 'search_within')}",
+                    "title": "Remove search within",
+                }
+            )
+        if self.request.GET.get("date_from", None):
+            selected_filters.append(
+                {
+                    "label": f"Record date from: {self.request.GET.get("date_from")}",
+                    "href": f"?{qs_remove_value(self.request.GET, 'date_from')}",
+                    "title": "Remove record from date",
+                }
+            )
+        if self.request.GET.get("date_to", None):
+            selected_filters.append(
+                {
+                    "label": f"Record date to: {self.request.GET.get("date_to")}",
+                    "href": f"?{qs_remove_value(self.request.GET, 'date_to')}",
+                    "title": "Remove record to date",
+                }
+            )
+        if levels := self.form.fields[FieldsConstant.LEVEL].value:
+            levels_lookup = {}
+            for _, v in TNA_LEVELS.items():
+                levels_lookup.update({v: v})
 
-# TODO: move into Catalogue Search View when integrating with API
-def build_selected_filters_list(request):
-    selected_filters = []
-    # if request.GET.get("q", None):
-    #     selected_filters.append(
-    #         {
-    #             "label": f"\"{request.GET.get('q')}\"",
-    #             "href": f"?{qs_remove_value(request.GET, 'q')}",
-    #             "title": f"Remove query: \"{request.GET.get('q')}\"",
-    #         }
-    #     )
-    if request.GET.get("search_within", None):
-        selected_filters.append(
-            {
-                "label": f'Sub query "{request.GET.get("search_within")}"',
-                "href": f"?{qs_remove_value(request.GET, 'search_within')}",
-                "title": "Remove search within",
-            }
-        )
-    if request.GET.get("date_from", None):
-        selected_filters.append(
-            {
-                "label": f"Record date from: {request.GET.get("date_from")}",
-                "href": f"?{qs_remove_value(request.GET, 'date_from')}",
-                "title": "Remove record from date",
-            }
-        )
-    if request.GET.get("date_to", None):
-        selected_filters.append(
-            {
-                "label": f"Record date to: {request.GET.get("date_to")}",
-                "href": f"?{qs_remove_value(request.GET, 'date_to')}",
-                "title": "Remove record to date",
-            }
-        )
-    if levels := request.GET.getlist("level", None):
-        levels_lookup = {}
-        for _, v in TNA_LEVELS.items():
-            levels_lookup.update({v: v})
-
-        for level in levels:
-            selected_filters.append(
-                {
-                    "label": f"Level: {levels_lookup.get(level)}",
-                    "href": f"?{qs_toggle_value(request.GET, 'level', level)}",
-                    "title": f"Remove {levels_lookup.get(level)} level",
-                }
-            )
-    if closure_statuses := request.GET.getlist("closure_status", None):
-        for closure_status in closure_statuses:
-            selected_filters.append(
-                {
-                    "label": f"Closure status: {CLOSURE_STATUSES.get(closure_status)}",
-                    "href": f"?{qs_toggle_value(request.GET, 'closure_status', closure_status)}",
-                    "title": f"Remove {CLOSURE_STATUSES.get(closure_status)} closure status",
-                }
-            )
-    if collections := request.GET.getlist("collections", None):
-        for collection in collections:
-            selected_filters.append(
-                {
-                    "label": f"Collection: {COLLECTIONS.get(collection)}",
-                    "href": f"?{qs_toggle_value(request.GET, 'collections', collection)}",
-                    "title": f"Remove {COLLECTIONS.get(collection)} collection",
-                }
-            )
-    return selected_filters
+            for level in levels:
+                selected_filters.append(
+                    {
+                        "label": f"Level: {levels_lookup.get(level, level)}",
+                        "href": f"?{qs_toggle_value(self.request.GET, 'level', level)}",
+                        "title": f"Remove {levels_lookup.get(level, level)} level",
+                    }
+                )
+        if closure_statuses := self.request.GET.getlist("closure_status", None):
+            for closure_status in closure_statuses:
+                selected_filters.append(
+                    {
+                        "label": f"Closure status: {CLOSURE_STATUSES.get(closure_status)}",
+                        "href": f"?{qs_toggle_value(self.request.GET, 'closure_status', closure_status)}",
+                        "title": f"Remove {CLOSURE_STATUSES.get(closure_status)} closure status",
+                    }
+                )
+        if collections := self.request.GET.getlist("collections", None):
+            for collection in collections:
+                selected_filters.append(
+                    {
+                        "label": f"Collection: {COLLECTIONS.get(collection)}",
+                        "href": f"?{qs_toggle_value(self.request.GET, 'collections', collection)}",
+                        "title": f"Remove {COLLECTIONS.get(collection)} collection",
+                    }
+                )
+        return selected_filters
