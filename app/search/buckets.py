@@ -1,8 +1,17 @@
 import copy
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import StrEnum
 
 from django.contrib.humanize.templatetags.humanize import intcomma
+
+
+class Aggregation(StrEnum):
+    """Aggregated counts to include with response.
+
+    Supported by /search endpoint.
+    """
+
+    LEVEL = "level"
 
 
 @dataclass
@@ -19,6 +28,8 @@ class Bucket:
     href: str = "#"
     record_count: int = 0
     is_current: bool = False
+
+    aggregations: list[str] = field(default_factory=lambda: [])
 
     @property
     def label_with_count(self) -> str:
@@ -55,6 +66,12 @@ class BucketList:
     def __iter__(self):
         yield from self.buckets
 
+    def get_bucket(self, key):
+        for bucket in self.buckets:
+            if bucket.key == key:
+                return bucket
+        raise KeyError(f"Bucket matching the key '{key}' could not be found")
+
     def update_buckets_for_display(
         self, query: str | None, buckets: dict, current_bucket_key: str | None
     ):
@@ -85,6 +102,7 @@ CATALOGUE_BUCKETS = BucketList(
             key=BucketKeys.TNA.value,
             label="Records at the National Archives",
             description="Results for records held at The National Archives that match your search term.",
+            aggregations=[Aggregation.LEVEL.value],
         ),
         Bucket(
             key=BucketKeys.NONTNA.value,

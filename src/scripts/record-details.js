@@ -49,7 +49,6 @@ class toggleDetailsListDescriptions {
   }
 
   handleCheckboxChange(hide) {
-    console.log(hide);
     for (const item of this.detailsListItems) {
       if (hide) {
         item.setAttribute("hidden", "");
