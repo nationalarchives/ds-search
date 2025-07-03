@@ -13,14 +13,10 @@ Before contributing code, please familiarise yourself with the [Project conventi
 
 1. Push your branch to the remote.
 2. Head to <https://github.com/nationalarchives/ds-search/pulls> and create a pull request from your branch.
-
-   For the PR Title:
-
-   - For ticketed features or ticketed bugs, use the naming convention: `FIND-XXX: Short description`
-   - For housekeeping tasks or other unticketed work, use the convention: `CHORE: Short description`
-
-   See [here](project-conventions.md#naming-pull-requests) for more information on naming conventions.
-
+   - For the PR Title:
+     - For ticketed features or ticketed bugs, use the naming convention: `FIND-XXX: Short description`
+     - For housekeeping tasks or other unticketed work, use the convention: `CHORE: Short description`
+   - See [here](project-conventions.md#naming-pull-requests) for more information on naming conventions.
 3. To mark a PR as a draft, click the drop-down where it says **"Create pull request"** and select the **"Create draft pull request"** button instead.
 4. When you are finished (and CI is passing): Add a useful description, mark the PR as "Ready to review", and request a review from another developer.
 
