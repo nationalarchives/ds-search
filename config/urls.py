@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from app.errors import views as errors_view
+from app.errors.views import page_not_found_error_view, server_error_view
 from app.records import converters
 from django.apps import apps
 from django.conf import settings
@@ -26,7 +26,6 @@ from django.urls import include, path, register_converter
 register_converter(converters.IDConverter, "id")
 
 handler404 = "app.errors.views.page_not_found_error_view"
-handler500 = "app.errors.views.server_error_view"
 
 urlpatterns = [
     path("", include(("app.main.urls", "main"), namespace="main")),
@@ -41,7 +40,7 @@ urlpatterns = [
     ),
     path(
         "404/",
-        errors_view.page_not_found_error_view,
+        page_not_found_error_view,
     ),
     path("admin/", admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
@@ -50,3 +49,11 @@ if apps.is_installed("debug_toolbar"):
     urlpatterns = [
         path("__debug__/", include("debug_toolbar.urls")),
     ] + urlpatterns
+
+if settings.DEBUG:
+    urlpatterns += [
+        path(
+            "500/",
+            server_error_view,
+        )
+    ]
