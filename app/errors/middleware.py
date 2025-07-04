@@ -33,5 +33,5 @@ class CustomExceptionMiddleware:
 
         # Exception() raised or Unhandled exceptions
 
-        logger.error(exception, exc_info=True)
+        logger.exception(exception)
         return server_error_view(request=request)
