@@ -50,9 +50,7 @@ class TestRecordViewExceptions(TestCase):
             "Unknown JSON API exception: THIS IS AN UNKNOWN API EXCEPTION",
             "".join(log1.output),
         )
-        self.assertIn(
-            "THIS IS AN UNKNOWN API EXCEPTION", "".join(log2.output)
-        )
+        self.assertIn("THIS IS AN UNKNOWN API EXCEPTION", "".join(log2.output))
         self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
         # check content as raising exception does not allow to test template

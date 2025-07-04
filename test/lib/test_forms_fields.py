@@ -268,7 +268,7 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
         form = MyTestForm(data)
         return form
 
-    def test_form_with_dymanic_multiple_choice_field_initial_attrs(self):
+    def test_form_with_dynamic_multiple_choice_field_initial_attrs(self):
 
         form = self.get_form_with_dynamic_multiple_choice_field()
         self.assertEqual(form.fields["dmc_field"].name, "dmc_field")
