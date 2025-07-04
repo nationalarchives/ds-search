@@ -1,10 +1,12 @@
 from http import HTTPStatus
+from test.utils import prevent_request_warnings
 
 from django.test import TestCase, override_settings
 
 
 class TestCatalogueSearchViewExceptions(TestCase):
 
+    @prevent_request_warnings  # suppress test output: Internal Server Error: /catalogue/search/
     @override_settings(
         ROSETTA_API_URL="",
     )

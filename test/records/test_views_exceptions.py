@@ -30,6 +30,7 @@ class TestRecordViewExceptions(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         self.assertEqual(response.resolver_match.view_name, "records:details")
 
+    @prevent_request_warnings  # suppress test output: Internal Server Error: /catalogue/id/C123456/
     @responses.activate
     def test_unexpected_exception_responds_with_server_error_500(self):
 
@@ -39,10 +40,19 @@ class TestRecordViewExceptions(TestCase):
             body=Exception("THIS IS AN UNKNOWN API EXCEPTION"),
         )
 
-        with self.assertLogs("app.lib.api", level="ERROR") as log:
-            response = self.client.get("/catalogue/id/C123456/")
+        with self.assertLogs("app.lib.api", level="ERROR") as log1:
+            with self.assertLogs(
+                "app.errors.middleware", level="ERROR"
+            ) as log2:
+                response = self.client.get("/catalogue/id/C123456/")
 
-        self.assertIn("THIS IS AN UNKNOWN API EXCEPTION", "".join(log.output))
+        self.assertIn(
+            "Unknown JSON API exception: THIS IS AN UNKNOWN API EXCEPTION",
+            "".join(log1.output),
+        )
+        self.assertIn(
+            "THIS IS AN UNKNOWN API EXCEPTION", "".join(log2.output)
+        )
         self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
 
         # check content as raising exception does not allow to test template
@@ -51,6 +61,7 @@ class TestRecordViewExceptions(TestCase):
             response.content.decode("utf-8"),
         )
 
+    @prevent_request_warnings
     @override_settings(
         ROSETTA_API_URL="",
     )
