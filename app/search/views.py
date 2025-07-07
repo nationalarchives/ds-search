@@ -36,7 +36,7 @@ class APIMixin:
     """A mixin to get the api result, processes api result, sets the context."""
 
     # fields used to extract aggregation entries from the api result
-    dynamic_choice_fields = [FieldsConstant.LEVEL]
+    dynamic_choice_fields = [FieldsConstant.LEVEL, FieldsConstant.COLLECTION]
 
     def get_api_result(self, query, results_per_page, page, sort, params):
         self.api_result = search_records(
@@ -104,6 +104,7 @@ class APIMixin:
             if field_name in self.dynamic_choice_fields:
                 choice_api_data = aggregation.get("entries", ())
                 self.replace_api_data(field_name, choice_api_data)
+                print(f"choice_api_data: {choice_api_data}")
                 form.fields[field_name].update_choices(
                     choice_api_data, form.fields[field_name].value
                 )
@@ -371,7 +372,8 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
                         "title": f"Remove {CLOSURE_STATUSES.get(closure_status)} closure status",
                     }
                 )
-        if collections := self.request.GET.getlist("collections", None):
+        # if collections := self.request.GET.getlist("collections", None):
+        if collections := self.form.fields[FieldsConstant.COLLECTION].value:
             for collection in collections:
                 selected_filters.append(
                     {
