@@ -1,5 +1,6 @@
 import logging
 
+import sentry_sdk
 from app.lib.api import ResourceNotFound
 from django.conf import settings
 
@@ -34,4 +35,5 @@ class CustomExceptionMiddleware:
         # Exception() raised or Unhandled exceptions
 
         logger.exception(exception)
+        sentry_sdk.capture_exception(exception)
         return server_error_view(request=request)
