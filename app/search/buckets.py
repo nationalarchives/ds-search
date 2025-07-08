@@ -103,7 +103,10 @@ CATALOGUE_BUCKETS = BucketList(
             key=BucketKeys.TNA.value,
             label="Records at the National Archives",
             description="Results for records held at The National Archives that match your search term.",
-            aggregations=[Aggregation.LEVEL.value, Aggregation.COLLECTION.value],
+            aggregations=[
+                Aggregation.LEVEL.value,
+                Aggregation.COLLECTION.value,
+            ],
         ),
         Bucket(
             key=BucketKeys.NONTNA.value,
