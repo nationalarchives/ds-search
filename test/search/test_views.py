@@ -36,6 +36,13 @@ class CatalogueSearchViewTests(TestCase):
                             {"value": "Division", "doc_count": 5},
                         ],
                     },
+                    {
+                        "name": "collection",
+                        "entries": [
+                            {"value": "BT", "doc_count": 50},
+                            {"value": "WO", "doc_count": 35},
+                        ],
+                    },
                 ],
                 "buckets": [
                     {
@@ -184,6 +191,19 @@ class CatalogueSearchViewTests(TestCase):
             [
                 {"text": "Item (100)", "value": "Item"},
                 {"text": "Division (5)", "value": "Division"},
+            ],
+        )
+        self.assertEqual(
+            self.response.context_data.get("form").fields["collection"].items,
+            [
+                {
+                    "text": "BT - Board of Trade and successors (50)",
+                    "value": "BT",
+                },
+                {
+                    "text": "WO - War Office, Armed Forces, Judge Advocate General, and related bodies (35)",
+                    "value": "WO",
+                },
             ],
         )
 
