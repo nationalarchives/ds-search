@@ -104,7 +104,6 @@ class APIMixin:
             if field_name in self.dynamic_choice_fields:
                 choice_api_data = aggregation.get("entries", ())
                 self.replace_api_data(field_name, choice_api_data)
-                print(f"choice_api_data: {choice_api_data}")
                 form.fields[field_name].update_choices(
                     choice_api_data, form.fields[field_name].value
                 )
@@ -372,14 +371,18 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
                         "title": f"Remove {CLOSURE_STATUSES.get(closure_status)} closure status",
                     }
                 )
-        # if collections := self.request.GET.getlist("collections", None):
         if collections := self.form.fields[FieldsConstant.COLLECTION].value:
+
+            choice_labels = self.form.fields[
+                FieldsConstant.COLLECTION
+            ].configured_choice_labels
+
             for collection in collections:
                 selected_filters.append(
                     {
-                        "label": f"Collection: {COLLECTIONS.get(collection)}",
-                        "href": f"?{qs_toggle_value(self.request.GET, 'collections', collection)}",
-                        "title": f"Remove {COLLECTIONS.get(collection)} collection",
+                        "label": f"Collection: {choice_labels.get(collection, collection)}",
+                        "href": f"?{qs_toggle_value(self.request.GET, 'collection', collection)}",
+                        "title": f"Remove {choice_labels.get(collection, collection)} collection",
                     }
                 )
         return selected_filters
