@@ -143,7 +143,7 @@ class CatalogueSearchViewCollectionFilterTests(TestCase):
             status=HTTPStatus.OK,
         )
 
-        # configured collection name param=BT has resutls,
+        # configured collection name param=BT has results,
         # configured collection name param=WO does not have results
         # not configured collection name param=NOTCONFIGUREDNORESULTS does not have results
         # not configured collection name param=NOTCONFIGUREDHASRESULTS has results
@@ -159,7 +159,7 @@ class CatalogueSearchViewCollectionFilterTests(TestCase):
             self.response.context_data.get("form").fields["collection"].cleaned,
             ["BT", "WO", "NOTCONFIGUREDNORESULTS", "NOTCONFIGUREDHASRESULTS"],
         )
-        # queried valid values without their response get count 0
+        # queried valid values without their have a count of 0
         self.assertEqual(
             self.response.context_data.get("form").fields["collection"].items,
             [
