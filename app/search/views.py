@@ -8,7 +8,6 @@ from app.lib.api import ResourceNotFound
 from app.lib.pagination import pagination_object
 from app.records.constants import (
     CLOSURE_STATUSES,
-    COLLECTIONS,
     TNA_LEVELS,
     TNA_SUBJECTS,
 )
@@ -292,7 +291,6 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
         context.update(
             {
                 "closure_statuses": CLOSURE_STATUSES,
-                "collections": COLLECTIONS,
             }
         )
 
