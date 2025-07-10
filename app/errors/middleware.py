@@ -28,9 +28,7 @@ class CustomExceptionMiddleware:
             raise  # re-raise error
 
         if isinstance(exception, ResourceNotFound):
-            return page_not_found_error_view(
-                request=request, exception=exception
-            )
+            return page_not_found_error_view(request=request)
 
         # Exception() raised or Unhandled exceptions
 
