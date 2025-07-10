@@ -15,7 +15,7 @@ def prevent_request_warnings(original_function):
         # set logging level before triggering original function
         logger = logging.getLogger("django.request")
         previous_logging_level = logger.getEffectiveLevel()
-        logger.setLevel(logging.ERROR)
+        logger.setLevel(logging.CRITICAL)  # Suppresses ERROR and below
 
         # trigger original function that would throw error
         original_function(*args, **kwargs)

@@ -7,10 +7,8 @@ from app.deliveryoptions.delivery_options import (
     AvailabilityCondition,
     construct_delivery_options,
 )
-from app.lib.api import ResourceNotFound
 from app.records.api import record_details_by_id
 from app.records.labels import FIELD_LABELS
-from django.http import Http404
 from django.template.response import TemplateResponse
 from sentry_sdk import capture_message
 
@@ -62,18 +60,7 @@ def record_detail_view(request, id):
         "field_labels": FIELD_LABELS,
     }
 
-    try:
-        record = record_details_by_id(id=id)
-    except ResourceNotFound:
-        raise Http404
-    except Exception as e:
-        context = {"exception_message": str(e)}
-        return TemplateResponse(
-            request=request,
-            template="errors/server_error.html",
-            context=context,
-            status=HTTPStatus.BAD_GATEWAY,
-        )
+    record = record_details_by_id(id=id)
 
     context.update(
         record=record,
@@ -137,18 +124,7 @@ def related_records_view(request, id):
     template_name = "records/related_records.html"
     context: dict = {}
 
-    try:
-        record = record_details_by_id(id=id)
-    except ResourceNotFound:
-        raise Http404
-    except Exception as e:
-        context = {"exception_message": str(e)}
-        return TemplateResponse(
-            request=request,
-            template="errors/server_error.html",
-            context=context,
-            status=HTTPStatus.BAD_GATEWAY,
-        )
+    record = record_details_by_id(id=id)
 
     context.update(
         record=record,
@@ -163,18 +139,7 @@ def records_help_view(request, id):
     template_name = "records/new_to_archives.html"
     context: dict = {}
 
-    try:
-        record = record_details_by_id(id=id)
-    except ResourceNotFound:
-        raise Http404
-    except Exception as e:
-        context = {"exception_message": str(e)}
-        return TemplateResponse(
-            request=request,
-            template="errors/server_error.html",
-            context=context,
-            status=HTTPStatus.BAD_GATEWAY,
-        )
+    record = record_details_by_id(id=id)
 
     context.update(
         record=record,

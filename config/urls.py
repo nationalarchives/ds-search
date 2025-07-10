@@ -17,7 +17,7 @@ Including another URLconf
 
 from urllib.parse import urljoin
 
-from app.errors import views as errors_view
+from app.errors.views import page_not_found_error_view, server_error_view
 from app.records import converters
 from django.apps import apps
 from django.conf import settings
@@ -30,7 +30,6 @@ from django.utils.http import url_has_allowed_host_and_scheme
 register_converter(converters.IDConverter, "id")
 
 handler404 = "app.errors.views.page_not_found_error_view"
-handler500 = "app.errors.views.server_error_view"
 
 
 # ==========================================
@@ -80,7 +79,7 @@ urlpatterns = (
         ),
         path(
             "404/",
-            errors_view.page_not_found_error_view,
+            page_not_found_error_view,
         ),
         path("admin/", admin.site.urls),
     ]
@@ -92,3 +91,11 @@ if apps.is_installed("debug_toolbar"):
     urlpatterns = [
         path("__debug__/", include("debug_toolbar.urls")),
     ] + urlpatterns
+
+if settings.DEBUG:
+    urlpatterns += [
+        path(
+            "500/",
+            server_error_view,
+        )
+    ]
