@@ -79,7 +79,7 @@ urlpatterns = (
         ),
         path(
             "404/",
-             page_not_found_error_view,
+            page_not_found_error_view,
         ),
         path("admin/", admin.site.urls),
     ]
