@@ -2,6 +2,7 @@ from enum import StrEnum
 
 RESULTS_PER_PAGE = 20  # max records to show per page
 PAGE_LIMIT = 500  # max page number that can be queried
+DATATYPE_RECORD = "datatype:record"  # filter for records in search results
 
 
 class Sort(StrEnum):

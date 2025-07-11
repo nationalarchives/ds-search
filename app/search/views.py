@@ -21,7 +21,7 @@ from django.http import (
 from django.views.generic import TemplateView
 
 from .buckets import CATALOGUE_BUCKETS, Bucket, BucketKeys, BucketList
-from .constants import PAGE_LIMIT, RESULTS_PER_PAGE, Sort
+from .constants import DATATYPE_RECORD, PAGE_LIMIT, RESULTS_PER_PAGE, Sort
 from .forms import CatalogueSearchForm, FieldsConstant
 from .models import APISearchResponse
 
@@ -67,7 +67,7 @@ class APIMixin:
         add_filter(params, f"group:{current_bucket.key}")
 
         # applies to catalogue records to filter records with iaid in the results
-        add_filter(params, "datatype:record")
+        add_filter(params, DATATYPE_RECORD)
 
         # filter aggregations for each field
         filter_aggregations = []
