@@ -183,7 +183,7 @@
         {% for record in results %}
           <li class="tna-column tna-column--width-1-2 tna-column--full-tiny tna-!--margin-top-l">
             {{ tnaCard({
-              'title': record.summary_title,
+              'title': record.summary_title | safe,
               'headingLevel': 3,
               'headingSize': 's',
               'href': url('records:details', kwargs={'id': record.iaid}) + '?search=' + encodedQuery,
@@ -216,7 +216,7 @@
     {% else %}
       {% for record in results %}
       {{ tnaCard({
-        'title': record.summary_title,
+        'title': record.summary_title | safe,
         'headingLevel': 3,
         'headingSize': 'm',
         'href': url('records:details', kwargs={'id': record.iaid}) + '?search=' + encodedQuery,
