@@ -12,6 +12,7 @@ def search_records(
 
     sort: date:[asc|desc]; title:[asc|desc]
     params: filter, aggregation, etc
+    The errors are handled by a custom middleware in the app.
     """
     uri = "search"
     params.update(

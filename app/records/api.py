@@ -3,6 +3,8 @@ from app.records.models import APIResponse, Record
 
 
 def record_details_by_id(id, params={}) -> Record:
+    """Fetches a record by its ID from the Rosetta API.
+    The errors are handled by a custom middleware in the app."""
     uri = "get"
     params.update({"id": id})
     results = rosetta_request_handler(uri, params)
