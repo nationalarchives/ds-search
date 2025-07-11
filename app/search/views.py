@@ -66,6 +66,9 @@ class APIMixin:
         # filter records for a bucket
         add_filter(params, f"group:{current_bucket.key}")
 
+        # applies to cataloge records to filter records with iaid in the results
+        add_filter(params, "datatype:record")
+
         # filter aggregations for each field
         filter_aggregations = []
         for field_name in self.dynamic_choice_fields:
