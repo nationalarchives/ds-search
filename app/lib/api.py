@@ -19,6 +19,13 @@ class ResourceNotFound(Exception):
 
 
 class JSONAPIClient:
+    """
+    A simple JSON API client that can be used to make requests to a JSON API.
+    It can be used to add parameters to the request and make GET requests.
+    It returns the response as a decoded JSON object or raises an error if the request fails.
+    The errors are handled by custom middleware in the app.
+    """
+
     api_url = ""
     params = {}
 
