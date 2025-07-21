@@ -20,9 +20,15 @@ from django.http import (
 )
 from django.views.generic import TemplateView
 
-from .buckets import CATALOGUE_BUCKETS, BucketKeys
-from .constants import Sort
-from .forms import CatalogueSearchForm
+from .buckets import CATALOGUE_BUCKETS, Bucket, BucketKeys, BucketList
+from .constants import (
+    FILTER_DATATYPE_RECORD,
+    PAGE_LIMIT,
+    RESULTS_PER_PAGE,
+    Sort,
+)
+from .forms import CatalogueSearchForm, FieldsConstant
+from .models import APISearchResponse
 
 logger = logging.getLogger(__name__)
 
@@ -34,32 +40,92 @@ class PageNotFound(Exception):
 class APIMixin:
     """A mixin to get the api result, processes api result, sets the context."""
 
-    RESULTS_PER_PAGE = 20  # max records to show per page
-    PAGE_LIMIT = 500  # max page number that can be queried
+    # fields used to extract aggregation entries from the api result
+    dynamic_choice_fields = [FieldsConstant.LEVEL]
 
-    def get_api_result(
-        self, query, results_per_page, page, sort, current_bucket_key
-    ):
+    def get_api_result(self, query, results_per_page, page, sort, params):
         self.api_result = search_records(
             query=query,
             results_per_page=results_per_page,
             page=page,
             sort=sort,
-            params=self.get_api_params(current_bucket_key),
+            params=params,
         )
         return self.api_result
 
-    def get_api_params(self, current_bucket_key) -> dict:
+    def get_api_params(self, form, current_bucket: Bucket) -> dict:
         """The API params
-        filter: for buckets."""
+        filter: for querying buckets, aggs
+        aggs: for checkbox items with counts."""
+
+        def add_filter(params: dict, value):
+            if not isinstance(value, list):
+                value = [value]
+            return params.setdefault("filter", []).extend(value)
+
+        params = {}
+
+        # aggregations
+        params.update({"aggs": current_bucket.aggregations})
 
         # filter records for a bucket
-        params = {"filter": f"group:{current_bucket_key}"}
+        add_filter(params, f"group:{current_bucket.key}")
+
+        # applies to catalogue records to filter records with iaid in the results
+        add_filter(params, FILTER_DATATYPE_RECORD)
+
+        # filter aggregations for each field
+        filter_aggregations = []
+        for field_name in self.dynamic_choice_fields:
+            filter_name = field_name
+            selected_values = form.fields[field_name].cleaned
+            selected_values = self.replace_input_data(
+                field_name, selected_values
+            )
+            filter_aggregations.extend(
+                (f"{filter_name}:{value}" for value in selected_values)
+            )
+        if filter_aggregations:
+            add_filter(params, filter_aggregations)
+
         return params
 
-    def process_api_result(self, form, api_result):
-        """TODO: for API filter intergration."""
-        pass
+    def replace_input_data(self, field_name, selected_values: list[str]):
+        """Updates user input/represented data for API querying."""
+
+        # TODO: #LEVEL this is a temporary update until API data switches to Department
+        if field_name == FieldsConstant.LEVEL:
+            return [
+                "Lettercode" if level == "Department" else level
+                for level in selected_values
+            ]
+        return selected_values
+
+    def process_api_result(
+        self, form: CatalogueSearchForm, api_result: APISearchResponse
+    ):
+        """Update checkbox `choices` values on the form's `dynamic_choice_fields` to
+        reflect data included in the API's `aggs` response."""
+
+        for aggregation in api_result.aggregations:
+            field_name = aggregation.get("name")
+            if field_name in self.dynamic_choice_fields:
+                choice_api_data = aggregation.get("entries", ())
+                self.replace_api_data(field_name, choice_api_data)
+                form.fields[field_name].update_choices(
+                    choice_api_data, form.fields[field_name].value
+                )
+
+    def replace_api_data(
+        self, field_name, entries_data: list[dict[str, str | int]]
+    ):
+        """Update API data for representation purpose."""
+
+        # TODO: #LEVEL this is a temporary update until API data switches to Department
+        if field_name == FieldsConstant.LEVEL:
+            for level_entry in entries_data:
+                if level_entry.get("value") == "Lettercode":
+                    level_entry["value"] = "Department"
 
     def get_context_data(self, **kwargs):
         context: dict = super().get_context_data(**kwargs)
@@ -95,8 +161,8 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
 
         super().setup(request, *args, **kwargs)
         self.form = CatalogueSearchForm(**self.get_form_kwargs())
-        self.bucket_list = copy.deepcopy(CATALOGUE_BUCKETS)
-        self.current_bucket_key = self.form.fields["group"].value
+        self.bucket_list: BucketList = copy.deepcopy(CATALOGUE_BUCKETS)
+        self.current_bucket_key = self.form.fields[FieldsConstant.GROUP].value
         self.api_result = None
 
     def get_form_kwargs(self) -> dict[str, Any]:
@@ -121,8 +187,8 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
         """sets default for request"""
 
         return {
-            "group": self.default_group,
-            "sort": self.default_sort,
+            FieldsConstant.GROUP: self.default_group,
+            FieldsConstant.SORT: self.default_sort,
         }
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
@@ -135,8 +201,11 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
         try:
             self.page  # checks valid page
             if self.form.is_valid():
-                self.query = self.form.fields["q"].cleaned
-                self.sort = self.form.fields["sort"].cleaned
+                self.query = self.form.fields[FieldsConstant.Q].cleaned
+                self.sort = self.form.fields[FieldsConstant.SORT].cleaned
+                self.current_bucket = self.bucket_list.get_bucket(
+                    self.form.fields[FieldsConstant.GROUP].cleaned
+                )
                 return self.form_valid()
             else:
                 return self.form_invalid()
@@ -146,9 +215,6 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
         except ResourceNotFound:
             # no results
             return self.form_invalid()
-        except Exception as e:
-            logger.error(str(e))
-            return errors_view.server_error_view(request=request)
 
     @property
     def page(self) -> int:
@@ -166,10 +232,10 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
 
         self.api_result = self.get_api_result(
             query=self.query,
-            results_per_page=self.RESULTS_PER_PAGE,
+            results_per_page=RESULTS_PER_PAGE,
             page=self.page,
             sort=self.sort,
-            current_bucket_key=self.current_bucket_key,
+            params=self.get_api_params(self.form, self.current_bucket),
         )
         self.process_api_result(self.form, self.api_result)
         context = self.get_context_data(form=self.form)
@@ -203,16 +269,16 @@ class CatalogueSearchFormMixin(APIMixin, TemplateView):
 
     def paginate_api_result(self) -> tuple | HttpResponse:
 
-        pages = math.ceil(self.api_result.stats_total / self.RESULTS_PER_PAGE)
-        if pages > self.PAGE_LIMIT:
-            pages = self.PAGE_LIMIT
+        pages = math.ceil(self.api_result.stats_total / RESULTS_PER_PAGE)
+        if pages > PAGE_LIMIT:
+            pages = PAGE_LIMIT
 
         if self.page > pages:
             raise PageNotFound
 
         results_range = {
-            "from": ((self.page - 1) * self.RESULTS_PER_PAGE) + 1,
-            "to": ((self.page - 1) * self.RESULTS_PER_PAGE)
+            "from": ((self.page - 1) * RESULTS_PER_PAGE) + 1,
+            "to": ((self.page - 1) * RESULTS_PER_PAGE)
             + self.api_result.stats_results,
         }
 
@@ -242,7 +308,7 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
                 current_bucket_key=self.current_bucket_key,
             )
 
-        selected_filters = build_selected_filters_list(self.request)
+        selected_filters = self.build_selected_filters_list()
 
         context.update(
             {

@@ -1,7 +1,10 @@
+from datetime import datetime
+
 from app.lib.fields import (
     CharField,
     ChoiceField,
     DynamicMultipleChoiceField,
+    ValidationError,
 )
 from app.lib.forms import BaseForm
 from django.http import QueryDict
@@ -254,8 +257,8 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
                     "dmc_field": DynamicMultipleChoiceField(
                         label="Location",
                         choices=[
-                            ("london", "London (100 recs)"),
-                            ("leeds", "Leeds (50 recs)"),
+                            ("london", "London"),
+                            ("leeds", "Leeds"),
                         ],
                         required=True,
                         validate_input=True,
@@ -265,7 +268,7 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
         form = MyTestForm(data)
         return form
 
-    def test_form_with_dymanic_multiple_choice_field_initial_attrs(self):
+    def test_form_with_dynamic_multiple_choice_field_initial_attrs(self):
 
         form = self.get_form_with_dynamic_multiple_choice_field()
         self.assertEqual(form.fields["dmc_field"].name, "dmc_field")
@@ -286,8 +289,8 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
         self.assertEqual(
             form.fields["dmc_field"].items,
             [
-                {"text": "London (100 recs)", "value": "london"},
-                {"text": "Leeds (50 recs)", "value": "leeds"},
+                {"text": "London (0)", "value": "london"},
+                {"text": "Leeds (0)", "value": "leeds"},
             ],
         )
         self.assertEqual(
@@ -309,11 +312,11 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
             form.fields["dmc_field"].items,
             [
                 {
-                    "text": "London (100 recs)",
+                    "text": "London",
                     "value": "london",
                     "checked": True,
                 },
-                {"text": "Leeds (50 recs)", "value": "leeds"},
+                {"text": "Leeds", "value": "leeds"},
             ],
         )
         self.assertEqual(form.fields["dmc_field"].error, {})
@@ -334,12 +337,12 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
             form.fields["dmc_field"].items,
             [
                 {
-                    "text": "London (100 recs)",
+                    "text": "London",
                     "value": "london",
                     "checked": True,
                 },
                 {
-                    "text": "Leeds (50 recs)",
+                    "text": "Leeds",
                     "value": "leeds",
                     "checked": True,
                 },
@@ -373,13 +376,9 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
             form.fields["dmc_field"].items,
             [
                 {
-                    "text": "London (100 recs)",
+                    "text": "London (0)",
                     "value": "london",
                     "checked": True,
-                },
-                {
-                    "text": "Leeds (50 recs)",
-                    "value": "leeds",
                 },
             ],
         )
@@ -392,6 +391,52 @@ class BaseFormWithDynamicMultipleChoiceFieldTest(TestCase):
                 ),
             },
         )
+
+
+class NewFieldWithRaiseValidationTest(TestCase):
+
+    def get_form_with_new_field(self, data=None):
+
+        class MyTestForm(BaseForm):
+
+            class TestNewField(CharField):
+
+                def validate(self, value):
+                    try:
+                        datetime.strptime(value, "%Y-%m-%d")
+                    except ValueError:
+                        raise ValidationError(
+                            "Value is not in format YYYY-MM-DD"
+                        )
+                    super().validate(value)
+
+            def add_fields(self):
+                return {"new_field": MyTestForm.TestNewField()}
+
+        form = MyTestForm(data)
+        return form
+
+    def test_validate_responds_with_no_exception(self):
+        """validate() no exception is raised."""
+
+        data = QueryDict("")
+        form = self.get_form_with_new_field(data)
+
+        try:
+            status = form.is_valid()
+            self.assertEqual(status, False)
+            self.assertEqual(
+                form.errors,
+                {"new_field": {"text": "Value is not in format YYYY-MM-DD"}},
+            )
+            self.assertEqual(
+                form.fields["new_field"].error,
+                {"text": "Value is not in format YYYY-MM-DD"},
+            )
+        except Exception as e:
+            self.fail(
+                f"form.is_valid() raised an exception unexpectedly. {str(e)}"
+            )
 
 
 class BaseFormWithCrossValidationTest(TestCase):

@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from unittest.mock import patch
 
 import responses
 from app.records.models import Record
@@ -9,6 +10,7 @@ from django.test import TestCase
 
 
 class CatalogueSearchViewTests(TestCase):
+    """Mainly tests the context."""
 
     @responses.activate
     def test_catalogue_search_context_without_params(self):
@@ -26,6 +28,15 @@ class CatalogueSearchViewTests(TestCase):
                             }
                         }
                     }
+                ],
+                "aggregations": [
+                    {
+                        "name": "level",
+                        "entries": [
+                            {"value": "Item", "doc_count": 100},
+                            {"value": "Division", "doc_count": 5},
+                        ],
+                    },
                 ],
                 "buckets": [
                     {
@@ -172,13 +183,8 @@ class CatalogueSearchViewTests(TestCase):
         self.assertEqual(
             self.response.context_data.get("form").fields["level"].items,
             [
-                {"text": "Department", "value": "Department"},
-                {"text": "Division", "value": "Division"},
-                {"text": "Series", "value": "Series"},
-                {"text": "Sub-series", "value": "Sub-series"},
-                {"text": "Sub-sub-series", "value": "Sub-sub-series"},
-                {"text": "Piece", "value": "Piece"},
-                {"text": "Item", "value": "Item"},
+                {"text": "Item (100)", "value": "Item"},
+                {"text": "Division (5)", "value": "Division"},
             ],
         )
 
@@ -224,6 +230,7 @@ class CatalogueSearchViewTests(TestCase):
             self.response.context_data.get("form").fields["q"].value,
             "ufo",
         )
+        self.assertEqual(self.response.context_data.get("selected_filters"), [])
 
     @responses.activate
     def test_catalogue_search_context_with_sort_param(self):
@@ -287,6 +294,7 @@ class CatalogueSearchViewTests(TestCase):
                 {"text": "Title (Z–A)", "value": "title:desc"},
             ],
         )
+        self.assertEqual(self.response.context_data.get("selected_filters"), [])
 
     @responses.activate
     def test_catalogue_search_context_with_group_param(self):
@@ -349,9 +357,15 @@ class CatalogueSearchViewTests(TestCase):
                 },
             ],
         )
+        self.assertEqual(self.response.context_data.get("selected_filters"), [])
 
+
+class CatalogueSearchViewLoggerDebugAPITests(TestCase):
+    """Tests API calls (url) made by the catalogue search view."""
+
+    @patch("app.lib.api.logger")
     @responses.activate
-    def test_catalogue_search_context_with_level_param(self):
+    def test_catalogue_debug_api(self, mock_logger):
 
         responses.add(
             responses.GET,
@@ -367,11 +381,20 @@ class CatalogueSearchViewTests(TestCase):
                         }
                     }
                 ],
+                "aggregations": [
+                    {
+                        "name": "level",
+                        "entries": [
+                            {"value": "somevalue", "doc_count": 100},
+                        ],
+                    },
+                ],
                 "buckets": [
                     {
                         "name": "group",
                         "entries": [
-                            {"value": "nonTna", "count": 1},
+                            # Note: api response is not checked for these values
+                            {"value": "somevalue", "count": 1},
                         ],
                     }
                 ],
@@ -383,27 +406,16 @@ class CatalogueSearchViewTests(TestCase):
             status=HTTPStatus.OK,
         )
 
-        self.response = self.client.get(
-            "/catalogue/search/?level=Item&level=Division"
+        # default query
+        self.response = self.client.get("/catalogue/search/")
+        self.assertEqual(self.response.status_code, HTTPStatus.OK)
+        mock_logger.debug.assert_called_with(
+            "https://rosetta.test/data/search?aggs=level&filter=group%3Atna&filter=datatype%3Arecord&q=%2A&size=20"
         )
 
-        self.assertEqual(
-            self.response.context_data.get("form").fields["level"].value,
-            ["Item", "Division"],
-        )
-        self.assertEqual(
-            self.response.context_data.get("form").fields["level"].cleaned,
-            ["Item", "Division"],
-        )
-        self.assertEqual(
-            self.response.context_data.get("form").fields["level"].items,
-            [
-                {"text": "Department", "value": "Department"},
-                {"text": "Division", "value": "Division", "checked": True},
-                {"text": "Series", "value": "Series"},
-                {"text": "Sub-series", "value": "Sub-series"},
-                {"text": "Sub-sub-series", "value": "Sub-sub-series"},
-                {"text": "Piece", "value": "Piece"},
-                {"text": "Item", "value": "Item", "checked": True},
-            ],
+        # query with search term, non tna records
+        self.response = self.client.get("/catalogue/search/?group=nonTna&q=ufo")
+        self.assertEqual(self.response.status_code, HTTPStatus.OK)
+        mock_logger.debug.assert_called_with(
+            "https://rosetta.test/data/search?filter=group%3AnonTna&filter=datatype%3Arecord&q=ufo&size=20"
         )

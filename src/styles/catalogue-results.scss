@@ -10,3 +10,8 @@
     @include colour.colour-border("contrast-background");
   }
 }
+
+mark {
+  @include colour.yellow-accent;
+  @include colour.accent;
+}
