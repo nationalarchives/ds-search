@@ -1,5 +1,7 @@
 {% from 'components/button/macro.html' import tnaButton %}
 {% from 'components/date-search/macro.html' import tnaDateSearch %}
+{% from "components/date-input/macro.html" import tnaDateInput %}
+
 
 {% macro date_range(request, name, id, title) %}
 <div class="tna-aside tna-aside--tight tna-background-tint tna-!--margin-top-s">
@@ -28,6 +30,7 @@
       'form': 'search-form'
     }
   }) }}
+  
   <div class="tna-button-group tna-!--margin-top-s">
     {{ tnaButton({
       'text': 'Update',
