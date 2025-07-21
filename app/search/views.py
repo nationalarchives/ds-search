@@ -273,6 +273,14 @@ def build_selected_filters_list(request):
                 "title": "Remove search within",
             }
         )
+    if request.GET.get("online", None):
+        selected_filters.append(
+            {
+                "label": f'Online only "{request.GET.get("online")}"',
+                "href": f"?{qs_remove_value(request.GET, 'online')}",
+                "title": "Remove online only",
+            }
+        )
     if request.GET.get("date_from", None):
         selected_filters.append(
             {
@@ -320,4 +328,5 @@ def build_selected_filters_list(request):
                     "title": f"Remove {COLLECTIONS.get(collection)} collection",
                 }
             )
+
     return selected_filters
