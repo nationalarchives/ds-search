@@ -319,80 +319,78 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
         )
         return context
 
-
-# TODO: move into Catalogue Search View when integrating with API
-def build_selected_filters_list(request):
-    selected_filters = []
-    # if request.GET.get("q", None):
-    #     selected_filters.append(
-    #         {
-    #             "label": f"\"{request.GET.get('q')}\"",
-    #             "href": f"?{qs_remove_value(request.GET, 'q')}",
-    #             "title": f"Remove query: \"{request.GET.get('q')}\"",
-    #         }
-    #     )
-    if request.GET.get("search_within", None):
-        selected_filters.append(
-            {
-                "label": f'Sub query "{request.GET.get("search_within")}"',
-                "href": f"?{qs_remove_value(request.GET, 'search_within')}",
-                "title": "Remove search within",
-            }
-        )
-    if request.GET.get("online", None):
-        selected_filters.append(
-            {
-                "label": f'Online only "{request.GET.get("online")}"',
-                "href": f"?{qs_remove_value(request.GET, 'online')}",
-                "title": "Remove online only",
-            }
-        )
-    if request.GET.get("date_from", None):
-        selected_filters.append(
-            {
-                "label": f"Record date from: {request.GET.get("date_from")}",
-                "href": f"?{qs_remove_value(request.GET, 'date_from')}",
-                "title": "Remove record from date",
-            }
-        )
-    if request.GET.get("date_to", None):
-        selected_filters.append(
-            {
-                "label": f"Record date to: {request.GET.get("date_to")}",
-                "href": f"?{qs_remove_value(request.GET, 'date_to')}",
-                "title": "Remove record to date",
-            }
-        )
-    if levels := request.GET.getlist("level", None):
-        levels_lookup = {}
-        for _, v in TNA_LEVELS.items():
-            levels_lookup.update({v: v})
-
-        for level in levels:
+    def build_selected_filters_list(self):
+        selected_filters = []
+        # TODO: commented code is retained from previous code, want to have q in filter?
+        # if request.GET.get("q", None):
+        #     selected_filters.append(
+        #         {
+        #             "label": f"\"{request.GET.get('q')}\"",
+        #             "href": f"?{qs_remove_value(request.GET, 'q')}",
+        #             "title": f"Remove query: \"{request.GET.get('q')}\"",
+        #         }
+        #     )
+        if self.request.GET.get("search_within", None):
             selected_filters.append(
                 {
-                    "label": f"Level: {levels_lookup.get(level)}",
-                    "href": f"?{qs_toggle_value(request.GET, 'level', level)}",
-                    "title": f"Remove {levels_lookup.get(level)} level",
+                    "label": f"Sub query {self.request.GET.get('search_within')}",
+                    "href": f"?{qs_remove_value(self.request.GET, 'search_within')}",
+                    "title": "Remove search within",
                 }
             )
-    if closure_statuses := request.GET.getlist("closure_status", None):
-        for closure_status in closure_statuses:
+        if self.request.GET.get("online", None):
             selected_filters.append(
                 {
-                    "label": f"Closure status: {CLOSURE_STATUSES.get(closure_status)}",
-                    "href": f"?{qs_toggle_value(request.GET, 'closure_status', closure_status)}",
-                    "title": f"Remove {CLOSURE_STATUSES.get(closure_status)} closure status",
+                    "label": f'Online only "{self.request.GET.get("online")}"',
+                    "href": f"?{qs_remove_value(self.request.GET, 'online')}",
+                    "title": "Remove online only",
                 }
             )
-    if collections := request.GET.getlist("collections", None):
-        for collection in collections:
+        if self.request.GET.get("date_from", None):
             selected_filters.append(
                 {
-                    "label": f"Collection: {COLLECTIONS.get(collection)}",
-                    "href": f"?{qs_toggle_value(request.GET, 'collections', collection)}",
-                    "title": f"Remove {COLLECTIONS.get(collection)} collection",
+                    "label": f"Record date from: {self.request.GET.get('date_from')}",
+                    "href": f"?{qs_remove_value(self.request.GET, 'date_from')}",
+                    "title": "Remove record from date",
                 }
             )
+        if self.request.GET.get("date_to", None):
+            selected_filters.append(
+                {
+                    "label": f"Record date to: {self.request.GET.get('date_to')}",
+                    "href": f"?{qs_remove_value(self.request.GET, 'date_to')}",
+                    "title": "Remove record to date",
+                }
+            )
+        if levels := self.form.fields[FieldsConstant.LEVEL].value:
+            levels_lookup = {}
+            for _, v in TNA_LEVELS.items():
+                levels_lookup.update({v: v})
 
-    return selected_filters
+            for level in levels:
+                selected_filters.append(
+                    {
+                        "label": f"Level: {levels_lookup.get(level, level)}",
+                        "href": f"?{qs_toggle_value(self.request.GET, 'level', level)}",
+                        "title": f"Remove {levels_lookup.get(level, level)} level",
+                    }
+                )
+        if closure_statuses := self.request.GET.getlist("closure_status", None):
+            for closure_status in closure_statuses:
+                selected_filters.append(
+                    {
+                        "label": f"Closure status: {CLOSURE_STATUSES.get(closure_status)}",
+                        "href": f"?{qs_toggle_value(self.request.GET, 'closure_status', closure_status)}",
+                        "title": f"Remove {CLOSURE_STATUSES.get(closure_status)} closure status",
+                    }
+                )
+        if collections := self.request.GET.getlist("collections", None):
+            for collection in collections:
+                selected_filters.append(
+                    {
+                        "label": f"Collection: {COLLECTIONS.get(collection)}",
+                        "href": f"?{qs_toggle_value(self.request.GET, 'collections', collection)}",
+                        "title": f"Remove {COLLECTIONS.get(collection)} collection",
+                    }
+                )
+        return selected_filters
