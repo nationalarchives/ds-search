@@ -362,6 +362,22 @@ class CatalogueSearchView(CatalogueSearchFormMixin):
                     "title": "Remove record to date",
                 }
             )
+        if self.request.GET.get("opening_date_from", None):
+            selected_filters.append(
+                { 
+                    "label": f"Record opening date from: {self.request.GET.get('opening_date_from')}",
+                    "href": f"?{qs_remove_value(self.request.GET, 'opening_date_from')}",
+                    "title": "Remove record opening from date",
+                }
+            )
+        if self.request.GET.get("opening_date_to", None):
+            selected_filters.append(
+                {
+                    "label": f"Record opening date to: {self.request.GET.get('opening_date_to')}",
+                    "href": f"?{qs_remove_value(self.request.GET, 'opening_date_to')}",
+                    "title": "Remove record opening to date",
+                }
+            )
         if levels := self.form.fields[FieldsConstant.LEVEL].value:
             levels_lookup = {}
             for _, v in TNA_LEVELS.items():

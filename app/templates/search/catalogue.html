@@ -118,7 +118,7 @@
     {{ collections_tna(request, collections) }}
     {{ subjects_tna(request, subjects) }}
     {{ levels_tna(request, form.fields['level']) }}
-    {{ date_range(request, 'date', 'date', 'Filter by record opening date') }}
+    {{ date_range(request, 'opening_date', 'opening_date', 'Filter by record opening date') }}
     {{ closure_statuses_tna(request, closure_statuses) }}
     
     
