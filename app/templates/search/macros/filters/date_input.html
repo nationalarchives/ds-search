@@ -1,0 +1,37 @@
+{% from 'components/button/macro.html' import tnaButton %}
+{% from 'components/date-search/macro.html' import tnaDateSearch %}
+{% from "components/date-input/macro.html" import tnaDateInput %}
+
+
+{% macro date_input(request, name, id, title) %}
+<div class="tna-aside tna-aside--tight tna-background-tint tna-!--margin-top-s">
+  <h3 class="tna-heading-m">{{ title }}</h3>
+    {{ tnaDateInput({
+    label: "Enter a start date",
+    headingLevel: 4,
+    headingSize: "m",
+    id: "date",
+    name: "date"
+    }) }}
+    
+    {{ tnaDateInput({
+    label: "Enter a end date",
+    headingLevel: 4,
+    headingSize: "m",
+    id: "date",
+    name: "date"
+    }) }}
+  
+  <div class="tna-button-group tna-!--margin-top-s">
+    {{ tnaButton({
+      'text': 'Update',
+      'buttonElement': True,
+      'buttonType': 'submit',
+      'small': True,
+      'attributes': {
+        'form': 'search-form'
+      }
+    }) }}
+  </div>
+</div>
+{% endmacro %}
