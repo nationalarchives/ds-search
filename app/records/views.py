@@ -73,7 +73,7 @@ def record_detail_view(request, id):
         if record.custom_record_type == "ARCHON":
             determine_delivery_options = False
             template_name = "records/archon_detail.html"
-        if record.custom_record_type == "CREATORS":
+        elif record.custom_record_type == "CREATORS":
             template_name = "records/creator_detail.html"
             determine_delivery_options = False
 
