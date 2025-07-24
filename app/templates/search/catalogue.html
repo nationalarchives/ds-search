@@ -14,7 +14,6 @@
 {% from 'components/text-input/macro.html' import tnaTextInput %}
 
 {% from 'search/macros/filters/search_within.html' import search_within %}
-{% from 'search/macros/filters/date_range.html' import date_range %}
 {% from 'search/macros/filters/date_input.html' import date_input %}
 {% from 'search/macros/filters/levels_tna.html' import levels_tna %}
 {% from 'search/macros/filters/closure_statuses_tna.html' import closure_statuses_tna %}
@@ -119,7 +118,7 @@
     {{ collections_tna(request, collections) }}
     {{ subjects_tna(request, subjects) }}
     {{ levels_tna(request, form.fields['level']) }}
-    {{ date_input(request, 'date', 'date', 'Filter by record opening date') }} 
+    {{ date_input(request, 'opening_date', 'opening_date', 'Filter by record opening date') }} 
     {{ closure_statuses_tna(request, closure_statuses) }}
     
     
