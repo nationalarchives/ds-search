@@ -19,4 +19,23 @@ if (ga4Id) {
       },
     },
   ]);
+
+  analytics.addListeners('.etna-details-hierarchy', 'hierarchy',[
+    {
+      eventName: "select",
+      rootEventName: "select_hierarchy",
+      targetElement: ".analytics-hierarchy-link",
+      on: "click",
+      data: {
+        position: helpers.valueGetters.index,
+        section: ($el) => helpers.getClosestHeading($el),
+      },
+      rootData: {
+        data_component_name: "catalogue_hierarchy",
+        data_link: ($el) => $el.dataset.analyticsLevel,
+        data_link_type: "link",
+        data_position: helpers.valueGetters.index,
+      },
+    }
+  ]);
 }
