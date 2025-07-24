@@ -158,11 +158,7 @@ CONTENT_SECURITY_POLICY = {
         "object-src": [NONE],
         "img-src": os.environ.get("CSP_IMG_SRC", SELF).split(","),
         "script-src": os.environ.get("CSP_SCRIPT_SRC", SELF).split(","),
-        "script-src-elem": os.environ.get("CSP_SCRIPT_SRC_ELEM", SELF).split(
-            ","
-        ),
         "style-src": os.environ.get("CSP_STYLE_SRC", SELF).split(","),
-        "style-src-elem": os.environ.get("CSP_STYLE_SRC_ELEM", SELF).split(","),
         "font-src": os.environ.get("CSP_FONT_SRC", SELF).split(","),
         "connect-src": os.environ.get("CSP_CONNECT_SRC", SELF).split(","),
         "media-src": os.environ.get("CSP_MEDIA_SRC", SELF).split(","),

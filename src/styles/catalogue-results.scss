@@ -1,5 +1,4 @@
 @use "@nationalarchives/frontend/nationalarchives/tools/colour";
-@use "@nationalarchives/frontend/nationalarchives/tools/media";
 
 .tna-dl-chips__item {
   text-align: left;
@@ -12,20 +11,7 @@
   }
 }
 
-// Filter pabnel styles for mobile
-
-#mobile-filters {
-  display: none;
-
-  @include media.on-mobile {
-    display: block;
-  }
-}
-
-#filter-panel {
-  @include media.on-mobile {
-    .tna-aside {
-      display: none;
-    }
-  }
+mark {
+  @include colour.yellow-accent;
+  @include colour.accent;
 }
