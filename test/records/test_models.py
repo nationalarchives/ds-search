@@ -1,4 +1,5 @@
 from unittest.mock import patch
+
 from app.records.models import Record
 from django.test import SimpleTestCase
 
@@ -968,29 +969,32 @@ class RecordModelTests(SimpleTestCase):
             "Military history",
             "World War II",
             "Intelligence services",
-            "Government records"
+            "Government records",
         ]
-        self.assertEqual(self.record.subjects, [
-            "Military history",
-            "World War II", 
-            "Intelligence services",
-            "Government records"
-        ])
+        self.assertEqual(
+            self.record.subjects,
+            [
+                "Military history",
+                "World War II",
+                "Intelligence services",
+                "Government records",
+            ],
+        )
 
-    @patch('app.records.models.SUBJECTS_LIMIT', 3)
+    @patch("app.records.models.SUBJECTS_LIMIT", 3)
     def test_subjects_respects_limit(self):
         """Test that subjects list is limited to SUBJECTS_LIMIT"""
         self.record = Record(self.template_details)
         # Create more subjects than the limit
         long_subjects_list = [
             "Subject 1",
-            "Subject 2", 
+            "Subject 2",
             "Subject 3",
             "Subject 4",  # This should be excluded
             "Subject 5",  # This should be excluded
         ]
         self.record._raw["subjects"] = long_subjects_list
-        
+
         # Should only return first 3 items (mocked SUBJECTS_LIMIT)
         expected = long_subjects_list[:3]
         self.assertEqual(self.record.subjects, expected)
@@ -1010,7 +1014,7 @@ class RecordModelTests(SimpleTestCase):
         self.record._raw["subjects"] = []
         self.assertEqual(self.record.subjects, [])
 
-    @patch('app.records.models.SUBJECTS_LIMIT', 5)
+    @patch("app.records.models.SUBJECTS_LIMIT", 5)
     def test_subjects_exactly_at_limit(self):
         """Test that subjects works when exactly at the limit"""
         self.record = Record(self.template_details)
@@ -1018,9 +1022,9 @@ class RecordModelTests(SimpleTestCase):
         exact_limit_subjects = [
             "Subject 1",
             "Subject 2",
-            "Subject 3", 
+            "Subject 3",
             "Subject 4",
-            "Subject 5"
+            "Subject 5",
         ]
         self.record._raw["subjects"] = exact_limit_subjects
         self.assertEqual(self.record.subjects, exact_limit_subjects)
@@ -1031,16 +1035,18 @@ class RecordModelTests(SimpleTestCase):
         self.record = Record(self.template_details)
         # patch raw data
         self.record._raw["subjects"] = ["Test subject"]
-        
+
         # First access
         first_result = self.record.subjects
-        
+
         # Modify the raw data
         self.record._raw["subjects"] = ["Modified subject"]
-        
+
         # Second access should return cached result
         second_result = self.record.subjects
-        
+
         # Should be the same object (cached)
         self.assertIs(first_result, second_result)
-        self.assertEqual(second_result, ["Test subject"])  # Original value, not modified
+        self.assertEqual(
+            second_result, ["Test subject"]
+        )  # Original value, not modified
