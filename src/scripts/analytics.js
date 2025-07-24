@@ -66,6 +66,6 @@ if (ga4Id) {
         },
       },
     ],
-    "select_hierarchy"
+    "select_hierarchy",
   );
 }
