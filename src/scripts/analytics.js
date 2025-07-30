@@ -19,4 +19,24 @@ if (ga4Id) {
       },
     },
   ]);
+
+  analytics.addListeners(
+    "#field-descriptions",
+    "document",
+    [
+      {
+        targetElement: "#field-descriptions-hide",
+        on: "change",
+        rootData: {
+          data_component_name: "checkboxes",
+          data_link: ($el) =>
+            `Hide field descriptions:${helpers.valueGetters.checked($el)}`,
+          data_section: "Record details",
+          data_link_type: "checkboxes",
+          data_position: 1,
+        },
+      },
+    ],
+    "select_feature",
+  );
 }
