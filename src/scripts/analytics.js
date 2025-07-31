@@ -22,11 +22,20 @@ if (ga4Id) {
 
   analytics.addListeners(
     "#field-descriptions",
-    "document",
+    "field_descriptions",
     [
       {
         targetElement: "#field-descriptions-hide",
         on: "change",
+        data: {
+          state: helpers.valueGetters.checked,
+          value: ($el) => $el.parentNode.innerText.trim(),
+          group: ($el, $scope) =>
+            $scope
+              .closest(".tna-form__group")
+              ?.querySelector(".tna-form__heading")
+              ?.innerText?.trim(),
+        },
         rootData: {
           data_component_name: "checkboxes",
           data_link: ($el) =>
