@@ -11,7 +11,12 @@ from app.deliveryoptions.helpers import BASE_TNA_DISCOVERY_URL
 from app.records.api import record_details_by_id
 from app.records.labels import FIELD_LABELS
 from django.template.response import TemplateResponse
+from django.utils.text import slugify
+from django.conf import settings
+import requests
 from sentry_sdk import capture_message
+
+import pprint as pp
 
 # TODO: Implement record_detail_by_reference once Rosetta has support
 # from app.records.api import record_details_by_ref
@@ -52,6 +57,37 @@ from sentry_sdk import capture_message
 logger = logging.getLogger(__name__)
 
 
+def get_subjects_enrichment(subjects_list: list[str], limit: int = 10) -> dict:
+    """
+    Makes API call to enrich subjects data for a single record.
+    Returns enrichment data or empty dict on failure.
+    """
+    print(f"Subjects: {subjects_list}")
+    if not subjects_list:
+        return {}
+    
+    slugified_subjects = [slugify(subject) for subject in subjects_list]
+    subjects_param = ",".join(slugified_subjects)
+
+    print(f"Slugified: {subjects_param}")
+    
+    try:
+        response = requests.get(
+            f"{settings.WAGTAIL_API_URL}/article_tags",
+            params={
+                'tags': subjects_param,
+                'limit': limit
+            },
+            timeout=getattr(settings, 'SUBJECTS_API_TIMEOUT', 5)
+        )
+        response.raise_for_status()
+        logger.info(f"Successfully fetched subjects enrichment for: {subjects_param}")
+        return response.json()
+    except requests.RequestException as e:
+        logger.warning(f"Failed to fetch subjects enrichment for {subjects_param}: {e}")
+        return {}
+
+
 def record_detail_view(request, id):
     """
     View for rendering a record's details page.
@@ -62,6 +98,18 @@ def record_detail_view(request, id):
     }
 
     record = record_details_by_id(id=id)
+
+    if record.subjects:
+        subjects_enrichment = get_subjects_enrichment(
+            record.subjects,
+            limit=getattr(settings, 'SUBJECTS_API_LIMIT', 10)
+        )
+        record._subjects_enrichment = subjects_enrichment
+        logger.info(f"Enriched record {record.iaid} with {len(subjects_enrichment)} subject items")
+    else:
+        record._subjects_enrichment = {}
+
+    print(f"Record: {record}")
 
     context.update(
         record=record,
