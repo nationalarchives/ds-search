@@ -43,8 +43,8 @@ class CatalogueSearchForm(BaseForm):
             ),
             FieldsConstant.ONLINE: ChoiceField(
                 choices=[
-                    ("", "All records"), 
-                    ("true", "Available online only")
+                    ("", "All records"),
+                    ("true", "Available online only"),
                 ],
                 required=False,
             ),

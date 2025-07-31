@@ -91,7 +91,7 @@ class APIMixin:
 
         if form.fields[FieldsConstant.ONLINE].cleaned == "true":
             add_filter(params, "digitised:true")
-     
+
         return params
 
     def replace_input_data(self, field_name, selected_values: list[str]):
