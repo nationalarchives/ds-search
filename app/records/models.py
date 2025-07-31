@@ -465,7 +465,7 @@ class Record(APIModel):
     @property
     def subjects_enrichment(self) -> dict:
         """Returns subjects enrichment data if available."""
-        return getattr(self, '_subjects_enrichment', {})
+        return getattr(self, "_subjects_enrichment", {})
 
     @property
     def has_subjects_enrichment(self) -> bool:
