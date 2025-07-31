@@ -15,6 +15,7 @@ class FieldsConstant:
     SORT = "sort"
     LEVEL = "level"
     GROUP = "group"
+    ONLINE = "online"
 
 
 class CatalogueSearchForm(BaseForm):
@@ -39,5 +40,12 @@ class CatalogueSearchForm(BaseForm):
                 label="Filter by levels",
                 choices=list((level, level) for level in TNA_LEVELS.values()),
                 validate_input=True,  # validate input with choices before querying the API
+            ),
+            FieldsConstant.ONLINE: ChoiceField(
+                choices=[
+                    ("", "All records"), 
+                    ("true", "Available online only")
+                ],
+                required=False,
             ),
         }
