@@ -68,4 +68,24 @@ if (ga4Id) {
     ],
     "select_hierarchy",
   );
+
+  analytics.addListeners(
+    ".etna-details-hierarchy",
+    "pagination",
+    [
+      {
+        eventName: "tna.select_feature",
+        targetElement: "[rel='next'], [rel='prev']",
+        on: "click",
+        rootData: {
+          data_component_name: "pagination",
+          data_link: ($el) =>
+            $el.getAttribute("rel") === "next" ? "next page" : "previous page",
+          data_link_type: "button",
+          data_section: "Catalogue hierarchy",
+        },
+      },
+    ],
+    "select_feature",
+  );
 }
