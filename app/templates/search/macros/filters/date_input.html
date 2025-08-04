@@ -7,26 +7,28 @@
 <div class="tna-aside tna-aside--tight tna-background-tint tna-!--margin-top-s">
   <h3 class="tna-heading-m">{{ title }}</h3>
     {{ tnaDateInput({
-    'label': "Enter a start date",
+    'label': "From",
     'headingLevel': 4,
-    'headingSize': "m",
+    'headingSize': "s",
     'id': id + '-from',
     'name': name + '_from',
     'value': request.GET.get(name + '_from', ''),
     'formGroupClasses': 'tna-!--margin-top-s',
+    'progressive': true,
     'attributes': {
       'form': 'search-form'
     }
     }) }}
 
     {{ tnaDateInput({
-    'label': "Enter an end date",
+    'label': "To",
     'headingLevel': 4,
-    'headingSize': "m",
+    'headingSize': "s",
     'id': id + '-to',
     'name': name + '_to',
     'value': request.GET.get(name + '_to', ''),
     'formGroupClasses': 'tna-!--margin-top-s',
+    'progressive': true,
     'attributes': {
       'form': 'search-form'
     }
