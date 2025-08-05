@@ -80,6 +80,7 @@ See [Sentry's official guide](https://docs.sentry.io/platforms/python/guides/dja
 | Variable                   | Purpose                                                                    |
 | -------------------------- | -------------------------------------------------------------------------- |
 | `ROSETTA_API_URL`          | The base API URL for Rosetta, including the `/rosetta/data` path           |
+| `WAGTAIL_API_URL`          | The base API URL for Wagtail                                               |
 | `DELIVERY_OPTIONS_API_URL` | Api for Delivery options                                                   |
 | `DCS_PREFIXES`             | Comma separated list of document prefixes for distressing content          |
 | `STAFFIN_IP_ADDRESSES`     | Comma separated list of CIDR format IP addresses identifying staff access  |
