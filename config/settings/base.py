@@ -171,6 +171,9 @@ GA4_ID = os.environ.get("GA4_ID", "")
 
 ROSETTA_API_URL = os.getenv("ROSETTA_API_URL")
 
+# Maximum number of subject/article_tags returned from Wagtail
+SUBJECTS_API_LIMIT: int = 3
+
 # DORIS is TNA's Document Ordering System that contains Delivery Options data
 DELIVERY_OPTIONS_API_URL = os.getenv("DELIVERY_OPTIONS_API_URL")
 
